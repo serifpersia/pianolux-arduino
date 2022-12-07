@@ -6,4 +6,5 @@ Click Open and initially press change color to test if keys are pressed the leds
 Now that you tested and confirmed it works you can change the color with the sliders and also brightness
 Click change color to confirm color and brightness.
 
-![pianoprogram](https://user-images.githubusercontent.com/62844718/206065682-5c511fea-42d5-4c1c-a1a0-b9cd5b0d7f31.png)
+
+![pianoprogram](https://user-images.githubusercontent.com/62844718/206065807-4e3b4c0a-f796-4ee2-ab70-0a6842b26e2e.png)
