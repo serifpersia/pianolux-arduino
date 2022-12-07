@@ -8,7 +8,7 @@ Make sure you use pwm pin 5 for data or modify
 the code for your pin number.
 
 Start the app and select your Midi input, arduino port, type of piano(size of keys, currently supporting 88,76,61 and 49). 
-Click Open and initially press change color to test if keys are pressed the leds light up.
+Click Open and initially press change color to start testing if note is pressed an led should light up...
 
 Now that you tested and confirmed it works you can change the color with the sliders and also brightness
 
