@@ -1,6 +1,7 @@
 Simple Processing(Java) based GUI that controls WS2912B LED strip using Arudino
 To run the app you would need to install latest java 32-bit 
-and use the provided Arduino sketch .ino file and upload that your arduino. 
+and use the provided Arduino sketch .ino file and upload that your arduino. Make sure you use pwm pin 5 for data or modify
+the code for your pin number.
 Start the app and select your Midi input, arduino port, type of piano(size of keys, currently supporting 88,76,61 and 49). 
 Click Open and initially press change color to test if keys are pressed the leds light up.
 Now that you tested and confirmed it works you can change the color with the sliders and also brightness
