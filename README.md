@@ -1,3 +1,6 @@
+
+![pianoprogram](https://user-images.githubusercontent.com/62844718/206133011-e5568ce3-793f-4fdc-acb7-45eb76dd7924.png)
+
 Simple Processing(Java) based GUI that controls WS2912B LED strip using Arudino
 
 To run the app you would need to install latest java 32-bit 
@@ -14,5 +17,20 @@ Now that you tested and confirmed it works you can change the color with the sli
 
 Click change color to confirm color and brightness.
 
+If you have a specific use case you and already defined presets don't work for you you 
+can use advance user mode to manually select each variable
 
-![pianoprogram](https://user-images.githubusercontent.com/62844718/206065807-4e3b4c0a-f796-4ee2-ab70-0a6842b26e2e.png)
+To get a working config in Andvance User mode use this formula:
+First key(21-108)
+Last key (21-108)
+Number of leds(1-174)
+
+Example: 61 piano keys what number of leds is needed and what are the first and last keys?
+61 piano has 61 keys. To set correct number of leds multiply your number of keys on your piano
+For 61 piano thats 61 * 2 = 122 Thats the number of leds needed for 61 key piano.
+
+To find midi first and last midi note number here is an image that shows every possible piano key and its midi note number:
+
+
+
+![midi chart](https://user-images.githubusercontent.com/62844718/206138883-35bb5a70-2aed-457f-ab51-72d7f7806af9.png)
