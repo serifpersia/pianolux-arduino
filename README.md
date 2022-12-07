@@ -1,7 +1,7 @@
 
 ![pianoprogram](https://user-images.githubusercontent.com/62844718/206133011-e5568ce3-793f-4fdc-acb7-45eb76dd7924.png)
 
-Simple Processing(Java) based GUI that controls WS2912B LED strip using Arudino
+Simple Processing(Java) based GUI that controls WS2812B LED strip using Arudino
 
 To run the app you would need to install latest java 32-bit 
 
@@ -17,7 +17,7 @@ Now that you tested and confirmed it works you can change the color with the sli
 
 Click change color to confirm color and brightness.
 
-If you have a specific use case you and already defined presets don't work for you you 
+If you have a specific use case you and already defined presets don't work for you, you 
 can use advance user mode to manually select each variable
 
 To get a working config in Andvance User mode use this formula:
