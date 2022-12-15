@@ -5,17 +5,18 @@ Simple Processing(Java) based GUI that controls WS2812B LED strip using Arudino
 
 To run the app you would need to install latest java 32-bit 
 
-and use the provided Arduino sketch .ino file and upload that your arduino.
+and use the provided Arduino sketch .ino file and upload that your arduino(arduino leonardo recommended).
 
 Make sure you use pwm pin 5 for data or modify
-the code for your pin number.
+the code for your pwm pin number.
 
-Start the app and select your Midi input, arduino port, type of piano(size of keys, currently supporting 88,76,61 and 49). 
-Click Open and initially press change color to start testing if note is pressed an led should light up...
+Start the app and select your Midi input device, arduino port, type of piano(size of keys, currently supporting 88,76,61 and 49). 
+Default is 88, make sure to change the preset with arrows on the screen.
+Click Open.Default color is white(sliders rgb sliders are maxed out) and the brightness is set to half(Use higher brightness 
+at your own risk. If you're powering the leds of off arduino's 5V pins make sure your not maxing out the current usage.
+Also make sure you don't leave your arduino plugged in to the usb port if your not using it!
 
-Now that you tested and confirmed it works you can change the color with the sliders and also brightness
-
-Click change color to confirm color and brightness.
+Chose your prefered color using rgb sliders and change brightness of the leds with the brightness slider aboe the rgb sliders.
 
 If you have a specific use case you and already defined presets don't work for you, you 
 can use advance user mode to manually select each variable
