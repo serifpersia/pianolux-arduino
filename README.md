@@ -1,5 +1,5 @@
 
-![pianoprogram](https://user-images.githubusercontent.com/62844718/206133011-e5568ce3-793f-4fdc-acb7-45eb76dd7924.png)
+![Github image](https://user-images.githubusercontent.com/62844718/207941242-f854a807-2c01-4772-b44f-5e551e59a695.png)
 
 Simple Processing(Java) based GUI that controls WS2812B LED strip using Arudino
 
@@ -34,3 +34,4 @@ To find midi first and last midi note number here is an image that shows every p
 
 
 ![midi chart](https://user-images.githubusercontent.com/62844718/206138883-35bb5a70-2aed-457f-ab51-72d7f7806af9.png)
+
