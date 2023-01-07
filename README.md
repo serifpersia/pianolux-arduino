@@ -1,4 +1,5 @@
-![Png](https://user-images.githubusercontent.com/62844718/211154579-a25f3100-93aa-43c5-8c7b-9ea73b72fbee.png)
+
+![Png](https://user-images.githubusercontent.com/62844718/211154625-e74cb40d-9728-4893-a18b-6ccc0fd25dc3.png)
 
 Simple Processing(Java) based GUI that controls WS2812B LED strip using Arudino
 
