@@ -8,7 +8,7 @@ for smaller key sizes 1m/144 would be enough
 
 To run the app you would need to install latest java 32-bit 
 
-and use the provided Arduino sketch .ino file and upload that your arduino(arduino leonardo recommended).
+and use the provided Arduino sketch .ino file install fastled library and upload the code to your arduino(arduino leonardo recommended).
 
 Make sure you use pwm pin 5 for data or modify
 the code for your pwm pin number.
