@@ -13,6 +13,7 @@ If you have a specific use case and the presets don't work for you, you can use 
 
 In advanced user mode, use the following formula to get a working config: First key (21-108), last key (21-108), number of LEDs (1-174).
 For example, to find the number of LEDs needed for a 61-key piano, multiply the number of keys on your piano (61) by 2, which equals 122.
+Readme file included in the zip file provies detailed information on how to use the software(Random mode,Velocity mode...)
 
 To find the first and last MIDI note number, refer to an image that shows every possible piano key and its MIDI note number.
 
