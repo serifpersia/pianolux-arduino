@@ -1,5 +1,4 @@
-
-![Png](https://user-images.githubusercontent.com/62844718/211154625-e74cb40d-9728-4893-a18b-6ccc0fd25dc3.png)
+![github](https://user-images.githubusercontent.com/62844718/219884748-a75d5ed3-9e97-40cb-a85f-8a5ebbb8724b.png)
 
 Watch the tutorial on Youtube: https://www.youtube.com/watch?v=bsYGRT0vvdY
 
