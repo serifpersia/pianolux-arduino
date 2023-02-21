@@ -1,6 +1,9 @@
 ![github](https://user-images.githubusercontent.com/62844718/219884748-a75d5ed3-9e97-40cb-a85f-8a5ebbb8724b.png)
 
 Watch the tutorial on Youtube: https://www.youtube.com/watch?v=bsYGRT0vvdY
+Follow this guide if you can't run both pianoled software and your vst(some piano's usb midi support only connecting to one software,
+by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
+https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
 This app is a simple Processing (Java) based GUI that controls a WS2812B LED strip using an Arduino. 
 The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient. 
