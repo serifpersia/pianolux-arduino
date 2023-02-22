@@ -16,7 +16,7 @@ You can choose your preferred color using the RGB sliders and change the brightn
 
 If you have a specific use case and the presets don't work for you, you can use advanced user mode to manually select each variable.
 
-In advanced user mode, use the following formula to get a working config: First key (21-108), last key (21-108), number of LEDs (1-174).
+In advanced user mode, use the following formula to get a working config: First key (21-108), last key (21-108), number of LEDs (1-176).
 For example, to find the number of LEDs needed for a 61-key piano, multiply the number of keys on your piano (61) by 2, which equals 122.
 
 Readme file included in the zip file provies detailed information on how to use the software(Random mode,Velocity mode...)
