@@ -11,7 +11,7 @@ The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144
 To use the app, you need to install the latest 32-bit version of Java and use the provided Arduino sketch .ino file.
 Make sure to install the FastLED library and upload the code to your Arduino (Leonardo recommended).
 
-After starting the app, select your MIDI input device, Arduino port, and type of piano (currently supporting 88, 76, 61, and 49 keys).
+After starting the app, select your MIDI input device, Arduino port, and type of piano (currently supporting 88, 76, 73, 61, and 49 keys).
 You can choose your preferred color using the RGB sliders and change the brightness of the LEDs with the brightness slider. 
 
 If you have a specific use case and the presets don't work for you, you can use advanced user mode to manually select each variable.
