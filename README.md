@@ -1,4 +1,4 @@
-![github](https://user-images.githubusercontent.com/62844718/219884748-a75d5ed3-9e97-40cb-a85f-8a5ebbb8724b.png)
+![github](https://user-images.githubusercontent.com/62844718/221055463-78fb79b0-5f9b-4c15-9f32-538016b0f0ae.png)
 
 Watch the tutorial on Youtube: https://www.youtube.com/watch?v=bsYGRT0vvdY
 Follow this guide if you can't run both pianoled software and your vst(some piano's usb midi support only connecting to one software,
