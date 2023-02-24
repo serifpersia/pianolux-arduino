@@ -5,7 +5,7 @@ Follow this guide if you can't run both pianoled software and your vst(some pian
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
-Here is how you should connect the LED strip and Arduino.The picture is included with the zip file.
+Here is how you should connect the LED strip and Arduino.
 ![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
 This app is a simple Processing (Java) based GUI that controls a WS2812B LED strip using an Arduino. 
