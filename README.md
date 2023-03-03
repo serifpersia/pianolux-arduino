@@ -1,6 +1,4 @@
-![github](https://user-images.githubusercontent.com/62844718/222840956-a0342155-824a-4d67-b513-5a081215dc03.png)
-![github2](https://user-images.githubusercontent.com/62844718/222841004-e3f97c73-7dd7-4f9c-afb8-9501806f046a.png)
-
+![github](https://user-images.githubusercontent.com/62844718/222840956-a0342155-824a-4d67-b513-5a081215dc03.png)![github2](https://user-images.githubusercontent.com/62844718/222841004-e3f97c73-7dd7-4f9c-afb8-9501806f046a.png)
 Watch the tutorial on Youtube: https://www.youtube.com/watch?v=bsYGRT0vvdY
 Follow this guide if you can't run both pianoled software and your vst(some piano's usb midi support only connecting to one software,
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
