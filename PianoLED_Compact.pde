@@ -2,6 +2,7 @@
 //Code by serifpersia
 //youtube.com/serifpersia
 //twitch.tv/serifpersia
+//PianoLED community/dev server https://discord.com/invite/S6xmuX4Hx5
 //discord serifpersia#0904
 //Last modified 05/03/2023
 
