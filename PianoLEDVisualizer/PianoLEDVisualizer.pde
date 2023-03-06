@@ -1,8 +1,7 @@
-//PianoLED
+//PianoLED111
 //Code by serifpersia
 //youtube.com/serifpersia
 //twitch.tv/serifpersia
-//PianoLED community/dev server https://discord.com/invite/S6xmuX4Hx5
 //discord serifpersia#0904
 //Last modified 05/03/2023
 
@@ -26,23 +25,23 @@ int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_O
 {
   return ((((au32_IN - au32_INmin)*(au32_OUTmax - au32_OUTmin))/(au32_INmax - au32_INmin)) + au32_OUTmin);
 }
-int Red = 251, Green = 251, 
-  Blue = 251, Brightness = 251, 
-  FadeOnVal = 251, velRedL = 251, 
-  velGreenL = 251, velBlueL = 251, 
-  velRedLM = 251, velGreenLM = 251, 
-  velBlueLM = 251, velRedM = 251, 
-  velGreenM = 251, velBlueM = 251, 
-  velRedH = 251, velGreenH = 251, velBlueH = 251, 
-  splitLeftRed = 251, splitLeftGreen = 251, splitLeftBlue = 251, 
-  splitRightRed = 251, splitRightGreen = 251, splitRightBlue = 251, 
-  LeftSideGRed = 251, LeftSideGGreen = 251, LeftSideGBlue, 
+int Red = 251, Green = 251,
+  Blue = 251, Brightness = 251,
+  FadeOnVal = 251, velRedL = 251,
+  velGreenL = 251, velBlueL = 251,
+  velRedLM = 251, velGreenLM = 251,
+  velBlueLM = 251, velRedM = 251,
+  velGreenM = 251, velBlueM = 251,
+  velRedH = 251, velGreenH = 251, velBlueH = 251,
+  splitLeftRed = 251, splitLeftGreen = 251, splitLeftBlue = 251,
+  splitRightRed = 251, splitRightGreen = 251, splitRightBlue = 251,
+  LeftSideGRed = 251, LeftSideGGreen = 251, LeftSideGBlue,
   RightSideGRed = 251, RightSideGGreen = 251, RightSideGBlue;
-int lastNoteSelected, firstNoteSelected, numberselected, 
+int lastNoteSelected, firstNoteSelected, numberselected,
   notePushed, noteOnVelocity;
 
-boolean VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, AnimationOn = false, FadeOn = false;
-List m = Arrays.asList("Default", "Fade", "Random", "Fade & Random", "Velocity", "Split", "Gradient", "Animation");
+boolean VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, FadingRunOn = false, AnimationOn = false, FadeOn = false;
+List m = Arrays.asList("Default", "Fade", "Random", "Fade & Random", "Velocity", "Split", "Gradient", "Animation", "Splash");
 int counter = 0;
 int[][] Keys;
 int[][] Leds;
@@ -54,24 +53,24 @@ int whiteKeys[] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15
   , 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36, 38, 39, 41, 43
   , 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79
   , 80, 82, 84, 86, 87};
-int[] blackKeys = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35, 
-  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78, 
+int[] blackKeys = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35,
+  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78,
   81, 83, 85};
 // Create a list of x-coordinates for each key
-int[] keyXCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 
-  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521, 
+int[] keyXCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
+  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
   536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; // Add the missing x-coordinate
 // List of white keys in a 88-key piano
 int leds[] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15
   , 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36, 38, 39, 41, 43
   , 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79
   , 80, 82, 84, 86, 87};
-int[] ledsBlack = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35, 
-  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78, 
+int[] ledsBlack = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35,
+  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78,
   81, 83, 85};
 // Create a list of x-coordinates for each key
-int[] keyYCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 
-  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521, 
+int[] keyYCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
+  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
   536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; // Add the missing x-coordinate
 void setup() {
   size(910, 160);
@@ -262,15 +261,15 @@ void setup() {
    .setColorActive(color(255, 0, 0))
    .setSize(50, 15);
    */
-   
-   //comment the close button before uploadin to github
-   //or compiling to exe.
+
+  //comment the close button before uploadin to github
+  //or compiling to exe.
   cp5.addButton("Close")
-   .setSize(45, 15)
-   .setColorForeground(color(255, 0, 0))
-   .setColorBackground(color(0))
-   .setColorActive(color(255, 0, 0))
-   .setPosition(650, 15);
+    .setSize(45, 15)
+    .setColorForeground(color(255, 0, 0))
+    .setColorBackground(color(0))
+    .setColorActive(color(255, 0, 0))
+    .setPosition(650, 15);
   // Get the list of available MIDI devices on the system
   MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
   // Iterate through the list of MIDI devices
@@ -300,7 +299,7 @@ void setup() {
   lastNoteSelected = 108;
   println("Selected number led: " + numberselected);
   println("Selected first note: " + firstNoteSelected);
-  println("Selected last note: " + lastNoteSelected);   
+  println("Selected last note: " + lastNoteSelected);
   ;
   cp5.addScrollableList("modelist")
     .setPosition(695, 15)
@@ -544,7 +543,12 @@ void noteOn(int channel, int pitch, int velocity) {
         arduino.write(Brightness);
         arduino.write(FadeOnVal);
         arduino.write(blue);
-      } else 
+      } else if (FadingRunOn)
+      {
+        println("FadingRun:"+velocity+":"+notePushed);
+        arduino.write(249);
+        arduino.write(velocity);
+      } else
       {
         // Send a fixed color
         arduino.write(255);
@@ -565,7 +569,7 @@ void noteOn(int channel, int pitch, int velocity) {
 void noteOff(int channel, int pitch, int velocity) {
   notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
   Keys[pitch-21][0] = 0;
-  Keys[pitch-21][1] = 0; 
+  Keys[pitch-21][1] = 0;
   try {
     if (!AnimationOn)
     {
@@ -643,6 +647,7 @@ void modelist(int n) {
     AnimationOn = false;
     SplitOn = false;
     GradientOn = false;
+    FadingRunOn = false;
     break;
   case 1: // Fade
     setButtonsVisible(false);
@@ -654,7 +659,8 @@ void modelist(int n) {
     AnimationOn = false;
     SplitOn = false;
     GradientOn = false;
-    break;
+    FadingRunOn = false;
+        break;
   case 2: // Random
     setButtonsVisible(false);
     setSideButtonsVisible(false);
@@ -709,6 +715,7 @@ void modelist(int n) {
     FadeOn = false;
     RandomOn = false;
     AnimationOn = false;
+    FadingRunOn = false;
 
     break;
   case 7: // Animation
@@ -721,6 +728,19 @@ void modelist(int n) {
     VelocityOn = false;
     SplitOn = false;
     GradientOn = false;
+    FadingRunOn = false;
+    break;
+  case 8: // Splash
+    setButtonsVisible(false);
+    setSideButtonsVisible(false);
+    setGradientButtonsVisible(false);
+    AnimationOn = false;
+    FadeOn = false;
+    RandomOn = false;
+    VelocityOn = false;
+    SplitOn = false;
+    GradientOn = false;
+    FadingRunOn = true;
     break;
   }
   println("Selected mode: " + m.get(n));
@@ -739,20 +759,20 @@ void Open() {
   }
 }
 //comment the close void before uploadin to github
-   //or compiling to exe.
+//or compiling to exe.
 void Close() {
- try {
- myBus.dispose();
- arduino.write(254);
- arduino.stop();
- println("Device closed: " + portName);
- println("Device closed: " + midiName);
- showMessageDialog(null, "Disconnected!");
- }
- catch (Exception NoDevicesOpen) {
- showMessageDialog(null, "No devices connected!");
- }
- }
+  try {
+    myBus.dispose();
+    arduino.write(254);
+    arduino.stop();
+    println("Device closed: " + portName);
+    println("Device closed: " + midiName);
+    showMessageDialog(null, "Disconnected!");
+  }
+  catch (Exception NoDevicesOpen) {
+    showMessageDialog(null, "No devices connected!");
+  }
+}
 void Refresh() {
   // Clear the midilist and comlist ArrayList objects
   midilist.clear();
@@ -788,17 +808,17 @@ void Refresh() {
 }
 /*
 void Exit()
-{
-  try {
-    arduino.write(254);
-    arduino.stop();
-  }
-  catch (Exception e)
-  {
-  }
-  exit();
-}
-*/
+ {
+ try {
+ arduino.write(254);
+ arduino.stop();
+ }
+ catch (Exception e)
+ {
+ }
+ exit();
+ }
+ */
 
 void AdvanceUser()
 {
