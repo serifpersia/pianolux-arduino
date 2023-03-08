@@ -231,6 +231,7 @@ void modelist(int n) {
     disableAllModes();
     hideLegacyControls();
     showSplashControls();
+    setSplashDefaults(11,110);
     SplashOn = true;
     break;
   }
@@ -248,6 +249,8 @@ void Open() {
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
 
       sendCommandBlackOut();
+      int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
+      sendCommandFadeRate(fadeRate);
     }
     catch (Exception NoDevicesSelected) {
       showMessageDialog(null, "Devices needed not selected or device busy!");
