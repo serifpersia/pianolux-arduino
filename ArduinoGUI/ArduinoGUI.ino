@@ -26,19 +26,20 @@ const int COMMAND_BLACKOUT = 252;
 const int COMMAND_SPLASH = 251;
 const int COMMAND_SET_BRIGHTNESS = 250;
 const int COMMAND_KEY_OFF = 249;
+const int COMMAND_SPLASH_MAX_LENGTH = 248;
 
 int DEFAULT_BRIGHTNESS = 200;
 
-int SPLASH_HEAD_FADE_RATE = 50;
-int SPLASH_TAIL_LEN = 15;
+int SPLASH_HEAD_FADE_RATE = 5;
+int splashMaxLength = 8;
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
 
-const unsigned long interval = 25;       // general refresh in milliseconds
-const unsigned long fadeInterval = 30;  // general fade interval in milliseconds
-int generalFadeRate = 10;                //configurable via App
+const unsigned long interval = 20;      // general refresh in milliseconds
+const unsigned long fadeInterval = 50;  // general fade interval in milliseconds
+int generalFadeRate = 5;                // general fade rate, bigger value - quicker fade (configurable via App)
 
 uint8_t hue = 0;
 
@@ -167,8 +168,8 @@ void loop() {
           debugLightOn(3);
           int velocity = buffer[++bufIdx];
           int note = buffer[++bufIdx];
-          keysOn[note-1] = true;
-          addEffect(new FadingRunEffect(SPLASH_TAIL_LEN, note-1, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
+          keysOn[note - 1] = true;
+          addEffect(new FadingRunEffect(splashMaxLength, note - 1, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
           break;
         }
@@ -178,6 +179,14 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(4);
           generalFadeRate = buffer[++bufIdx];
+          break;
+        }
+      case COMMAND_SPLASH_MAX_LENGTH:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(5);
+          splashMaxLength = buffer[++bufIdx];
           break;
         }
       case COMMAND_SET_BRIGHTNESS:
@@ -198,8 +207,8 @@ void loop() {
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];
           int note = (int)buffer[++bufIdx];
-          keysOn[note-1] = true;
-          controlLeds(note-1, redVal, greenVal, blueVal);
+          keysOn[note - 1] = true;
+          controlLeds(note - 1, redVal, greenVal, blueVal);
           break;
         }
       case COMMAND_BLACKOUT:
@@ -232,7 +241,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(9);
           int note = (int)buffer[++bufIdx];
-          keysOn[note-1] = false;
+          keysOn[note - 1] = false;
           break;
         }
 

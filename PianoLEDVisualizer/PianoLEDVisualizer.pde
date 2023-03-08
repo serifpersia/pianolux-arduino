@@ -44,9 +44,9 @@ void setup() {
   surface.setIcon(icon);
 
   cp5 = buildUI();
-
+  
   Refresh();
-
+    
   numberselected = 176;
   firstNoteSelected = 21;
   lastNoteSelected = 108;
@@ -174,9 +174,6 @@ void comlist(int n) {
 
 void disableAllModes()
 {
-  setButtonsVisible(false);
-  setSideButtonsVisible(false);
-  setGradientButtonsVisible(false);
   RandomOn = false;
   VelocityOn = false;
   AnimationOn = false;
@@ -195,37 +192,51 @@ void modelist(int n) {
   switch(n) {
   case 0: // Default
     disableAllModes();
+    hideAllControls();
+    showDefaultControls();
     break;
   case 1: // Random
     disableAllModes();
+    hideAllControls();
+    showDefaultControls();
     RandomOn = true;
     break;
   case 2: // Velocity
     disableAllModes();
-    setButtonsVisible(true);
+    hideAllControls();
+    showDefaultControls();
+    showButtons();
     VelocityOn = true;
     break;
   case 3: // Split
     disableAllModes();
-    setSideButtonsVisible(true);
+    hideAllControls();
+    showDefaultControls();
+    showSideButtons();
     SplitOn = true;
     break;
   case 4: // Gradient
     disableAllModes();
-    setGradientButtonsVisible(true);
+    hideAllControls();
+    showDefaultControls();
+    showGradientButtons();
     GradientOn = true;
     break;
   case 5: // Animation
     disableAllModes();
+    hideAllControls();
     AnimationOn = true;
     break;
   case 6: // Splash
     disableAllModes();
+    hideLegacyControls();
+    showSplashControls();
     SplashOn = true;
     break;
   }
   println("Selected mode: " + m.get(n));
 }
+
 void Open() {
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
@@ -237,10 +248,6 @@ void Open() {
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
 
       sendCommandBlackOut();
-      //int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
-      //sendCommandFadeRate(fadeRate);
-      //int brightness = (int)cp5.getController("FadeOnVal").getValue();
-      //sendCommandBrightness(brightness);
     }
     catch (Exception NoDevicesSelected) {
       showMessageDialog(null, "Devices needed not selected or device busy!");

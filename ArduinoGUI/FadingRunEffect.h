@@ -15,7 +15,8 @@ public:
   void setHeadLED(int step);
   int getSteps();
   int adjustValue(int value, int lowerThreshold, int maxValue);
-
+  int calcOffset(int step, int velocity);
+  
 private:
   int effectLen;
   int startPosition;

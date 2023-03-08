@@ -12,6 +12,7 @@ final static byte COMMAND_BLACKOUT = (byte)252;
 final static byte COMMAND_SPLASH = (byte)251;
 final static byte COMMAND_SET_BRIGHTNESS = (byte)250;
 final static byte COMMAND_KEY_OFF = (byte)249;
+final static byte COMMAND_SPLASH_MAX_LENGTH = (byte)248;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -85,6 +86,17 @@ ByteArrayOutputStream commandKeyOff(int note)
   return message;
 }
 
+
+ByteArrayOutputStream commandSplashMaxLength(int value)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_SPLASH_MAX_LENGTH);
+  message.write((byte)value);
+  return message;
+}
+
 void sendCommandBlackOut()
 {
   sendToArduino(commandBlackOut());
@@ -105,6 +117,11 @@ void sendCommandFadeRate(int value)
   sendToArduino(commandFadeRate(value));
 }
 
+void sendCommandSplashMaxLength(int value)
+{
+  sendToArduino(commandSplashMaxLength(value));
+}  
+
 void animationLoop()
 {
   sendToArduino(commandAnimation());
@@ -118,7 +135,10 @@ void sendToArduino(byte val)
 
 void sendToArduino(ByteArrayOutputStream msg)
 {
-  byte[] bytes = msg.toByteArray();
-  printArray(bytes);
-  arduino.write(bytes);
+  if ( arduino != null )
+  {
+    byte[] bytes = msg.toByteArray();
+    printArray(bytes);
+    arduino.write(bytes);
+  }
 }

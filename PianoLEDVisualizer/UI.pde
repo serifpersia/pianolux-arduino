@@ -1,248 +1,124 @@
 ControlP5 cp5;
 
-final static int MIN_FADE_RATE = 1;
-final static int MAX_FADE_RATE = 250;
-final static int DEFAULT_FADE_RATE = 50;
+int MIN_FADE_RATE = 1;
+int MAX_FADE_RATE = 250;
+int DEFAULT_FADE_RATE = 50;
+
+color RED = color(255, 0, 0);
+color GREEN = color(0, 255, 0);
+color BLUE = color(0, 0, 255);
+color BLACK = color(0, 0, 0);
+color WHITE = color(255, 255, 255);
+color CYAN = color(0, 255, 255);
+color YELLOW = color(255, 255, 0);
+color MAGENTA = color(255, 0, 255);
+
+color APP_COLOR_FG = RED;
+color APP_COLOR_BG = BLACK;
+color APP_COLOR_ACT = RED;
+
+color SLIDER_COLOR_FG = CYAN;
+color SLIDER_COLOR_BG = BLACK;
+color SLIDER_COLOR_ACT = CYAN;
+
+int MIN_BRIGHT = 10;
+int MAX_BRIGHT = 255;
+int DEF_BRIGHT = 1898;
+
+int MIN_COLOR = 0;
+int MAX_COLOR = 255;
+int DEF_COLOR = MAX_COLOR;
+int EFFECT_CONTROLS_X = 800;
+
+ControlP5 buildUI()
+{
+  ControlP5 cp5 = new ControlP5(this);
+
+  addSlider( cp5, "Brightness", "B", EFFECT_CONTROLS_X, 75, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT);
+
+  addSlider( cp5, "Red", "R", EFFECT_CONTROLS_X, 95, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, RED, -1, RED);
+  addSlider( cp5, "Green", "G", EFFECT_CONTROLS_X, 105, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, GREEN, -1, GREEN);
+  addSlider( cp5, "Blue", "B", EFFECT_CONTROLS_X, 115, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, BLUE, -1, BLUE);
+  addSlider( cp5, "FadeOnVal", "F", EFFECT_CONTROLS_X, 125, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE);
+
+  addButton(cp5, "setLeftSideG", "Set LG", 735, 140, 30, 15).hide();
+  addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();
+
+  addButton(cp5, "setLeftSide", "Set L", 735, 140, 30, 15).hide();
+  addButton(cp5, "setRightSide", "Set R", 765, 140, 30, 15).hide();
+
+
+  addButton(cp5, "setL", "Set L", 675, 140, 30, 15).hide();
+  addButton(cp5, "setM", "Set M", 705, 140, 30, 15).hide();
+  addButton(cp5, "setLM", "Set LM", 735, 140, 30, 15).hide();
+  addButton(cp5, "setH", "Set H", 765, 140, 30, 15).hide();
+
+  addButton(cp5, "P174", "174 Preset", 200, 15, 60, 15);
+  addButton(cp5, "Open", null, EFFECT_CONTROLS_X, 47, 50, 15);
+  addButton(cp5, "Refresh", null, 850, 47, 50, 15 );
+
+  addScrollableList(cp5, "midi", "Midi Device", null, 0, EFFECT_CONTROLS_X, 30, 100, 110, 15, 15);
+  addScrollableList(cp5, "comlist", "Arduino Port", null, 0, EFFECT_CONTROLS_X, 15, 100, 110, 15, 15);
+
+  addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
+  addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
+  addButton(cp5, "AdvanceUser", null, 15, 15, 0, 0);
+  //addButton(cp5, "Exit", null, 140, 90, 50, 15);
+
+  addScrollableList(cp5, "modelist", "Mode", m, 0, 695, 15, 100, 140, 15, 15);
+
+  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X;
+  int SPLASH_CONTROL_Y = 90;
+
+  addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+
+  return cp5;
+}
+
+void addSplashControls(ControlP5 cp5, int x, int y)
+{
+  int SPLASH_MIN_LEN = 5;
+  int SPLASH_MAX_LEN = 15;
+  int SPLASH_DEFAULT_LEN = 8;
+
+  int SPLASH_MIN_TAIL_FADE = 1;
+  int SPLASH_MAX_TAIL_FADE = 50;
+  int SPLASH_DAFAULT_TAIL_FADE = 15;
+
+  int SPLASH_MIN_HEAD_FADE = 1;
+  int SPLASH_MAX_HEAD_FADE = 30;
+  int SPLASH_DAFAULT_HEAD_FADE = 5;
+
+  int SPLASH_MIN_VELO_BRI = 5;
+  int SPLASH_MAX_VELO_BRI = 15;
+  int SPLASH_DAFAULT_VELO_BRI = 10;
+
+  int SPLASH_MIN_VELO_SPEED = 5;
+  int SPLASH_MAX_VELO_SPEED = 15;
+  int SPLASH_DAFAULT_VELO_SPEED = 10;
+
+  int SPLASH_CONTROL_Y_STEP = 20;
+  int captionAlignX = CENTER;
+  int captionAlignY = ControlP5.TOP_OUTSIDE;
+
+  addSlider( cp5, "splashMaxLength", "Max Splash Length", x, y, SPLASH_MIN_LEN, SPLASH_MAX_LEN, SPLASH_DEFAULT_LEN, captionAlignX, captionAlignY).hide();
+  y += SPLASH_CONTROL_Y_STEP;
+  addSlider( cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE, SPLASH_DAFAULT_TAIL_FADE, captionAlignX, captionAlignY).hide();
+  y += SPLASH_CONTROL_Y_STEP;
+  //addSlider( cp5, "splashHeadFade", "Head Fade Rate", x, y, SPLASH_MIN_HEAD_FADE, SPLASH_MAX_HEAD_FADE, SPLASH_DAFAULT_HEAD_FADE, captionAlignX , captionAlignY).hide();
+  //y += SPLASH_CONTROL_Y_STEP;
+  addSlider( cp5, "splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI, SPLASH_MAX_VELO_BRI, SPLASH_DAFAULT_VELO_BRI, captionAlignX, captionAlignY).hide();
+  y += SPLASH_CONTROL_Y_STEP;
+  addSlider( cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED, SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED, captionAlignX, captionAlignY).hide();
+  y += SPLASH_CONTROL_Y_STEP;
+}
+
 
 int[][] Keys = new int[88][2];
 int[][] Leds = new int[88][2];
 int rectASizeX = 0;
 int rectBSizeX = 0;
 int rectBX = 795;
-// List of white keys in a 88-key piano
-int whiteKeys[] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15
-  , 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36, 38, 39, 41, 43
-  , 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79
-  , 80, 82, 84, 86, 87};
-int[] blackKeys = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35,
-  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78,
-  81, 83, 85};
-// Create a list of x-coordinates for each key
-int[] keyXCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
-  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
-  536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; // Add the missing x-coordinate
-// List of white keys in a 88-key piano
-int leds[] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15
-  , 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36, 38, 39, 41, 43
-  , 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79
-  , 80, 82, 84, 86, 87};
-int[] ledsBlack = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35,
-  37, 40, 42, 45, 47, 49, 52, 54, 57, 59, 61, 64, 66, 69, 71, 73, 76, 78,
-  81, 83, 85};
-// Create a list of x-coordinates for each key
-int[] keyYCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
-  251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
-  536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; // Add the missing x-coordinate
-
-int Red = TOP_COLOR, Green = TOP_COLOR,
-  Blue = TOP_COLOR, Brightness = TOP_COLOR,
-  FadeOnVal = TOP_COLOR, velRedL = TOP_COLOR,
-  velGreenL = TOP_COLOR, velBlueL = TOP_COLOR,
-  velRedLM = TOP_COLOR, velGreenLM = TOP_COLOR,
-  velBlueLM = TOP_COLOR, velRedM = TOP_COLOR,
-  velGreenM = TOP_COLOR, velBlueM = TOP_COLOR,
-  velRedH = TOP_COLOR, velGreenH = TOP_COLOR, velBlueH = TOP_COLOR,
-  splitLeftRed = TOP_COLOR, splitLeftGreen = TOP_COLOR, splitLeftBlue = TOP_COLOR,
-  splitRightRed = TOP_COLOR, splitRightGreen = TOP_COLOR, splitRightBlue = TOP_COLOR,
-  LeftSideGRed = TOP_COLOR, LeftSideGGreen = TOP_COLOR, LeftSideGBlue = 0,
-  RightSideGRed = TOP_COLOR, RightSideGGreen = TOP_COLOR, RightSideGBlue = TOP_COLOR;
-
-ControlP5 buildUI()
-{
-  ControlP5 cp5 = new ControlP5(this);
-
-  cp5.addSlider("Brightness")
-    .setPosition(800, 75)
-    .setColorForeground(color(255))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setSize(99, 10)
-    .setLabel("B")
-    .setRange(10, 255)
-    .setValue(188)
-    .setNumberOfTickMarks(5)
-    ;
-  cp5.addSlider("Red")
-    .setPosition(800, 95)
-    .setCaptionLabel("R")
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setRange(0, 255)
-    ;
-  cp5.addSlider("Green")
-    .setPosition(800, 105)
-    .setCaptionLabel("G")
-    .setColorForeground(color(0, 255, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(0, 255, 0))
-    .setRange(0, 255)
-    ;
-  cp5.addSlider("Blue")
-    .setCaptionLabel("B")
-    .setPosition(800, 115)
-    .setColorForeground(color(0, 0, 255))
-    .setColorBackground(color(0))
-    .setColorActive(color(0, 0, 255))
-    .setRange(0, 255)
-    ;
-  cp5.addSlider("FadeOnVal")
-    .setCaptionLabel("F")
-    .setPosition(800, 125)
-    .setColorForeground(color(0, 255, 255))
-    .setColorBackground(color(0))
-    .setColorActive(color(0, 255, 255))
-    .setRange(MIN_FADE_RATE, MAX_FADE_RATE)
-    .setValue(DEFAULT_FADE_RATE)
-    ;
-  cp5.addButton("setLeftSideG")
-    .setPosition(735, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set LG")
-    ;
-  cp5.addButton("setRightSideG")
-    .setPosition(765, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set RG")
-    ;
-  cp5.addButton("setLeftSide")
-    .setPosition(735, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set L")
-    ;
-  cp5.addButton("setRightSide")
-    .setPosition(765, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set R")
-    ;
-  cp5.addButton("setL")
-    .setPosition(675, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set L")
-    ;
-  cp5.addButton("setLM")
-    .setPosition(705, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set LM");
-  cp5.addButton("setM")
-    .setPosition(735, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set M")
-    ;
-  cp5.addButton("setH")
-    .setPosition(765, 140)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("Set H")
-    ;
-  cp5.addButton("P174")
-    .setPosition(200, 15)
-    .setSize(60, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("174 Preset");
-  cp5.addButton("Open")
-    .setPosition(800, 47)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setSize(50, 15)
-    ;
-  cp5.addButton("Refresh")
-    .setSize(50, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setPosition(850, 47)
-    ;
-  cp5.addScrollableList("midi")
-    .close()
-    .setPosition(800, 30)
-    .setSize(100, 100)
-    .setItemHeight(15)
-    .setBarHeight(15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .getCaptionLabel().set("Midi Device");
-  cp5.addScrollableList("comlist")
-    .close()
-    .setPosition(800, 15)
-    .setSize(100, 100)
-    .setItemHeight(15)
-    .setBarHeight(15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .getCaptionLabel().set("Arduino Port")
-    ;
-
-  cp5.addButton("leftArrow")
-    .setPosition(380, 25)
-    .setSize(30, 15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0, 0, 255))
-    .setColorActive(color(255, 0, 0))
-    .setLabel("<")
-    ;
-  cp5.addButton("rightArrow")
-    .setPosition(415, 25)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0, 0, 255))
-    .setColorActive(color(255, 0, 0))
-    .setSize(30, 15)
-    .setLabel(">");
-  cp5.addButton("AdvanceUser")
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .setPosition(15, 15)
-    ;
-  /*
-  cp5.addButton("Exit")
-   .setPosition(140, 90)
-   .setColorForeground(color(255, 0, 0))
-   .setColorBackground(color(0))
-   .setColorActive(color(255, 0, 0))
-   .setSize(50, 15);
-   */
-  cp5.addScrollableList("modelist")
-    .setPosition(695, 15)
-    .setSize(100, 100)
-    .setBarHeight(15)
-    .setItemHeight(15)
-    .setColorForeground(color(255, 0, 0))
-    .setColorBackground(color(0))
-    .setColorActive(color(255, 0, 0))
-    .addItems(m)
-    .setValue(0)
-    .getCaptionLabel().set("Mode");
-  return cp5;
-}
 
 void leftArrow()
 {
@@ -305,6 +181,7 @@ void leftArrow()
     rectBSizeX = 0;
   }
 }
+
 void rightArrow()
 {
   if (counter >=4)
@@ -378,38 +255,137 @@ void P174()
   lastNoteSelected = 108;
 }
 
-void setGradientButtonsVisible(boolean showGradientButtons)
+void hideAllControls()
 {
-  if (showGradientButtons) {
-    cp5.getController("setLeftSideG").setVisible(true);
-    cp5.getController("setRightSideG").setVisible(true);
-  } else {
-    cp5.getController("setLeftSideG").setVisible(false);
-    cp5.getController("setRightSideG").setVisible(false);
-  }
+  hideLegacyControls();
+  hideSplashControls();
+}
+void showDefaultControls()
+{
+  setControllersVisible(getDefaultControllers(), true);
 }
 
-void setSideButtonsVisible(boolean showSideButtons)
+void hideLegacyControls()
 {
-  if (showSideButtons) {
-    cp5.getController("setLeftSide").setVisible(true);
-    cp5.getController("setRightSide").setVisible(true);
-  } else {
-    cp5.getController("setLeftSide").setVisible(false);
-    cp5.getController("setRightSide").setVisible(false);
-  }
+  setControllersVisible(getLegacyControllers(), false);
 }
+
+void showSplashControls()
+{
+  setControllersVisible(getSplashControllers(), true);
+}
+
+void hideSplashControls()
+{
+  setControllersVisible(getSplashControllers(), false);
+}
+
+void showGradientButtons()
+{
+  setGradientButtonsVisible(true);
+}
+
+void hideGradientButtons()
+{
+  setGradientButtonsVisible(false);
+}
+
+void showSideButtons()
+{
+  setSideButtonsVisible(true);
+}
+
+void hideSideButtons()
+{
+  setSideButtonsVisible(false);
+}
+
+void showButtons()
+{
+  setButtonsVisible(true);
+}
+
+void hideButtons()
+{
+  setButtonsVisible(false);
+}
+
+
+void setGradientButtonsVisible(boolean visible)
+{
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("setLeftSideG"));
+  cl.add(cp5.getController("setRightSideG"));
+  setControllersVisible(cl, visible);
+}
+
+void setSideButtonsVisible(boolean visible)
+{
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("setLeftSide"));
+  cl.add(cp5.getController("setRightSide"));
+  setControllersVisible(cl, visible);
+}
+
 void setButtonsVisible(boolean showButtons) {
-  if (showButtons) {
-    cp5.getController("setL").setVisible(true);
-    cp5.getController("setLM").setVisible(true);
-    cp5.getController("setM").setVisible(true);
-    cp5.getController("setH").setVisible(true);
-  } else {
-    cp5.getController("setL").setVisible(false);
-    cp5.getController("setLM").setVisible(false);
-    cp5.getController("setM").setVisible(false);
-    cp5.getController("setH").setVisible(false);
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("setL"));
+  cl.add(cp5.getController("setLM"));
+  cl.add(cp5.getController("setM"));
+  cl.add(cp5.getController("setH"));
+
+  setControllersVisible(cl, showButtons);
+}
+
+List<Controller> getDefaultControllers()
+{
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("Red"));
+  cl.add(cp5.getController("Green"));
+  cl.add(cp5.getController("Blue"));
+  cl.add(cp5.getController("FadeOnVal"));
+  return cl;
+}
+
+List<Controller> getLegacyControllers()
+{
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("Red"));
+  cl.add(cp5.getController("Green"));
+  cl.add(cp5.getController("Blue"));
+  cl.add(cp5.getController("FadeOnVal"));
+
+  cl.add(cp5.getController("setLeftSideG"));
+  cl.add(cp5.getController("setRightSideG"));
+  cl.add(cp5.getController("setLeftSide"));
+  cl.add(cp5.getController("setRightSide"));
+  cl.add(cp5.getController("setL"));
+  cl.add(cp5.getController("setLM"));
+  cl.add(cp5.getController("setM"));
+  cl.add(cp5.getController("setH"));
+  return cl;
+}
+
+List<Controller> getSplashControllers()
+{
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("splashMaxLength"));
+  cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("splashHeadFade"));
+  //cl.add(cp5.getController("splashVelocityBrightnessImpact"));
+  //cl.add(cp5.getController("splashVelocitySpeedImpact"));
+  return cl;
+}
+
+void setControllersVisible(List<Controller> cl, boolean visible) {
+  for (Controller c : cl)
+  {
+    if ( c!=null)
+    {
+      c.setVisible(visible);
+    }
   }
 }
 
