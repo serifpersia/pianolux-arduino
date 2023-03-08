@@ -11,6 +11,7 @@ final static byte COMMAND_ANIMATION = (byte)253;
 final static byte COMMAND_BLACKOUT = (byte)252;
 final static byte COMMAND_SPLASH = (byte)251;
 final static byte COMMAND_SET_BRIGHTNESS = (byte)250;
+final static byte COMMAND_KEY_OFF = (byte)249;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -74,6 +75,16 @@ ByteArrayOutputStream commandBlackOut()
   return message;
 }
 
+ByteArrayOutputStream commandKeyOff(int note)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_KEY_OFF);
+  message.write((byte)note);
+  return message;
+}
+
 void sendCommandBlackOut()
 {
   sendToArduino(commandBlackOut());
@@ -82,6 +93,11 @@ void sendCommandBlackOut()
 void sendCommandBrightness(int value)
 {
   sendToArduino(commandSetBrightness(value));
+}
+
+void sendCommandKeyOff(int value)
+{
+  sendToArduino(commandKeyOff(value));
 }
 
 void sendCommandFadeRate(int value)

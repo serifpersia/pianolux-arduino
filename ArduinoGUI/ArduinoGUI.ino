@@ -16,12 +16,14 @@
 const int COMMAND_BYTE1 = 111;
 const int COMMAND_BYTE2 = 222;
 
+int MODE;
 const int COMMAND_SET_COLOR = 255;
 const int COMMAND_FADE_RATE = 254;
 const int COMMAND_ANIMATION = 253;
 const int COMMAND_BLACKOUT = 252;
 const int COMMAND_SPLASH = 251;
 const int COMMAND_SET_BRIGHTNESS = 250;
+const int COMMAND_KEY_OFF = 249;
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
@@ -31,13 +33,15 @@ int SPLASH_TAIL_LEN = 8;
 
 int DEFAULT_BRIGHTNESS = 200;
 
-const unsigned long interval = 30;       // general refresh in milliseconds
-const unsigned long fadeInterval = 100;  // general fade interval in milliseconds
-int generalFadeRate = 50; //configurable via App
+const unsigned long interval = 25;       // general refresh in milliseconds
+const unsigned long fadeInterval = 30;  // general fade interval in milliseconds
+int generalFadeRate = 10;                //configurable via App
 
 uint8_t hue = 0;
 
 bool ToggleRGBAnimation = false;
+
+boolean keysOn[NUM_LEDS];
 
 CRGB leds[NUM_LEDS];
 int NOTES = 12;
@@ -70,7 +74,7 @@ void test() {
 void setup() {
   Serial.begin(115200);
   Serial.setTimeout(10);
-  FastLED.addLeds<WS2812B, DATA_PIN>(leds, NUM_LEDS);  // GRB ordering
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering
   // FastLED.addLeds<NEOPIXEL, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2852, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
@@ -122,7 +126,6 @@ void debugLightOn(int n) {
   }
 }
 
-
 FadeController* fadeCtrl = new FadeController();
 void loop() {
   boolean receiveNotes = false;
@@ -161,7 +164,9 @@ void loop() {
           debugLightOn(3);
           int velocity = buffer[++bufIdx];
           int note = buffer[++bufIdx];
+          keysOn[note] = true;
           addEffect(new FadingRunEffect(SPLASH_TAIL_LEN, note, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
+          MODE = COMMAND_SPLASH;
           break;
         }
       case COMMAND_FADE_RATE:
@@ -190,6 +195,7 @@ void loop() {
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];
           int note = (int)buffer[++bufIdx];
+          keysOn[note] = true;
           controlLeds(note, redVal, greenVal, blueVal);
           break;
         }
@@ -217,6 +223,17 @@ void loop() {
           FastLED.show();
           break;
         }
+      case COMMAND_KEY_OFF:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(9);
+          int note = (int)buffer[++bufIdx];
+          keysOn[note] = false;
+          // controlLeds(note, 0, 0, 0);
+          break;
+        }
+
       default:
         {
           break;
@@ -224,7 +241,7 @@ void loop() {
     }
   }
 
-  //slowing it down a bit
+  //slowing it down with interval
   if (currentTime - previousTime >= interval) {
     for (int i = 0; i < numEffects; i++) {
       if (effects[i]->finished()) {
@@ -250,12 +267,6 @@ void loop() {
 
 void controlLeds(int inNote, int redVal, int greenVal, int blueVal) {
   if (inNote < 0 || inNote > NUM_LEDS) { return; }
-
-  inNote -= 1;
-  if (!ToggleRGBAnimation && !leds[inNote]) {
-    leds[inNote].setRGB(redVal, greenVal, blueVal);
-  } else {
-    leds[inNote] = CRGB::Black;
-  }
+  leds[inNote].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }

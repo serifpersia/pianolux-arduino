@@ -1,7 +1,7 @@
 ControlP5 cp5;
 
-final static int MIN_FADE_RATE = 0;
-final static int MAX_FADE_RATE = 150;
+final static int MIN_FADE_RATE = 1;
+final static int MAX_FADE_RATE = 250;
 final static int DEFAULT_FADE_RATE = 50;
 
 int[][] Keys = new int[88][2];
@@ -92,7 +92,7 @@ ControlP5 buildUI()
     .setColorForeground(color(0, 255, 255))
     .setColorBackground(color(0))
     .setColorActive(color(0, 255, 255))
-    .setNumberOfTickMarks(MAX_FADE_RATE+1)
+    .setNumberOfTickMarks(MAX_FADE_RATE-MAX_FADE_RATE+1)
     .setRange(MIN_FADE_RATE, MAX_FADE_RATE)
     .setValue(DEFAULT_FADE_RATE)
     ;

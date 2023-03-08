@@ -145,24 +145,26 @@ void noteOff(int channel, int pitch, int velocity) {
   notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
   Keys[pitch-21][0] = 0;
   Keys[pitch-21][1] = 0;
-  //try {
-  //  if (!AnimationOn)
-  //  {
-  //    if (FadeOn)
-  //    {
-  //      message = commandSplash(velocity, notePushed);
-  //      arduino.write(252);
-  //      arduino.write(notePushed);
-  //    } else {
+  try {
+    if (!AnimationOn)
+    {
+      sendCommandKeyOff(notePushed);
+    }
+    //if (FadeOn)
+    //      {
+    //        message = commandSplash(velocity, notePushed);
+    //        arduino.write(252);
+    //        arduino.write(notePushed);
+    //      } else {
 
-  //      arduino.write(notePushed);
-  //      println("NoteOff: " + notePushed);
-  //    }
-  //  }
-  //}
-  //catch (Exception e)
-  //{
-  //}
+    //        arduino.write(notePushed);
+    //        println("NoteOff: " + notePushed);
+    //      }
+    //    }
+  }
+  catch (Exception e)
+  {
+  }
 }
 
 void comlist(int n) {
@@ -233,13 +235,12 @@ void Open() {
       println("Selected Serial Port: " + portName);
       cp5.getController("Open").getCaptionLabel().setText("Close");
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
-      
+
       sendCommandBlackOut();
       //int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       //sendCommandFadeRate(fadeRate);
       //int brightness = (int)cp5.getController("FadeOnVal").getValue();
       //sendCommandBrightness(brightness);
-      
     }
     catch (Exception NoDevicesSelected) {
       showMessageDialog(null, "Devices needed not selected or device busy!");
