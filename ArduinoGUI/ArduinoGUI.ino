@@ -13,6 +13,8 @@
 #define DATA_PIN 5    // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450
 
+const int MAX_VELOCITY = 128;
+
 const int COMMAND_BYTE1 = 111;
 const int COMMAND_BYTE2 = 222;
 
@@ -25,13 +27,14 @@ const int COMMAND_SPLASH = 251;
 const int COMMAND_SET_BRIGHTNESS = 250;
 const int COMMAND_KEY_OFF = 249;
 
-unsigned long currentTime = 0;
-unsigned long previousTime = 0;
-unsigned long previousFadeTime = 0;
+int DEFAULT_BRIGHTNESS = 200;
+
 int SPLASH_HEAD_FADE_RATE = 50;
 int SPLASH_TAIL_LEN = 8;
 
-int DEFAULT_BRIGHTNESS = 200;
+unsigned long currentTime = 0;
+unsigned long previousTime = 0;
+unsigned long previousFadeTime = 0;
 
 const unsigned long interval = 25;       // general refresh in milliseconds
 const unsigned long fadeInterval = 30;  // general fade interval in milliseconds

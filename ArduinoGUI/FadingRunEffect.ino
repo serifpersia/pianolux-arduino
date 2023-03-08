@@ -15,6 +15,7 @@ FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int
 int MAX_VALUE = 255;
 int LOWEST_BRIGHTNESS = 50;
 int LOWEST_SATURATION = 100;
+int SPLASH_VELOCITY_COEFF = 1.5;
 
 int FadingRunEffect ::getSaturation(int velocity) {
   return adjustValue(velocity, LOWEST_SATURATION, MAX_VALUE);
@@ -28,12 +29,25 @@ int FadingRunEffect ::adjustValue(int value, int lowerThreshold, int maxValue) {
   return lowerThreshold + (value * (maxValue - lowerThreshold) / maxValue);
 }
 
+int calcOffset(int step, int velocity)
+{
+  int offset = step*velocity/MAX_VELOCITY*SPLASH_VELOCITY_COEFF;
+  if( offset > step)
+  {
+    return step;
+  }
+  else
+  {
+    return offset;
+  }
+}
+
 void FadingRunEffect ::setHeadLED(int step) {
   if (step > effectLen) {
     return;
   }
-  int pos1 = this->startPosition + step;
-  int pos2 = this->startPosition - step;
+  int pos1 = this->startPosition + calcOffset(step, velocity);
+  int pos2 = this->startPosition - calcOffset(step, velocity);
   if (isOnStrip(pos1)) {
     leds[pos1] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
     leds[pos1].fadeToBlackBy(headFadeRate);

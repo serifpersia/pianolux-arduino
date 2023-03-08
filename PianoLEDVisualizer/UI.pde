@@ -92,7 +92,6 @@ ControlP5 buildUI()
     .setColorForeground(color(0, 255, 255))
     .setColorBackground(color(0))
     .setColorActive(color(0, 255, 255))
-    .setNumberOfTickMarks(MAX_FADE_RATE-MAX_FADE_RATE+1)
     .setRange(MIN_FADE_RATE, MAX_FADE_RATE)
     .setValue(DEFAULT_FADE_RATE)
     ;
