@@ -1,13 +1,13 @@
 //FadingRunEffect.cpp
 #include "FadingRunEffect.h"
-FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int saturation, int fadeRate, int velocity) {
+FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int saturation, int headFadeRate, int velocity) {
   // Initialize the effect parameters
   this->effectLen = effectLen;
   this->startPosition = startPosition;
   this->step = 0;
   this->hue = hue;
   this->saturation = saturation;
-  this->fadeRate = fadeRate;
+  this->headFadeRate = headFadeRate;
   this->lastUpdate = millis();
   this->velocity = velocity;
 }
@@ -36,12 +36,12 @@ void FadingRunEffect ::setHeadLED(int step) {
   int pos2 = this->startPosition - step;
   if (isOnStrip(pos1)) {
     leds[pos1] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
-    leds[pos1].fadeToBlackBy(fadeRate);
+    leds[pos1].fadeToBlackBy(headFadeRate);
   }
 
   if (pos1 != pos2 && isOnStrip(pos2)) {
     leds[pos2] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
-    leds[pos2].fadeToBlackBy(fadeRate);
+    leds[pos2].fadeToBlackBy(headFadeRate);
   }
 }
 

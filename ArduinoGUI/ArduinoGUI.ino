@@ -1,7 +1,7 @@
-//PianoLED  
-//Code by serifpersia 
-//Last modified 03/05/2023 
- 
+//PianoLED
+//Code by serifpersia
+//Last modified 03/05/2023
+
 #include <FastLED.h>
 #include "FadingRunEffect.h"
 #include "FadeController.h"
@@ -9,22 +9,37 @@
 #define NO_HARDWARE_PIN_SUPPORT
 #define FASTLED_RMT_MAX_CHANNELS 1
 
-#define NUM_LEDS 176  // how many leds do you want to control 
-#define DATA_PIN 5    // your LED strip data pin 
-#define MAX_POWER_MILLIAMPS 450 
+#define NUM_LEDS 176  // how many leds do you want to control
+#define DATA_PIN 5    // your LED strip data pin
+#define MAX_POWER_MILLIAMPS 450
 
-int BRIGHTNESS = 200;
-const unsigned long interval = 30;  // Update interval in milliseconds
+const int COMMAND_BYTE1 = 111;
+const int COMMAND_BYTE2 = 222;
+
+const int COMMAND_SET_COLOR = 255;
+const int COMMAND_FADE_RATE = 254;
+const int COMMAND_ANIMATION = 253;
+const int COMMAND_BLACKOUT = 252;
+const int COMMAND_SPLASH = 251;
+const int COMMAND_SET_BRIGHTNESS = 250;
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
-int FADE_RATE = 50;
-int TAIL_LEN = 10;
-int dir = 1;
-int run = 0;
+unsigned long previousFadeTime = 0;
+int SPLASH_HEAD_FADE_RATE = 50;
+int SPLASH_TAIL_LEN = 8;
+
+int DEFAULT_BRIGHTNESS = 200;
+
+const unsigned long interval = 30;       // general refresh in milliseconds
+const unsigned long fadeInterval = 100;  // general fade interval in milliseconds
+int generalFadeRate = 50; //configurable via App
+
+uint8_t hue = 0;
+
+bool ToggleRGBAnimation = false;
 
 CRGB leds[NUM_LEDS];
-boolean fadeMap[NUM_LEDS];
 int NOTES = 12;
 
 int getHueForPos(int pos) {
@@ -53,11 +68,21 @@ void test() {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(10);
-  FastLED.addLeds<WS2812B, DATA_PIN>(leds, NUM_LEDS);              // GRB ordering
+  FastLED.addLeds<WS2812B, DATA_PIN>(leds, NUM_LEDS);  // GRB ordering
+  // FastLED.addLeds<NEOPIXEL, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  // FastLED.addLeds<WS2852, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  // FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  // FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
+  // FastLED.addLeds<WS2813, DATA_PIN, RGB>(leds, NUM_LEDS);
+  // FastLED.addLeds<APA104, DATA_PIN, RGB>(leds, NUM_LEDS);
+  // FastLED.addLeds<WS2811_400, DATA_PIN, RGB>(leds, NUM_LEDS);
+  // FastLED.addLeds<WS2801, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
+  // FastLED.addLeds<WS2803, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);  // set power limit
-  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.setBrightness(DEFAULT_BRIGHTNESS);
   test();
 }
 
@@ -88,25 +113,17 @@ void removeEffect(FadingRunEffect* effect) {
     }
   }
 }
-int redVal = 255;
-int greenVal = 255;
-int blueVal = 255;
-int brightVal = 127;
-int fadeOnVal = 70;
-int num = 0;
-bool setColors = false;
-bool setBright = false;
-bool ToggleRGBAnimation = false;
-bool FadeOn = false;
-bool receiveNotes = false;
-int colorSetCounter = 0;
-int brightnessSetCounter = 0;
-int inByte;
-
-uint8_t hue = 0;
 
 boolean debug = false;
-FadeController* fadeCtrl = new FadeController(FADE_RATE);
+void debugLightOn(int n) {
+  if (debug) {
+    leds[n] = leds[n].LightBlue;
+    FastLED.show();
+  }
+}
+
+
+FadeController* fadeCtrl = new FadeController();
 void loop() {
   boolean receiveNotes = false;
   boolean receiveVelocity = false;
@@ -114,74 +131,101 @@ void loop() {
   boolean receiveVelocityFR = false;
   currentTime = millis();
 
-  int note = 0;
-  int velocity = 0;
-  if (currentTime - previousTime >= interval) {
-    while (Serial.available() > 0) {
-      inByte = Serial.read();
-      FastLED.show();
-      if (debug) leds[0] = leds[0].Azure;
-      if (inByte == 249) {
-        if (debug) leds[1] = leds[0].Azure;
-        receiveVelocityFR = true;
-      } else if (inByte == 254) {
-        fill_solid(leds, NUM_LEDS, CRGB::Black);
-      } else if (receiveVelocityFR) {
-        if (debug) leds[2] = leds[0].Azure;
-        velocity = inByte;
-        receiveVelocityFR = false;
-        receiveNotesFR = true;
-      } else if (receiveNotesFR) {
-        if (debug) leds[3] = leds[0].Azure;
-        note = inByte;
-        receiveVelocityFR = false;
-        receiveNotesFR = false;
-        addEffect(new FadingRunEffect(TAIL_LEN, note, 0, 0, FADE_RATE, velocity));
-      } else if (inByte == 255) {
-        setColors = true;
-        colorSetCounter = 0;
-      } else if (inByte == 254) {
-        ToggleRGBAnimation = false;
-        FadeOn = false;
-        fill_solid(leds, NUM_LEDS, CRGB::Black);
-        FastLED.show();
-      } else if (inByte == 253) {
-        ToggleRGBAnimation = true;
-        for (int i = 0; i < NUM_LEDS; i++) {
-          leds[i] = CHSV(hue, 255, 255);
+  int bufferSize = Serial.available();
+  byte buffer[bufferSize];
+  Serial.readBytes(buffer, bufferSize);
+  boolean commandByte1Arrived = false;
+  boolean commandByte2Arrived = false;
+  for (int bufIdx = 0; bufIdx < bufferSize; bufIdx++) {
+    int command = (unsigned int)buffer[bufIdx];
+    switch (command) {
+      case COMMAND_BYTE1:
+        {
+          debugLightOn(1);
+          commandByte1Arrived = true;
+          break;
         }
-        EVERY_N_MILLISECONDS(15) {
-          hue++;
+      case COMMAND_BYTE2:
+        {
+          debugLightOn(2);
+          if (commandByte1Arrived) {
+            commandByte2Arrived = true;
+          }
+          commandByte1Arrived = false;
+          break;
         }
-        FastLED.show();
-      } else if (inByte == 252) {
-        FadeOn = true;
-      } else if (setColors) {
-        switch (colorSetCounter) {
-          case 0:
-            redVal = inByte;
-            break;
-          case 1:
-            greenVal = inByte;
-            break;
-          case 2:
-            FastLED.setBrightness(inByte);
-            break;
-          case 3:
-            fadeOnVal = inByte;
-            break;
-          case 4:
-            blueVal = inByte;
-            setColors = false;
-            receiveNotes = true;
-            break;
+      case COMMAND_SPLASH:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(3);
+          int velocity = buffer[++bufIdx];
+          int note = buffer[++bufIdx];
+          addEffect(new FadingRunEffect(SPLASH_TAIL_LEN, note, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
+          break;
         }
-        colorSetCounter++;
-      } else if (receiveNotes) {
-        controlLeds(inByte);
-      }
+      case COMMAND_FADE_RATE:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(4);
+          generalFadeRate = buffer[++bufIdx];
+          break;
+        }
+      case COMMAND_SET_BRIGHTNESS:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(5);
+          int generalBrightness = buffer[++bufIdx];
+          FastLED.setBrightness(generalBrightness);
+          break;
+        }
+      case COMMAND_SET_COLOR:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(6);
+          byte redVal = buffer[++bufIdx];
+          byte greenVal = buffer[++bufIdx];
+          byte blueVal = buffer[++bufIdx];
+          int note = (int)buffer[++bufIdx];
+          controlLeds(note, redVal, greenVal, blueVal);
+          break;
+        }
+      case COMMAND_BLACKOUT:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(7);
+          ToggleRGBAnimation = false;
+          fill_solid(leds, NUM_LEDS, CRGB::Black);
+          break;
+        }
+      case COMMAND_ANIMATION:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(8);
+          ToggleRGBAnimation = true;
+          for (int i = 0; i < NUM_LEDS; i++) {
+            leds[i] = CHSV(hue, 255, 255);
+          }
+          EVERY_N_MILLISECONDS(15) {
+            hue++;
+          }
+          FastLED.show();
+          break;
+        }
+      default:
+        {
+          break;
+        }
     }
+  }
 
+  //slowing it down a bit
+  if (currentTime - previousTime >= interval) {
     for (int i = 0; i < numEffects; i++) {
       if (effects[i]->finished()) {
         delete effects[i];
@@ -190,30 +234,28 @@ void loop() {
         effects[i]->nextStep();
       }
     }
-
-    fadeCtrl->fade();
-    FastLED.show();
     previousTime = currentTime;
   }
+
+  if (currentTime - previousFadeTime >= fadeInterval) {
+    if (numEffects > 0 || generalFadeRate > 0) {
+      debugLightOn(10);
+      fadeCtrl->fade(generalFadeRate);
+    }
+    previousFadeTime = currentTime;
+  }
+
+  FastLED.show();
 }
 
+void controlLeds(int inNote, int redVal, int greenVal, int blueVal) {
+  if (inNote < 0 || inNote > NUM_LEDS) { return; }
 
-void controlLeds(int note) {
-  note -= 1;
-  if (!ToggleRGBAnimation && !leds[note]) {
-    leds[note].setRGB(redVal, greenVal, blueVal);
-  } else if (FadeOn) {
-    CRGB currentColor = leds[note];  // get current color of LED
-    for (int fadeValue = brightVal; fadeValue >= 0; fadeValue -= fadeOnVal) {
-      // Scale down the current color by the fade value
-      currentColor.fadeToBlackBy(fadeValue);
-      leds[note] = currentColor;
-      FastLED.show();
-    }
-    leds[note] = CRGB::Black;
-    FastLED.show();
+  inNote -= 1;
+  if (!ToggleRGBAnimation && !leds[inNote]) {
+    leds[inNote].setRGB(redVal, greenVal, blueVal);
   } else {
-    leds[note] = CRGB::Black;
+    leds[inNote] = CRGB::Black;
   }
   FastLED.show();
 }

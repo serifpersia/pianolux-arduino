@@ -7,10 +7,8 @@
 class FadeController {
 
 public:
-  FadeController(int fadeRate);
-  void fade();
-private:
-  int fadeRate;
+  FadeController();
+  void fade(int fadeRate);
 };
 
 #endif

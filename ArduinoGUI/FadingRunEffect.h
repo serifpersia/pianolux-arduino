@@ -7,7 +7,7 @@
 class FadingRunEffect {
 
 public:
-  FadingRunEffect(int effectLen, int startPosition, int hue, int saturation, int fadeRate, int velocity);
+  FadingRunEffect(int effectLen, int startPosition, int hue, int saturation, int headFadeRate, int velocity);
   void nextStep();
   boolean finished();
   int getSaturation(int velocity);
@@ -22,8 +22,8 @@ private:
   int step;
   int hue;
   int saturation;
+  int headFadeRate;
   int velocity;
-  int fadeRate;
   unsigned long lastUpdate;
 };
 

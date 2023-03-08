@@ -1,10 +1,9 @@
 //FadeController.cpp
 #include "FadeController.h"
-FadeController ::FadeController(int fadeRate) {
-  this->fadeRate = fadeRate;
+FadeController ::FadeController() {
 }
 
-void FadeController ::fade() {
+void FadeController ::fade(int fadeRate) {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].fadeToBlackBy(fadeRate);
   }
