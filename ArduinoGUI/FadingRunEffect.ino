@@ -15,7 +15,6 @@ FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int
 int MAX_VALUE = 255;
 int LOWEST_BRIGHTNESS = 50;
 int LOWEST_SATURATION = 100;
-int SPLASH_VELOCITY_COEFF = 1.5;
 
 int FadingRunEffect ::getSaturation(int velocity) {
   return adjustValue(velocity, LOWEST_SATURATION, MAX_VALUE);
@@ -31,7 +30,7 @@ int FadingRunEffect ::adjustValue(int value, int lowerThreshold, int maxValue) {
 
 int calcOffset(int step, int velocity)
 {
-  int offset = step*velocity/MAX_VELOCITY*SPLASH_VELOCITY_COEFF;
+  int offset = step*velocity/MAX_VELOCITY;
   if( offset > step)
   {
     return step;

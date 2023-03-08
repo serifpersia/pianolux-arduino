@@ -30,7 +30,7 @@ const int COMMAND_KEY_OFF = 249;
 int DEFAULT_BRIGHTNESS = 200;
 
 int SPLASH_HEAD_FADE_RATE = 50;
-int SPLASH_TAIL_LEN = 8;
+int SPLASH_TAIL_LEN = 15;
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
@@ -167,8 +167,8 @@ void loop() {
           debugLightOn(3);
           int velocity = buffer[++bufIdx];
           int note = buffer[++bufIdx];
-          keysOn[note] = true;
-          addEffect(new FadingRunEffect(SPLASH_TAIL_LEN, note, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
+          keysOn[note-1] = true;
+          addEffect(new FadingRunEffect(SPLASH_TAIL_LEN, note-1, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
           break;
         }
@@ -198,8 +198,8 @@ void loop() {
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];
           int note = (int)buffer[++bufIdx];
-          keysOn[note] = true;
-          controlLeds(note, redVal, greenVal, blueVal);
+          keysOn[note-1] = true;
+          controlLeds(note-1, redVal, greenVal, blueVal);
           break;
         }
       case COMMAND_BLACKOUT:
@@ -232,8 +232,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(9);
           int note = (int)buffer[++bufIdx];
-          keysOn[note] = false;
-          // controlLeds(note, 0, 0, 0);
+          keysOn[note-1] = false;
           break;
         }
 
@@ -268,8 +267,8 @@ void loop() {
   FastLED.show();
 }
 
-void controlLeds(int inNote, int redVal, int greenVal, int blueVal) {
-  if (inNote < 0 || inNote > NUM_LEDS) { return; }
-  leds[inNote].setRGB(redVal, greenVal, blueVal);
+void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
+  if (ledNo < 0 || ledNo > NUM_LEDS) { return; }
+  leds[ledNo].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
