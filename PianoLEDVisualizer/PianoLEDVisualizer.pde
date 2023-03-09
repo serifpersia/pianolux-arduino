@@ -44,16 +44,13 @@ void setup() {
   surface.setIcon(icon);
 
   cp5 = buildUI();
-  
+
   Refresh();
-    
+
+  cp5.getController("modelist").setValue(0);
   numberselected = 176;
   firstNoteSelected = 21;
   lastNoteSelected = 108;
-  println("Selected number led: " + numberselected);
-  println("Selected first note: " + firstNoteSelected);
-  println("Selected last note: " + lastNoteSelected);
-  ;
 }
 
 void midi(int n) {
@@ -183,12 +180,8 @@ void disableAllModes()
 }
 
 void modelist(int n) {
-  try {
-    sendCommandBlackOut();
-  }
+  sendCommandBlackOut();
 
-  catch(Exception e) {
-  }
   switch(n) {
   case 0: // Default
     disableAllModes();
@@ -231,7 +224,7 @@ void modelist(int n) {
     disableAllModes();
     hideLegacyControls();
     showSplashControls();
-    setSplashDefaults(11,110);
+    setSplashDefaults(11, 110);
     SplashOn = true;
     break;
   }
