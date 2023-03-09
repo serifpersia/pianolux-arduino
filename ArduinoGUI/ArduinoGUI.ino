@@ -1,6 +1,4 @@
 //PianoLED
-//Code by serifpersia
-//Last modified 03/05/2023
 
 #include <FastLED.h>
 #include "FadingRunEffect.h"
