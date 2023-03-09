@@ -1,10 +1,4 @@
 //PianoLED
-//Code by serifpersia
-//youtube.com/serifpersia
-//twitch.tv/serifpersia
-//discord serifpersia#0904
-//Last modified 05/03/2023
-
 import processing.serial.*;
 import javax.sound.midi.*;
 import themidibus.*;
@@ -34,13 +28,13 @@ int lastNoteSelected, firstNoteSelected, numberselected,
   notePushed, noteOnVelocity;
 
 boolean VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
-List m = Arrays.asList("Default", "Random", "Velocity", "Split", "Gradient", "Animation", "Splash");
+List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 int counter = 0;
 
 void setup() {
   size(910, 160);
-  surface.setTitle("PianoLEDVisualizer");
-  PImage icon = loadImage("PianoLEDVisualizer.png"); // replace with the name and extension of your icon file
+  surface.setTitle("PianoLED");
+  PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
   surface.setIcon(icon);
 
   cp5 = buildUI();
@@ -103,9 +97,31 @@ void noteOn(int channel, int pitch, int velocity) {
         int step = notePushed - 1;
         float ratio = (float)step / (float)numSteps;
 
-        int red = (int)(LeftSideGRed * (1 - ratio) + RightSideGRed * ratio);
-        int green = (int)(LeftSideGGreen * (1 - ratio) + RightSideGGreen * ratio);
-        int blue = (int)(LeftSideGBlue * (1 - ratio) + RightSideGBlue * ratio);
+        color leftColor = color(LeftSideGRed, LeftSideGGreen, LeftSideGBlue);
+        color middleColor = color(MiddleSideGRed, MiddleSideGGreen, MiddleSideGBlue);
+        color rightColor = color(RightSideGRed, RightSideGGreen, RightSideGBlue);
+
+        color currentColor;
+        if (MiddleSideGRed == 1 && MiddleSideGGreen == 1 && MiddleSideGBlue == 1)
+        {
+          currentColor = lerpColor(leftColor, rightColor, ratio);
+        } else
+        {
+          if (step < numSteps / 3)
+          {
+            currentColor = lerpColor(leftColor, middleColor, ratio * 3.0f);
+          } else if (step < 2 * numSteps / 3)
+          {
+            currentColor = lerpColor(middleColor, rightColor, (ratio - 0.33f) * 3.0f);
+          } else
+          {
+            currentColor = lerpColor(middleColor, rightColor, (ratio - 0.66f) * 3.0f);
+          }
+        }
+
+        int red = (int)red(currentColor);
+        int green = (int)green(currentColor);
+        int blue = (int)blue(currentColor);
 
         message = commandSetColor(red, green, blue, notePushed);
       } else if (SplashOn)
@@ -166,7 +182,7 @@ void noteOff(int channel, int pitch, int velocity) {
 
 void comlist(int n) {
   portName = Serial.list()[n];
-  println("Selected serialdevice: " + portName);
+  println("Selected serial device: " + portName);
 }
 
 void disableAllModes()
@@ -188,44 +204,44 @@ void modelist(int n) {
     hideAllControls();
     showDefaultControls();
     break;
-  case 1: // Random
+  case 1: // Splash
+    disableAllModes();
+    hideLegacyControls();
+    showSplashControls();
+    setSplashDefaults(11, 110);
+    SplashOn = true;
+    break;
+  case 2: // Random
     disableAllModes();
     hideAllControls();
     showDefaultControls();
     RandomOn = true;
     break;
-  case 2: // Velocity
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    showButtons();
-    VelocityOn = true;
-    break;
-  case 3: // Split
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    showSideButtons();
-    SplitOn = true;
-    break;
-  case 4: // Gradient
+  case 3: // Gradient
     disableAllModes();
     hideAllControls();
     showDefaultControls();
     showGradientButtons();
     GradientOn = true;
     break;
-  case 5: // Animation
+  case 4: // Velocity
+    disableAllModes();
+    hideAllControls();
+    showDefaultControls();
+    showButtons();
+    VelocityOn = true;
+    break;
+  case 5: // Split
+    disableAllModes();
+    hideAllControls();
+    showDefaultControls();
+    showSideButtons();
+    SplitOn = true;
+    break;
+  case 6: // Animation
     disableAllModes();
     hideAllControls();
     AnimationOn = true;
-    break;
-  case 6: // Splash
-    disableAllModes();
-    hideLegacyControls();
-    showSplashControls();
-    setSplashDefaults(11, 110);
-    SplashOn = true;
     break;
   }
   println("Selected mode: " + m.get(n));
@@ -263,13 +279,13 @@ void Open() {
     }
   }
 }
-
-void FadeOnVal(float value)
+//was float
+void FadeOnVal(int value)
 {
   sendCommandFadeRate((int)value);
 }
-
-void Brightness(float value)
+//was float
+void Brightness(int value)
 {
   sendCommandBrightness((int)value);
 }
@@ -406,6 +422,11 @@ void setRightSideG() {
   RightSideGRed = (Red);
   RightSideGGreen = (Green);
   RightSideGBlue = (Blue);
+}
+void setMiddleSideG() {
+  MiddleSideGRed = (Red);
+  MiddleSideGGreen = (Green);
+  MiddleSideGBlue = (Blue);
 }
 
 public static void printArray(byte[] bytes) {

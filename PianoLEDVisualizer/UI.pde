@@ -9,7 +9,7 @@ color GREEN = color(0, 255, 0);
 color BLUE = color(0, 0, 255);
 color BLACK = color(0, 0, 0);
 color WHITE = color(255, 255, 255);
-color CYAN = color(0, 255, 255);
+color GREY = color(150, 150, 150);
 color YELLOW = color(255, 255, 0);
 color MAGENTA = color(255, 0, 255);
 
@@ -17,13 +17,13 @@ color APP_COLOR_FG = RED;
 color APP_COLOR_BG = BLACK;
 color APP_COLOR_ACT = RED;
 
-color SLIDER_COLOR_FG = CYAN;
+color SLIDER_COLOR_FG = GREY;
 color SLIDER_COLOR_BG = BLACK;
-color SLIDER_COLOR_ACT = CYAN;
+color SLIDER_COLOR_ACT = GREY;
 
 int MIN_BRIGHT = 10;
 int MAX_BRIGHT = 255;
-int DEF_BRIGHT = 1898;
+int DEF_BRIGHT = 127;
 
 int MIN_COLOR = 0;
 int MAX_COLOR = 255;
@@ -41,19 +41,20 @@ ControlP5 buildUI()
   addSlider( cp5, "Blue", "B", EFFECT_CONTROLS_X, 115, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, BLUE, -1, BLUE);
   addSlider( cp5, "FadeOnVal", "F", EFFECT_CONTROLS_X, 125, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE);
 
-  addButton(cp5, "setLeftSideG", "Set LG", 735, 140, 30, 15).hide();
+  addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();
+  addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
 
   addButton(cp5, "setLeftSide", "Set L", 735, 140, 30, 15).hide();
   addButton(cp5, "setRightSide", "Set R", 765, 140, 30, 15).hide();
-
 
   addButton(cp5, "setL", "Set L", 675, 140, 30, 15).hide();
   addButton(cp5, "setM", "Set M", 705, 140, 30, 15).hide();
   addButton(cp5, "setLM", "Set LM", 735, 140, 30, 15).hide();
   addButton(cp5, "setH", "Set H", 765, 140, 30, 15).hide();
 
-  addButton(cp5, "P174", "174 Preset", 200, 15, 60, 15);
+  addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
+
   addButton(cp5, "Open", null, EFFECT_CONTROLS_X, 47, 50, 15);
   addButton(cp5, "Refresh", null, 850, 47, 50, 15 );
 
@@ -62,10 +63,10 @@ ControlP5 buildUI()
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
-  addButton(cp5, "AdvanceUser", null, 15, 15, 0, 0);
+  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
   //addButton(cp5, "Exit", null, 140, 90, 50, 15);
 
-  addScrollableList(cp5, "modelist", "Mode", m, 0, 695, 15, 100, 140, 15, 15);
+  addScrollableList(cp5, "modelist", "Mode", m, 0, 695, 15, 100, 100, 15, 15);
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X;
   int SPLASH_CONTROL_Y = 90;
@@ -304,6 +305,7 @@ void setGradientButtonsVisible(boolean visible)
   List<Controller> cl = new ArrayList<>();
   cl.add(cp5.getController("setLeftSideG"));
   cl.add(cp5.getController("setRightSideG"));
+  cl.add(cp5.getController("setMiddleSideG"));
   setControllersVisible(cl, visible);
 }
 
@@ -404,7 +406,7 @@ void draw() {
     presetText += "49 Keys";
   }
   fill(255);
-  text(presetText, 370, 15);
+  text(presetText, 375, 15);
   if (AnimationOn) {
     animationLoop();
   }

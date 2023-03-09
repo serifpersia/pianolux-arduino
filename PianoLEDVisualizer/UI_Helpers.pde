@@ -35,7 +35,8 @@ int Red = MAX_COLOR, Green = MAX_COLOR,
   splitLeftRed = MAX_COLOR, splitLeftGreen = MAX_COLOR, splitLeftBlue = MAX_COLOR,
   splitRightRed = MAX_COLOR, splitRightGreen = MAX_COLOR, splitRightBlue = MAX_COLOR,
   LeftSideGRed = MAX_COLOR, LeftSideGGreen = MAX_COLOR, LeftSideGBlue = 0,
-  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR;
+  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
+  MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
 
 
 //Buttons
@@ -55,7 +56,7 @@ Button addButton(ControlP5 cp5, String name, String label, int x, int y, int w, 
 
   if ( x > 0 && y > 0 ) b.setSize(w, h);
   if ( label != null ) b.setLabel(label);
-  
+
   return b;
 }
 
@@ -77,14 +78,14 @@ ScrollableList addScrollableList(ControlP5 cp5, String name, String label, List 
 
   if ( defItem < 0) defItem = 0;
   l.setValue(defItem);
-  
+
   l.setColorForeground(fg);
-  //l.setColorBackground(bg);
+  l.setColorBackground(bg);
   l.setColorActive(act);
 
   if ( x > 0 && y > 0 ) l.setSize(w, h);
   if ( label != null ) l.setLabel(label);
-  
+
   return l;
 }
 
@@ -111,7 +112,7 @@ Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h,
   s.setColorBackground(bg);
   s.setColorActive(act);
 
-  if ( h > 0 && w >= 0 ) s.setSize(h,w);
+  if ( h > 0 && w >= 0 ) s.setSize(h, w);
 
   if ( alignX >= 0 && alignY >= 0 )
   {

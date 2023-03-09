@@ -37,9 +37,9 @@ unsigned long currentTime = 0;
 unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
 
-const unsigned long interval = 20;      // general refresh in milliseconds
-const unsigned long fadeInterval = 100;  // general fade interval in milliseconds
-int generalFadeRate = 20;                // general fade rate, bigger value - quicker fade (configurable via App)
+const unsigned long interval = 20;       // general refresh in milliseconds
+const unsigned long fadeInterval = 20;  // general fade interval in milliseconds
+int generalFadeRate = 5;                // general fade rate, bigger value - quicker fade (configurable via App)
 
 uint8_t hue = 0;
 
@@ -65,7 +65,7 @@ boolean isOnStrip(int pos) {
   return pos >= 0 && pos < NUM_LEDS;
 }
 
-void test() {
+void StartupAnimation() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CHSV(getHueForPos(i), 255, 255);
     FastLED.show();
@@ -91,7 +91,7 @@ void setup() {
   // FastLED.addLeds<WS2803, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);  // set power limit
   FastLED.setBrightness(DEFAULT_BRIGHTNESS);
-  test();
+  StartupAnimation();
 }
 
 #define MAX_EFFECTS 128
