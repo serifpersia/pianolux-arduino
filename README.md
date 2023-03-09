@@ -13,7 +13,7 @@ To Upload/Flash the .ino file you need Arduino IDE application
 
 Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. With Upload Complete prompt you are ready to use the PianoLED app.
 
-Follow this guide if you can't run both pianoled software and your vst(some piano's usb midi support only connecting to one software,
+Follow this guide if you can't run both PianoLED app and your vst or other programs that use midi(some piano's usb midi support only connecting to one software,
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
