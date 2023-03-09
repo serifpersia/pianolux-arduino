@@ -97,26 +97,23 @@ void noteOn(int channel, int pitch, int velocity) {
         int step = notePushed - 1;
         float ratio = (float)step / (float)numSteps;
 
-        color leftColor = color(LeftSideGRed, LeftSideGGreen, LeftSideGBlue);
-        color middleColor = color(MiddleSideGRed, MiddleSideGGreen, MiddleSideGBlue);
-        color rightColor = color(RightSideGRed, RightSideGGreen, RightSideGBlue);
+        color startColor = color(LeftSideGRed, LeftSideGGreen, LeftSideGBlue);
+        color endColor = color(RightSideGRed, RightSideGGreen, RightSideGBlue);
 
         color currentColor;
-        if (MiddleSideGRed == 1 && MiddleSideGGreen == 1 && MiddleSideGBlue == 1)
+        if (MiddleSideGRed == 0 && MiddleSideGGreen == 0 && MiddleSideGBlue == 0)
         {
-          currentColor = lerpColor(leftColor, rightColor, ratio);
+          currentColor = lerpColor(startColor, endColor, ratio);
         } else
         {
-          if (step < numSteps / 3)
-          {
-            currentColor = lerpColor(leftColor, middleColor, ratio * 3.0f);
-          } else if (step < 2 * numSteps / 3)
-          {
-            currentColor = lerpColor(middleColor, rightColor, (ratio - 0.33f) * 3.0f);
-          } else
-          {
-            currentColor = lerpColor(middleColor, rightColor, (ratio - 0.66f) * 3.0f);
-          }
+          color middleColor = color(MiddleSideGRed, MiddleSideGGreen, MiddleSideGBlue);
+          float leftRatio = ratio * 0.5f;
+          float rightRatio = (ratio - 0.5f) * 2f;
+
+          color leftColor = lerpColor(startColor, middleColor, leftRatio);
+          color rightColor = lerpColor(middleColor, endColor, rightRatio);
+
+          currentColor = lerpColor(leftColor, rightColor, ratio);
         }
 
         int red = (int)red(currentColor);
