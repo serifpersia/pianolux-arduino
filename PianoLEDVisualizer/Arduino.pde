@@ -138,7 +138,7 @@ void sendToArduino(byte val)
 
 void sendToArduino(ByteArrayOutputStream msg)
 {
-  if ( arduino != null )
+  if ( arduino != null && arduino.active())
   {
     byte[] bytes = msg.toByteArray();
     printArray(bytes);

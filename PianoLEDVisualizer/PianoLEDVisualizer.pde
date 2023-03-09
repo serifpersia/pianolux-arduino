@@ -335,7 +335,7 @@ int findDefault(List<String> values, String keyword)
 }
 
 
-void Exit()
+void dispose()
 {
   myBus.dispose();
   sendCommandBlackOut();
