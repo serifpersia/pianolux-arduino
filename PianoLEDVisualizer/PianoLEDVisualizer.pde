@@ -33,7 +33,7 @@ int counter = 0;
 
 void setup() {
   size(910, 160);
-  surface.setTitle("PianoLED");
+  surface.setTitle("PianoLEDVisualizer");
   PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
   surface.setIcon(icon);
 
