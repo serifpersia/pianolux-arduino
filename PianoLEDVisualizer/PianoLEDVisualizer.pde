@@ -34,7 +34,7 @@ int counter = 0;
 void setup() {
   size(910, 160);
   surface.setTitle("PianoLEDVisualizer");
-  PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
+  PImage icon = loadImage("PianoLEDVisualizer.png"); // replace with the name and extension of your icon file
   surface.setIcon(icon);
 
   cp5 = buildUI();
