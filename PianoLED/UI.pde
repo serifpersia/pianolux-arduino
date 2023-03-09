@@ -389,6 +389,7 @@ void setControllersVisible(List<Controller> cl, boolean visible) {
 
 void draw() {
   background(0);
+
   presetText = "Piano: ";
   switch (numberselected) {
   case 174:
@@ -406,8 +407,13 @@ void draw() {
   } else if (firstNoteSelected == 36 && lastNoteSelected == 84) {
     presetText += "49 Keys";
   }
+  //Piano type
+  //PianoLED version tag uncomment when compiling to exe
+  // VersionTag = "PianoLED V3.5";
   fill(255);
   text(presetText, 375, 15);
+  //text(VersionTag, 15, 150);
+
   if (AnimationOn) {
     animationLoop();
   }

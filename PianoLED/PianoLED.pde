@@ -13,6 +13,7 @@ MidiBus myBus;
 Serial arduino;
 String portName;
 String presetText;
+String VersionTag;
 // Create an ArrayList to hold the names of the MIDI devices
 ArrayList<String> midilist = new ArrayList<String>();
 String midiName;
