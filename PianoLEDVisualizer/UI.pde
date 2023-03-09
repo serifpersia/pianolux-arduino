@@ -57,8 +57,8 @@ ControlP5 buildUI()
   addButton(cp5, "Open", null, EFFECT_CONTROLS_X, 47, 50, 15);
   addButton(cp5, "Refresh", null, 850, 47, 50, 15 );
 
-  addScrollableList(cp5, "midi", "Midi Device", null, 0, EFFECT_CONTROLS_X, 30, 100, 110, 15, 15);
-  addScrollableList(cp5, "comlist", "Arduino Port", null, 0, EFFECT_CONTROLS_X, 15, 100, 110, 15, 15);
+  addScrollableList(cp5, "midi", "Midi Device", null, -1, EFFECT_CONTROLS_X, 30, 100, 110, 15, 15);
+  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, EFFECT_CONTROLS_X, 15, 100, 110, 15, 15);
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
@@ -197,9 +197,6 @@ void rightArrow()
     numberselected = 176;
     firstNoteSelected = 21;
     lastNoteSelected = 108;
-    println("Selected number led: " + numberselected);
-    println("Selected first note: " + firstNoteSelected);
-    println("Selected last note: " + lastNoteSelected);
   }
   if (counter == 1)
   {
@@ -208,9 +205,6 @@ void rightArrow()
     numberselected = 152;
     firstNoteSelected = 28;
     lastNoteSelected = 103;
-    println("Selected number led: " + numberselected);
-    println("Selected first note: " + firstNoteSelected);
-    println("Selected last note: " + lastNoteSelected);
   }
 
   if (counter == 2)
@@ -220,9 +214,6 @@ void rightArrow()
     numberselected = 146;
     firstNoteSelected = 28;
     lastNoteSelected = 100;
-    println("Selected number led: " + numberselected);
-    println("Selected first note: " + firstNoteSelected);
-    println("Selected last note: " + lastNoteSelected);
   }
   if (counter == 3)
   {
@@ -231,9 +222,6 @@ void rightArrow()
     numberselected = 122;
     firstNoteSelected = 36;
     lastNoteSelected = 96;
-    println("Selected number led: " + numberselected);
-    println("Selected first note: " + firstNoteSelected);
-    println("Selected last note: " + lastNoteSelected);
   }
   if (counter == 4)
   {
@@ -242,10 +230,10 @@ void rightArrow()
     numberselected = 98;
     firstNoteSelected = 36;
     lastNoteSelected = 84;
-    println("Selected number led: " + numberselected);
-    println("Selected first note: " + firstNoteSelected);
-    println("Selected last note: " + lastNoteSelected);
   }
+  println("Selected number led: " + numberselected);
+  println("Selected first note: " + firstNoteSelected);
+  println("Selected last note: " + lastNoteSelected);
 }
 
 void P174()
@@ -339,6 +327,8 @@ void setButtonsVisible(boolean showButtons) {
 
 List<Controller> getDefaultControllers()
 {
+  if (cp5 == null) return null;
+
   List<Controller> cl = new ArrayList<>();
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("Red"));
@@ -350,6 +340,8 @@ List<Controller> getDefaultControllers()
 
 List<Controller> getLegacyControllers()
 {
+  if (cp5 == null) return null;
+
   List<Controller> cl = new ArrayList<>();
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("Red"));
@@ -370,6 +362,8 @@ List<Controller> getLegacyControllers()
 
 List<Controller> getSplashControllers()
 {
+  if (cp5 == null) return null;
+
   List<Controller> cl = new ArrayList<>();
   cl.add(cp5.getController("splashMaxLength"));
   cl.add(cp5.getController("FadeOnVal"));
@@ -380,6 +374,7 @@ List<Controller> getSplashControllers()
 }
 
 void setControllersVisible(List<Controller> cl, boolean visible) {
+  if ( cl == null) return;
   for (Controller c : cl)
   {
     if ( c!=null)

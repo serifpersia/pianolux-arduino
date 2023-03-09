@@ -38,8 +38,8 @@ unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
 
 const unsigned long interval = 20;      // general refresh in milliseconds
-const unsigned long fadeInterval = 50;  // general fade interval in milliseconds
-int generalFadeRate = 5;                // general fade rate, bigger value - quicker fade (configurable via App)
+const unsigned long fadeInterval = 100;  // general fade interval in milliseconds
+int generalFadeRate = 20;                // general fade rate, bigger value - quicker fade (configurable via App)
 
 uint8_t hue = 0;
 
@@ -203,6 +203,7 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(6);
+          MODE = COMMAND_SET_COLOR;
           byte redVal = buffer[++bufIdx];
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];

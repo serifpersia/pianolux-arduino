@@ -120,7 +120,7 @@ void sendCommandFadeRate(int value)
 void sendCommandSplashMaxLength(int value)
 {
   sendToArduino(commandSplashMaxLength(value));
-}  
+}
 
 void animationLoop()
 {
@@ -130,12 +130,15 @@ void animationLoop()
 void sendToArduino(byte val)
 {
   println("Arduino command: "+(int)(val & 0xFF));
-  arduino.write(val);
+  if ( arduino != null )
+  {
+    arduino.write(val);
+  }
 }
 
 void sendToArduino(ByteArrayOutputStream msg)
 {
-  if ( arduino != null )
+  if ( arduino != null && arduino.active())
   {
     byte[] bytes = msg.toByteArray();
     printArray(bytes);

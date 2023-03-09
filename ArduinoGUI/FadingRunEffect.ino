@@ -14,9 +14,9 @@ FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int
 
 int MAX_VALUE = 255;
 int LOWEST_BRIGHTNESS = 50;
-int LOWEST_SATURATION = 100;
+int LOWEST_SATURATION = 200;
 
-int HEAD_FADE_LOW_THRESHOLD = 150;
+int HEAD_FADE_LOW_THRESHOLD = 50;
 int HEAD_FADE_HI_THRESHOLD = 255;
 
 int FadingRunEffect ::getSaturation(int velocity) {
