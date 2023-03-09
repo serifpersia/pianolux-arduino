@@ -7,6 +7,7 @@ Here is how you should connect the LED strip and Arduino.
 
 
 To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino
+https://adoptium.net/temurin/releases/ Select your OS, 64bit, JRE and lates version(the app currently needs at least version 17)
 To Upload/Flash the .ino file you need Arduino IDE application 
 Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. With Upload Complete prompt you are ready to use the PianoLED app.
 
