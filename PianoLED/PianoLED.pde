@@ -160,17 +160,6 @@ void noteOff(int channel, int pitch, int velocity) {
     {
       sendCommandKeyOff(notePushed);
     }
-    //if (FadeOn)
-    //      {
-    //        message = commandSplash(velocity, notePushed);
-    //        arduino.write(252);
-    //        arduino.write(notePushed);
-    //      } else {
-
-    //        arduino.write(notePushed);
-    //        println("NoteOff: " + notePushed);
-    //      }
-    //    }
   }
   catch (Exception e)
   {
@@ -193,19 +182,21 @@ void disableAllModes()
 }
 
 void colorlist(int n) {
+  if (cp5 != null) {
+    int selectedColor = presetColors[n];
 
-  int selectedColor = presetColors[n];
+    Red = round(red(selectedColor));
+    Green = round(green(selectedColor));
+    Blue = round(blue(selectedColor));
 
-  Red = round(red(selectedColor));
-  Green = round(green(selectedColor));
-  Blue = round(blue(selectedColor));
+    cp5.getController("colorlist").setColorBackground(selectedColor);
 
-  cp5.getController("colorlist").setColorBackground(selectedColor);
-  println("Selected color: " + colorNames.get(n));
-  println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
+    println("Selected color: " + colorNames.get(n));
+    println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
+  } else {
+    println("cp5 object is null");
+  }
 }
-
-
 
 void modelist(int n) {
   sendCommandBlackOut();
@@ -302,7 +293,6 @@ void Brightness(int value)
   sendCommandBrightness((int)value);
 }
 
-
 boolean isPiano(String name)
 {
   return name.toLowerCase().contains("piano");
@@ -362,7 +352,6 @@ int findDefault(List<String> values, String keyword)
   return 0;
 }
 
-
 void dispose()
 {
   myBus.dispose();
@@ -370,7 +359,6 @@ void dispose()
   arduino.stop();
   exit();
 }
-
 
 void AdvanceUser()
 {

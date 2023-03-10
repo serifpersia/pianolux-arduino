@@ -69,12 +69,14 @@ ControlP5 buildUI()
 {
   ControlP5 cp5 = new ControlP5(this);
 
-  addSlider(cp5, "Brightness", "B", EFFECT_CONTROLS_X, 65, 14, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
-    .setLabelVisible(false);
+  addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X, 65, 14, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
+    //.setLabelVisible(false)
+    ;
 
 
-  addSlider( cp5, "FadeOnVal", "F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
-    .setLabelVisible(false);
+  addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
+    //.setLabelVisible(false)
+    ;
 
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
@@ -369,7 +371,7 @@ void setButtonsVisible(boolean showButtons) {
   setControllersVisible(cl, showButtons);
 }
 
-void Color(color Color)
+void Color()
 {
   ColorWheel cw = cp5.get(ColorWheel.class, "Color");
   Red = cw.r();
