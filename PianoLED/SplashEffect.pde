@@ -8,5 +8,3 @@ void setSplashDefaults(int splashLen, int fadeRate)
   cp5.getController("splashMaxLength").setValue(splashLen);
   cp5.getController("FadeOnVal").setValue(fadeRate);
 }
-
-  

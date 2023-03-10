@@ -27,7 +27,7 @@ int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_O
 int lastNoteSelected, firstNoteSelected, numberselected,
   notePushed, noteOnVelocity;
 
-boolean VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
+boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
 List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 int counter = 0;
 
@@ -196,6 +196,11 @@ void colorlist(int n) {
   } else {
     println("cp5 object is null");
   }
+}
+
+void BGColor()
+{
+  println("TestToggle");
 }
 
 void modelist(int n) {

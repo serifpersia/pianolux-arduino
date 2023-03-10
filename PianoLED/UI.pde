@@ -111,6 +111,7 @@ ControlP5 buildUI()
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, 725, 45, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, 725, 15, 100, 100, 15, 15);
 
+  addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+15;
   int SPLASH_CONTROL_Y = 60;

@@ -110,3 +110,19 @@ ColorWheel addColorWheel(ControlP5 cp5, String name, int x, int y, int d) {
   colorWheel.setPosition(x, y);
   return colorWheel;
 }
+
+//Toggles
+Toggle addToggle(ControlP5 cp5, String name, String label, int x, int y, int w, int h, color fg, color bg, color act)
+{
+  Toggle t = cp5.addToggle(name)
+    .setPosition(x, y);
+
+  t.setColorForeground(fg);
+  t.setColorBackground(bg);
+  t.setColorActive(act);
+
+  if ( x > 0 && y > 0 ) t.setSize(w, h);
+  if ( label != null ) t.setLabel(label);
+
+  return t;
+}
