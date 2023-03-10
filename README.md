@@ -19,12 +19,20 @@ by following this guide you can split one midi connection into two virtual ones 
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
 Arch Linux
+
 Running the PianoLED App
+
 install jre17 package:
+
 sudo pacman -S jre17-openjdk
+
 To run the app:
 -download and extract the linux zip file
+
 -cd into the extracted directory
+
 -make ethe file executable by you or anyone
+
 -run the app by double clicking on the PianoLED file, Execute, or simply run it with
+
 ./PianoLED command
