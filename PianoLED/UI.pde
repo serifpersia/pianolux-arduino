@@ -375,9 +375,7 @@ void Color(color Color)
   Red = cw.r();
   Green = cw.g();
   Blue = cw.b();
-  println("Colors: " + "RED" + "" + Red);
-  println("Colors: " + "GREEN" + "" + Green);
-  println("Colors: " + "BLUE" + "" + Blue);
+  println("Colors: RED" + Red + ", GREEN" + Green + ", BLUE" + Blue);
 }
 
 List<Controller> getDefaultControllers()
