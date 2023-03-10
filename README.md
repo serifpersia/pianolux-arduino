@@ -31,8 +31,8 @@ To run the app:
 
 -cd into the extracted directory
 
--make ethe file executable by you or anyone
+-make the file executable by you or anyone
 
 -run the app by double clicking on the PianoLED file, Execute, or simply run it with
 
-./PianoLED command
+./PianoLED command in the terminal
