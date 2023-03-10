@@ -6,7 +6,7 @@ Here is how you should connect the LED strip and Arduino.
 
 ![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
-
+Windows OS
 To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino
 https://adoptium.net/temurin/releases/ Select your OS, 64bit, JRE and lates version(the app currently needs at least version 17)
 
@@ -18,5 +18,13 @@ Follow this guide if you can't run both PianoLED app and your vst or other progr
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
-
-
+Arch Linux
+Running the PianoLED App
+install jre17 package:
+sudo pacman -S jre17-openjdk
+To run the app:
+-download and extract the linux zip file
+-cd into the extracted directory
+-make ethe file executable by you or anyone
+-run the app by double clicking on the PianoLED file, Execute, or simply run it with
+./PianoLED command
