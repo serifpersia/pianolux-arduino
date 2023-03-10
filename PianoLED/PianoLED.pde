@@ -40,8 +40,6 @@ void setup() {
   cp5 = buildUI();
 
   Refresh();
-
-  cp5.getController("modelist").setValue(0);
   numberselected = 176;
   firstNoteSelected = 21;
   lastNoteSelected = 108;
@@ -204,55 +202,59 @@ void BGColor()
 }
 
 void modelist(int n) {
-  sendCommandBlackOut();
+  if (cp5 != null) {
+    sendCommandBlackOut();
 
-  switch(n) {
-  case 0: // Default
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    break;
-  case 1: // Splash
-    disableAllModes();
-    hideLegacyControls();
-    showSplashControls();
-    setSplashDefaults(11, 110);
-    SplashOn = true;
-    break;
-  case 2: // Random
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    RandomOn = true;
-    break;
-  case 3: // Gradient
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    showGradientButtons();
-    GradientOn = true;
-    break;
-  case 4: // Velocity
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    showButtons();
-    VelocityOn = true;
-    break;
-  case 5: // Split
-    disableAllModes();
-    hideAllControls();
-    showDefaultControls();
-    showSideButtons();
-    SplitOn = true;
-    break;
-  case 6: // Animation
-    disableAllModes();
-    hideAllControls();
-    AnimationOn = true;
-    break;
+    switch(n) {
+    case 0: // Default
+      disableAllModes();
+      hideAllControls();
+      showDefaultControls();
+      break;
+    case 1: // Splash
+      disableAllModes();
+      hideLegacyControls();
+      showSplashControls();
+      setSplashDefaults(11, 110);
+      SplashOn = true;
+      break;
+    case 2: // Random
+      disableAllModes();
+      hideAllControls();
+      showDefaultControls();
+      RandomOn = true;
+      break;
+    case 3: // Gradient
+      disableAllModes();
+      hideAllControls();
+      showDefaultControls();
+      showGradientButtons();
+      GradientOn = true;
+      break;
+    case 4: // Velocity
+      disableAllModes();
+      hideAllControls();
+      showDefaultControls();
+      showButtons();
+      VelocityOn = true;
+      break;
+    case 5: // Split
+      disableAllModes();
+      hideAllControls();
+      showDefaultControls();
+      showSideButtons();
+      SplitOn = true;
+      break;
+    case 6: // Animation
+      disableAllModes();
+      hideAllControls();
+      AnimationOn = true;
+      break;
+    }
+    println("Selected mode: " + m.get(n));
+  } else {
+    println("cp5 object is null");
   }
-  println("Selected mode: " + m.get(n));
 }
 
 void Open() {
