@@ -24,21 +24,6 @@ int[] keyYCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
   251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
   536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; // Add the missing x-coordinate
 
-int Red = MAX_COLOR, Green = MAX_COLOR,
-  Blue = MAX_COLOR, Brightness = MAX_COLOR,
-  FadeOnVal = MAX_COLOR, velRedL = MAX_COLOR,
-  velGreenL = MAX_COLOR, velBlueL = MAX_COLOR,
-  velRedLM = MAX_COLOR, velGreenLM = MAX_COLOR,
-  velBlueLM = MAX_COLOR, velRedM = MAX_COLOR,
-  velGreenM = MAX_COLOR, velBlueM = MAX_COLOR,
-  velRedH = MAX_COLOR, velGreenH = MAX_COLOR, velBlueH = MAX_COLOR,
-  splitLeftRed = MAX_COLOR, splitLeftGreen = MAX_COLOR, splitLeftBlue = MAX_COLOR,
-  splitRightRed = MAX_COLOR, splitRightGreen = MAX_COLOR, splitRightBlue = MAX_COLOR,
-  LeftSideGRed = MAX_COLOR, LeftSideGGreen = MAX_COLOR, LeftSideGBlue = 0,
-  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
-  MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
-
-
 //Buttons
 Button addButton(ControlP5 cp5, String name, String label, int x, int y, int w, int h)
 {
@@ -119,4 +104,9 @@ Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h,
     s.getCaptionLabel().align(alignX, alignY).setPaddingY(1);
   }
   return s;
+}
+ColorWheel addColorWheel(ControlP5 cp5, String name, int x, int y, int d) {
+  ColorWheel colorWheel = cp5.addColorWheel(name, x, y, d);
+  colorWheel.setPosition(x, y);
+  return colorWheel;
 }

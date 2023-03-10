@@ -33,7 +33,7 @@ List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "S
 int counter = 0;
 
 void setup() {
-  size(910, 160);
+  size(930, 160);
   surface.setTitle("PianoLED");
   PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
   surface.setIcon(icon);
@@ -191,6 +191,11 @@ void disableAllModes()
   SplitOn = false;
   GradientOn = false;
   SplashOn = false;
+}
+
+void colorlist(int n)
+{
+  
 }
 
 void modelist(int n) {

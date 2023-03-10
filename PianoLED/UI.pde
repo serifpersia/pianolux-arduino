@@ -28,18 +28,53 @@ int DEF_BRIGHT = 255;
 int MIN_COLOR = 0;
 int MAX_COLOR = 255;
 int DEF_COLOR = MAX_COLOR;
-int EFFECT_CONTROLS_X = 800;
+int EFFECT_CONTROLS_X = 811;
+
+int Red = MAX_COLOR, Green = MAX_COLOR,
+  Blue = MAX_COLOR, Brightness = MAX_COLOR,
+  FadeOnVal = MAX_COLOR, velRedL = MAX_COLOR,
+  velGreenL = MAX_COLOR, velBlueL = MAX_COLOR,
+  velRedLM = MAX_COLOR, velGreenLM = MAX_COLOR,
+  velBlueLM = MAX_COLOR, velRedM = MAX_COLOR,
+  velGreenM = MAX_COLOR, velBlueM = MAX_COLOR,
+  velRedH = MAX_COLOR, velGreenH = MAX_COLOR, velBlueH = MAX_COLOR,
+  splitLeftRed = MAX_COLOR, splitLeftGreen = MAX_COLOR, splitLeftBlue = MAX_COLOR,
+  splitRightRed = MAX_COLOR, splitRightGreen = MAX_COLOR, splitRightBlue = MAX_COLOR,
+  LeftSideGRed = MAX_COLOR, LeftSideGGreen = MAX_COLOR, LeftSideGBlue = 0,
+  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
+  MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
+
+int[] presetColors = {
+  color(255, 0, 0), // Red
+  color(0, 255, 0), // Green
+  color(0, 0, 255), // Blue
+  color(255, 255, 0), // Yellow
+  color(255, 128, 0), // Orange
+  color(128, 0, 255), // Purple
+  color(255, 0, 255), // Pink
+  color(0, 255, 255), // Teal
+  color(128, 255, 0), // Lime
+  color(0, 255, 128), // Cyan
+  color(255, 0, 128), // Magenta
+  color(255, 128, 128), // Peach
+  color(192, 128, 255), // Lavender
+  color(128, 192, 192), // Turquoise
+  color(255, 215, 0)   // Gold
+};
+
+List<String> colorNames = Arrays.asList("Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
+
 
 ControlP5 buildUI()
 {
   ControlP5 cp5 = new ControlP5(this);
 
-  addSlider( cp5, "Brightness", "B", EFFECT_CONTROLS_X, 75, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT);
+  addSlider(cp5, "Brightness", "B", EFFECT_CONTROLS_X, 65, 14, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
+    .setLabelVisible(false);
 
-  addSlider( cp5, "Red", "R", EFFECT_CONTROLS_X, 95, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, RED, -1, RED);
-  addSlider( cp5, "Green", "G", EFFECT_CONTROLS_X, 105, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, GREEN, -1, GREEN);
-  addSlider( cp5, "Blue", "B", EFFECT_CONTROLS_X, 115, 0, 0, MIN_COLOR, MAX_COLOR, MAX_COLOR, -1, -1, BLUE, -1, BLUE);
-  addSlider( cp5, "FadeOnVal", "F", EFFECT_CONTROLS_X, 125, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE);
+
+  addSlider( cp5, "FadeOnVal", "F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
+    .setLabelVisible(false);
 
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
@@ -55,21 +90,28 @@ ControlP5 buildUI()
 
   addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
 
-  addButton(cp5, "Open", null, EFFECT_CONTROLS_X, 47, 50, 15);
-  addButton(cp5, "Refresh", null, 850, 47, 50, 15 );
+  addButton(cp5, "Open", null, 725, 30, 50, 15);
+  addButton(cp5, "Refresh", null, 775, 30, 50, 15 );
 
-  addScrollableList(cp5, "midi", "Midi Device", null, -1, EFFECT_CONTROLS_X, 30, 100, 110, 15, 15);
-  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, EFFECT_CONTROLS_X, 15, 100, 110, 15, 15);
+  addColorWheel(cp5, "Color", EFFECT_CONTROLS_X+15, 45, 100);
+
+  addScrollableList(cp5, "midi", "Midi Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15)
+    .close();
+  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, EFFECT_CONTROLS_X+15, 15, 100, 110, 15, 15)
+    .close();
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
+
+
   //addButton(cp5, "Exit", null, 140, 90, 50, 15);
+  addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, 725, 45, 100, 100, 15, 15);
+  addScrollableList(cp5, "modelist", "Mode", m, 0, 725, 15, 100, 100, 15, 15);
 
-  addScrollableList(cp5, "modelist", "Mode", m, 0, 695, 15, 100, 100, 15, 15);
 
-  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X;
-  int SPLASH_CONTROL_Y = 90;
+  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+15;
+  int SPLASH_CONTROL_Y = 60;
 
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
 
@@ -327,6 +369,17 @@ void setButtonsVisible(boolean showButtons) {
   setControllersVisible(cl, showButtons);
 }
 
+void Color(color Color)
+{
+  ColorWheel cw = cp5.get(ColorWheel.class, "Color");
+  Red = cw.r();
+  Green = cw.g();
+  Blue = cw.b();
+  println("Colors: " + "RED" + "" + Red);
+  println("Colors: " + "GREEN" + "" + Green);
+  println("Colors: " + "BLUE" + "" + Blue);
+}
+
 List<Controller> getDefaultControllers()
 {
   if (cp5 == null) return null;
@@ -337,6 +390,7 @@ List<Controller> getDefaultControllers()
   cl.add(cp5.getController("Green"));
   cl.add(cp5.getController("Blue"));
   cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("Color"));
   return cl;
 }
 
@@ -349,6 +403,8 @@ List<Controller> getLegacyControllers()
   cl.add(cp5.getController("Red"));
   cl.add(cp5.getController("Green"));
   cl.add(cp5.getController("Blue"));
+  cl.add(cp5.getController("Color"));
+
   cl.add(cp5.getController("FadeOnVal"));
 
   cl.add(cp5.getController("setLeftSideG"));
@@ -389,7 +445,6 @@ void setControllersVisible(List<Controller> cl, boolean visible) {
 
 void draw() {
   background(0);
-
   presetText = "Piano: ";
   switch (numberselected) {
   case 174:
@@ -464,7 +519,4 @@ void draw() {
   fill(0);
   rect(15, 54, rectASizeX, 10);
   rect(rectBX, 54, rectBSizeX, 10);
-  // color bar
-  fill(Red, Green, Blue);
-  rect(799, 64, 100, 10);
 }
