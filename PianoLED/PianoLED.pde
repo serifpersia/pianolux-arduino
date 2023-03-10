@@ -6,7 +6,6 @@ import static javax.swing.JOptionPane.*;
 import java.util.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
-
 final static int TOP_COLOR = 255;
 
 MidiBus myBus;
@@ -193,10 +192,20 @@ void disableAllModes()
   SplashOn = false;
 }
 
-void colorlist(int n)
-{
-  
+void colorlist(int n) {
+
+  int selectedColor = presetColors[n];
+
+  Red = round(red(selectedColor));
+  Green = round(green(selectedColor));
+  Blue = round(blue(selectedColor));
+
+  cp5.getController("colorlist").setColorBackground(selectedColor);
+  println("Selected color: " + colorNames.get(n));
+  println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
 }
+
+
 
 void modelist(int n) {
   sendCommandBlackOut();
