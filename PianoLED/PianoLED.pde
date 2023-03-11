@@ -4,6 +4,7 @@ import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
 import java.util.*;
+import java.util.regex.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
 final static int TOP_COLOR = 255;
@@ -307,7 +308,7 @@ boolean isPiano(String name)
 
 boolean isArduino(String name)
 {
-  return name.toLowerCase().contains("arduino");
+  return !name.toLowerCase().contains("com");
 }
 
 void Refresh() {
@@ -340,22 +341,52 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, "piano"));
+  cp5.get(ScrollableList.class, "midi").setValue(findMidiDefault(midilist, "piano", "midi"));
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(Arrays.asList(comlist), "piano"));
+  cp5.get(ScrollableList.class, "comlist").setValue(findSerialDefault(Arrays.asList(comlist), "com"));
 }
 
-int findDefault(List<String> values, String keyword)
+int findMidiDefault(List<String> values, String keyword, String keyword2)
 {
   int i = 0;
   for ( String val : values)
   {
-    if ( val.toLowerCase().contains(keyword) )
+    if ( val.toLowerCase().contains(keyword) || val.toLowerCase().contains(keyword2))
     {
       return i;
     }
     i++;
   }
+  return 0;
+}
+int findSerialDefault(List<String> values, String keyword) {
+  // Define a regular expression to match com string with number not equal to 1
+  Pattern pattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
+
+  for (String value : values) {
+    if (value.toLowerCase().contains(keyword.toLowerCase())) {
+      System.out.println("Checking value: " + value);
+      Matcher matcher = pattern.matcher(value.toLowerCase());
+      if (matcher.find()) {
+        String match = matcher.group();
+        String[] parts = match.split("com");
+        if (parts.length == 2) {
+          try {
+            int port = Integer.parseInt(parts[1]);
+           // System.out.println("Selected port: " + port);
+            return port;
+          }
+          catch (NumberFormatException e) {
+            System.out.println("Error parsing port number: " + parts[1]);
+            // If the port number cannot be parsed, skip this value
+          }
+        }
+      }
+    }
+  }
+
+  System.out.println("No suitable com port found.");
+  // If no suitable com port is found, return -1 or throw an exception
   return 0;
 }
 
