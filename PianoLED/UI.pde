@@ -92,14 +92,14 @@ ControlP5 buildUI()
 
   addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
 
-  addButton(cp5, "Open", null, 725, 30, 50, 15);
-  addButton(cp5, "Refresh", null, 775, 30, 50, 15 );
+  addButton(cp5, "Open", null, 725, 45, 50, 15);
+  addButton(cp5, "Refresh", null, 775, 45, 50, 15 );
 
   addColorWheel(cp5, "Color", EFFECT_CONTROLS_X+15, 45, 100);
 
-  addScrollableList(cp5, "midi", "Midi Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15)
+  addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();
-  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, EFFECT_CONTROLS_X+15, 15, 100, 110, 15, 15)
+  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
     .close();
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
@@ -108,8 +108,8 @@ ControlP5 buildUI()
 
 
   //addButton(cp5, "Exit", null, 140, 90, 50, 15);
-  addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, 725, 45, 100, 100, 15, 15);
-  addScrollableList(cp5, "modelist", "Mode", m, 0, 725, 15, 100, 100, 15, 15);
+  addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
+  addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15);
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
