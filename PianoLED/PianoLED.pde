@@ -341,52 +341,44 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findMidiDefault(midilist, "piano", "midi"));
+  cp5.get(ScrollableList.class, "midi").setValue(findDefaultDevice(midilist, "piano", "midi"));
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findSerialDefault(Arrays.asList(comlist), "com"));
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", null));
 }
 
-int findMidiDefault(List<String> values, String keyword, String keyword2)
-{
+int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
   int i = 0;
-  for ( String val : values)
-  {
-    if ( val.toLowerCase().contains(keyword) || val.toLowerCase().contains(keyword2))
-    {
-      return i;
-    }
-    i++;
-  }
-  return 0;
-}
-int findSerialDefault(List<String> values, String keyword) {
-  // Define a regular expression to match com string with number not equal to 1
-  Pattern pattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
+  Pattern serialPattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
 
   for (String value : values) {
-    if (value.toLowerCase().contains(keyword.toLowerCase())) {
-      System.out.println("Checking value: " + value);
-      Matcher matcher = pattern.matcher(value.toLowerCase());
-      if (matcher.find()) {
-        String match = matcher.group();
-        String[] parts = match.split("com");
-        if (parts.length == 2) {
-          try {
-            int port = Integer.parseInt(parts[1]);
-           // System.out.println("Selected port: " + port);
-            return port;
-          }
-          catch (NumberFormatException e) {
-            System.out.println("Error parsing port number: " + parts[1]);
-            // If the port number cannot be parsed, skip this value
+    if (value.toLowerCase().contains(midiKeyword.toLowerCase()) || value.toLowerCase().contains(serialKeyword.toLowerCase())) {
+      if (!value.toLowerCase().contains("com")) {
+        System.out.println("Checking value: " + value);
+        // Found a matching MIDI device
+        return i;
+      } else {
+        // Found a matching serial device
+        Matcher matcher = serialPattern.matcher(value.toLowerCase());
+        if (matcher.find()) {
+          String match = matcher.group();
+          String[] parts = match.split("com");
+          if (parts.length == 2) {
+            try {
+              int port = Integer.parseInt(parts[1]);
+              System.out.println("Checking value: " + value);
+              return port;
+            }
+            catch (NumberFormatException e) {
+              // If the port number cannot be parsed, skip this value
+            }
           }
         }
       }
     }
+    i++;
   }
 
-  System.out.println("No suitable com port found.");
-  // If no suitable com port is found, return -1 or throw an exception
+  // If no suitable device is found, return 0
   return 0;
 }
 
