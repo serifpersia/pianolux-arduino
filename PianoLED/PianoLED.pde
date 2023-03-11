@@ -4,6 +4,7 @@ import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
 import java.util.*;
+import java.util.regex.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
 final static int TOP_COLOR = 255;
@@ -307,7 +308,7 @@ boolean isPiano(String name)
 
 boolean isArduino(String name)
 {
-  return name.toLowerCase().contains("arduino");
+  return !name.toLowerCase().contains("com");
 }
 
 void Refresh() {
@@ -340,32 +341,63 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, "piano"));
+  cp5.get(ScrollableList.class, "midi").setValue(findDefaultDevice(midilist, "piano", "midi"));
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(Arrays.asList(comlist), "piano"));
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", null));
 }
 
-int findDefault(List<String> values, String keyword)
-{
+int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
   int i = 0;
-  for ( String val : values)
-  {
-    if ( val.toLowerCase().contains(keyword) )
-    {
-      return i;
+  Pattern serialPattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
+
+  for (String value : values) {
+    if (value.toLowerCase().contains(midiKeyword.toLowerCase()) || value.toLowerCase().contains(serialKeyword.toLowerCase())) {
+      if (!value.toLowerCase().contains("com")) {
+        System.out.println("Checking value: " + value);
+        // Found a matching MIDI device
+        return i;
+      } else {
+        // Found a matching serial device
+        Matcher matcher = serialPattern.matcher(value.toLowerCase());
+        if (matcher.find()) {
+          String match = matcher.group();
+          String[] parts = match.split("com");
+          if (parts.length == 2) {
+            try {
+              int port = Integer.parseInt(parts[1]);
+              System.out.println("Checking value: " + value);
+              return port;
+            }
+            catch (NumberFormatException e) {
+              // If the port number cannot be parsed, skip this value
+            }
+          }
+        }
+      }
     }
     i++;
   }
+
+  // If no suitable device is found, return 0
   return 0;
 }
 
-void dispose()
-{
-  myBus.dispose();
-  sendCommandBlackOut();
-  arduino.stop();
+void dispose() {
+  try {
+    sendCommandBlackOut();
+    if (myBus != null) {
+      myBus.dispose();
+    }
+    if (arduino != null) {
+      arduino.stop();
+    }
+  }
+  catch (Exception e) {
+    println("Error while exiting: " + e);
+  }
   exit();
 }
+
 
 void AdvanceUser()
 {
