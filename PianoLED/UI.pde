@@ -107,7 +107,7 @@ ControlP5 buildUI()
   addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
 
-  //addButton(cp5, "Exit", null, 140, 90, 50, 15);
+  addButton(cp5, "Exit", null, 140, 90, 50, 15);
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15);
 

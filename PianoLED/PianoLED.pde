@@ -382,13 +382,22 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
   return 0;
 }
 
-void dispose()
-{
-  myBus.dispose();
-  sendCommandBlackOut();
-  arduino.stop();
+void dispose() {
+  try {
+    sendCommandBlackOut();
+    if (myBus != null) {
+      myBus.dispose();
+    }
+    if (arduino != null) {
+      arduino.stop();
+    }
+  }
+  catch (Exception e) {
+    println("Error while exiting: " + e);
+  }
   exit();
 }
+
 
 void AdvanceUser()
 {
