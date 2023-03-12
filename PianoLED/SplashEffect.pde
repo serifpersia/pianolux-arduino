@@ -7,7 +7,7 @@ void setSplashDefaults(int splashLen, int fadeRate, int splashColor)
 {
   cp5.getController("splashMaxLength").setValue(splashLen);
   cp5.getController("FadeOnVal").setValue(fadeRate);
-  cp5.get(ScrollableList.class, "splashColor");
+  cp5.get(ScrollableList.class, "splashColors").setValue(splashColor);
   
   
 }
