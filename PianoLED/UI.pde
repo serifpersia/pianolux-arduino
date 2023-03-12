@@ -82,6 +82,7 @@ ControlP5 buildUI()
     //.setLabelVisible(false)
     ;
 
+
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
   addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();
@@ -93,6 +94,8 @@ ControlP5 buildUI()
   addButton(cp5, "setM", "Set M", 705, 140, 30, 15).hide();
   addButton(cp5, "setLM", "Set LM", 735, 140, 30, 15).hide();
   addButton(cp5, "setH", "Set H", 765, 140, 30, 15).hide();
+
+  addButton(cp5,"setBG","Set BG", 670, 26, 30, 15).hide();
 
   addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
 
@@ -119,6 +122,8 @@ ControlP5 buildUI()
   int SPLASH_CONTROL_Y = 60;
 
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+
+
 
   return cp5;
 }
@@ -168,6 +173,8 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   addSlider( cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED, SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
 }
+
+
 
 
 int[][] Keys = new int[88][2];
@@ -303,6 +310,7 @@ void hideAllControls()
 {
   hideLegacyControls();
   hideSplashControls();
+  hideBGControls();
 }
 void showDefaultControls()
 {
@@ -312,6 +320,14 @@ void showDefaultControls()
 void hideLegacyControls()
 {
   setControllersVisible(getLegacyControllers(), false);
+}
+void showBGControls()
+{
+  setControllersVisible(getBGControllers(), true);
+}
+void hideBGControls()
+{
+  setControllersVisible(getBGControllers(), false);
 }
 
 void showSplashControls()
@@ -383,6 +399,13 @@ void setButtonsVisible(boolean showButtons) {
   setControllersVisible(cl, showButtons);
 }
 
+void setBGButtonVisible(boolean showButtons) {
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("setBG"));
+
+  setControllersVisible(cl, showButtons);
+}
+
 void Color()
 {
   ColorWheel cw = cp5.get(ColorWheel.class, "Color");
@@ -431,6 +454,7 @@ List<Controller> getLegacyControllers()
   cl.add(cp5.getController("setLM"));
   cl.add(cp5.getController("setM"));
   cl.add(cp5.getController("setH"));
+  cl.add(cp5.getController("setBG"));
   return cl;
 }
 
@@ -443,9 +467,20 @@ List<Controller> getSplashControllers()
   cl.add(cp5.getController("FadeOnVal"));
   cl.add(cp5.getController("splashHeadFade"));
   cl.add(cp5.getController("splashColors"));
+  cl.add(cp5.getController("Color"));
 
   //cl.add(cp5.getController("splashVelocityBrightnessImpact"));
   //cl.add(cp5.getController("splashVelocitySpeedImpact"));
+  return cl;
+}
+
+List<Controller> getBGControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("setBG"));
+
   return cl;
 }
 
