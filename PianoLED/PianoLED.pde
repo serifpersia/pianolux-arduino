@@ -211,8 +211,6 @@ void colorlist(int n) {
     Green = round(green(selectedColor));
     Blue = round(blue(selectedColor));
 
-    cp5.getController("colorlist").setColorBackground(selectedColor);
-
     println("Selected color: " + colorNames.get(n));
     println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
   } else {
@@ -491,9 +489,19 @@ void setMiddleSideG() {
 
 
 void setBG() {
-  //here set modify BGCOlor toggle color currently its white
-  println("Test");
+  int red = Red; // Red value from 0-255
+  int green = Green; // Green value from 0-255
+  int blue = Blue; // Blue value from 0-255
+
+  float[] hsbValues = java.awt.Color.RGBtoHSB(red, green, blue, null);
+  int hue = (int)(hsbValues[0] * 255);
+  int saturation = (int)(hsbValues[1] * 255);
+  int brightness = 20;
+
+  sendCommandSetBG(hue, saturation, brightness);
 }
+
+
 
 public static void printArray(byte[] bytes) {
   print("Message:");
