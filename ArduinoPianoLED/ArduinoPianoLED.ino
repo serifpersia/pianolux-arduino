@@ -150,10 +150,6 @@ void debugLightOn(int n) {
 
 FadeController* fadeCtrl = new FadeController();
 void loop() {
-  boolean receiveNotes = false;
-  boolean receiveVelocity = false;
-  boolean receiveNotesFR = false;
-  boolean receiveVelocityFR = false;
   currentTime = millis();
 
   int bufferSize = Serial.available();
