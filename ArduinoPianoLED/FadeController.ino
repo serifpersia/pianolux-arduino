@@ -3,12 +3,21 @@
 FadeController ::FadeController() {
 }
 
+// Set the duration of the transition and the number of steps
+int transitionTime = 1000;  // in milliseconds
+int steps = 100;
+
 void FadeController ::fade(int fadeRate) {
   for (int i = 0; i < NUM_LEDS; i++) {
-    if (keysOn[i] ) {
-      if( MODE == COMMAND_SPLASH) leds[i].fadeToBlackBy(1);
-    } else {
+    if (bgColor == CRGB(0)) {
       leds[i].fadeToBlackBy(fadeRate);
+    } else {
+      if (leds[i] != bgColor) {
+        nblend(leds[i], bgColor, fadeRate+30);
+        if (distance(leds[i], bgColor) < 5) {
+          leds[i] = bgColor;
+        }
+      }
     }
   }
 }

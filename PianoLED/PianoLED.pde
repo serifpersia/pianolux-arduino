@@ -180,6 +180,24 @@ void disableAllModes()
   SplashOn = false;
 }
 
+void splashColors(int n) {
+  if ( n == 0 )
+  {
+    splashRed = 0;
+    splashGreen = 0;
+    splashBlue = 0;
+  } else
+  {
+    int selectedColor = presetColors[n-1];
+    splashRed = round(red(selectedColor));
+    splashGreen = round(green(selectedColor));
+    splashBlue = round(blue(selectedColor));
+    
+    println("Selected color: " + colorNames.get(n));
+  }
+  sendCommandSetSplashColor(splashRed, splashGreen, splashBlue);
+}
+
 void colorlist(int n) {
   if (cp5 != null) {
     int selectedColor = presetColors[n];
@@ -197,9 +215,15 @@ void colorlist(int n) {
   }
 }
 
-void BGColor()
+void BGColor(boolean on)
 {
-  println("TestToggle");
+  println("Set BG: "+on);
+  int BG_HUE = 100;
+  int BG_SATURATION = 0;
+  int BG_BRIGHTNESS = 20;
+
+  if ( on ) sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
+  else sendCommandSetBG(0, 0, 0);
 }
 
 void modelist(int n) {
@@ -216,7 +240,7 @@ void modelist(int n) {
       disableAllModes();
       hideLegacyControls();
       showSplashControls();
-      setSplashDefaults(11, 110);
+      setSplashDefaults(11, 110, 0);
       SplashOn = true;
       break;
     case 2: // Random
@@ -269,6 +293,8 @@ void Open() {
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
 
       sendCommandBlackOut();
+      Toggle bg = (Toggle)cp5.getController("BGColor");
+      BGColor(bg.getState());
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
     }
@@ -279,6 +305,7 @@ void Open() {
     try {
       myBus.dispose();
       sendCommandBlackOut();
+      BGColor(false);
       arduino.stop();
       println("Device closed: " + portName);
       println("Device closed: " + midiName);

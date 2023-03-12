@@ -13,6 +13,8 @@ final static byte COMMAND_SPLASH = (byte)251;
 final static byte COMMAND_SET_BRIGHTNESS = (byte)250;
 final static byte COMMAND_KEY_OFF = (byte)249;
 final static byte COMMAND_SPLASH_MAX_LENGTH = (byte)248;
+final static byte COMMAND_SET_BG = (byte)247;
+final static byte COMMAND_SPLASH_COLOR = (byte)246;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -97,6 +99,30 @@ ByteArrayOutputStream commandSplashMaxLength(int value)
   return message;
 }
 
+ByteArrayOutputStream commandSplashColor(int r, int g, int b)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_SPLASH_COLOR);
+  message.write((byte)r);
+  message.write((byte)g);
+  message.write((byte)b);
+  return message;
+}
+
+ByteArrayOutputStream commandSetBG(int hue, int saturation, int brightness)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_SET_BG);
+  message.write((byte)hue);
+  message.write((byte)saturation);
+  message.write((byte)brightness);
+  return message;
+}
+
 void sendCommandBlackOut()
 {
   sendToArduino(commandBlackOut());
@@ -120,6 +146,16 @@ void sendCommandFadeRate(int value)
 void sendCommandSplashMaxLength(int value)
 {
   sendToArduino(commandSplashMaxLength(value));
+}
+
+void sendCommandSetBG(int hue, int saturation, int brightness)
+{
+  sendToArduino(commandSetBG(hue, saturation, brightness));
+}
+
+void sendCommandSetSplashColor(int r, int g, int b)
+{
+  sendToArduino(commandSplashColor(r, g, b));
 }
 
 void animationLoop()

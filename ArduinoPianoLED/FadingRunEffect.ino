@@ -1,12 +1,11 @@
 //FadingRunEffect.cpp
 #include "FadingRunEffect.h"
-FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, int hue, int saturation, int headFadeRate, int velocity) {
+FadingRunEffect ::FadingRunEffect(int effectLen, int startPosition, CHSV splashColor, int headFadeRate, int velocity) {
   // Initialize the effect parameters
   this->effectLen = effectLen;
   this->startPosition = startPosition;
   this->step = 0;
-  this->hue = hue;
-  this->saturation = saturation;
+  this->splashColor = splashColor;
   this->headFadeRate = headFadeRate;
   this->lastUpdate = millis();
   this->velocity = velocity;
@@ -27,16 +26,12 @@ int FadingRunEffect ::getBrightness(int velocity) {
   return adjustValue(velocity, LOWEST_BRIGHTNESS, MAX_VALUE);
 }
 
-int FadingRunEffect ::calcOffset(int step, int velocity)
-{
+int FadingRunEffect ::calcOffset(int step, int velocity) {
   int adjustedVelocity = adjustValue(velocity, HEAD_FADE_LOW_THRESHOLD, HEAD_FADE_HI_THRESHOLD);
-  int offset = step*adjustedVelocity/MAX_VELOCITY;
-  if( offset > step)
-  {
+  int offset = step * adjustedVelocity / MAX_VELOCITY;
+  if (offset > step) {
     return step;
-  }
-  else
-  {
+  } else {
     return offset;
   }
 }
@@ -53,13 +48,21 @@ void FadingRunEffect ::setHeadLED(int step) {
   int pos1 = this->startPosition + calcOffset(step, velocity);
   int pos2 = this->startPosition - calcOffset(step, velocity);
   if (isOnStrip(pos1)) {
-    leds[pos1] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
-    leds[pos1].fadeToBlackBy(headFadeRate*step);
+    if (splashColor != CHSV(0,0,0)) {
+      leds[pos1] = CHSV(splashColor.hue, getSaturation(velocity), getBrightness(velocity));
+    } else {
+      leds[pos1] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
+    }
+    leds[pos1].fadeToBlackBy(headFadeRate * step);
   }
 
   if (pos1 != pos2 && isOnStrip(pos2)) {
-    leds[pos2] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
-    leds[pos2].fadeToBlackBy(headFadeRate*step);
+    if (splashColor != CHSV(0,0,0)) {
+      leds[pos2] = CHSV(splashColor.hue, getSaturation(velocity), getBrightness(velocity));
+    } else {
+      leds[pos2] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
+    }
+    leds[pos2].fadeToBlackBy(headFadeRate * step);
   }
 }
 
