@@ -181,22 +181,27 @@ void disableAllModes()
 }
 
 void splashColors(int n) {
-  if ( n == 0 )
-  {
+  if (n == 0) {
+    // Full Spectrum mode
     splashRed = 0;
     splashGreen = 0;
     splashBlue = 0;
-  } else
-  {
+    println("Selected color: Full Spectrum");
+  } else if (n >= 1 && n <= presetColors.length) {
+    // Preset color mode
     int selectedColor = presetColors[n-1];
     splashRed = round(red(selectedColor));
     splashGreen = round(green(selectedColor));
     splashBlue = round(blue(selectedColor));
-    
-    println("Selected color: " + colorNames.get(n));
+    println("Selected color: " + colorNames.get(n-1));
+  } else {
+    // Invalid color mode
+    println("Invalid color selection: " + n);
+    return;
   }
   sendCommandSetSplashColor(splashRed, splashGreen, splashBlue);
 }
+
 
 void colorlist(int n) {
   if (cp5 != null) {
@@ -205,8 +210,6 @@ void colorlist(int n) {
     Red = round(red(selectedColor));
     Green = round(green(selectedColor));
     Blue = round(blue(selectedColor));
-
-    cp5.getController("colorlist").setColorBackground(selectedColor);
 
     println("Selected color: " + colorNames.get(n));
     println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
@@ -222,9 +225,15 @@ void BGColor(boolean on)
   int BG_SATURATION = 0;
   int BG_BRIGHTNESS = 20;
 
-  if ( on ) sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
-  else sendCommandSetBG(0, 0, 0);
+  if (on) {
+    sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
+    showBGControls();
+  } else {
+    sendCommandSetBG(0, 0, 0);
+    hideBGControls();
+  }
 }
+
 
 void modelist(int n) {
   if (cp5 != null) {
@@ -409,23 +418,6 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
   return 0;
 }
 
-void dispose() {
-  try {
-    sendCommandBlackOut();
-    if (myBus != null) {
-      myBus.dispose();
-    }
-    if (arduino != null) {
-      arduino.stop();
-    }
-  }
-  catch (Exception e) {
-    println("Error while exiting: " + e);
-  }
-  exit();
-}
-
-
 void AdvanceUser()
 {
   try {
@@ -495,6 +487,22 @@ void setMiddleSideG() {
   MiddleSideGBlue = (Blue);
 }
 
+
+void setBG() {
+  int red = Red; // Red value from 0-255
+  int green = Green; // Green value from 0-255
+  int blue = Blue; // Blue value from 0-255
+
+  float[] hsbValues = java.awt.Color.RGBtoHSB(red, green, blue, null);
+  int hue = (int)(hsbValues[0] * 255);
+  int saturation = (int)(hsbValues[1] * 255);
+  int brightness = 20;
+
+  sendCommandSetBG(hue, saturation, brightness);
+}
+
+
+
 public static void printArray(byte[] bytes) {
   print("Message:");
   for (byte b : bytes) {
@@ -502,4 +510,21 @@ public static void printArray(byte[] bytes) {
     print(unsignedValue + " ");
   }
   println();
+}
+
+void dispose() {
+  try {
+    sendCommandBlackOut();
+    sendCommandSetBG(0, 0, 0);
+    if (myBus != null) {
+      myBus.dispose();
+    }
+    if (arduino != null) {
+      arduino.stop();
+    }
+  }
+  catch (Exception e) {
+    println("Error while exiting: " + e);
+  }
+  exit();
 }

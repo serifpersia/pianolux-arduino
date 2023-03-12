@@ -6,7 +6,7 @@ FadeController ::FadeController() {
 // Set the duration of the transition and the number of steps
 int transitionTime = 1000;  // in milliseconds
 int steps = 100;
-int BG_FADE_OFFSET = 100;
+int BG_FADE_OFFSET = 0;
 
 void FadeController ::fade(int fadeRate) {
   for (int i = 0; i < NUM_LEDS; i++) {
