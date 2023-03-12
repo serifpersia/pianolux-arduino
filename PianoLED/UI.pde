@@ -44,6 +44,10 @@ int Red = MAX_COLOR, Green = MAX_COLOR,
   RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
   MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
 
+int splashRed = 0;
+int splashGreen = 0;
+int splashBlue = 0;
+
 int[] presetColors = {
   color(255, 0, 0), // Red
   color(0, 255, 0), // Green
@@ -107,7 +111,7 @@ ControlP5 buildUI()
   addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
-  addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15);
+  addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
@@ -141,18 +145,26 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   int SPLASH_MAX_VELO_SPEED = 15;
   int SPLASH_DAFAULT_VELO_SPEED = 10;
 
-  int SPLASH_CONTROL_Y_STEP = 20;
+  int SPLASH_CONTROL_Y_STEP = 13;
   int captionAlignX = CENTER;
   int captionAlignY = ControlP5.TOP_OUTSIDE;
 
   addSlider( cp5, "splashMaxLength", "Max Splash Length", x, y, SPLASH_MIN_LEN, SPLASH_MAX_LEN, SPLASH_DEFAULT_LEN, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
+
+  List<String> splashColors = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
+  addScrollableList(cp5, "splashColors", "Color", splashColors, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15).hide();
+  y += SPLASH_CONTROL_Y_STEP;
+
   addSlider( cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE, SPLASH_DAFAULT_TAIL_FADE, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
+
   //addSlider( cp5, "splashHeadFade", "Head Fade Rate", x, y, SPLASH_MIN_HEAD_FADE, SPLASH_MAX_HEAD_FADE, SPLASH_DAFAULT_HEAD_FADE, captionAlignX , captionAlignY).hide();
   //y += SPLASH_CONTROL_Y_STEP;
+
   addSlider( cp5, "splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI, SPLASH_MAX_VELO_BRI, SPLASH_DAFAULT_VELO_BRI, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
+
   addSlider( cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED, SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
 }
@@ -305,6 +317,7 @@ void hideLegacyControls()
 void showSplashControls()
 {
   setControllersVisible(getSplashControllers(), true);
+  cp5.getController("modelist").bringToFront();
 }
 
 void hideSplashControls()
@@ -390,6 +403,8 @@ List<Controller> getDefaultControllers()
   cl.add(cp5.getController("Blue"));
   cl.add(cp5.getController("FadeOnVal"));
   cl.add(cp5.getController("Color"));
+  cl.add(cp5.getController("colorlist"));
+
   return cl;
 }
 
@@ -403,6 +418,7 @@ List<Controller> getLegacyControllers()
   cl.add(cp5.getController("Green"));
   cl.add(cp5.getController("Blue"));
   cl.add(cp5.getController("Color"));
+  cl.add(cp5.getController("colorlist"));
 
   cl.add(cp5.getController("FadeOnVal"));
 
@@ -426,6 +442,8 @@ List<Controller> getSplashControllers()
   cl.add(cp5.getController("splashMaxLength"));
   cl.add(cp5.getController("FadeOnVal"));
   cl.add(cp5.getController("splashHeadFade"));
+  cl.add(cp5.getController("splashColors"));
+
   //cl.add(cp5.getController("splashVelocityBrightnessImpact"));
   //cl.add(cp5.getController("splashVelocitySpeedImpact"));
   return cl;

@@ -25,19 +25,26 @@ const int COMMAND_SPLASH = 251;
 const int COMMAND_SET_BRIGHTNESS = 250;
 const int COMMAND_KEY_OFF = 249;
 const int COMMAND_SPLASH_MAX_LENGTH = 248;
+const int COMMAND_SET_BG = 247;
+const int COMMAND_SET_SPLASH_COLOR = 246;
 
 int DEFAULT_BRIGHTNESS = 200;
 
 int SPLASH_HEAD_FADE_RATE = 5;
 int splashMaxLength = 8;
 
+boolean bgOn = false;
+CRGB bgColor = CRGB::Black;
+
+CHSV splashColor = CHSV(0,0,0);
+
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
 
-const unsigned long interval = 20;       // general refresh in milliseconds
-const unsigned long fadeInterval = 20;  // general fade interval in milliseconds
-int generalFadeRate = 5;                // general fade rate, bigger value - quicker fade (configurable via App)
+unsigned long interval = 20;      // general refresh in milliseconds
+unsigned long fadeInterval = 20;  // general fade interval in milliseconds
+int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
 
 uint8_t hue = 0;
 
@@ -119,6 +126,19 @@ void removeEffect(FadingRunEffect* effect) {
     }
   }
 }
+void setBG(CRGB colorToSet) {
+  if (colorToSet == CRGB(0)) {
+    fadeInterval = 20;
+  } else {
+    fadeInterval = 100;
+  }
+
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = colorToSet;
+  }
+  bgColor = colorToSet;
+  FastLED.show();
+}
 
 boolean debug = false;
 void debugLightOn(int n) {
@@ -130,10 +150,6 @@ void debugLightOn(int n) {
 
 FadeController* fadeCtrl = new FadeController();
 void loop() {
-  boolean receiveNotes = false;
-  boolean receiveVelocity = false;
-  boolean receiveNotesFR = false;
-  boolean receiveVelocityFR = false;
   currentTime = millis();
 
   int bufferSize = Serial.available();
@@ -167,7 +183,7 @@ void loop() {
           int velocity = buffer[++bufIdx];
           int note = buffer[++bufIdx];
           keysOn[note - 1] = true;
-          addEffect(new FadingRunEffect(splashMaxLength, note - 1, 0, 0, SPLASH_HEAD_FADE_RATE, velocity));
+          addEffect(new FadingRunEffect(splashMaxLength, note - 1, splashColor, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
           break;
         }
@@ -216,7 +232,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(7);
           ToggleRGBAnimation = false;
-          fill_solid(leds, NUM_LEDS, CRGB::Black);
+          fill_solid(leds, NUM_LEDS, bgColor);
           break;
         }
       case COMMAND_ANIMATION:
@@ -241,6 +257,29 @@ void loop() {
           debugLightOn(9);
           int note = (int)buffer[++bufIdx];
           keysOn[note - 1] = false;
+          break;
+        }
+      case COMMAND_SET_BG:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(10);
+          int h = (int)buffer[++bufIdx];
+          int s = (int)buffer[++bufIdx];
+          int b = (int)buffer[++bufIdx];
+          setBG(CHSV(h, s, b));
+          break;
+        }
+
+      case COMMAND_SET_SPLASH_COLOR:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(10);
+          int r = (int)buffer[++bufIdx];
+          int g = (int)buffer[++bufIdx];
+          int b = (int)buffer[++bufIdx];
+          splashColor = rgb2hsv_approximate(CRGB(r, g, b));
           break;
         }
 
@@ -279,4 +318,8 @@ void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   if (ledNo < 0 || ledNo > NUM_LEDS) { return; }
   leds[ledNo].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
+}
+
+float distance(CRGB color1, CRGB color2) {
+  return sqrt(pow(color1.r - color2.r, 2) + pow(color1.g - color2.g, 2) + pow(color1.b - color2.b, 2));
 }
