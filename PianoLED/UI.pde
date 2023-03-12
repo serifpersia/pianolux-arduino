@@ -1,6 +1,6 @@
 ControlP5 cp5;
 
-int MIN_FADE_RATE = 0;
+int MIN_FADE_RATE = 1;
 int MAX_FADE_RATE = 255;
 int DEFAULT_FADE_RATE = 255;
 
@@ -21,7 +21,7 @@ color SLIDER_COLOR_FG = GREY;
 color SLIDER_COLOR_BG = BLACK;
 color SLIDER_COLOR_ACT = GREY;
 
-int MIN_BRIGHT = 0;
+int MIN_BRIGHT = 88;
 int MAX_BRIGHT = 255;
 int DEF_BRIGHT = 255;
 
@@ -399,12 +399,7 @@ void setButtonsVisible(boolean showButtons) {
   setControllersVisible(cl, showButtons);
 }
 
-void setBGButtonVisible(boolean showButtons) {
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("setBG"));
 
-  setControllersVisible(cl, showButtons);
-}
 
 void Color()
 {
