@@ -67,6 +67,7 @@ int[] presetColors = {
 };
 
 List<String> colorNames = Arrays.asList("Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
+List<String> splashColorNames = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
 
 
 ControlP5 buildUI()
@@ -151,8 +152,7 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   addSlider( cp5, "splashMaxLength", "Max Splash Length", x, y, SPLASH_MIN_LEN, SPLASH_MAX_LEN, SPLASH_DEFAULT_LEN, captionAlignX, captionAlignY).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
-  List<String> splashColors = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
-  addScrollableList(cp5, "splashColors", "Color", splashColors, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15).hide();
+  addScrollableList(cp5, "splashColor", "Color", splashColorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
   addSlider( cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE, SPLASH_DAFAULT_TAIL_FADE, captionAlignX, captionAlignY).hide();
@@ -393,15 +393,15 @@ void hideAnimationControls()
   setControllersVisible(getAnimationControllers(), false);
 }
 
-
-void Color()
+void Color(color rgb)
 {
-  ColorWheel cw = cp5.get(ColorWheel.class, "Color");
-  Red = cw.r();
-  Green = cw.g();
-  Blue = cw.b();
+  Red = (int)red(rgb);
+  Green = (int)green(rgb);
+  Blue = (int)blue(rgb);
+  cp5.get(ScrollableList.class, "splashColor").setValue(splashColorNames.size()-1);
   println("Colors: RED" + Red + ", GREEN" + Green + ", BLUE" + Blue);
 }
+
 //BG List
 List<Controller> getBGControllers()
 {
@@ -435,7 +435,7 @@ List<Controller> getSplashControllers()
   cl.add(cp5.getController("FadeOnVal"));
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("splashHeadFade"));
-  cl.add(cp5.getController("splashColors"));
+  cl.add(cp5.getController("splashColor"));
   cl.add(cp5.getController("Color"));
 
   //cl.add(cp5.getController("splashVelocityBrightnessImpact"));

@@ -14,7 +14,6 @@ final static byte COMMAND_SET_BRIGHTNESS = (byte)250;
 final static byte COMMAND_KEY_OFF = (byte)249;
 final static byte COMMAND_SPLASH_MAX_LENGTH = (byte)248;
 final static byte COMMAND_SET_BG = (byte)247;
-final static byte COMMAND_SPLASH_COLOR = (byte)246;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -39,7 +38,7 @@ ByteArrayOutputStream commandSetBrightness(int brightness)
   return message;
 }
 
-ByteArrayOutputStream commandSplash(int velocity, int note)
+ByteArrayOutputStream commandSplash(int velocity, int note, color sc)
 {
   ByteArrayOutputStream message = new ByteArrayOutputStream();
   message.write((byte)COMMAND_BYTE1);
@@ -47,6 +46,9 @@ ByteArrayOutputStream commandSplash(int velocity, int note)
   message.write((byte)COMMAND_SPLASH);
   message.write((byte)velocity);
   message.write((byte)note);
+  message.write((byte)red(sc));
+  message.write((byte)green(sc));
+  message.write((byte)blue(sc));
   return message;
 }
 
@@ -99,18 +101,6 @@ ByteArrayOutputStream commandSplashMaxLength(int value)
   return message;
 }
 
-ByteArrayOutputStream commandSplashColor(int r, int g, int b)
-{
-  ByteArrayOutputStream message = new ByteArrayOutputStream();
-  message.write((byte)COMMAND_BYTE1);
-  message.write((byte)COMMAND_BYTE2);
-  message.write((byte)COMMAND_SPLASH_COLOR);
-  message.write((byte)r);
-  message.write((byte)g);
-  message.write((byte)b);
-  return message;
-}
-
 ByteArrayOutputStream commandSetBG(int hue, int saturation, int brightness)
 {
   ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -121,6 +111,12 @@ ByteArrayOutputStream commandSetBG(int hue, int saturation, int brightness)
   message.write((byte)saturation);
   message.write((byte)brightness);
   return message;
+}
+
+
+void sendCommandSplash(int velocity, int note, color sc)
+{
+  sendToArduino(commandSplash(velocity, note, sc));
 }
 
 void sendCommandBlackOut()
@@ -151,11 +147,6 @@ void sendCommandSplashMaxLength(int value)
 void sendCommandSetBG(int hue, int saturation, int brightness)
 {
   sendToArduino(commandSetBG(hue, saturation, brightness));
-}
-
-void sendCommandSetSplashColor(int r, int g, int b)
-{
-  sendToArduino(commandSplashColor(r, g, b));
 }
 
 void animationLoop()

@@ -26,7 +26,6 @@ const int COMMAND_SET_BRIGHTNESS = 250;
 const int COMMAND_KEY_OFF = 249;
 const int COMMAND_SPLASH_MAX_LENGTH = 248;
 const int COMMAND_SET_BG = 247;
-const int COMMAND_SET_SPLASH_COLOR = 246;
 
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -40,8 +39,6 @@ int splashMaxLength = 8;
 
 boolean bgOn = false;
 CRGB bgColor = CRGB::Black;
-
-CHSV splashColor = CHSV(0, 0, 0);
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
@@ -187,8 +184,12 @@ void loop() {
           debugLightOn(3);
           int velocity = buffer[++bufIdx];
           int note = buffer[++bufIdx];
+          int r = buffer[++bufIdx];
+          int g = buffer[++bufIdx];
+          int b = buffer[++bufIdx];
+          CHSV hsv = rgb2hsv_approximate(CRGB(r,g,b));
           keysOn[note - 1] = true;
-          addEffect(new FadingRunEffect(splashMaxLength, note - 1, splashColor, SPLASH_HEAD_FADE_RATE, velocity));
+          addEffect(new FadingRunEffect(splashMaxLength, note - 1, hsv, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
           break;
         }
@@ -273,18 +274,6 @@ void loop() {
           int s = (int)buffer[++bufIdx];
           int b = (int)buffer[++bufIdx];
           setBG(CHSV(h, s, b));
-          break;
-        }
-
-      case COMMAND_SET_SPLASH_COLOR:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(10);
-          int r = (int)buffer[++bufIdx];
-          int g = (int)buffer[++bufIdx];
-          int b = (int)buffer[++bufIdx];
-          splashColor = rgb2hsv_approximate(CRGB(r, g, b));
           break;
         }
 

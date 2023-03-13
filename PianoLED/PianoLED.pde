@@ -122,7 +122,7 @@ void noteOn(int channel, int pitch, int velocity) {
         message = commandSetColor(red, green, blue, notePushed);
       } else if (SplashOn)
       {
-        message = commandSplash(velocity, notePushed);
+        message = commandSplash(velocity, notePushed, getSplashColor());
       } else
       {
         message = commandSetColor(Red, Green, Blue, notePushed);
@@ -179,29 +179,6 @@ void disableAllModes()
   GradientOn = false;
   SplashOn = false;
 }
-
-void splashColors(int n) {
-  if (n == 0) {
-    // Full Spectrum mode
-    splashRed = 0;
-    splashGreen = 0;
-    splashBlue = 0;
-    println("Selected color: Full Spectrum");
-  } else if (n >= 1 && n <= presetColors.length) {
-    // Preset color mode
-    int selectedColor = presetColors[n-1];
-    splashRed = round(red(selectedColor));
-    splashGreen = round(green(selectedColor));
-    splashBlue = round(blue(selectedColor));
-    println("Selected color: " + colorNames.get(n-1));
-  } else {
-    // Invalid color mode
-    println("Invalid color selection: " + n);
-    return;
-  }
-  sendCommandSetSplashColor(splashRed, splashGreen, splashBlue);
-}
-
 
 void colorlist(int n) {
   if (cp5 != null) {
