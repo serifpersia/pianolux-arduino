@@ -21,9 +21,9 @@ color SLIDER_COLOR_FG = GREY;
 color SLIDER_COLOR_BG = BLACK;
 color SLIDER_COLOR_ACT = GREY;
 
-int MIN_BRIGHT = 88;
+int MIN_BRIGHT = 10;
 int MAX_BRIGHT = 255;
-int DEF_BRIGHT = 255;
+int DEF_BRIGHT = 127;
 
 int MIN_COLOR = 0;
 int MAX_COLOR = 255;
@@ -81,8 +81,7 @@ ControlP5 buildUI()
   addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
     //.setLabelVisible(false)
     ;
-
-
+    
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
   addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();

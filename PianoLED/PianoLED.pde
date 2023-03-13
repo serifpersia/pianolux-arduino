@@ -39,7 +39,7 @@ void setup() {
   surface.setIcon(icon);
 
   cp5 = buildUI();
-
+  cp5.getController("modelist").setValue(0);
   Refresh();
   numberselected = 176;
   firstNoteSelected = 21;
@@ -244,12 +244,13 @@ void modelist(int n) {
       disableAllModes();
       hideAllControls();
       showDefaultControls();
+      setDefaultDefaults(255, 127);
       break;
     case 1: // Splash
       disableAllModes();
       hideAllControls();
       showSplashControls();
-      setSplashDefaults(11, 110, 0);
+      setSplashDefaults(11, 110, 0, MIN_BRIGHT);
       SplashOn = true;
       break;
     case 2: // Random
@@ -280,6 +281,7 @@ void modelist(int n) {
       disableAllModes();
       hideAllControls();
       showAnimationControls();
+      setAnimationDefaults(127, 127);
       AnimationOn = true;
       break;
     }
