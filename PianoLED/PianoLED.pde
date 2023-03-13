@@ -39,7 +39,7 @@ void setup() {
   surface.setIcon(icon);
 
   cp5 = buildUI();
-
+  cp5.getController("modelist").setValue(0);
   Refresh();
   numberselected = 176;
   firstNoteSelected = 21;
@@ -244,44 +244,44 @@ void modelist(int n) {
       disableAllModes();
       hideAllControls();
       showDefaultControls();
+      setDefaultDefaults(255, 127);
       break;
     case 1: // Splash
       disableAllModes();
-      hideLegacyControls();
+      hideAllControls();
       showSplashControls();
-      setSplashDefaults(11, 110, 0);
+      setSplashDefaults(11, 110, 0, MIN_BRIGHT);
       SplashOn = true;
       break;
     case 2: // Random
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
+      showRandomControls();
       RandomOn = true;
       break;
     case 3: // Gradient
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showGradientButtons();
+      showGradientControls();
       GradientOn = true;
       break;
     case 4: // Velocity
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showButtons();
+      showVelocityControls();
       VelocityOn = true;
       break;
     case 5: // Split
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showSideButtons();
+      showSplitControls();
       SplitOn = true;
       break;
     case 6: // Animation
       disableAllModes();
       hideAllControls();
+      showAnimationControls();
+      setAnimationDefaults(127, 127);
       AnimationOn = true;
       break;
     }
@@ -326,6 +326,7 @@ void Open() {
     }
   }
 }
+
 //was float
 void FadeOnVal(int value)
 {

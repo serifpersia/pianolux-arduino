@@ -28,6 +28,11 @@ const int COMMAND_SPLASH_MAX_LENGTH = 248;
 const int COMMAND_SET_BG = 247;
 const int COMMAND_SET_SPLASH_COLOR = 246;
 
+int buffer[10];  // declare buffer as an array of 10 integers
+int bufIdx = 0;  // initialize bufIdx to zero
+int generalBrightness = buffer[++bufIdx];
+
+
 int DEFAULT_BRIGHTNESS = 200;
 
 int SPLASH_HEAD_FADE_RATE = 5;
@@ -36,7 +41,7 @@ int splashMaxLength = 8;
 boolean bgOn = false;
 CRGB bgColor = CRGB::Black;
 
-CHSV splashColor = CHSV(0,0,0);
+CHSV splashColor = CHSV(0, 0, 0);
 
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
@@ -208,7 +213,7 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(5);
-          int generalBrightness = buffer[++bufIdx];
+           generalBrightness = buffer[++bufIdx];
           FastLED.setBrightness(generalBrightness);
           break;
         }
@@ -242,7 +247,7 @@ void loop() {
           debugLightOn(8);
           ToggleRGBAnimation = true;
           for (int i = 0; i < NUM_LEDS; i++) {
-            leds[i] = CHSV(hue, 255, 255);
+            leds[i] = CHSV(hue, 255, generalBrightness);
           }
           EVERY_N_MILLISECONDS(15) {
             hue++;
