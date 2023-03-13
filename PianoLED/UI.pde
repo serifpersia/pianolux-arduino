@@ -90,12 +90,7 @@ ControlP5 buildUI()
   addButton(cp5, "setLeftSide", "Set L", 735, 140, 30, 15).hide();
   addButton(cp5, "setRightSide", "Set R", 765, 140, 30, 15).hide();
 
-  addButton(cp5, "setL", "Set L", 675, 140, 30, 15).hide();
-  addButton(cp5, "setM", "Set M", 705, 140, 30, 15).hide();
-  addButton(cp5, "setLM", "Set LM", 735, 140, 30, 15).hide();
-  addButton(cp5, "setH", "Set H", 765, 140, 30, 15).hide();
-
-  addButton(cp5,"setBG","Set BG", 670, 26, 30, 15).hide();
+  addButton(cp5, "setBG", "Set BG", 670, 26, 30, 15).hide();
 
   addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
 
@@ -174,8 +169,13 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   y += SPLASH_CONTROL_Y_STEP;
 }
 
+void addAnimation()
+{
 
 
+  List<String> Animation = Arrays.asList("Animation1", "Animation2");
+  addScrollableList(cp5, "Animation", "Animation", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
+}
 
 int[][] Keys = new int[88][2];
 int[][] Leds = new int[88][2];
@@ -308,19 +308,17 @@ void P174()
 
 void hideAllControls()
 {
-  hideLegacyControls();
-  hideSplashControls();
   hideBGControls();
-}
-void showDefaultControls()
-{
-  setControllersVisible(getDefaultControllers(), true);
+  hideDefaultControls();
+  hideSplashControls();
+  hideRandomControls();
+  hideGradientControls();
+  hideVelocityControls();
+  hideSplitControls();
+  hideAnimationControls();
 }
 
-void hideLegacyControls()
-{
-  setControllersVisible(getLegacyControllers(), false);
-}
+//BG Controls
 void showBGControls()
 {
   setControllersVisible(getBGControllers(), true);
@@ -329,7 +327,16 @@ void hideBGControls()
 {
   setControllersVisible(getBGControllers(), false);
 }
-
+//Default Controls
+void showDefaultControls()
+{
+  setControllersVisible(getDefaultControllers(), true);
+}
+void hideDefaultControls()
+{
+  setControllersVisible(getDefaultControllers(), false);
+}
+//Splash Controls
 void showSplashControls()
 {
   setControllersVisible(getSplashControllers(), true);
@@ -340,65 +347,52 @@ void hideSplashControls()
 {
   setControllersVisible(getSplashControllers(), false);
 }
-
-void showGradientButtons()
+//Random Controls
+void showRandomControls()
 {
-  setGradientButtonsVisible(true);
+  setControllersVisible(getRandomControllers(), true);
 }
 
-void hideGradientButtons()
+void hideRandomControls()
 {
-  setGradientButtonsVisible(false);
+  setControllersVisible(getRandomControllers(), false);
 }
-
-void showSideButtons()
+//Gradient Controls
+void showGradientControls()
 {
-  setSideButtonsVisible(true);
+  setControllersVisible(getGradinetControllers(), true);
 }
-
-void hideSideButtons()
+void hideGradientControls()
 {
-  setSideButtonsVisible(false);
+  setControllersVisible(getGradinetControllers(), false);
 }
-
-void showButtons()
+//Velocity Controls
+void showVelocityControls()
 {
-  setButtonsVisible(true);
+  setControllersVisible(getVelocityControllers(), true);
 }
-
-void hideButtons()
+void hideVelocityControls()
 {
-  setButtonsVisible(false);
+  setControllersVisible(getVelocityControllers(), false);
 }
-
-
-void setGradientButtonsVisible(boolean visible)
+//Split Controls
+void showSplitControls()
 {
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("setLeftSideG"));
-  cl.add(cp5.getController("setMiddleSideG"));
-  cl.add(cp5.getController("setRightSideG"));
-  setControllersVisible(cl, visible);
+  setControllersVisible(getSplitControllers(), true);
 }
-
-void setSideButtonsVisible(boolean visible)
+void hideSplitControls()
 {
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("setLeftSide"));
-  cl.add(cp5.getController("setRightSide"));
-  setControllersVisible(cl, visible);
+  setControllersVisible(getSplitControllers(), false);
 }
-
-void setButtonsVisible(boolean showButtons) {
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("setL"));
-  cl.add(cp5.getController("setLM"));
-  cl.add(cp5.getController("setM"));
-  cl.add(cp5.getController("setH"));
-
-  setControllersVisible(cl, showButtons);
+//Animation Controls
+void showAnimationControls()
+{
+  setControllersVisible(getAnimationControllers(), true);
 }
-
+void hideAnimationControls()
+{
+  setControllersVisible(getAnimationControllers(), false);
+}
 
 
 void Color()
@@ -409,66 +403,7 @@ void Color()
   Blue = cw.b();
   println("Colors: RED" + Red + ", GREEN" + Green + ", BLUE" + Blue);
 }
-
-List<Controller> getDefaultControllers()
-{
-  if (cp5 == null) return null;
-
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("Brightness"));
-  cl.add(cp5.getController("Red"));
-  cl.add(cp5.getController("Green"));
-  cl.add(cp5.getController("Blue"));
-  cl.add(cp5.getController("FadeOnVal"));
-  cl.add(cp5.getController("Color"));
-  cl.add(cp5.getController("colorlist"));
-
-  return cl;
-}
-
-List<Controller> getLegacyControllers()
-{
-  if (cp5 == null) return null;
-
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("Brightness"));
-  cl.add(cp5.getController("Red"));
-  cl.add(cp5.getController("Green"));
-  cl.add(cp5.getController("Blue"));
-  cl.add(cp5.getController("Color"));
-  cl.add(cp5.getController("colorlist"));
-
-  cl.add(cp5.getController("FadeOnVal"));
-
-  cl.add(cp5.getController("setLeftSideG"));
-  cl.add(cp5.getController("setRightSideG"));
-  cl.add(cp5.getController("setLeftSide"));
-  cl.add(cp5.getController("setMiddleSideG"));
-  cl.add(cp5.getController("setRightSide"));
-  cl.add(cp5.getController("setL"));
-  cl.add(cp5.getController("setLM"));
-  cl.add(cp5.getController("setM"));
-  cl.add(cp5.getController("setH"));
-  cl.add(cp5.getController("setBG"));
-  return cl;
-}
-
-List<Controller> getSplashControllers()
-{
-  if (cp5 == null) return null;
-
-  List<Controller> cl = new ArrayList<>();
-  cl.add(cp5.getController("splashMaxLength"));
-  cl.add(cp5.getController("FadeOnVal"));
-  cl.add(cp5.getController("splashHeadFade"));
-  cl.add(cp5.getController("splashColors"));
-  cl.add(cp5.getController("Color"));
-
-  //cl.add(cp5.getController("splashVelocityBrightnessImpact"));
-  //cl.add(cp5.getController("splashVelocitySpeedImpact"));
-  return cl;
-}
-
+//BG List
 List<Controller> getBGControllers()
 {
   if (cp5 == null) return null;
@@ -478,6 +413,102 @@ List<Controller> getBGControllers()
 
   return cl;
 }
+//Default List
+List<Controller> getDefaultControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("Color"));
+  cl.add(cp5.getController("colorlist"));
+
+  return cl;
+}
+//Splash List
+List<Controller> getSplashControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+  cl.add(cp5.getController("splashMaxLength"));
+  cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("splashHeadFade"));
+  cl.add(cp5.getController("splashColors"));
+  cl.add(cp5.getController("Color"));
+
+  //cl.add(cp5.getController("splashVelocityBrightnessImpact"));
+  //cl.add(cp5.getController("splashVelocitySpeedImpact"));
+  return cl;
+}
+//Random List
+List<Controller> getRandomControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+  return cl;
+}
+//Gradient List
+List<Controller> getGradinetControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("colorlist"));
+  cl.add(cp5.getController("Color"));
+  cl.add(cp5.getController("setLeftSideG"));
+  cl.add(cp5.getController("setMiddleSideG"));
+  cl.add(cp5.getController("setRightSideG"));
+
+  return cl;
+}
+//Velocity List
+List<Controller> getVelocityControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+  return cl;
+}
+
+//Split List
+List<Controller> getSplitControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+
+  cl.add(cp5.getController("setLeftSide"));
+  cl.add(cp5.getController("setRightSide"));
+  return cl;
+}
+//Animation List
+List<Controller> getAnimationControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("Brightness"));
+  cl.add(cp5.getController("FadeOnVal"));
+  return cl;
+}
+
 
 void setControllersVisible(List<Controller> cl, boolean visible) {
   if ( cl == null) return;

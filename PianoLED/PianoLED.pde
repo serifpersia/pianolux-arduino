@@ -247,7 +247,7 @@ void modelist(int n) {
       break;
     case 1: // Splash
       disableAllModes();
-      hideLegacyControls();
+      hideAllControls();
       showSplashControls();
       setSplashDefaults(11, 110, 0);
       SplashOn = true;
@@ -255,33 +255,31 @@ void modelist(int n) {
     case 2: // Random
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
+      showRandomControls();
       RandomOn = true;
       break;
     case 3: // Gradient
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showGradientButtons();
+      showGradientControls();
       GradientOn = true;
       break;
     case 4: // Velocity
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showButtons();
+      showVelocityControls();
       VelocityOn = true;
       break;
     case 5: // Split
       disableAllModes();
       hideAllControls();
-      showDefaultControls();
-      showSideButtons();
+      showSplitControls();
       SplitOn = true;
       break;
     case 6: // Animation
       disableAllModes();
       hideAllControls();
+      showAnimationControls();
       AnimationOn = true;
       break;
     }
@@ -326,6 +324,7 @@ void Open() {
     }
   }
 }
+
 //was float
 void FadeOnVal(int value)
 {
