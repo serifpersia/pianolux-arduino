@@ -39,7 +39,9 @@ void setup() {
   surface.setIcon(icon);
 
   cp5 = buildUI();
+
   cp5.getController("modelist").setValue(0);
+
   Refresh();
   numberselected = 176;
   firstNoteSelected = 21;
@@ -71,16 +73,8 @@ void noteOn(int channel, int pitch, int velocity) {
       if (RandomOn) {
         message = commandSetColor((int)random(1, 250), (int)random(1, 250), (int)random(1, 250), notePushed);
       } else if (VelocityOn) {
-        // Send color based on velocity range
-        if (velocity > 0 && velocity < 22) {
-          message = commandSetColor(velRedL, velGreenL, velBlueL, notePushed);
-        } else if (velocity > 22 && velocity < 50) {
-          message = commandSetColor(velRedM, velGreenM, velBlueM, notePushed);
-        } else if (velocity > 50 && velocity < 85) {
-          message = commandSetColor(velRedM, velGreenM, velBlueM, notePushed);
-        } else if (velocity > 85 && velocity < 128) {
-          message = commandSetColor(velRedH, velGreenH, velBlueH, notePushed);
-        }
+
+        // message = commandVelocity(velocity, notePushed);
       } else if (SplitOn) {
         // Send color based on velocity range
         if (pitch >= 21 && pitch <= 59) {
@@ -122,7 +116,7 @@ void noteOn(int channel, int pitch, int velocity) {
         message = commandSetColor(red, green, blue, notePushed);
       } else if (SplashOn)
       {
-        message = commandSplash(velocity, notePushed);
+        message = commandSplash(velocity, notePushed, getSplashColor());
       } else
       {
         message = commandSetColor(Red, Green, Blue, notePushed);
@@ -180,29 +174,6 @@ void disableAllModes()
   SplashOn = false;
 }
 
-void splashColors(int n) {
-  if (n == 0) {
-    // Full Spectrum mode
-    splashRed = 0;
-    splashGreen = 0;
-    splashBlue = 0;
-    println("Selected color: Full Spectrum");
-  } else if (n >= 1 && n <= presetColors.length) {
-    // Preset color mode
-    int selectedColor = presetColors[n-1];
-    splashRed = round(red(selectedColor));
-    splashGreen = round(green(selectedColor));
-    splashBlue = round(blue(selectedColor));
-    println("Selected color: " + colorNames.get(n-1));
-  } else {
-    // Invalid color mode
-    println("Invalid color selection: " + n);
-    return;
-  }
-  sendCommandSetSplashColor(splashRed, splashGreen, splashBlue);
-}
-
-
 void colorlist(int n) {
   if (cp5 != null) {
     int selectedColor = presetColors[n];
@@ -210,6 +181,9 @@ void colorlist(int n) {
     Red = round(red(selectedColor));
     Green = round(green(selectedColor));
     Blue = round(blue(selectedColor));
+
+    cp5.get(ColorWheel.class, "Color").setRGB(selectedColor);
+
 
     println("Selected color: " + colorNames.get(n));
     println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
@@ -234,6 +208,18 @@ void BGColor(boolean on)
   }
 }
 
+void setBG() {
+  int red = Red; // Red value from 0-255
+  int green = Green; // Green value from 0-255
+  int blue = Blue; // Blue value from 0-255
+
+  float[] hsbValues = java.awt.Color.RGBtoHSB(red, green, blue, null);
+  int hue = (int)(hsbValues[0] * 255);
+  int saturation = (int)(hsbValues[1] * 255);
+  int brightness = 20;
+
+  sendCommandSetBG(hue, saturation, brightness);
+}
 
 void modelist(int n) {
   if (cp5 != null) {
@@ -250,7 +236,7 @@ void modelist(int n) {
       disableAllModes();
       hideAllControls();
       showSplashControls();
-      setSplashDefaults(11, 110, 0, MIN_BRIGHT);
+      setSplashDefaults(11, 110, 0, 127);
       SplashOn = true;
       break;
     case 2: // Random
@@ -281,7 +267,7 @@ void modelist(int n) {
       disableAllModes();
       hideAllControls();
       showAnimationControls();
-      setAnimationDefaults(127, 127);
+      setAnimationDefaults(0, 127);
       AnimationOn = true;
       break;
     }
@@ -441,26 +427,7 @@ void AdvanceUser()
   {
   }
 }
-void setL() {
-  velRedL =(Red);
-  velGreenL =(Green);
-  velBlueL = (Blue);
-}
-void setLM() {
-  velRedLM =(Red);
-  velGreenLM =(Green);
-  velBlueLM = (Blue);
-}
-void setM() {
-  velRedM =(Red);
-  velGreenM =(Green);
-  velBlueM = (Blue);
-}
-void setH() {
-  velRedH =(Red);
-  velGreenH =(Green);
-  velBlueH = (Blue);
-}
+
 
 void setLeftSide() {
   splitLeftRed =(Red);
@@ -477,32 +444,16 @@ void setLeftSideG() {
   LeftSideGGreen = (Green);
   LeftSideGBlue = (Blue);
 }
-void setRightSideG() {
-  RightSideGRed = (Red);
-  RightSideGGreen = (Green);
-  RightSideGBlue = (Blue);
-}
 void setMiddleSideG() {
   MiddleSideGRed = (Red);
   MiddleSideGGreen = (Green);
   MiddleSideGBlue = (Blue);
 }
-
-
-void setBG() {
-  int red = Red; // Red value from 0-255
-  int green = Green; // Green value from 0-255
-  int blue = Blue; // Blue value from 0-255
-
-  float[] hsbValues = java.awt.Color.RGBtoHSB(red, green, blue, null);
-  int hue = (int)(hsbValues[0] * 255);
-  int saturation = (int)(hsbValues[1] * 255);
-  int brightness = 20;
-
-  sendCommandSetBG(hue, saturation, brightness);
+void setRightSideG() {
+  RightSideGRed = (Red);
+  RightSideGGreen = (Green);
+  RightSideGBlue = (Blue);
 }
-
-
 
 public static void printArray(byte[] bytes) {
   print("Message:");
