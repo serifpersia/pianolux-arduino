@@ -40,6 +40,7 @@ int splashMaxLength = 8;
 boolean bgOn = false;
 CRGB bgColor = CRGB::Black;
 
+
 unsigned long currentTime = 0;
 unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
@@ -50,7 +51,6 @@ int generalFadeRate = 5;          // general fade rate, bigger value - quicker f
 
 uint8_t hue = 0;
 
-bool ToggleRGBAnimation = false;
 
 boolean keysOn[NUM_LEDS];
 
@@ -73,7 +73,7 @@ boolean isOnStrip(int pos) {
 }
 
 void StartupAnimation() {
-  for (int i = 0; i < NUM_LEDS; i++) {
+  for (int i = 0; i < 30; i++) {
     leds[i] = CHSV(getHueForPos(i), 255, 255);
     FastLED.show();
     delay(3);
@@ -129,11 +129,11 @@ void removeEffect(FadingRunEffect* effect) {
   }
 }
 void setBG(CRGB colorToSet) {
-  if (colorToSet == CRGB(0)) {
-    fadeInterval = 20;
-  } else {
-    fadeInterval = 100;
-  }
+  // if (colorToSet == CRGB(0)) {
+  //  fadeInterval = 20;
+  // } else {
+  //   fadeInterval = 100;
+  // }
 
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = colorToSet;
@@ -237,7 +237,6 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(7);
-          ToggleRGBAnimation = false;
           fill_solid(leds, NUM_LEDS, bgColor);
           break;
         }
@@ -246,14 +245,21 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(8);
-          ToggleRGBAnimation = true;
-          for (int i = 0; i < NUM_LEDS; i++) {
-            leds[i] = CHSV(hue, 255, generalBrightness);
+          int animationIndex = buffer[++bufIdx];
+          CRGB testRed = CRGB::Red;
+          CRGB testGreen = CRGB::Green;
+          CRGB testBlue = CRGB::Blue;
+          if (animationIndex == 1) {
+            fill_solid(leds, 10, testRed);
+          } else if (animationIndex == 2) {
+            fill_solid(leds, 10, testGreen);
           }
-          EVERY_N_MILLISECONDS(15) {
-            hue++;
+          else if (animationIndex == 3) {
+            fill_solid(leds, 10, testBlue);
           }
-          FastLED.show();
+          else if (animationIndex == 4) {
+            
+          }
           break;
         }
       case COMMAND_KEY_OFF:
@@ -288,10 +294,8 @@ void loop() {
           keysOn[note - 1] = true;
           setColorFromVelocity(velocity, rgb);
           controlLeds(note - 1, rgb.r, rgb.g, rgb.b);
-          MODE = COMMAND_VELOCITY;
           break;
         }
-
       default:
         {
           break;

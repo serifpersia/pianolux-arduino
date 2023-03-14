@@ -63,12 +63,13 @@ ByteArrayOutputStream commandFadeRate(int fadeRate)
   return message;
 }
 
-ByteArrayOutputStream commandAnimation()
+ByteArrayOutputStream commandAnimation(int animationIndex)
 {
   ByteArrayOutputStream message = new ByteArrayOutputStream();
   message.write((byte)COMMAND_BYTE1);
   message.write((byte)COMMAND_BYTE2);
   message.write((byte)COMMAND_ANIMATION);
+  message.write((byte)animationIndex);
   return message;
 }
 
@@ -128,7 +129,10 @@ ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int 
   return message;
 }
 
-
+void sendCommandAnimation(int animationIndex)
+{
+  sendToArduino(commandAnimation(animationIndex));
+}
 void sendCommandSplash(int velocity, int note, color sc)
 {
   sendToArduino(commandSplash(velocity, note, sc));
@@ -169,10 +173,6 @@ void sendCommandVelocity(int velocity, int note, int r, int g, int b)
   sendToArduino(commandVelocity(velocity, note, r, g, b));
 }
 
-void animationLoop()
-{
-  sendToArduino(commandAnimation());
-}
 
 void sendToArduino(byte val)
 {

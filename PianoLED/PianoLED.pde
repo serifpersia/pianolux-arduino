@@ -191,6 +191,35 @@ void colorlist(int n) {
   }
 }
 
+void animationlist(int n) {
+  String selectedAnimation = animationNames.get(n);
+  println("Selected Animation: " + selectedAnimation);
+
+  // Select animation based on index
+  switch (n) {
+  case 0:
+    // Select Animation 1
+    sendCommandAnimation(1);
+    break;
+  case 1:
+    // Select Animation 2
+    sendCommandAnimation(2);
+    break;
+  case 2:
+    // Select Animation 3
+    sendCommandAnimation(3);
+    break;
+  case 3:
+    // Select Animation 4
+    sendCommandAnimation(4);
+    break;
+  default:
+    println("Invalid animation selection.");
+    break;
+  }
+}
+
+
 void BGColor(boolean on)
 {
   println("Set BG: "+on);

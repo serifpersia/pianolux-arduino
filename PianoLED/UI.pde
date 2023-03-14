@@ -1,6 +1,6 @@
 ControlP5 cp5;
 
-int MIN_FADE_RATE = 1;
+int MIN_FADE_RATE = 0;
 int MAX_FADE_RATE = 255;
 int DEFAULT_FADE_RATE = 255;
 
@@ -21,7 +21,7 @@ color SLIDER_COLOR_FG = GREY;
 color SLIDER_COLOR_BG = BLACK;
 color SLIDER_COLOR_ACT = GREY;
 
-int MIN_BRIGHT = 10;
+int MIN_BRIGHT = 0;
 int MAX_BRIGHT = 255;
 int DEF_BRIGHT = 127;
 
@@ -68,6 +68,8 @@ int[] presetColors = {
 
 List<String> colorNames = Arrays.asList("Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 List<String> splashColorNames = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
+List<String> animationNames = Arrays.asList("Animation 1", "Animation 2", "Animation 3", "Animation 4", "Animation 5", "Animation 6", "Animation 7");
+
 
 
 ControlP5 buildUI()
@@ -111,12 +113,15 @@ ControlP5 buildUI()
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
 
+
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+15;
   int SPLASH_CONTROL_Y = 60;
 
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+
+  addAnimationControls(cp5);
 
 
 
@@ -168,12 +173,9 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   y += SPLASH_CONTROL_Y_STEP;
 }
 
-void addAnimation()
+void addAnimationControls(ControlP5 cp5)
 {
-
-
-  List<String> Animation = Arrays.asList("Animation1", "Animation2");
-  addScrollableList(cp5, "Animation", "Animation", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
+  addScrollableList(cp5, "animationlist", "Animations", animationNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15).hide();
 }
 
 int[][] Keys = new int[88][2];
@@ -492,7 +494,7 @@ List<Controller> getSplitControllers()
 
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("FadeOnVal"));
-  
+
   cl.add(cp5.getController("colorlist"));
   cl.add(cp5.getController("Color"));
 
@@ -509,6 +511,8 @@ List<Controller> getAnimationControllers()
 
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("FadeOnVal"));
+  cl.add(cp5.getController("animationlist"));
+
   return cl;
 }
 
@@ -550,9 +554,6 @@ void draw() {
   text(presetText, 375, 15);
   //text(VersionTag, 15, 150);
 
-  if (AnimationOn) {
-    animationLoop();
-  }
   //white keys
   // Initial x-coordinate of the first key
   int x = 0;
