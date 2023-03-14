@@ -370,16 +370,34 @@ void Refresh() {
 
 int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
   int i = 0;
-  Pattern serialPattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
+  Pattern midiPattern = Pattern.compile(midiKeyword.toLowerCase());
+  Pattern serialPattern = Pattern.compile("(com([2-9]|[1-9]\\d*))|(/dev/ttyACM(\\d+))");
+  int lastSerialDeviceIndex = -1;
 
   for (String value : values) {
     if (value.toLowerCase().contains(midiKeyword.toLowerCase()) || value.toLowerCase().contains(serialKeyword.toLowerCase())) {
-      if (!value.toLowerCase().contains("com")) {
+      if (!value.toLowerCase().contains("com") && !value.toLowerCase().contains("/dev/tty")) {
         System.out.println("Checking value: " + value);
         // Found a matching MIDI device
         return i;
+      } else if (value.toLowerCase().contains("/dev/tty")) {
+        // Found a matching serial device on Linux
+        Matcher matcher = serialPattern.matcher(value.toLowerCase());
+        if (matcher.find()) {
+          String match = matcher.group();
+          String[] parts = match.split("/dev/ttyACM");
+          if (parts.length == 2) {
+            try {
+              int port = Integer.parseInt(parts[1]);
+              lastSerialDeviceIndex = i;
+            }
+            catch (NumberFormatException e) {
+              // If the port number cannot be parsed, skip this value
+            }
+          }
+        }
       } else {
-        // Found a matching serial device
+        // Found a matching serial device on Windows
         Matcher matcher = serialPattern.matcher(value.toLowerCase());
         if (matcher.find()) {
           String match = matcher.group();
@@ -387,8 +405,7 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
           if (parts.length == 2) {
             try {
               int port = Integer.parseInt(parts[1]);
-              System.out.println("Checking value: " + value);
-              return port;
+              lastSerialDeviceIndex = i;
             }
             catch (NumberFormatException e) {
               // If the port number cannot be parsed, skip this value
@@ -400,9 +417,16 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
     i++;
   }
 
-  // If no suitable device is found, return 0
-  return 0;
+  if (lastSerialDeviceIndex != -1) {
+    // If a suitable serial device was found, select it
+    return lastSerialDeviceIndex;
+  } else {
+    // If no suitable device is found, return 0
+    return 0;
+  }
 }
+
+
 
 void AdvanceUser()
 {
