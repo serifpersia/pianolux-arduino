@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/62844718/224165626-9ffef153-2cf1-4f94-aa93-438d422b8a8b.png)
+https://cdn.discordapp.com/attachments/1077207076167753739/1083502521802309752/image.png
 This app is a simple Processing (Java) based GUI that controls a WS2812B LED strip using an Arduino. 
 The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient. 
 
