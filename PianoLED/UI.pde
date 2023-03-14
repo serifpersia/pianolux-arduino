@@ -82,7 +82,7 @@ ControlP5 buildUI()
   addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
     //.setLabelVisible(false)
     ;
-    
+
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
   addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();
@@ -479,6 +479,7 @@ List<Controller> getVelocityControllers()
 
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("FadeOnVal"));
+
   return cl;
 }
 
@@ -491,6 +492,9 @@ List<Controller> getSplitControllers()
 
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("FadeOnVal"));
+  
+  cl.add(cp5.getController("colorlist"));
+  cl.add(cp5.getController("Color"));
 
   cl.add(cp5.getController("setLeftSide"));
   cl.add(cp5.getController("setRightSide"));
@@ -575,19 +579,6 @@ void draw() {
     // Use the x-coordinate from the list to draw each key
     rect(keyXCoordinates[i]+15, 65, 8, 40);
   }
-  // led strip white keys
-  int y = 0;
-  for (int i = 0; i < leds.length; i++) {
-    fill(Keys[whiteKeys[i]][0] == 1 ? Red : 0, Keys[whiteKeys[i]][0] == 1 ? Green : 0, Keys[whiteKeys[i]][0] == 1 ? Blue : 0);
-    rect(y + 15, 54, 15, 10);
-    y += 15;
-  }
-  // led strip black keys
-  for (int i = 0; i < ledsBlack.length; i++) {
-    fill(Keys[blackKeys[i]][1] == 1 ? Red : 0, Keys[blackKeys[i]][1] == 1 ? Green : 0, Keys[blackKeys[i]][1] == 1 ? Blue : 0);
-    rect(keyYCoordinates[i] + 15, 54, 8, 10);
-  }
-
   // highlight piano size L&R boxes
   fill(0, 127);
   rect(15, 64, rectASizeX, 70);

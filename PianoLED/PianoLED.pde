@@ -73,8 +73,7 @@ void noteOn(int channel, int pitch, int velocity) {
       if (RandomOn) {
         message = commandSetColor((int)random(1, 250), (int)random(1, 250), (int)random(1, 250), notePushed);
       } else if (VelocityOn) {
-
-        // message = commandVelocity(velocity, notePushed);
+        message = commandVelocity(velocity, notePushed, Red, Green, Blue);
       } else if (SplitOn) {
         // Send color based on velocity range
         if (pitch >= 21 && pitch <= 59) {

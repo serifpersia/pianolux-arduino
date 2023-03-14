@@ -3,7 +3,6 @@
 #include <FastLED.h>
 #include "FadingRunEffect.h"
 #include "FadeController.h"
-
 #define NO_HARDWARE_PIN_SUPPORT
 #define FASTLED_RMT_MAX_CHANNELS 1
 
@@ -26,6 +25,7 @@ const int COMMAND_SET_BRIGHTNESS = 250;
 const int COMMAND_KEY_OFF = 249;
 const int COMMAND_SPLASH_MAX_LENGTH = 248;
 const int COMMAND_SET_BG = 247;
+const int COMMAND_VELOCITY = 246;
 
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -187,7 +187,7 @@ void loop() {
           int r = buffer[++bufIdx];
           int g = buffer[++bufIdx];
           int b = buffer[++bufIdx];
-          CHSV hsv = rgb2hsv_approximate(CRGB(r,g,b));
+          CHSV hsv = rgb2hsv_approximate(CRGB(r, g, b));
           keysOn[note - 1] = true;
           addEffect(new FadingRunEffect(splashMaxLength, note - 1, hsv, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
@@ -214,7 +214,7 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(5);
-           generalBrightness = buffer[++bufIdx];
+          generalBrightness = buffer[++bufIdx];
           FastLED.setBrightness(generalBrightness);
           break;
         }
@@ -277,6 +277,21 @@ void loop() {
           break;
         }
 
+      case COMMAND_VELOCITY:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(11);
+          int velocity = buffer[++bufIdx];
+          int note = buffer[++bufIdx];
+          CRGB rgb;
+          keysOn[note - 1] = true;
+          setColorFromVelocity(velocity, rgb);
+          controlLeds(note - 1, rgb.r, rgb.g, rgb.b);
+          MODE = COMMAND_VELOCITY;
+          break;
+        }
+
       default:
         {
           break;
@@ -309,11 +324,22 @@ void loop() {
 }
 
 void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
-  if (ledNo < 0 || ledNo > NUM_LEDS) { return; }
+  if (ledNo < 0 || ledNo > NUM_LEDS) {
+    return;
+  }
   leds[ledNo].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
 
 float distance(CRGB color1, CRGB color2) {
   return sqrt(pow(color1.r - color2.r, 2) + pow(color1.g - color2.g, 2) + pow(color1.b - color2.b, 2));
+}
+
+void setColorFromVelocity(int velocity, CRGB& rgb) {
+  // Map velocity to hue value
+  int hue = map(velocity, 0, 127, 0, 255);
+
+  // Convert hue to RGB color
+  CHSV hsv(hue, 255, 255);
+  rgb = hsv;
 }
