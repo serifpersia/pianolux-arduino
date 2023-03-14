@@ -73,8 +73,7 @@ void noteOn(int channel, int pitch, int velocity) {
       if (RandomOn) {
         message = commandSetColor((int)random(1, 250), (int)random(1, 250), (int)random(1, 250), notePushed);
       } else if (VelocityOn) {
-
-        // message = commandVelocity(velocity, notePushed);
+        message = commandVelocity(velocity, notePushed, Red, Green, Blue);
       } else if (SplitOn) {
         // Send color based on velocity range
         if (pitch >= 21 && pitch <= 59) {
@@ -191,6 +190,35 @@ void colorlist(int n) {
     println("cp5 object is null");
   }
 }
+
+void animationlist(int n) {
+  String selectedAnimation = animationNames.get(n);
+  println("Selected Animation: " + selectedAnimation);
+
+  // Select animation based on index
+  switch (n) {
+  case 0:
+    // Select Animation 1
+    sendCommandAnimation(1);
+    break;
+  case 1:
+    // Select Animation 2
+    sendCommandAnimation(2);
+    break;
+  case 2:
+    // Select Animation 3
+    sendCommandAnimation(3);
+    break;
+  case 3:
+    // Select Animation 4
+    sendCommandAnimation(4);
+    break;
+  default:
+    println("Invalid animation selection.");
+    break;
+  }
+}
+
 
 void BGColor(boolean on)
 {
@@ -366,30 +394,44 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultDevice(midilist, "piano", "midi"));
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", null));
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", ""));
 }
 
 int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
   int i = 0;
-  Pattern serialPattern = Pattern.compile("com([2-9]|[1-9]\\d*)");
+  Pattern serialPattern = Pattern.compile("(com([2-9]|[1-9]\\d*))|(/dev/ttyACM(\\d+))");
+  int lastSerialDeviceIndex = -1;
 
   for (String value : values) {
     if (value.toLowerCase().contains(midiKeyword.toLowerCase()) || value.toLowerCase().contains(serialKeyword.toLowerCase())) {
-      if (!value.toLowerCase().contains("com")) {
+      if (!value.toLowerCase().contains("com") && !value.toLowerCase().contains("/dev/tty")) {
         System.out.println("Checking value: " + value);
         // Found a matching MIDI device
         return i;
+      } else if (value.toLowerCase().contains("/dev/tty")) {
+        // Found a matching serial device on Linux
+        Matcher matcher = serialPattern.matcher(value.toLowerCase());
+        if (matcher.find()) {
+          String match = matcher.group();
+          String[] parts = match.split("/dev/ttyACM");
+          if (parts.length == 2) {
+            try {
+              lastSerialDeviceIndex = i;
+            }
+            catch (NumberFormatException e) {
+              // If the port number cannot be parsed, skip this value
+            }
+          }
+        }
       } else {
-        // Found a matching serial device
+        // Found a matching serial device on Windows
         Matcher matcher = serialPattern.matcher(value.toLowerCase());
         if (matcher.find()) {
           String match = matcher.group();
           String[] parts = match.split("com");
           if (parts.length == 2) {
             try {
-              int port = Integer.parseInt(parts[1]);
-              System.out.println("Checking value: " + value);
-              return port;
+              lastSerialDeviceIndex = i;
             }
             catch (NumberFormatException e) {
               // If the port number cannot be parsed, skip this value
@@ -401,9 +443,16 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
     i++;
   }
 
-  // If no suitable device is found, return 0
-  return 0;
+  if (lastSerialDeviceIndex != -1) {
+    // If a suitable serial device was found, select it
+    return lastSerialDeviceIndex;
+  } else {
+    // If no suitable device is found, return 0
+    return 0;
+  }
 }
+
+
 
 void AdvanceUser()
 {

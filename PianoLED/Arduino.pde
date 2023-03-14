@@ -14,6 +14,7 @@ final static byte COMMAND_SET_BRIGHTNESS = (byte)250;
 final static byte COMMAND_KEY_OFF = (byte)249;
 final static byte COMMAND_SPLASH_MAX_LENGTH = (byte)248;
 final static byte COMMAND_SET_BG = (byte)247;
+final static byte COMMAND_VELOCITY = (byte)246;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -62,12 +63,13 @@ ByteArrayOutputStream commandFadeRate(int fadeRate)
   return message;
 }
 
-ByteArrayOutputStream commandAnimation()
+ByteArrayOutputStream commandAnimation(int animationIndex)
 {
   ByteArrayOutputStream message = new ByteArrayOutputStream();
   message.write((byte)COMMAND_BYTE1);
   message.write((byte)COMMAND_BYTE2);
   message.write((byte)COMMAND_ANIMATION);
+  message.write((byte)animationIndex);
   return message;
 }
 
@@ -113,7 +115,24 @@ ByteArrayOutputStream commandSetBG(int hue, int saturation, int brightness)
   return message;
 }
 
+ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int b)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_VELOCITY);
+  message.write((byte)velocity);
+  message.write((byte)note);
+  message.write((byte)r);
+  message.write((byte)g);
+  message.write((byte)b);
+  return message;
+}
 
+void sendCommandAnimation(int animationIndex)
+{
+  sendToArduino(commandAnimation(animationIndex));
+}
 void sendCommandSplash(int velocity, int note, color sc)
 {
   sendToArduino(commandSplash(velocity, note, sc));
@@ -149,10 +168,11 @@ void sendCommandSetBG(int hue, int saturation, int brightness)
   sendToArduino(commandSetBG(hue, saturation, brightness));
 }
 
-void animationLoop()
+void sendCommandVelocity(int velocity, int note, int r, int g, int b)
 {
-  sendToArduino(commandAnimation());
+  sendToArduino(commandVelocity(velocity, note, r, g, b));
 }
+
 
 void sendToArduino(byte val)
 {
