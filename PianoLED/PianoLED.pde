@@ -365,12 +365,11 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultDevice(midilist, "piano", "midi"));
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", null));
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", ""));
 }
 
 int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
   int i = 0;
-  Pattern midiPattern = Pattern.compile(midiKeyword.toLowerCase());
   Pattern serialPattern = Pattern.compile("(com([2-9]|[1-9]\\d*))|(/dev/ttyACM(\\d+))");
   int lastSerialDeviceIndex = -1;
 
@@ -388,7 +387,6 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
           String[] parts = match.split("/dev/ttyACM");
           if (parts.length == 2) {
             try {
-              int port = Integer.parseInt(parts[1]);
               lastSerialDeviceIndex = i;
             }
             catch (NumberFormatException e) {
@@ -404,7 +402,6 @@ int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyw
           String[] parts = match.split("com");
           if (parts.length == 2) {
             try {
-              int port = Integer.parseInt(parts[1]);
               lastSerialDeviceIndex = i;
             }
             catch (NumberFormatException e) {
