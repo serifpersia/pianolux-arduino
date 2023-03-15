@@ -390,69 +390,29 @@ void Refresh() {
 
   // Add the list of MIDI devices to the scrollable list in the GUI
   cp5.get(ScrollableList.class, "midi").clear();
-  cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findDefaultDevice(midilist, "piano", "midi"));
+  cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, Arrays.asList("piano", "midi", "tascam")));
+  
+  cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefaultDevice(Arrays.asList(comlist), "com", ""));
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(Arrays.asList(comlist), Arrays.asList("com", "ttyACM")));
 }
 
-int findDefaultDevice(List<String> values, String midiKeyword, String serialKeyword) {
-  int i = 0;
-  Pattern serialPattern = Pattern.compile("(com([2-9]|[1-9]\\d*))|(/dev/ttyACM(\\d+))");
-  int lastSerialDeviceIndex = -1;
-
-  for (String value : values) {
-    if (value.toLowerCase().contains(midiKeyword.toLowerCase()) || value.toLowerCase().contains(serialKeyword.toLowerCase())) {
-      if (!value.toLowerCase().contains("com") && !value.toLowerCase().contains("/dev/tty")) {
-        System.out.println("Checking value: " + value);
-        // Found a matching MIDI device
-        return i;
-      } else if (value.toLowerCase().contains("/dev/tty")) {
-        // Found a matching serial device on Linux
-        Matcher matcher = serialPattern.matcher(value.toLowerCase());
-        if (matcher.find()) {
-          String match = matcher.group();
-          String[] parts = match.split("/dev/ttyACM");
-          if (parts.length == 2) {
-            try {
-              lastSerialDeviceIndex = i;
-            }
-            catch (NumberFormatException e) {
-              // If the port number cannot be parsed, skip this value
-            }
-          }
-        }
-      } else {
-        // Found a matching serial device on Windows
-        Matcher matcher = serialPattern.matcher(value.toLowerCase());
-        if (matcher.find()) {
-          String match = matcher.group();
-          String[] parts = match.split("com");
-          if (parts.length == 2) {
-            try {
-              lastSerialDeviceIndex = i;
-            }
-            catch (NumberFormatException e) {
-              // If the port number cannot be parsed, skip this value
-            }
-          }
-        }
+int findDefault(List<String> values, List<String> keywords) {
+  int index = 0;
+  for ( String value : values )
+  {
+    for ( String keyword : keywords )
+    {
+      if (value.toLowerCase().contains(keyword) ) //<>//
+      {
+        return index;
       }
     }
-    i++;
+    index++;
   }
-
-  if (lastSerialDeviceIndex != -1) {
-    // If a suitable serial device was found, select it
-    return lastSerialDeviceIndex;
-  } else {
-    // If no suitable device is found, return 0
-    return 0;
-  }
+  return 0;
 }
-
-
 
 void AdvanceUser()
 {
