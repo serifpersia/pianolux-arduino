@@ -1,4 +1,4 @@
-//PianoLED
+//PianoLED //<>// //<>//
 import processing.serial.*;
 import javax.sound.midi.*;
 import themidibus.*;
@@ -395,16 +395,19 @@ void Refresh() {
   
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(Arrays.asList(comlist), Arrays.asList("com", "ttyACM")));
+  List<String> serialPorts = Arrays.asList(comlist);
+  serialPorts.remove("com1");
+  serialPorts.remove("COM1");
+  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
 }
 
 int findDefault(List<String> values, List<String> keywords) {
   int index = 0;
   for ( String value : values )
-  {
+  { //<>//
     for ( String keyword : keywords )
     {
-      if (value.toLowerCase().contains(keyword) ) //<>//
+      if (value.toLowerCase().contains(keyword) )
       {
         return index;
       }
