@@ -396,8 +396,8 @@ void Refresh() {
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
   List<String> serialPorts = Arrays.asList(comlist);
-  serialPorts.remove("com1");
-  serialPorts.remove("COM1");
+ // serialPorts.remove("com1");
+  //serialPorts.remove("COM1");
   cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
 }
 
