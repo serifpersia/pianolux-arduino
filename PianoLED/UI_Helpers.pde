@@ -10,7 +10,7 @@ int[] blackKeys = {1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35,
 // Create a list of x-coordinates for each key
 int[] keyXCoordinates = {11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221,
   251, 266, 296, 311, 326, 356, 371, 401, 416, 431, 461, 476, 506, 521,
-  536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746}; 
+  536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746};
 
 //Buttons
 Button addButton(ControlP5 cp5, String name, String label, int x, int y, int w, int h)
@@ -63,17 +63,18 @@ ScrollableList addScrollableList(ControlP5 cp5, String name, String label, List 
 }
 
 //Slider
+
 Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, float min, float max, float def)
 {
-  return addSlider( cp5, name, label, x, y, min, max, def, -1, -1);
+  return addSlider( cp5, name, label, x, y, 0, 0, min, max, def, SLIDER_COLOR_FG, SLIDER_COLOR_BG, SLIDER_COLOR_ACT);
 }
 
-Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, float min, float max, float def, int alignX, int alignY)
+Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h, int w, float min, float max, float def)
 {
-  return addSlider( cp5, name, label, x, y, 0, 0, min, max, def, alignX, alignY, SLIDER_COLOR_FG, SLIDER_COLOR_BG, SLIDER_COLOR_ACT);
+  return addSlider( cp5, name, label, x, y, h, w, min, max, def, SLIDER_COLOR_FG, SLIDER_COLOR_BG, SLIDER_COLOR_ACT);
 }
 
-Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h, int w, float min, float max, float def, int alignX, int alignY, color fg, color bg, color act)
+Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h, int w, float min, float max, float def, color fg, color bg, color act)
 {
   Slider s = cp5.addSlider(name)
     .setCaptionLabel(label)
@@ -86,11 +87,6 @@ Slider addSlider( ControlP5 cp5, String name, String label, int x, int y, int h,
   s.setColorActive(act);
 
   if ( h > 0 && w >= 0 ) s.setSize(h, w);
-
-  if ( alignX >= 0 && alignY >= 0 )
-  {
-    s.getCaptionLabel().align(alignX, alignY).setPaddingY(1);
-  }
   return s;
 }
 ColorWheel addColorWheel(ControlP5 cp5, String name, int x, int y, int d) {

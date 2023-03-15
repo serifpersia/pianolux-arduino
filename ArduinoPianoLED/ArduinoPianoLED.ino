@@ -50,7 +50,18 @@ unsigned long interval = 20;      // general refresh in milliseconds
 unsigned long fadeInterval = 20;  // general fade interval in milliseconds
 int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
 
+
+//Animation select variables
 uint8_t hue = 0;
+
+#define UPDATES_PER_SECOND 100
+
+CRGBPalette16 currentPalette;
+TBlendType currentBlending;
+
+extern CRGBPalette16 myRedWhiteBluePalette;
+extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
+
 
 boolean keysOn[NUM_LEDS];
 
@@ -151,7 +162,9 @@ void debugLightOn(int n) {
 }
 
 FadeController* fadeCtrl = new FadeController();
+//Main loop
 void loop() {
+
   currentTime = millis();
 
   int bufferSize = Serial.available();
@@ -313,25 +326,19 @@ void loop() {
     }
     previousFadeTime = currentTime;
   }
-  if ( MODE == COMMAND_ANIMATION) {
-    testAnim(animationIndex);
+  //Animation
+
+
+  if (MODE == COMMAND_ANIMATION) {
+    Animatons(animationIndex);
+    static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; /* motion speed */
+
+    FillLEDsFromPaletteColors(startIndex);
   }
   FastLED.show();
 }
 
-void testAnim(int selectedAnimation)
-{
-  //Animation(temp name_1)
-  if (selectedAnimation == 0)
-  {
-    for (int i = 0; i < NUM_LEDS; i++) {
-      leds[i] = CHSV(hue, 255, 255);
-    }
-    EVERY_N_MILLISECONDS(15) {
-      hue++;
-    }
-  } 
-}
 
 void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   if (ledNo < 0 || ledNo > NUM_LEDS) {
@@ -345,7 +352,7 @@ float distance(CRGB color1, CRGB color2) {
   return sqrt(pow(color1.r - color2.r, 2) + pow(color1.g - color2.g, 2) + pow(color1.b - color2.b, 2));
 }
 
-void setColorFromVelocity(int velocity, CRGB & rgb) {
+void setColorFromVelocity(int velocity, CRGB& rgb) {
   // Map velocity to hue value
   int hue = map(velocity, 0, 127, 0, 255);
 

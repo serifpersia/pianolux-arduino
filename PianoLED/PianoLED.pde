@@ -1,4 +1,4 @@
-//PianoLED //<>// //<>//
+//PianoLED //<>// //<>// //<>// //<>//
 import processing.serial.*;
 import javax.sound.midi.*;
 import themidibus.*;
@@ -213,6 +213,18 @@ void animationlist(int n) {
     // Select Animation 4
     sendCommandAnimation(3);
     break;
+    case 4:
+    // Select Animation 4
+    sendCommandAnimation(4);
+    break;
+    case 5:
+    // Select Animation 4
+    sendCommandAnimation(5);
+    break;
+    case 6:
+    // Select Animation 4
+    sendCommandAnimation(6);
+    break;
   default:
     println("Invalid animation selection.");
     break;
@@ -392,12 +404,12 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, Arrays.asList("piano", "midi", "tascam")));
-  
+
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  List<String> serialPorts = Arrays.asList(comlist);
- //// serialPorts.remove("com1");
-  ////serialPorts.remove("COM1");
+  List<String> serialPorts = new LinkedList<>(Arrays.asList(comlist));
+  serialPorts.remove("com1");
+  serialPorts.remove("COM1");
   cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
 }
 
