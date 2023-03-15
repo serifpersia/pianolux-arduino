@@ -1,4 +1,4 @@
-//PianoLED //<>// //<>// //<>// //<>//
+//PianoLED //<>//
 import processing.serial.*;
 import javax.sound.midi.*;
 import themidibus.*;
@@ -213,15 +213,15 @@ void animationlist(int n) {
     // Select Animation 4
     sendCommandAnimation(3);
     break;
-    case 4:
+  case 4:
     // Select Animation 4
     sendCommandAnimation(4);
     break;
-    case 5:
+  case 5:
     // Select Animation 4
     sendCommandAnimation(5);
     break;
-    case 6:
+  case 6:
     // Select Animation 4
     sendCommandAnimation(6);
     break;
@@ -282,24 +282,28 @@ void modelist(int n) {
     case 2: // Random
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showRandomControls();
       RandomOn = true;
       break;
     case 3: // Gradient
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showGradientControls();
       GradientOn = true;
       break;
     case 4: // Velocity
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showVelocityControls();
       VelocityOn = true;
       break;
     case 5: // Split
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showSplitControls();
       SplitOn = true;
       break;
@@ -416,7 +420,7 @@ void Refresh() {
 int findDefault(List<String> values, List<String> keywords) {
   int index = 0;
   for ( String value : values )
-  { //<>//
+  {
     for ( String keyword : keywords )
     {
       if (value.toLowerCase().contains(keyword) )
