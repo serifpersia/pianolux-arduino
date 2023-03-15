@@ -32,6 +32,10 @@ boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, 
 List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 int counter = 0;
 
+int leftMinPitch = 21;
+int leftMaxPitch;
+int rightMaxPitch = 108;
+
 void setup() {
   size(930, 160);
   surface.setTitle("PianoLED");
@@ -73,10 +77,10 @@ void noteOn(int channel, int pitch, int velocity) {
       } else if (VelocityOn) {
         message = commandVelocity(velocity, notePushed, Red, Green, Blue);
       } else if (SplitOn) {
-        if (pitch >= 21 && pitch <= 59) {
+        if (pitch >= leftMinPitch && pitch <= leftMaxPitch) {
           println("Left Side Color");
           message = commandSetColor(splitLeftRed, splitLeftGreen, splitLeftBlue, notePushed);
-        } else if (pitch >= 60 && pitch <= 174) {
+        } else if (pitch > leftMaxPitch  && pitch <= rightMaxPitch) {
           println("Right Side Color");
           message = commandSetColor(splitRightRed, splitRightGreen, splitRightBlue, notePushed);
         }
@@ -479,19 +483,18 @@ void setRightSideG() {
   RightSideGGreen = (Green);
   RightSideGBlue = (Blue);
 }
-/*
+
 void mousePressed() {
   for (int i = 0; i < whiteKeys.length; i++) {
     // Check if the mouse click was inside a white key
     if (mouseX > i*15 + 15 && mouseX < (i+1)*15 + 15 && mouseY > 64 && mouseY < 134) {
-
+      leftMaxPitch = whiteKeyPitches[i];
       Keys[whiteKeys[i]][0] = 1;
-
-      // Print the ID of the clicked key
-      println("White Key Clicked: " + whiteKeys[i]);
+      println("Left Max Pitch: " + leftMaxPitch);
     }
   }
 }
+
 
 void mouseReleased() {
   for (int i = 0; i < whiteKeys.length; i++) {
@@ -502,7 +505,7 @@ void mouseReleased() {
     }
   }
 }
-*/
+
 
 public static void printArray(byte[] bytes) {
   print("Message:");
