@@ -76,12 +76,12 @@ ControlP5 buildUI()
 {
   ControlP5 cp5 = new ControlP5(this);
 
-  addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X, 65, 14, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
+  addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X-4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
     //.setLabelVisible(false)
     ;
 
 
-  addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
+  addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
     //.setLabelVisible(false)
     ;
 
@@ -101,6 +101,8 @@ ControlP5 buildUI()
 
   addColorWheel(cp5, "Color", EFFECT_CONTROLS_X+15, 45, 100);
 
+  addAnimationControls(cp5);
+
   addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();
   addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
@@ -116,14 +118,10 @@ ControlP5 buildUI()
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
-  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+15;
+  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
   int SPLASH_CONTROL_Y = 60;
 
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
-
-  addAnimationControls(cp5);
-
-
 
   return cp5;
 }

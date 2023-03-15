@@ -199,19 +199,19 @@ void animationlist(int n) {
   switch (n) {
   case 0:
     // Select Animation 1
-    sendCommandAnimation(1);
+    sendCommandAnimation(0);
     break;
   case 1:
     // Select Animation 2
-    sendCommandAnimation(2);
+    sendCommandAnimation(1);
     break;
   case 2:
     // Select Animation 3
-    sendCommandAnimation(3);
+    sendCommandAnimation(2);
     break;
   case 3:
     // Select Animation 4
-    sendCommandAnimation(4);
+    sendCommandAnimation(3);
     break;
   default:
     println("Invalid animation selection.");
