@@ -1,4 +1,4 @@
-//PianoLED //<>// //<>//
+//PianoLED //<>//
 import processing.serial.*;
 import javax.sound.midi.*;
 import themidibus.*;
@@ -199,19 +199,31 @@ void animationlist(int n) {
   switch (n) {
   case 0:
     // Select Animation 1
-    sendCommandAnimation(1);
+    sendCommandAnimation(0);
     break;
   case 1:
     // Select Animation 2
-    sendCommandAnimation(2);
+    sendCommandAnimation(1);
     break;
   case 2:
     // Select Animation 3
-    sendCommandAnimation(3);
+    sendCommandAnimation(2);
     break;
   case 3:
     // Select Animation 4
+    sendCommandAnimation(3);
+    break;
+  case 4:
+    // Select Animation 4
     sendCommandAnimation(4);
+    break;
+  case 5:
+    // Select Animation 4
+    sendCommandAnimation(5);
+    break;
+  case 6:
+    // Select Animation 4
+    sendCommandAnimation(6);
     break;
   default:
     println("Invalid animation selection.");
@@ -270,24 +282,28 @@ void modelist(int n) {
     case 2: // Random
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showRandomControls();
       RandomOn = true;
       break;
     case 3: // Gradient
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showGradientControls();
       GradientOn = true;
       break;
     case 4: // Velocity
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showVelocityControls();
       VelocityOn = true;
       break;
     case 5: // Split
       disableAllModes();
       hideAllControls();
+      setDefaultDefaults(255, 127);
       showSplitControls();
       SplitOn = true;
       break;
@@ -392,10 +408,10 @@ void Refresh() {
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, Arrays.asList("piano", "midi", "tascam")));
-  
+
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  List<String> serialPorts = Arrays.asList(comlist);
+  List<String> serialPorts = new LinkedList<>(Arrays.asList(comlist));
   serialPorts.remove("com1");
   serialPorts.remove("COM1");
   cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
@@ -404,7 +420,7 @@ void Refresh() {
 int findDefault(List<String> values, List<String> keywords) {
   int index = 0;
   for ( String value : values )
-  { //<>//
+  {
     for ( String keyword : keywords )
     {
       if (value.toLowerCase().contains(keyword) )

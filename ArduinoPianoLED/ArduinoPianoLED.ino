@@ -30,6 +30,7 @@ const int COMMAND_VELOCITY = 246;
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
 int generalBrightness = buffer[++bufIdx];
+int animationIndex;
 
 
 int DEFAULT_BRIGHTNESS = 200;
@@ -49,7 +50,17 @@ unsigned long interval = 20;      // general refresh in milliseconds
 unsigned long fadeInterval = 20;  // general fade interval in milliseconds
 int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
 
+
+//Animation select variables
 uint8_t hue = 0;
+
+#define UPDATES_PER_SECOND 100
+
+CRGBPalette16 currentPalette;
+TBlendType currentBlending;
+
+extern CRGBPalette16 myRedWhiteBluePalette;
+extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
 
 boolean keysOn[NUM_LEDS];
@@ -73,7 +84,7 @@ boolean isOnStrip(int pos) {
 }
 
 void StartupAnimation() {
-  for (int i = 0; i < 30; i++) {
+  for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CHSV(getHueForPos(i), 255, 255);
     FastLED.show();
     delay(3);
@@ -151,7 +162,9 @@ void debugLightOn(int n) {
 }
 
 FadeController* fadeCtrl = new FadeController();
+//Main loop
 void loop() {
+
   currentTime = millis();
 
   int bufferSize = Serial.available();
@@ -230,6 +243,7 @@ void loop() {
           int note = (int)buffer[++bufIdx];
           keysOn[note - 1] = true;
           controlLeds(note - 1, redVal, greenVal, blueVal);
+          MODE = COMMAND_SET_COLOR;
           break;
         }
       case COMMAND_BLACKOUT:
@@ -238,6 +252,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(7);
           fill_solid(leds, NUM_LEDS, bgColor);
+          MODE = COMMAND_BLACKOUT;
           break;
         }
       case COMMAND_ANIMATION:
@@ -245,21 +260,8 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(8);
-          int animationIndex = buffer[++bufIdx];
-          CRGB testRed = CRGB::Red;
-          CRGB testGreen = CRGB::Green;
-          CRGB testBlue = CRGB::Blue;
-          if (animationIndex == 1) {
-            fill_solid(leds, 10, testRed);
-          } else if (animationIndex == 2) {
-            fill_solid(leds, 10, testGreen);
-          }
-          else if (animationIndex == 3) {
-            fill_solid(leds, 10, testBlue);
-          }
-          else if (animationIndex == 4) {
-            
-          }
+          animationIndex = buffer[++bufIdx];
+          MODE = COMMAND_ANIMATION;
           break;
         }
       case COMMAND_KEY_OFF:
@@ -294,6 +296,7 @@ void loop() {
           keysOn[note - 1] = true;
           setColorFromVelocity(velocity, rgb);
           controlLeds(note - 1, rgb.r, rgb.g, rgb.b);
+          MODE = COMMAND_VELOCITY;
           break;
         }
       default:
@@ -323,9 +326,19 @@ void loop() {
     }
     previousFadeTime = currentTime;
   }
+  //Animation
 
+
+  if (MODE == COMMAND_ANIMATION) {
+    Animatons(animationIndex);
+    static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; /* motion speed */
+
+    FillLEDsFromPaletteColors(startIndex);
+  }
   FastLED.show();
 }
+
 
 void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   if (ledNo < 0 || ledNo > NUM_LEDS) {

@@ -5,7 +5,9 @@ int MAX_FADE_RATE = 255;
 int DEFAULT_FADE_RATE = 255;
 
 color RED = color(255, 0, 0);
+color DARK_GREEN = color(0, 200, 0);
 color GREEN = color(0, 255, 0);
+color LAVENDER = color(192, 128, 255);
 color BLUE = color(0, 0, 255);
 color BLACK = color(0, 0, 0);
 color WHITE = color(255, 255, 255);
@@ -68,7 +70,7 @@ int[] presetColors = {
 
 List<String> colorNames = Arrays.asList("Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 List<String> splashColorNames = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
-List<String> animationNames = Arrays.asList("Animation 1", "Animation 2", "Animation 3", "Animation 4", "Animation 5", "Animation 6", "Animation 7");
+List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors", "CloudColors", "LavaColors", "ForestColors", "PartyColors");
 
 
 
@@ -76,12 +78,12 @@ ControlP5 buildUI()
 {
   ControlP5 cp5 = new ControlP5(this);
 
-  addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X, 65, 14, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, -1, -1, YELLOW, BLACK, RED)
+  addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X-4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, BLUE, BLACK, RED)
     //.setLabelVisible(false)
     ;
 
 
-  addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 14, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, -1, -1, GREY, BLACK, RED)
+  addSlider( cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X-15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE, DEFAULT_FADE_RATE, DARK_GREEN, BLACK, RED)
     //.setLabelVisible(false)
     ;
 
@@ -101,6 +103,8 @@ ControlP5 buildUI()
 
   addColorWheel(cp5, "Color", EFFECT_CONTROLS_X+15, 45, 100);
 
+  addAnimationControls(cp5);
+
   addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();
   addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
@@ -116,14 +120,10 @@ ControlP5 buildUI()
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
 
-  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+15;
+  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
   int SPLASH_CONTROL_Y = 60;
 
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
-
-  addAnimationControls(cp5);
-
-
 
   return cp5;
 }
@@ -151,25 +151,23 @@ void addSplashControls(ControlP5 cp5, int x, int y)
   int SPLASH_DAFAULT_VELO_SPEED = 10;
 
   int SPLASH_CONTROL_Y_STEP = 13;
-  int captionAlignX = CENTER;
-  int captionAlignY = ControlP5.TOP_OUTSIDE;
 
-  addSlider( cp5, "splashMaxLength", "Max Splash Length", x, y, SPLASH_MIN_LEN, SPLASH_MAX_LEN, SPLASH_DEFAULT_LEN, captionAlignX, captionAlignY).hide();
+  addSlider( cp5, "splashMaxLength", "  L", EFFECT_CONTROLS_X+7, 65, 10, 69, SPLASH_MIN_LEN, SPLASH_MAX_LEN, SPLASH_DEFAULT_LEN, LAVENDER, BLACK, RED).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
   addScrollableList(cp5, "splashColor", "Color", splashColorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
-  addSlider( cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE, SPLASH_DAFAULT_TAIL_FADE, captionAlignX, captionAlignY).hide();
+  addSlider( cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE, SPLASH_DAFAULT_TAIL_FADE).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
-  //addSlider( cp5, "splashHeadFade", "Head Fade Rate", x, y, SPLASH_MIN_HEAD_FADE, SPLASH_MAX_HEAD_FADE, SPLASH_DAFAULT_HEAD_FADE, captionAlignX , captionAlignY).hide();
+  //addSlider( cp5, "splashHeadFade", "Head Fade Rate", x, y, SPLASH_MIN_HEAD_FADE, SPLASH_MAX_HEAD_FADE, SPLASH_DAFAULT_HEAD_FADE).hide();
   //y += SPLASH_CONTROL_Y_STEP;
 
-  addSlider( cp5, "splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI, SPLASH_MAX_VELO_BRI, SPLASH_DAFAULT_VELO_BRI, captionAlignX, captionAlignY).hide();
+  addSlider( cp5, "splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI, SPLASH_MAX_VELO_BRI, SPLASH_DAFAULT_VELO_BRI).hide();
   y += SPLASH_CONTROL_Y_STEP;
 
-  addSlider( cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED, SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED, captionAlignX, captionAlignY).hide();
+  addSlider( cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED, SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED).hide();
   y += SPLASH_CONTROL_Y_STEP;
 }
 
@@ -510,7 +508,6 @@ List<Controller> getAnimationControllers()
   List<Controller> cl = new ArrayList<>();
 
   cl.add(cp5.getController("Brightness"));
-  cl.add(cp5.getController("FadeOnVal"));
   cl.add(cp5.getController("animationlist"));
 
   return cl;
