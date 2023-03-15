@@ -68,14 +68,11 @@ void noteOn(int channel, int pitch, int velocity) {
 
     if (!AnimationOn)
     {
-      //Note to self.Setup 4 different colors for 4 different velocity ranges
-      println("velocity: " + velocity);
       if (RandomOn) {
         message = commandSetColor((int)random(1, 250), (int)random(1, 250), (int)random(1, 250), notePushed);
       } else if (VelocityOn) {
         message = commandVelocity(velocity, notePushed, Red, Green, Blue);
       } else if (SplitOn) {
-        // Send color based on velocity range
         if (pitch >= 21 && pitch <= 59) {
           println("Left Side Color");
           message = commandSetColor(splitLeftRed, splitLeftGreen, splitLeftBlue, notePushed);
@@ -482,6 +479,30 @@ void setRightSideG() {
   RightSideGGreen = (Green);
   RightSideGBlue = (Blue);
 }
+/*
+void mousePressed() {
+  for (int i = 0; i < whiteKeys.length; i++) {
+    // Check if the mouse click was inside a white key
+    if (mouseX > i*15 + 15 && mouseX < (i+1)*15 + 15 && mouseY > 64 && mouseY < 134) {
+
+      Keys[whiteKeys[i]][0] = 1;
+
+      // Print the ID of the clicked key
+      println("White Key Clicked: " + whiteKeys[i]);
+    }
+  }
+}
+
+void mouseReleased() {
+  for (int i = 0; i < whiteKeys.length; i++) {
+    // Check if the mouse click was inside a white key
+    if (mouseX > i*15 + 15 && mouseX < (i+1)*15 + 15 && mouseY > 64 && mouseY < 134) {
+      // Change the color of the clicked key back to white
+      Keys[whiteKeys[i]][0] = 0;
+    }
+  }
+}
+*/
 
 public static void printArray(byte[] bytes) {
   print("Message:");
