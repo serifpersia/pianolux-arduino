@@ -370,7 +370,7 @@ void Brightness(int value)
 
 
 void Refresh() {
-
+  
   String deviceName = "Arduino"; // replace "Arduino" with the name of the device you're looking for
   String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
   portName = null;
@@ -417,12 +417,14 @@ void Refresh() {
   comlist = Serial.list();
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  // Get the index of the portName value in the comlist array
-  int portIndex = Arrays.asList(comlist).indexOf(portName);
-  // Set the selected value of the comlist to the portName value
-  cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
-
-
+  if (portName != null) {
+    // Get the index of the portName value in the comlist array
+    int portIndex = Arrays.asList(comlist).indexOf(portName);
+    // Set the selected value of the comlist to the portName value
+    cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
+  } else {
+    println("No serial devices found.");
+  }
   // Add the list of MIDI devices to the scrollable list in the GUI
 
   cp5.get(ScrollableList.class, "midi").clear();
