@@ -546,7 +546,7 @@ void draw() {
   }
   //Piano type
   //PianoLED version tag uncomment when compiling to exe
-  // VersionTag = "PianoLED V3.5";
+  // VersionTag = "PianoLED V3.6";
   fill(255);
   text(presetText, 375, 15);
   //text(VersionTag, 15, 150);

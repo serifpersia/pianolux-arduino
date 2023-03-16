@@ -1,4 +1,5 @@
-![image](https://user-images.githubusercontent.com/62844718/224997411-4e2e471f-cfde-4e14-81c8-b17588058b93.png)
+![image](https://user-images.githubusercontent.com/62844718/225442273-2bd2a847-68ae-4371-942b-ff0c42d57e3f.png)
+
 
 This app is a simple Processing (Java) based GUI that controls a WS2812B LED strip using an Arduino. 
 The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient. 
@@ -19,12 +20,11 @@ Follow this guide if you can't run both PianoLED app and your vst or other progr
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
-Arch Linux
-
-Running the PianoLED App
+Linux
 
 install jre17 package:
 
+For Arch its this command
 sudo pacman -S jre17-openjdk
 
 To run the app:
@@ -32,8 +32,7 @@ To run the app:
 
 -cd into the extracted directory
 
--make the file executable by you or anyone
-
 -run the app by double clicking on the PianoLED file, Execute, or simply run it with
-
 ./PianoLED command in the terminal
+(to be able to auto select devices on startup run the PianoLED script using sudo
+

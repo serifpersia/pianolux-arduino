@@ -1,5 +1,4 @@
-//PianoLED //<>//
-import processing.serial.*;
+import processing.serial.*; //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -7,6 +6,7 @@ import java.util.*;
 import java.util.regex.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 final static int TOP_COLOR = 255;
 
 MidiBus myBus;
@@ -31,6 +31,10 @@ int lastNoteSelected, firstNoteSelected, numberselected,
 boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
 List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 int counter = 0;
+
+int leftMinPitch = 21;
+int leftMaxPitch;
+int rightMaxPitch = 108;
 
 void setup() {
   size(930, 160);
@@ -68,18 +72,15 @@ void noteOn(int channel, int pitch, int velocity) {
 
     if (!AnimationOn)
     {
-      //Note to self.Setup 4 different colors for 4 different velocity ranges
-      println("velocity: " + velocity);
       if (RandomOn) {
         message = commandSetColor((int)random(1, 250), (int)random(1, 250), (int)random(1, 250), notePushed);
       } else if (VelocityOn) {
         message = commandVelocity(velocity, notePushed, Red, Green, Blue);
       } else if (SplitOn) {
-        // Send color based on velocity range
-        if (pitch >= 21 && pitch <= 59) {
+        if (pitch >= leftMinPitch && pitch <= leftMaxPitch-1) {
           println("Left Side Color");
           message = commandSetColor(splitLeftRed, splitLeftGreen, splitLeftBlue, notePushed);
-        } else if (pitch >= 60 && pitch <= 174) {
+        } else if (pitch > leftMaxPitch-1  && pitch <= rightMaxPitch) {
           println("Right Side Color");
           message = commandSetColor(splitRightRed, splitRightGreen, splitRightBlue, notePushed);
         }
@@ -322,12 +323,13 @@ void modelist(int n) {
 }
 
 void Open() {
+
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
       myBus = new MidiBus(this, midiName, 0);
+      println("Midi Port Open: " + midiName);
       arduino = new Serial(this, portName, 115200);
-      println("Selected Midi Port: " + midiName);
-      println("Selected Serial Port: " + portName);
+      println("Serial Port Open : " + portName);
       cp5.getController("Open").getCaptionLabel().setText("Close");
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
 
@@ -337,11 +339,11 @@ void Open() {
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
     }
-    catch (Exception NoDevicesSelected) {
-      showMessageDialog(null, "Devices needed not selected or device busy!");
+    catch (Exception e) {
+      println("Error opening serial port: " + e.getMessage());
     }
   } else {
-    try {
+    if (arduino != null) {
       myBus.dispose();
       sendCommandBlackOut();
       BGColor(false);
@@ -350,9 +352,6 @@ void Open() {
       println("Device closed: " + midiName);
       cp5.getController("Open").getCaptionLabel().setText("Open");
       cp5.getController("Open").setColorBackground(color(0, 0, 0));
-    }
-    catch (Exception NoDevicesOpen) {
-      showMessageDialog(null, "No devices connected!");
     }
   }
 }
@@ -368,56 +367,97 @@ void Brightness(int value)
   sendCommandBrightness((int)value);
 }
 
-boolean isPiano(String name)
-{
-  return name.toLowerCase().contains("piano");
-}
 
-boolean isArduino(String name)
-{
-  return !name.toLowerCase().contains("com");
-}
 
 void Refresh() {
-  // Clear the midilist
+  String os = System.getProperty("os.name").toLowerCase();
+  if (os.contains("win")) {
+    findPortNameOnWindows("Arduino");
+  } else {
+    findPortNameOnLinux("ttyACM");
+  }
+  refreshComList();
+  refreshMidiList();
+}
+
+void findPortNameOnWindows(String deviceName) {
+  String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
+  portName = null;
+  try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.contains(deviceName)) {
+        String[] tokens = line.split("\\s+");
+        portName = tokens[tokens.length - 1].replaceAll("[()]", "");
+        println("Device found: " + line);
+        break;
+      }
+    }
+    reader.close();
+  }
+  catch (IOException e) {
+    println("Error: " + e.getMessage());
+  }
+}
+
+void findPortNameOnLinux(String deviceName) {
+  String[] cmd = {"sh", "-c", "dmesg | grep " + deviceName};
+  portName = null;
+  Pattern pattern = Pattern.compile(deviceName + "(\\d+)");
+  try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      Matcher matcher = pattern.matcher(line);
+      if (matcher.find()) {
+        portName = "/dev/" + matcher.group(0);
+        println("Device found: " + portName);
+        break;
+      }
+    }
+    reader.close();
+  }
+  catch (IOException e) {
+    println("Error: " + e.getMessage());
+  }
+}
+
+void refreshComList() {
+  comlist = Serial.list();
+  cp5.get(ScrollableList.class, "comlist").clear();
+  cp5.get(ScrollableList.class, "comlist").addItems(comlist);
+
+  int portIndex = Arrays.asList(comlist).indexOf(portName);
+  if (portIndex >= 0) {
+    cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
+  }
+}
+
+
+void refreshMidiList() {
   midilist.clear();
-  // Get the list of available MIDI devices on the system
   MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-  // Iterate through the list of MIDI devices
   for (MidiDevice.Info info : infos) {
     try {
-      // Open the MIDI device
       MidiDevice device = MidiSystem.getMidiDevice(info);
-
-      // Check if the device is an input device (i.e. it can receive MIDI messages)
       if (device.getMaxTransmitters() != 0) {
-        // Add the device to the midilist ArrayList
         midilist.add(info.getName());
       }
-      // Close the MIDI device
       device.close();
     }
     catch (MidiUnavailableException e) {
       // Handle the exception
     }
   }
-
-  comlist = Serial.list();
-
-  // Add the list of MIDI devices to the scrollable list in the GUI
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, Arrays.asList("piano", "midi", "tascam")));
-
-  cp5.get(ScrollableList.class, "comlist").clear();
-  cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  List<String> serialPorts = new LinkedList<>(Arrays.asList(comlist));
-  serialPorts.remove("com1");
-  serialPorts.remove("COM1");
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
+  cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 }
 
-int findDefault(List<String> values, List<String> keywords) {
+int findDefaultMidi(List<String> values, List<String> keywords) {
   int index = 0;
   for ( String value : values )
   {
@@ -482,6 +522,29 @@ void setRightSideG() {
   RightSideGGreen = (Green);
   RightSideGBlue = (Blue);
 }
+
+void mousePressed() {
+  for (int i = 0; i < whiteKeys.length; i++) {
+    // Check if the mouse click was inside a white key
+    if (mouseX > i*15 + 15 && mouseX < (i+1)*15 + 15 && mouseY > 64 && mouseY < 134) {
+      leftMaxPitch = whiteKeyPitches[i];
+      Keys[whiteKeys[i]][0] = 1;
+      println("Left Max Pitch: " + leftMaxPitch);
+    }
+  }
+}
+
+
+void mouseReleased() {
+  for (int i = 0; i < whiteKeys.length; i++) {
+    // Check if the mouse click was inside a white key
+    if (mouseX > i*15 + 15 && mouseX < (i+1)*15 + 15 && mouseY > 64 && mouseY < 134) {
+      // Change the color of the clicked key back to white
+      Keys[whiteKeys[i]][0] = 0;
+    }
+  }
+}
+
 
 public static void printArray(byte[] bytes) {
   print("Message:");
