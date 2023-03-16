@@ -1,5 +1,4 @@
-//PianoLED //<>// //<>//
-import processing.serial.*;
+import processing.serial.*; //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -7,6 +6,7 @@ import java.util.*;
 import java.util.regex.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 final static int TOP_COLOR = 255;
 
 MidiBus myBus;
@@ -323,12 +323,13 @@ void modelist(int n) {
 }
 
 void Open() {
+
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
       myBus = new MidiBus(this, midiName, 0);
+      println("Midi Port Open: " + midiName);
       arduino = new Serial(this, portName, 115200);
-      println("Selected Midi Port: " + midiName);
-      println("Selected Serial Port: " + portName);
+      println("Serial Port Open : " + portName);
       cp5.getController("Open").getCaptionLabel().setText("Close");
       cp5.getController("Open").setColorBackground(color(0, 255, 0));
 
@@ -338,11 +339,11 @@ void Open() {
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
     }
-    catch (Exception NoDevicesSelected) {
-      showMessageDialog(null, "Devices needed not selected or device busy!");
+    catch (Exception e) {
+      println("Error opening serial port: " + e.getMessage());
     }
   } else {
-    try {
+    if (arduino != null) {
       myBus.dispose();
       sendCommandBlackOut();
       BGColor(false);
@@ -351,9 +352,6 @@ void Open() {
       println("Device closed: " + midiName);
       cp5.getController("Open").getCaptionLabel().setText("Open");
       cp5.getController("Open").setColorBackground(color(0, 0, 0));
-    }
-    catch (Exception NoDevicesOpen) {
-      showMessageDialog(null, "No devices connected!");
     }
   }
 }
@@ -369,17 +367,31 @@ void Brightness(int value)
   sendCommandBrightness((int)value);
 }
 
-boolean isPiano(String name)
-{
-  return name.toLowerCase().contains("piano");
-}
 
-boolean isArduino(String name)
-{
-  return !name.toLowerCase().contains("com");
-}
 
 void Refresh() {
+
+  String deviceName = "Arduino"; // replace "Arduino" with the name of the device you're looking for
+  String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
+  portName = null;
+  try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.contains(deviceName)) {
+        String[] tokens = line.split("\\s+"); // split the line into an array of tokens
+        portName = tokens[tokens.length - 1].replaceAll("[()]", ""); // get the last token (the COM port number) and remove the parentheses
+        println("Device found: " + line);
+        break;
+      }
+    }
+    reader.close();
+  }
+  catch (IOException e) {
+    println("Error: " + e.getMessage());
+  }
+
   // Clear the midilist
   midilist.clear();
   // Get the list of available MIDI devices on the system
@@ -402,23 +414,23 @@ void Refresh() {
       // Handle the exception
     }
   }
-
   comlist = Serial.list();
-
-  // Add the list of MIDI devices to the scrollable list in the GUI
-  cp5.get(ScrollableList.class, "midi").clear();
-  cp5.get(ScrollableList.class, "midi").addItems(midilist);
-  cp5.get(ScrollableList.class, "midi").setValue(findDefault(midilist, Arrays.asList("piano", "midi", "tascam")));
-
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  List<String> serialPorts = new LinkedList<>(Arrays.asList(comlist));
-  serialPorts.remove("com1");
-  serialPorts.remove("COM1");
-  cp5.get(ScrollableList.class, "comlist").setValue(findDefault(serialPorts, Arrays.asList("com", "ttyACM")));
+  // Get the index of the portName value in the comlist array
+  int portIndex = Arrays.asList(comlist).indexOf(portName);
+  // Set the selected value of the comlist to the portName value
+  cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
+
+
+  // Add the list of MIDI devices to the scrollable list in the GUI
+
+  cp5.get(ScrollableList.class, "midi").clear();
+  cp5.get(ScrollableList.class, "midi").addItems(midilist);
+  cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 }
 
-int findDefault(List<String> values, List<String> keywords) {
+int findDefaultMidi(List<String> values, List<String> keywords) {
   int index = 0;
   for ( String value : values )
   {
