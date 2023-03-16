@@ -370,28 +370,59 @@ void Brightness(int value)
 
 
 void Refresh() {
-  
-  String deviceName = "Arduino"; // replace "Arduino" with the name of the device you're looking for
-  String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
-  portName = null;
   try {
-    Process p = Runtime.getRuntime().exec(cmd);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    String line;
-    while ((line = reader.readLine()) != null) {
-      if (line.contains(deviceName)) {
-        String[] tokens = line.split("\\s+"); // split the line into an array of tokens
-        portName = tokens[tokens.length - 1].replaceAll("[()]", ""); // get the last token (the COM port number) and remove the parentheses
-        println("Device found: " + line);
-        break;
+    String deviceName = "Arduino"; // replace "Arduino" with the name of the device you're looking for
+    String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
+    portName = null;
+    try {
+      Process p = Runtime.getRuntime().exec(cmd);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (line.contains(deviceName)) {
+          String[] tokens = line.split("\\s+"); // split the line into an array of tokens
+          portName = tokens[tokens.length - 1].replaceAll("[()]", ""); // get the last token (the COM port number) and remove the parentheses
+          println("Device found: " + line);
+          break;
+        }
       }
+      reader.close();
     }
-    reader.close();
-  }
-  catch (IOException e) {
-    println("Error: " + e.getMessage());
+    catch (IOException e) {
+      println("Error: " + e.getMessage());
+    }
   }
 
+  catch (Exception e)
+  {
+  }
+
+  try {
+    String deviceName2 = "ttyACM";
+    String[] cmd = { "sh", "-c", "dmesg | grep " + deviceName2 };
+    portName = null;
+    Pattern pattern = Pattern.compile(deviceName2 + "(\\d+)");
+    try {
+      Process p = Runtime.getRuntime().exec(cmd);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        Matcher matcher = pattern.matcher(line);
+        if (matcher.find()) {
+          portName = "/dev/" + matcher.group(0);
+          println("Device found: " + portName);
+          break;
+        }
+      }
+      reader.close();
+    }
+    catch (IOException e) {
+      println("Error: " + e.getMessage());
+    }
+  }
+  catch(Exception e)
+  {
+  }
   // Clear the midilist
   midilist.clear();
   // Get the list of available MIDI devices on the system
@@ -417,15 +448,17 @@ void Refresh() {
   comlist = Serial.list();
   cp5.get(ScrollableList.class, "comlist").clear();
   cp5.get(ScrollableList.class, "comlist").addItems(comlist);
-  if (portName != null) {
-    // Get the index of the portName value in the comlist array
-    int portIndex = Arrays.asList(comlist).indexOf(portName);
-    // Set the selected value of the comlist to the portName value
+
+  // Get the index of the portName value in the comlist array
+  int portIndex = Arrays.asList(comlist).indexOf(portName);
+  // Set the selected value of the comlist to the portName value
+
+  try {
     cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
-  } else {
-    println("No serial devices found.");
   }
-  // Add the list of MIDI devices to the scrollable list in the GUI
+  catch(Exception e)
+  {
+  }
 
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
