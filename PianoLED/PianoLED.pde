@@ -370,85 +370,91 @@ void Brightness(int value)
 
 
 void Refresh() {
-    String os = System.getProperty("os.name").toLowerCase();
-    if (os.contains("win")) {
-        findPortNameOnWindows("Arduino");
-    } else {
-        findPortNameOnLinux("ttyACM");
-    }
-    refreshComList();
-    refreshMidiList();
+  String os = System.getProperty("os.name").toLowerCase();
+  if (os.contains("win")) {
+    findPortNameOnWindows("Arduino");
+  } else {
+    findPortNameOnLinux("ttyACM");
+  }
+  refreshComList();
+  refreshMidiList();
 }
 
 void findPortNameOnWindows(String deviceName) {
-    String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
-    portName = null;
-    try {
-        Process p = Runtime.getRuntime().exec(cmd);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.contains(deviceName)) {
-                String[] tokens = line.split("\\s+");
-                portName = tokens[tokens.length - 1].replaceAll("[()]", "");
-                println("Device found: " + line);
-                break;
-            }
-        }
-        reader.close();
-    } catch (IOException e) {
-        println("Error: " + e.getMessage());
+  String[] cmd = {"cmd", "/c", "wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table"};
+  portName = null;
+  try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.contains(deviceName)) {
+        String[] tokens = line.split("\\s+");
+        portName = tokens[tokens.length - 1].replaceAll("[()]", "");
+        println("Device found: " + line);
+        break;
+      }
     }
+    reader.close();
+  }
+  catch (IOException e) {
+    println("Error: " + e.getMessage());
+  }
 }
 
 void findPortNameOnLinux(String deviceName) {
-    String[] cmd = {"sh", "-c", "dmesg | grep " + deviceName};
-    portName = null;
-    Pattern pattern = Pattern.compile(deviceName + "(\\d+)");
-    try {
-        Process p = Runtime.getRuntime().exec(cmd);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.find()) {
-                portName = "/dev/" + matcher.group(0);
-                println("Device found: " + portName);
-                break;
-            }
-        }
-        reader.close();
-    } catch (IOException e) {
-        println("Error: " + e.getMessage());
+  String[] cmd = {"sh", "-c", "dmesg | grep " + deviceName};
+  portName = null;
+  Pattern pattern = Pattern.compile(deviceName + "(\\d+)");
+  try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      Matcher matcher = pattern.matcher(line);
+      if (matcher.find()) {
+        portName = "/dev/" + matcher.group(0);
+        println("Device found: " + portName);
+        break;
+      }
     }
+    reader.close();
+  }
+  catch (IOException e) {
+    println("Error: " + e.getMessage());
+  }
 }
 
 void refreshComList() {
-    comlist = Serial.list();
-    cp5.get(ScrollableList.class, "comlist").clear();
-    cp5.get(ScrollableList.class, "comlist").addItems(comlist);
+  comlist = Serial.list();
+  cp5.get(ScrollableList.class, "comlist").clear();
+  cp5.get(ScrollableList.class, "comlist").addItems(comlist);
 
-    int portIndex = Arrays.asList(comlist).indexOf(portName);
+  int portIndex = Arrays.asList(comlist).indexOf(portName);
+  if (portIndex >= 0) {
     cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
+  }
 }
 
+
 void refreshMidiList() {
-    midilist.clear();
-    MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-    for (MidiDevice.Info info : infos) {
-        try {
-            MidiDevice device = MidiSystem.getMidiDevice(info);
-            if (device.getMaxTransmitters() != 0) {
-                midilist.add(info.getName());
-            }
-            device.close();
-        } catch (MidiUnavailableException e) {
-            // Handle the exception
-        }
+  midilist.clear();
+  MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+  for (MidiDevice.Info info : infos) {
+    try {
+      MidiDevice device = MidiSystem.getMidiDevice(info);
+      if (device.getMaxTransmitters() != 0) {
+        midilist.add(info.getName());
+      }
+      device.close();
     }
-    cp5.get(ScrollableList.class, "midi").clear();
-    cp5.get(ScrollableList.class, "midi").addItems(midilist);
-    cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
+    catch (MidiUnavailableException e) {
+      // Handle the exception
+    }
+  }
+  cp5.get(ScrollableList.class, "midi").clear();
+  cp5.get(ScrollableList.class, "midi").addItems(midilist);
+  cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 }
 
 int findDefaultMidi(List<String> values, List<String> keywords) {
