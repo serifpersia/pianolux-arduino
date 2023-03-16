@@ -22,8 +22,6 @@ https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-wind
 
 Linux
 
-Running the PianoLED App
-
 install jre17 package:
 
 For Arch its this command
