@@ -7,7 +7,6 @@ import java.util.regex.*;
 import controlP5.*;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
-final static int TOP_COLOR = 255;
 import javax.swing.JOptionPane;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -26,7 +25,7 @@ import javax.swing.JProgressBar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
+final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds
 int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_OUTmax)
 {
@@ -74,12 +73,12 @@ String getDownloadUrl(JSONObject release, String fileName) {
 JSONObject latestRelease = getLatestRelease(releaseUrl);
 JSONObject getLatestRelease(String url) {
   try {
-    // String authToken = "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"; // replace with your PAT
+    //String authToken = ""; // replace with your PAT
     URL apiLink = new URL(url);
     URLConnection conn = apiLink.openConnection();
     conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
     conn.setRequestProperty("User-Agent", "Java");
-    //  conn.setRequestProperty("Authorization", "token " + authToken); // set the authorization header with your PAT
+    //conn.setRequestProperty("Authorization", "token " + authToken); // set the authorization header with your PAT
     BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
     byte[] dataBuffer = new byte[1024];
     int bytesRead;
@@ -114,7 +113,7 @@ void setup() {
   cp5.getController("modelist").setValue(0);
 
   Refresh();
-  
+
   numberselected = 176;
   firstNoteSelected = 21;
   lastNoteSelected = 108;
