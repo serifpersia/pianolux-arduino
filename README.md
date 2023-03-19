@@ -20,12 +20,11 @@ Follow this guide if you can't run both PianoLED app and your vst or other progr
 by following this guide you can split one midi connection into two virtual ones and that should let you use both),link:
 https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
 
-Arch Linux
-
-Running the PianoLED App
+Linux
 
 install jre17 package:
 
+For Arch its this command
 sudo pacman -S jre17-openjdk
 
 To run the app:
@@ -33,8 +32,7 @@ To run the app:
 
 -cd into the extracted directory
 
--make the file executable by you or anyone
-
 -run the app by double clicking on the PianoLED file, Execute, or simply run it with
-
 ./PianoLED command in the terminal
+(to be able to auto select devices on startup run the PianoLED script using sudo
+
