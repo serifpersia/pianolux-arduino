@@ -8,33 +8,100 @@ import controlP5.*;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 final static int TOP_COLOR = 255;
+import javax.swing.JOptionPane;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import javax.swing.SwingUtilities;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-MidiBus myBus;
-Serial arduino;
-String portName;
-String presetText;
-String VersionTag;
-// Create an ArrayList to hold the names of the MIDI devices
-ArrayList<String> midilist = new ArrayList<String>();
-String midiName;
-String comlist[];
 
 //Map function maps pitch first last note and number of leds
 int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_OUTmax)
 {
   return ((((au32_IN - au32_INmin)*(au32_OUTmax - au32_OUTmin))/(au32_INmax - au32_INmin)) + au32_OUTmin);
 }
-
+int counter = 0;
 int lastNoteSelected, firstNoteSelected, numberselected,
   notePushed, noteOnVelocity;
-
-boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
-List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
-int counter = 0;
-
 int leftMinPitch = 21;
 int leftMaxPitch;
 int rightMaxPitch = 108;
+
+boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
+List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
+
+// Create an ArrayList to hold the names of the MIDI devices
+ArrayList<String> midilist = new ArrayList<String>();
+
+String portName;
+String midiName;
+String comlist[];
+String presetText;
+String os = System.getProperty("os.name").toLowerCase();
+String VersionTag;
+String VersionFile;
+String owner = "serifpersia";
+String repo = "pianoled-arduino";
+String fileName;
+String downloadUrl;
+String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
+String saveDir = System.getProperty("user.dir") + "/";
+String destinationFolderPath =  System.getProperty("user.dir") + "/";
+String appPath = System.getProperty("user.dir");
+String getDownloadUrl(JSONObject release, String fileName) {
+  JSONArray assets = release.getJSONArray("assets");
+  for (int i = 0; i < assets.length(); i++) {
+    JSONObject asset = assets.getJSONObject(i);
+    if (asset.getString("name").equals(fileName)) {
+      return asset.getString("browser_download_url");
+    }
+  }
+  return null;
+}
+
+JSONObject latestRelease = getLatestRelease(releaseUrl);
+JSONObject getLatestRelease(String url) {
+  try {
+    // String authToken = "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"; // replace with your PAT
+    URL apiLink = new URL(url);
+    URLConnection conn = apiLink.openConnection();
+    conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+    conn.setRequestProperty("User-Agent", "Java");
+    //  conn.setRequestProperty("Authorization", "token " + authToken); // set the authorization header with your PAT
+    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+    byte[] dataBuffer = new byte[1024];
+    int bytesRead;
+    StringBuilder responseBuilder = new StringBuilder();
+    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+      responseBuilder.append(new String(dataBuffer, 0, bytesRead));
+    }
+    in.close();
+    return new JSONObject(responseBuilder.toString());
+  }
+  catch (Exception e) {
+    System.err.println("Error: " + e.getMessage());
+    return null;
+  }
+}
+
+File folder = new File(appPath);
+File[] listOfFiles = folder.listFiles();
+File versionFile = null;
+
+Serial arduino;
+MidiBus myBus;
 
 void setup() {
   size(930, 160);
@@ -47,9 +114,194 @@ void setup() {
   cp5.getController("modelist").setValue(0);
 
   Refresh();
+  
   numberselected = 176;
   firstNoteSelected = 21;
   lastNoteSelected = 108;
+
+  setSystemFileDownload();
+
+  checkLocalVersion();
+}
+
+void setSystemFileDownload()
+{
+  if (os.contains("win")) {
+    fileName = "PianoLED-windows-amd64.zip";
+    println("File to download: " + fileName);
+  } else {
+    fileName = "PianoLED-linux-amd64.zip";
+  }
+  downloadUrl = getDownloadUrl(latestRelease, fileName);
+}
+
+void checkLocalVersion()
+{
+
+  for (int i = 0; i < listOfFiles.length; i++) {
+    if (listOfFiles[i].isFile()) {
+      String fileName = listOfFiles[i].getName();
+      if (fileName.matches(".*v\\d+\\.\\d+.*")) {
+        VersionTag = fileName.replaceAll(".*(v\\d+\\.\\d+).*", "$1");
+        versionFile = listOfFiles[i];
+        break;
+      }
+    }
+  }
+  System.out.println("VersionTag: " + VersionTag);
+}
+
+void checkForUpdates() {
+  Object[] options = {"Yes", "No"};
+  int result = JOptionPane.showOptionDialog(null, "Check for updates?", "Check for Updates",
+    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+  if (result == JOptionPane.YES_OPTION) {
+    println("Yes, check for updates");
+    getLatestRelease();
+    checkReleaseVersion();
+  } else {
+    println("No, don't check for updates");
+  }
+}
+
+void downloadLatestRelease(String downloadUrl, String saveDir, String fileName, String destinationFolderPath) {
+  try {
+    URL url = new URL(downloadUrl);
+    URLConnection conn = url.openConnection();
+    conn.connect();
+    int contentLength = conn.getContentLength();
+    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+    FileOutputStream out = new FileOutputStream(saveDir + fileName);
+    BufferedOutputStream bout = new BufferedOutputStream(out, 1024);
+    byte[] data = new byte[1024];
+    int x = 0;
+    int bytesRead = 0;
+
+    // Create progress bar
+    JProgressBar progressBar = new JProgressBar();
+    progressBar.setStringPainted(true);
+
+    // Create dialog to show progress bar
+    JDialog dialog = new JDialog();
+    dialog.add(progressBar);
+    dialog.setTitle("Downloading update...");
+    dialog.setSize(300, 75);
+    dialog.setLocationRelativeTo(null);
+    dialog.setVisible(true);
+
+    while ((bytesRead = in.read(data, 0, 1024)) >= 0) {
+      bout.write(data, 0, bytesRead);
+      x += bytesRead;
+      int percentCompleted = (int) ((x / (float) contentLength) * 100);
+
+      // Update progress bar
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          progressBar.setValue(percentCompleted);
+        }
+      }
+      );
+    }
+    bout.close();
+    in.close();
+    extractZipFile(saveDir + fileName, destinationFolderPath);
+    dialog.dispose(); // Close progress bar dialog
+    String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name") + ". Please restart PianoLED.";
+    JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
+    if (versionFile != null) { // check the flag value before deleting the version file
+      boolean deleted = versionFile.delete();
+      if (deleted) {
+        System.out.println("Deleted version file: " + versionFile.getName());
+        exit();
+      } else {
+        System.out.println("Failed to delete version file: " + versionFile.getName());
+      }
+    }
+  }
+  catch (IOException e) {
+    System.err.println("Error: " + e.getMessage());
+  }
+}
+
+void checkReleaseVersion() {
+
+  if (latestRelease == null) {
+    System.out.println("Unable to retrieve latest release information.");
+    return;
+  }
+  if (VersionTag == null)
+  {
+    String message = "Unable to retrieve local app information";
+    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
+    return;
+  }
+
+  String latestTag = latestRelease.getString("tag_name");
+  if (latestTag.equals(VersionTag)) {
+    String message = "No need to update, you are using the latest " + latestTag + " version of PianoLED.";
+    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
+  } else {
+    Object[] options = {"Update", "Cancel"};
+    int result = JOptionPane.showOptionDialog(null, "A new version of PianoLED is available. Do you want to update?", "Update Available",
+      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+    if (result == JOptionPane.YES_OPTION) {
+      downloadLatestRelease(downloadUrl, saveDir, fileName, destinationFolderPath);
+    }
+  }
+}
+
+void getLatestRelease()
+{
+  System.out.println("Latest release tag: " + latestRelease.getString("tag_name"));
+}
+
+
+void extractZipFile(String zipFilePath, String destinationFolderPath) {
+  try {
+    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath));
+    ZipEntry zipEntry = zipInputStream.getNextEntry();
+    byte[] buffer = new byte[1024];
+
+    while (zipEntry != null) {
+      String fileName = zipEntry.getName();
+      File newFile = new File(destinationFolderPath + fileName);
+      System.out.println("Extracting file: " + newFile.getAbsolutePath());
+
+      if (zipEntry.isDirectory()) {
+        // Create the directory
+        newFile.mkdirs();
+      } else {
+        // Create all non-existing parent directories
+        new File(newFile.getParent()).mkdirs();
+
+        // Write the file contents
+        FileOutputStream fos = new FileOutputStream(newFile);
+        int len;
+        while ((len = zipInputStream.read(buffer)) > 0) {
+          fos.write(buffer, 0, len);
+        }
+        fos.close();
+      }
+
+      zipEntry = zipInputStream.getNextEntry();
+    }
+
+    zipInputStream.closeEntry();
+    zipInputStream.close();
+
+    System.out.println("Zip file extracted to: " + destinationFolderPath);
+
+    // Delete the zip file
+    File zipFile = new File(zipFilePath);
+    if (zipFile.delete()) {
+      System.out.println("Zip file deleted successfully");
+    } else {
+      System.err.println("Failed to delete zip file");
+    }
+  }
+  catch (IOException e) {
+    System.err.println("Error extracting zip file: " + e.getMessage());
+  }
 }
 
 void midi(int n) {
@@ -370,7 +622,7 @@ void Brightness(int value)
 
 
 void Refresh() {
-  String os = System.getProperty("os.name").toLowerCase();
+
   if (os.contains("win")) {
     findPortNameOnWindows("Arduino");
   } else {
@@ -496,6 +748,10 @@ void AdvanceUser()
   }
 }
 
+void CheckForUpdate()
+{
+  checkForUpdates();
+}
 
 void setLeftSide() {
   splitLeftRed =(Red);
