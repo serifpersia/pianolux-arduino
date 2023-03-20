@@ -153,7 +153,7 @@ void setBG(CRGB colorToSet) {
   FastLED.show();
 }
 
-boolean debug = false;
+boolean debug = true;
 void debugLightOn(int n) {
   if (debug) {
     leds[n] = leds[n].LightBlue;
@@ -321,7 +321,6 @@ void loop() {
 
   if (currentTime - previousFadeTime >= fadeInterval) {
     if (numEffects > 0 || generalFadeRate > 0) {
-      debugLightOn(10);
       fadeCtrl->fade(generalFadeRate);
     }
     previousFadeTime = currentTime;

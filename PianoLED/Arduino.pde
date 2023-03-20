@@ -15,6 +15,7 @@ final static byte COMMAND_KEY_OFF = (byte)249;
 final static byte COMMAND_SPLASH_MAX_LENGTH = (byte)248;
 final static byte COMMAND_SET_BG = (byte)247;
 final static byte COMMAND_VELOCITY = (byte)246;
+final static byte COMMAND_STRIP_DIRECTION = (byte)245;
 
 ByteArrayOutputStream commandSetColor(int r, int g, int b, int note)
 {
@@ -129,6 +130,16 @@ ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int 
   return message;
 }
 
+ByteArrayOutputStream commandStripDirection(int direction)
+{
+  ByteArrayOutputStream message = new ByteArrayOutputStream();
+  message.write((byte)COMMAND_BYTE1);
+  message.write((byte)COMMAND_BYTE2);
+  message.write((byte)COMMAND_STRIP_DIRECTION);
+  message.write((byte)direction);
+  return message;
+}
+
 void sendCommandAnimation(int animationIndex)
 {
   sendToArduino(commandAnimation(animationIndex));
@@ -173,6 +184,10 @@ void sendCommandVelocity(int velocity, int note, int r, int g, int b)
   sendToArduino(commandVelocity(velocity, note, r, g, b));
 }
 
+void sendCommandStripDirection(int direction)
+{
+  sendToArduino(commandStripDirection(direction));
+}
 
 void sendToArduino(byte val)
 {

@@ -121,6 +121,8 @@ ControlP5 buildUI()
 
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
+  addToggle(cp5, "stripDirection", "Right-To-Left", 470, 25, 15, 15, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
+  
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
   int SPLASH_CONTROL_Y = 60;

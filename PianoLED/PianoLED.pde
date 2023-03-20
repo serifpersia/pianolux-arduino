@@ -1,4 +1,4 @@
-import processing.serial.*; //<>//
+import processing.serial.*; //<>// //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -498,6 +498,10 @@ void BGColor(boolean on)
     sendCommandSetBG(0, 0, 0);
     hideBGControls();
   }
+}
+
+void stripDirection(boolean on) {
+  sendCommandStripDirection(on ? 1 : 0);
 }
 
 void setBG() {

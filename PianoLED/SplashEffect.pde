@@ -33,6 +33,7 @@ color getSplashColor() {
     // Preset color mode
     splashColor = presetColors[n-1];
     println("Selected color: " + colorNames.get(n-1));
+    
   } else if (n == last) {
     //Manual
     splashColor = cp5.get(ColorWheel.class, "Color").getRGB();
