@@ -593,6 +593,8 @@ void Open() {
       BGColor(bg.getState());
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
+      Toggle sd = (Toggle)cp5.getController("stripDirection");
+      stripDirection(sd.getState());
     }
     catch (Exception e) {
       println("Error opening serial port: " + e.getMessage());
