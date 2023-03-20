@@ -10,6 +10,7 @@
 #define DATA_PIN 5    // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450
 
+int STRIP_DIRECTION = 0; //0 - left-to-right
 const int MAX_VELOCITY = 128;
 
 const int COMMAND_BYTE1 = 111;
@@ -26,6 +27,7 @@ const int COMMAND_KEY_OFF = 249;
 const int COMMAND_SPLASH_MAX_LENGTH = 248;
 const int COMMAND_SET_BG = 247;
 const int COMMAND_VELOCITY = 246;
+const int COMMAND_STRIP_DIRECTION = 245;
 
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -153,7 +155,7 @@ void setBG(CRGB colorToSet) {
   FastLED.show();
 }
 
-boolean debug = true;
+boolean debug = false;
 void debugLightOn(int n) {
   if (debug) {
     leds[n] = leds[n].LightBlue;
@@ -299,6 +301,14 @@ void loop() {
           MODE = COMMAND_VELOCITY;
           break;
         }
+      case COMMAND_STRIP_DIRECTION:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(11);
+          STRIP_DIRECTION = buffer[++bufIdx];
+          break;
+        }
       default:
         {
           break;
@@ -337,13 +347,17 @@ void loop() {
   }
   FastLED.show();
 }
+int ledNum(int i)
+{
+  return STRIP_DIRECTION == 0 ? i : (NUM_LEDS-1) - i;
+}
 
 
 void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   if (ledNo < 0 || ledNo > NUM_LEDS) {
     return;
   }
-  leds[ledNo].setRGB(redVal, greenVal, blueVal);
+  leds[ledNum(ledNo)].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
 

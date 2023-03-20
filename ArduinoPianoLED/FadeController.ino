@@ -15,15 +15,15 @@ void FadeController ::fade(int fadeRate) {
       if (MODE == COMMAND_SPLASH) effectiveSplashRate = 1;
       else effectiveSplashRate = 0;
     }
-
+    int ledNo = ledNum(i);
     if (effectiveSplashRate > 0) {
       if (bgColor == CRGB(0)) {
-        leds[i].fadeToBlackBy(effectiveSplashRate);
+        leds[ledNo].fadeToBlackBy(effectiveSplashRate);
       } else {
-        if (leds[i] != bgColor) {
-          nblend(leds[i], bgColor, effectiveSplashRate + BG_FADE_OFFSET);
-          if (distance(leds[i], bgColor) < 5) {
-            leds[i] = bgColor;
+        if (leds[ledNo] != bgColor) {
+          nblend(leds[ledNo], bgColor, effectiveSplashRate + BG_FADE_OFFSET);
+          if (distance(leds[ledNo], bgColor) < 5) {
+            leds[ledNo] = bgColor;
           }
         }
       }
