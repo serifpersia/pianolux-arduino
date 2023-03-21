@@ -1,4 +1,4 @@
-import processing.serial.*; //<>//
+import processing.serial.*; //<>// //<>// //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -27,9 +27,10 @@ import org.json.JSONObject;
 
 final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds
-int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_OUTmax)
-{
-  return ((((au32_IN - au32_INmin)*(au32_OUTmax - au32_OUTmin))/(au32_INmax - au32_INmin)) + au32_OUTmin);
+int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+  int outMax = outMin + stripLEDNumber - 1; // highest LED number
+  int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+  return mappedLED + outMin;
 }
 int counter = 0;
 int lastNoteSelected, firstNoteSelected, numberselected,
@@ -315,7 +316,7 @@ void midi(int n) {
 }
 
 void noteOn(int channel, int pitch, int velocity) {
-  notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
+  notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected,1);
   Keys[pitch-21][0] = 1;
   Keys[pitch-21][1] = 1;
   try {
@@ -396,7 +397,7 @@ public static void printMessage(ByteArrayOutputStream msg) {
 }
 
 void noteOff(int channel, int pitch, int velocity) {
-  notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
+  notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected,1);
   Keys[pitch-21][0] = 0;
   Keys[pitch-21][1] = 0;
   try {
@@ -500,6 +501,10 @@ void BGColor(boolean on)
   }
 }
 
+void stripDirection(boolean on) {
+  sendCommandStripDirection(on ? 1 : 0, numberselected);
+}
+
 void setBG() {
   int red = Red; // Red value from 0-255
   int green = Green; // Green value from 0-255
@@ -589,6 +594,8 @@ void Open() {
       BGColor(bg.getState());
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
+      Toggle sd = (Toggle)cp5.getController("stripDirection");
+      stripDirection(sd.getState());
     }
     catch (Exception e) {
       println("Error opening serial port: " + e.getMessage());
