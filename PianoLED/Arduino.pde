@@ -130,13 +130,14 @@ ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int 
   return message;
 }
 
-ByteArrayOutputStream commandStripDirection(int direction)
+ByteArrayOutputStream commandStripDirection(int direction, int numLeds)
 {
   ByteArrayOutputStream message = new ByteArrayOutputStream();
   message.write((byte)COMMAND_BYTE1);
   message.write((byte)COMMAND_BYTE2);
   message.write((byte)COMMAND_STRIP_DIRECTION);
   message.write((byte)direction);
+  message.write((byte)numLeds);
   return message;
 }
 
@@ -184,9 +185,9 @@ void sendCommandVelocity(int velocity, int note, int r, int g, int b)
   sendToArduino(commandVelocity(velocity, note, r, g, b));
 }
 
-void sendCommandStripDirection(int direction)
+void sendCommandStripDirection(int direction, int numLeds)
 {
-  sendToArduino(commandStripDirection(direction));
+  sendToArduino(commandStripDirection(direction, numLeds));
 }
 
 void sendToArduino(byte val)

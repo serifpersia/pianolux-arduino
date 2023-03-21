@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>//
+import processing.serial.*; //<>// //<>// //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -502,7 +502,7 @@ void BGColor(boolean on)
 }
 
 void stripDirection(boolean on) {
-  sendCommandStripDirection(on ? 1 : 0);
+  sendCommandStripDirection(on ? 1 : 0, numberselected);
 }
 
 void setBG() {

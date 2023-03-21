@@ -6,9 +6,11 @@
 #define NO_HARDWARE_PIN_SUPPORT
 #define FASTLED_RMT_MAX_CHANNELS 1
 
-#define NUM_LEDS 176  // how many leds do you want to control
+#define MAX_NUM_LEDS 176  // how many leds do you want to control
 #define DATA_PIN 5    // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450
+
+int NUM_LEDS=176;  // how many leds do you want to control
 
 int STRIP_DIRECTION = 0; //0 - left-to-right
 const int MAX_VELOCITY = 128;
@@ -65,9 +67,9 @@ extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
 
-boolean keysOn[NUM_LEDS];
+boolean keysOn[MAX_NUM_LEDS];
 
-CRGB leds[NUM_LEDS];
+CRGB leds[MAX_NUM_LEDS];
 int NOTES = 12;
 
 int getHueForPos(int pos) {
@@ -307,6 +309,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(11);
           STRIP_DIRECTION = buffer[++bufIdx];
+          NUM_LEDS = buffer[++bufIdx];
           break;
         }
       default:
