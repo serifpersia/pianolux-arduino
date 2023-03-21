@@ -87,7 +87,7 @@ ControlP5 buildUI()
     //.setLabelVisible(false)
     ;
 
-  addButton(cp5, "CheckForUpdate", "Update", 650, 20, 45, 25);
+  addButton(cp5, "CheckForUpdate", "Update", 620, 20, 45, 25);
 
   addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
   addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
