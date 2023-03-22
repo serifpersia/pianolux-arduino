@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>// //<>//
+import processing.serial.*; //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -73,10 +73,10 @@ String owner = "serifpersia";
 String repo = "pianoled-arduino";
 String fileName;
 String downloadUrl;
-String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
 String saveDir = System.getProperty("user.dir") + "/";
 String destinationFolderPath =  System.getProperty("user.dir") + "/";
 String appPath = System.getProperty("user.dir");
+
 String getDownloadUrl(JSONObject release, String fileName) {
   JSONArray assets = release.getJSONArray("assets");
   for (int i = 0; i < assets.length(); i++) {
@@ -88,7 +88,7 @@ String getDownloadUrl(JSONObject release, String fileName) {
   return null;
 }
 
-JSONObject latestRelease = getLatestRelease(releaseUrl);
+
 JSONObject getLatestRelease(String url) {
   try {
     //String authToken = ""; // replace with your PAT
@@ -143,13 +143,6 @@ void setup() {
 
 void setSystemFileDownload()
 {
-  if (os.contains("win")) {
-    fileName = "PianoLED-windows-amd64.zip";
-    println("File to download: " + fileName);
-  } else {
-    fileName = "PianoLED-linux-amd64.zip";
-  }
-  downloadUrl = getDownloadUrl(latestRelease, fileName);
 }
 
 void checkLocalVersion()
@@ -168,110 +161,113 @@ void checkLocalVersion()
   System.out.println("VersionTag: " + VersionTag);
 }
 
+//button update
 void checkForUpdates() {
-  Object[] options = {"Yes", "No"};
-  int result = JOptionPane.showOptionDialog(null, "Check for updates?", "Check for Updates",
-    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-  if (result == JOptionPane.YES_OPTION) {
-    println("Yes, check for updates");
-    getLatestRelease();
-    checkReleaseVersion();
-  } else {
-    println("No, don't check for updates");
-  }
-}
+  // Show confirmation dialog to check for updates
+  int confirm = JOptionPane.showOptionDialog(null, "Do you want to check for updates?",
+    "Update Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-void downloadLatestRelease(String downloadUrl, String saveDir, String fileName, String destinationFolderPath) {
-  try {
-    URL url = new URL(downloadUrl);
-    URLConnection conn = url.openConnection();
-    conn.connect();
-    int contentLength = conn.getContentLength();
-    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-    FileOutputStream out = new FileOutputStream(saveDir + fileName);
-    BufferedOutputStream bout = new BufferedOutputStream(out, 1024);
-    byte[] data = new byte[1024];
-    int x = 0;
-    int bytesRead = 0;
+  if (confirm == JOptionPane.YES_OPTION) {
+    String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
+    JSONObject latestRelease = getLatestRelease(releaseUrl);
 
-    // Create progress bar
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setStringPainted(true);
-
-    // Create dialog to show progress bar
-    JDialog dialog = new JDialog();
-    dialog.add(progressBar);
-    dialog.setTitle("Downloading update...");
-    dialog.setSize(300, 75);
-    dialog.setLocationRelativeTo(null);
-    dialog.setVisible(true);
-
-    while ((bytesRead = in.read(data, 0, 1024)) >= 0) {
-      bout.write(data, 0, bytesRead);
-      x += bytesRead;
-      int percentCompleted = (int) ((x / (float) contentLength) * 100);
-
-      // Update progress bar
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          progressBar.setValue(percentCompleted);
-        }
-      }
-      );
+    if (latestRelease == null) {
+      JOptionPane.showMessageDialog(null, "Unable to retrieve latest release information.", "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
     }
-    bout.close();
-    in.close();
-    extractZipFile(saveDir + fileName, destinationFolderPath);
-    dialog.dispose(); // Close progress bar dialog
-    String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name") + ". Please restart PianoLED.";
-    JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
-    if (versionFile != null) { // check the flag value before deleting the version file
-      boolean deleted = versionFile.delete();
-      if (deleted) {
-        System.out.println("Deleted version file: " + versionFile.getName());
-        exit();
+
+    // Compare the latest release tag with the local version tag
+    if (VersionTag != null && VersionTag.equals(latestRelease.getString("tag_name"))) {
+      JOptionPane.showMessageDialog(null, "You already have the latest version.", "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
+
+    if (VersionTag == null)
+    {
+      String message = "Unable to retrieve local app information";
+      JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
+
+    // Show confirmation dialog to download the latest release
+    confirm = JOptionPane.showOptionDialog(null, "A new update is available. Do you want to download it?",
+      "Update Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+      // Download and extract the latest release
+      String downloadUrl, fileName;
+      if (os.contains("win")) {
+        fileName = "PianoLED-windows-amd64.zip";
+        println("File to download: " + fileName);
       } else {
-        System.out.println("Failed to delete version file: " + versionFile.getName());
+        fileName = "PianoLED-linux-amd64.zip";
+      }
+      downloadUrl = getDownloadUrl(latestRelease, fileName);
+
+      try {
+        // Download the file with a progress bar
+        URL url = new URL(downloadUrl);
+        URLConnection conn = url.openConnection();
+        conn.connect();
+        int contentLength = conn.getContentLength();
+        BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+        FileOutputStream out = new FileOutputStream(saveDir + fileName);
+        BufferedOutputStream bout = new BufferedOutputStream(out, 1024);
+        byte[] data = new byte[1024];
+        int x = 0;
+        int bytesRead = 0;
+
+        // Create progress bar
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+
+        // Create dialog to show progress bar
+        JDialog dialog = new JDialog();
+        dialog.add(progressBar);
+        dialog.setTitle("Downloading update...");
+        dialog.setSize(300, 75);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
+        while ((bytesRead = in.read(data, 0, 1024)) >= 0) {
+          bout.write(data, 0, bytesRead);
+          x += bytesRead;
+          int percentCompleted = (int) ((x / (float) contentLength) * 100);
+
+          // Update progress bar
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              progressBar.setValue(percentCompleted);
+            }
+          }
+          );
+        }
+        bout.close();
+        in.close();
+        extractZipFile(saveDir + fileName, destinationFolderPath);
+        dialog.dispose(); // Close progress bar dialog
+        String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name") + ". Please restart PianoLED.";
+        JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
+        deleteOldFile();
+      }
+      catch(Exception e)
+      {
       }
     }
   }
-  catch (IOException e) {
-    System.err.println("Error: " + e.getMessage());
-  }
 }
-
-void checkReleaseVersion() {
-
-  if (latestRelease == null) {
-    System.out.println("Unable to retrieve latest release information.");
-    return;
-  }
-  if (VersionTag == null)
-  {
-    String message = "Unable to retrieve local app information";
-    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
-    return;
-  }
-
-  String latestTag = latestRelease.getString("tag_name");
-  if (latestTag.equals(VersionTag)) {
-    String message = "No need to update, you are using the latest " + latestTag + " version of PianoLED.";
-    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
-  } else {
-    Object[] options = {"Update", "Cancel"};
-    int result = JOptionPane.showOptionDialog(null, "A new version of PianoLED is available. Do you want to update?", "Update Available",
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-    if (result == JOptionPane.YES_OPTION) {
-      downloadLatestRelease(downloadUrl, saveDir, fileName, destinationFolderPath);
+void deleteOldFile()
+{
+  if (versionFile != null) { // check the flag value before deleting the version file
+    boolean deleted = versionFile.delete();
+    if (deleted) {
+      System.out.println("Deleted version file: " + versionFile.getName());
+      exit();
+    } else {
+      System.out.println("Failed to delete version file: " + versionFile.getName());
     }
   }
 }
-
-void getLatestRelease()
-{
-  System.out.println("Latest release tag: " + latestRelease.getString("tag_name"));
-}
-
 
 void extractZipFile(String zipFilePath, String destinationFolderPath) {
   try {

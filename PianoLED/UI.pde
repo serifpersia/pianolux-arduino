@@ -113,7 +113,7 @@ ControlP5 buildUI()
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
-//  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
+  //  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
@@ -538,10 +538,10 @@ void draw() {
 
   //Piano type
   //PianoLED version tag uncomment when compiling to exe
-  // VersionTag = "PianoLED V3.6";
+  String VersionAppTag = "PianoLED: " + "v3.7";
   fill(255);
   text(presetText, 375, 15);
-  //text(VersionTag, 15, 150);
+  text(VersionAppTag, 15, 150);
 
   //white keys
   // Initial x-coordinate of the first key
