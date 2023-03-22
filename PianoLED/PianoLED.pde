@@ -32,12 +32,29 @@ int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLED
   int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
   return mappedLED + outMin;
 }
+
+int mapMidiNoteToLEDFixed(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+  int outMax = outMin + stripLEDNumber - 1; // highest LED number
+  int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+
+  if (midiNote >=57)
+  {
+    mappedLED -=1;
+  }
+
+  if (midiNote >=93)
+  {
+    mappedLED -=1;
+  }
+  return mappedLED + outMin;
+}
 int counter = 0;
 int lastNoteSelected, firstNoteSelected, numberselected,
   notePushed, noteOnVelocity;
 int leftMinPitch = 21;
 int leftMaxPitch;
 int rightMaxPitch = 108;
+boolean useFixedMapping = false;
 
 boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
 List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
@@ -316,7 +333,12 @@ void midi(int n) {
 }
 
 void noteOn(int channel, int pitch, int velocity) {
-  notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected,1);
+
+  if (useFixedMapping) {
+    notePushed = mapMidiNoteToLEDFixed(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  } else {
+    notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  }
   Keys[pitch-21][0] = 1;
   Keys[pitch-21][1] = 1;
   try {
@@ -397,7 +419,11 @@ public static void printMessage(ByteArrayOutputStream msg) {
 }
 
 void noteOff(int channel, int pitch, int velocity) {
-  notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected,1);
+  if (useFixedMapping) {
+    notePushed = mapMidiNoteToLEDFixed(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  } else {
+    notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  }
   Keys[pitch-21][0] = 0;
   Keys[pitch-21][1] = 0;
   try {
@@ -504,6 +530,12 @@ void BGColor(boolean on)
 void stripDirection(boolean on) {
   sendCommandStripDirection(on ? 1 : 0, numberselected);
 }
+
+void Fix()
+{
+  useFixedMapping = !useFixedMapping; // toggle the state
+}
+
 
 void setBG() {
   int red = Red; // Red value from 0-255
@@ -729,29 +761,6 @@ int findDefaultMidi(List<String> values, List<String> keywords) {
     index++;
   }
   return 0;
-}
-
-void AdvanceUser()
-{
-  try {
-    String inputFirsKey = showInputDialog("First key? (A0(21),E1(28),C2(36),C2(36),etc...)");
-    int firstKey = Integer.parseInt(inputFirsKey);
-    firstNoteSelected = firstKey;
-    println("First note: " + firstKey);
-
-    String inputLastKey = showInputDialog("Last key? (C8(108),G7(103),C7(96)C6(84),etc...)");
-    int lastKey = Integer.parseInt(inputLastKey);
-    lastNoteSelected = lastKey;
-    println("Last note: " + lastKey);
-
-    String inputNumberLEDS = showInputDialog("Number of LEDS? (176,152,122,98,etc...)");
-    int ledNum = Integer.parseInt(inputNumberLEDS);
-    numberselected = ledNum;
-    println("Number of LEDS: " + ledNum);
-  }
-  catch (Exception e)
-  {
-  }
 }
 
 void CheckForUpdate()

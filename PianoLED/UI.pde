@@ -98,7 +98,6 @@ ControlP5 buildUI()
 
   addButton(cp5, "setBG", "Set BG", 670, 26, 30, 15).hide();
 
-  addButton(cp5, "P174", "174 Preset", 305, 25, 60, 15);
 
   addButton(cp5, "Open", null, 725, 45, 50, 15);
   addButton(cp5, "Refresh", null, 775, 45, 50, 15 );
@@ -114,15 +113,15 @@ ControlP5 buildUI()
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
-  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
+//  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
 
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
-  addToggle(cp5, "stripDirection", "Right-To-Left", 470, 25, 15, 15, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
-  
+  addToggle(cp5, "stripDirection", "Reverse", 425, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
+  addToggle(cp5, "Fix", "Fix LED", 390, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
   int SPLASH_CONTROL_Y = 60;
@@ -300,13 +299,6 @@ void rightArrow()
   println("Selected number led: " + numberselected);
   println("Selected first note: " + firstNoteSelected);
   println("Selected last note: " + lastNoteSelected);
-}
-
-void P174()
-{
-  numberselected = 174;
-  firstNoteSelected = 21;
-  lastNoteSelected = 108;
 }
 
 void hideAllControls()
@@ -532,11 +524,6 @@ void setControllersVisible(List<Controller> cl, boolean visible) {
 void draw() {
   background(0);
   presetText = "Piano: ";
-  switch (numberselected) {
-  case 174:
-    presetText += "174 leds ";
-    break;
-  }
   if (firstNoteSelected == 21 && lastNoteSelected == 108) {
     presetText += "88 Keys";
   } else if (firstNoteSelected == 28 && lastNoteSelected == 103) {
@@ -548,6 +535,7 @@ void draw() {
   } else if (firstNoteSelected == 36 && lastNoteSelected == 84) {
     presetText += "49 Keys";
   }
+
   //Piano type
   //PianoLED version tag uncomment when compiling to exe
   // VersionTag = "PianoLED V3.6";
