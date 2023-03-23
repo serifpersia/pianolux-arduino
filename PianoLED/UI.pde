@@ -98,6 +98,8 @@ ControlP5 buildUI()
 
   addButton(cp5, "setBG", "Set BG", 670, 26, 30, 15).hide();
 
+  addButton(cp5, "LoadMidi", "Load Midi File", EFFECT_CONTROLS_X+15, 45, 60, 15).hide();
+  addButton(cp5, "StopMidi", "Stop Midi File", EFFECT_CONTROLS_X+15, 60, 60, 15).hide();
 
   addButton(cp5, "Open", null, 725, 45, 50, 15);
   addButton(cp5, "Refresh", null, 775, 45, 50, 15 );
@@ -105,6 +107,9 @@ ControlP5 buildUI()
   addColorWheel(cp5, "Color", EFFECT_CONTROLS_X+15, 45, 100);
 
   addAnimationControls(cp5);
+
+  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15)
+    .close();
 
   addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();
@@ -389,6 +394,16 @@ void hideAnimationControls()
   setControllersVisible(getAnimationControllers(), false);
 }
 
+//LearnMidi Controls
+void showLearnMidiControls()
+{
+  setControllersVisible(getLearnMidiControllers(), true);
+}
+void hideLearnMidiControls()
+{
+  setControllersVisible(getLearnMidiControllers(), false);
+}
+
 void Color(color rgb)
 {
   Red = (int)red(rgb);
@@ -505,6 +520,22 @@ List<Controller> getAnimationControllers()
 
   cl.add(cp5.getController("Brightness"));
   cl.add(cp5.getController("animationlist"));
+
+  return cl;
+}
+//LearnMidi List
+List<Controller> getLearnMidiControllers()
+{
+  if (cp5 == null) return null;
+
+  List<Controller> cl = new ArrayList<>();
+
+  cl.add(cp5.getController("LoadMidi"));
+  cl.add(cp5.getController("StopMidi"));
+  
+  cl.add(cp5.getController("midiout"));
+
+
 
   return cl;
 }

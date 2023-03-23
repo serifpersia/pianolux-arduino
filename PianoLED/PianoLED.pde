@@ -24,6 +24,12 @@ import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.MidiSystem;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
+Sequencer sequencer;
 
 final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds
@@ -56,8 +62,8 @@ int leftMaxPitch;
 int rightMaxPitch = 108;
 boolean useFixedMapping = false;
 
-boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
-List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
+boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false, LearnMidiOn = false;
+List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation", "LearnMidi");
 
 // Create an ArrayList to hold the names of the MIDI devices
 ArrayList<String> midilist = new ArrayList<String>();
@@ -599,6 +605,12 @@ void modelist(int n) {
       setAnimationDefaults(0, 127);
       AnimationOn = true;
       break;
+    case 7: // LearnMidi
+      disableAllModes();
+      hideAllControls();
+      showLearnMidiControls();
+      LearnMidiOn = true;
+      break;
     }
     println("Selected mode: " + m.get(n));
   } else {
@@ -764,6 +776,52 @@ void CheckForUpdate()
   checkForUpdates();
 }
 
+void LoadMidi()
+{
+   // Use a file chooser dialog box to get the MIDI file to play
+  JFileChooser chooser = new JFileChooser();
+  chooser.setCurrentDirectory(new File("."));
+
+  // Add a file filter to only allow MIDI files
+  FileFilter filter = new FileFilter() {
+    public boolean accept(File file) {
+      String filename = file.getName().toLowerCase();
+      return filename.endsWith(".mid") || filename.endsWith(".midi") || file.isDirectory();
+    }
+
+    public String getDescription() {
+      return "MIDI files (*.mid, *.midi)";
+    }
+  };
+  chooser.setFileFilter(filter);
+
+  int result = chooser.showOpenDialog(null);
+  if (result == JFileChooser.APPROVE_OPTION) {
+    File midiFile = chooser.getSelectedFile();
+
+    // Load the MIDI file
+    try {
+      sequencer = MidiSystem.getSequencer();
+      sequencer.setSequence(MidiSystem.getSequence(midiFile));
+      sequencer.open();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    // Play the MIDI file
+    sequencer.start();
+  } else {
+    // The user cancelled the file chooser dialog, so do nothing
+  }
+}
+// */
+
+void StopMidi() {
+  // Stop the MIDI file from playing
+  sequencer.stop();
+  sequencer.close();
+}
 void setLeftSide() {
   splitLeftRed =(Red);
   splitLeftGreen =(Green);
