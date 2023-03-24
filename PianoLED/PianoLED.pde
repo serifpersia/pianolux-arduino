@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>//
+import processing.serial.*; //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -24,12 +24,35 @@ import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.MidiSystem;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
+Sequencer sequencer;
 
 final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds
-int MAP(int au32_IN, int au32_INmin, int au32_INmax, int au32_OUTmin, int au32_OUTmax)
-{
-  return ((((au32_IN - au32_INmin)*(au32_OUTmax - au32_OUTmin))/(au32_INmax - au32_INmin)) + au32_OUTmin);
+int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+  int outMax = outMin + stripLEDNumber - 1; // highest LED number
+  int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+  return mappedLED + outMin;
+}
+
+int mapMidiNoteToLEDFixed(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+  int outMax = outMin + stripLEDNumber - 1; // highest LED number
+  int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+
+  if (midiNote >=57)
+  {
+    mappedLED -=1;
+  }
+
+  if (midiNote >=93)
+  {
+    mappedLED -=1;
+  }
+  return mappedLED + outMin;
 }
 int counter = 0;
 int lastNoteSelected, firstNoteSelected, numberselected,
@@ -37,15 +60,18 @@ int lastNoteSelected, firstNoteSelected, numberselected,
 int leftMinPitch = 21;
 int leftMaxPitch;
 int rightMaxPitch = 108;
+boolean useFixedMapping = false;
 
-boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false;
-List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
+boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false, LearnMidiOn = false;
+List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation", "LearnMidi");
 
 // Create an ArrayList to hold the names of the MIDI devices
 ArrayList<String> midilist = new ArrayList<String>();
+ArrayList<String> midioutlist = new ArrayList<String>();
 
 String portName;
-String midiName;
+String midiName; //midi input device
+String midiOutName; //midi output device
 String comlist[];
 String presetText;
 String os = System.getProperty("os.name").toLowerCase();
@@ -55,10 +81,10 @@ String owner = "serifpersia";
 String repo = "pianoled-arduino";
 String fileName;
 String downloadUrl;
-String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
 String saveDir = System.getProperty("user.dir") + "/";
 String destinationFolderPath =  System.getProperty("user.dir") + "/";
 String appPath = System.getProperty("user.dir");
+
 String getDownloadUrl(JSONObject release, String fileName) {
   JSONArray assets = release.getJSONArray("assets");
   for (int i = 0; i < assets.length(); i++) {
@@ -70,7 +96,7 @@ String getDownloadUrl(JSONObject release, String fileName) {
   return null;
 }
 
-JSONObject latestRelease = getLatestRelease(releaseUrl);
+
 JSONObject getLatestRelease(String url) {
   try {
     //String authToken = ""; // replace with your PAT
@@ -100,7 +126,8 @@ File[] listOfFiles = folder.listFiles();
 File versionFile = null;
 
 Serial arduino;
-MidiBus myBus;
+MidiBus myBusIn;
+MidiBus myBusOut;
 
 void setup() {
   size(930, 160);
@@ -125,13 +152,6 @@ void setup() {
 
 void setSystemFileDownload()
 {
-  if (os.contains("win")) {
-    fileName = "PianoLED-windows-amd64.zip";
-    println("File to download: " + fileName);
-  } else {
-    fileName = "PianoLED-linux-amd64.zip";
-  }
-  downloadUrl = getDownloadUrl(latestRelease, fileName);
 }
 
 void checkLocalVersion()
@@ -150,110 +170,113 @@ void checkLocalVersion()
   System.out.println("VersionTag: " + VersionTag);
 }
 
+//button update
 void checkForUpdates() {
-  Object[] options = {"Yes", "No"};
-  int result = JOptionPane.showOptionDialog(null, "Check for updates?", "Check for Updates",
-    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-  if (result == JOptionPane.YES_OPTION) {
-    println("Yes, check for updates");
-    getLatestRelease();
-    checkReleaseVersion();
-  } else {
-    println("No, don't check for updates");
-  }
-}
+  // Show confirmation dialog to check for updates
+  int confirm = JOptionPane.showOptionDialog(null, "Do you want to check for updates?",
+    "Update Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-void downloadLatestRelease(String downloadUrl, String saveDir, String fileName, String destinationFolderPath) {
-  try {
-    URL url = new URL(downloadUrl);
-    URLConnection conn = url.openConnection();
-    conn.connect();
-    int contentLength = conn.getContentLength();
-    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-    FileOutputStream out = new FileOutputStream(saveDir + fileName);
-    BufferedOutputStream bout = new BufferedOutputStream(out, 1024);
-    byte[] data = new byte[1024];
-    int x = 0;
-    int bytesRead = 0;
+  if (confirm == JOptionPane.YES_OPTION) {
+    String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
+    JSONObject latestRelease = getLatestRelease(releaseUrl);
 
-    // Create progress bar
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setStringPainted(true);
-
-    // Create dialog to show progress bar
-    JDialog dialog = new JDialog();
-    dialog.add(progressBar);
-    dialog.setTitle("Downloading update...");
-    dialog.setSize(300, 75);
-    dialog.setLocationRelativeTo(null);
-    dialog.setVisible(true);
-
-    while ((bytesRead = in.read(data, 0, 1024)) >= 0) {
-      bout.write(data, 0, bytesRead);
-      x += bytesRead;
-      int percentCompleted = (int) ((x / (float) contentLength) * 100);
-
-      // Update progress bar
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          progressBar.setValue(percentCompleted);
-        }
-      }
-      );
+    if (latestRelease == null) {
+      JOptionPane.showMessageDialog(null, "Unable to retrieve latest release information.", "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
     }
-    bout.close();
-    in.close();
-    extractZipFile(saveDir + fileName, destinationFolderPath);
-    dialog.dispose(); // Close progress bar dialog
-    String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name") + ". Please restart PianoLED.";
-    JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
-    if (versionFile != null) { // check the flag value before deleting the version file
-      boolean deleted = versionFile.delete();
-      if (deleted) {
-        System.out.println("Deleted version file: " + versionFile.getName());
-        exit();
+
+    // Compare the latest release tag with the local version tag
+    if (VersionTag != null && VersionTag.equals(latestRelease.getString("tag_name"))) {
+      JOptionPane.showMessageDialog(null, "You already have the latest version.", "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
+
+    if (VersionTag == null)
+    {
+      String message = "Unable to retrieve local app information";
+      JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
+
+    // Show confirmation dialog to download the latest release
+    confirm = JOptionPane.showOptionDialog(null, "A new update is available. Do you want to download it?",
+      "Update Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+      // Download and extract the latest release
+      String downloadUrl, fileName;
+      if (os.contains("win")) {
+        fileName = "PianoLED-windows-amd64.zip";
+        println("File to download: " + fileName);
       } else {
-        System.out.println("Failed to delete version file: " + versionFile.getName());
+        fileName = "PianoLED-linux-amd64.zip";
+      }
+      downloadUrl = getDownloadUrl(latestRelease, fileName);
+
+      try {
+        // Download the file with a progress bar
+        URL url = new URL(downloadUrl);
+        URLConnection conn = url.openConnection();
+        conn.connect();
+        int contentLength = conn.getContentLength();
+        BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+        FileOutputStream out = new FileOutputStream(saveDir + fileName);
+        BufferedOutputStream bout = new BufferedOutputStream(out, 1024);
+        byte[] data = new byte[1024];
+        int x = 0;
+        int bytesRead = 0;
+
+        // Create progress bar
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+
+        // Create dialog to show progress bar
+        JDialog dialog = new JDialog();
+        dialog.add(progressBar);
+        dialog.setTitle("Downloading update...");
+        dialog.setSize(300, 75);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
+        while ((bytesRead = in.read(data, 0, 1024)) >= 0) {
+          bout.write(data, 0, bytesRead);
+          x += bytesRead;
+          int percentCompleted = (int) ((x / (float) contentLength) * 100);
+
+          // Update progress bar
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              progressBar.setValue(percentCompleted);
+            }
+          }
+          );
+        }
+        bout.close();
+        in.close();
+        extractZipFile(saveDir + fileName, destinationFolderPath);
+        dialog.dispose(); // Close progress bar dialog
+        String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name") + ". Please restart PianoLED.";
+        JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
+        deleteOldFile();
+      }
+      catch(Exception e)
+      {
       }
     }
   }
-  catch (IOException e) {
-    System.err.println("Error: " + e.getMessage());
-  }
 }
-
-void checkReleaseVersion() {
-
-  if (latestRelease == null) {
-    System.out.println("Unable to retrieve latest release information.");
-    return;
-  }
-  if (VersionTag == null)
-  {
-    String message = "Unable to retrieve local app information";
-    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
-    return;
-  }
-
-  String latestTag = latestRelease.getString("tag_name");
-  if (latestTag.equals(VersionTag)) {
-    String message = "No need to update, you are using the latest " + latestTag + " version of PianoLED.";
-    JOptionPane.showMessageDialog(null, message, "Update", JOptionPane.INFORMATION_MESSAGE);
-  } else {
-    Object[] options = {"Update", "Cancel"};
-    int result = JOptionPane.showOptionDialog(null, "A new version of PianoLED is available. Do you want to update?", "Update Available",
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-    if (result == JOptionPane.YES_OPTION) {
-      downloadLatestRelease(downloadUrl, saveDir, fileName, destinationFolderPath);
+void deleteOldFile()
+{
+  if (versionFile != null) { // check the flag value before deleting the version file
+    boolean deleted = versionFile.delete();
+    if (deleted) {
+      System.out.println("Deleted version file: " + versionFile.getName());
+      exit();
+    } else {
+      System.out.println("Failed to delete version file: " + versionFile.getName());
     }
   }
 }
-
-void getLatestRelease()
-{
-  System.out.println("Latest release tag: " + latestRelease.getString("tag_name"));
-}
-
 
 void extractZipFile(String zipFilePath, String destinationFolderPath) {
   try {
@@ -307,15 +330,32 @@ void midi(int n) {
   try {
     // Set the midiName variable to the name of the selected MIDI device
     midiName = midilist.get(n);
-    println("Selected midi device: " + midiName);
+    println("Selected midi input device: " + midiName);
   }
   catch (Exception NoDevicesAvailable) {
     println("No devices Available. plugin devices into your computer first!");
   }
 }
 
+void midiout(int n) {
+  try {
+    // Set the midiName variable to the name of the selected MIDI device
+    midiOutName = midioutlist.get(n);
+    println("Selected midi output device: " + midiOutName);
+  }
+  catch (Exception NoDevicesAvailable) {
+    println("No devices Available. plugin devices into your computer first!");
+  }
+}
+
+
 void noteOn(int channel, int pitch, int velocity) {
-  notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
+
+  if (useFixedMapping) {
+    notePushed = mapMidiNoteToLEDFixed(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  } else {
+    notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  }
   Keys[pitch-21][0] = 1;
   Keys[pitch-21][1] = 1;
   try {
@@ -396,7 +436,11 @@ public static void printMessage(ByteArrayOutputStream msg) {
 }
 
 void noteOff(int channel, int pitch, int velocity) {
-  notePushed = MAP(pitch, firstNoteSelected, lastNoteSelected, 1, numberselected);
+  if (useFixedMapping) {
+    notePushed = mapMidiNoteToLEDFixed(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  } else {
+    notePushed = mapMidiNoteToLED(pitch, firstNoteSelected, lastNoteSelected, numberselected, 1);
+  }
   Keys[pitch-21][0] = 0;
   Keys[pitch-21][1] = 0;
   try {
@@ -501,8 +545,14 @@ void BGColor(boolean on)
 }
 
 void stripDirection(boolean on) {
-  sendCommandStripDirection(on ? 1 : 0);
+  sendCommandStripDirection(on ? 1 : 0, numberselected);
 }
+
+void Fix()
+{
+  useFixedMapping = !useFixedMapping; // toggle the state
+}
+
 
 void setBG() {
   int red = Red; // Red value from 0-255
@@ -570,6 +620,12 @@ void modelist(int n) {
       setAnimationDefaults(0, 127);
       AnimationOn = true;
       break;
+    case 7: // LearnMidi
+      disableAllModes();
+      hideAllControls();
+      showLearnMidiControls();
+      LearnMidiOn = true;
+      break;
     }
     println("Selected mode: " + m.get(n));
   } else {
@@ -581,8 +637,9 @@ void Open() {
 
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
-      myBus = new MidiBus(this, midiName, 0);
-      println("Midi Port Open: " + midiName);
+      myBusIn = new MidiBus(this, midiName, 0);
+      myBusOut = new MidiBus(this, midiOutName, 0);
+      println("Midi Input Port Open: " + midiName);
       arduino = new Serial(this, portName, 115200);
       println("Serial Port Open : " + portName);
       cp5.getController("Open").getCaptionLabel().setText("Close");
@@ -593,13 +650,16 @@ void Open() {
       BGColor(bg.getState());
       int fadeRate = (int)cp5.getController("FadeOnVal").getValue();
       sendCommandFadeRate(fadeRate);
+      Toggle sd = (Toggle)cp5.getController("stripDirection");
+      stripDirection(sd.getState());
     }
     catch (Exception e) {
       println("Error opening serial port: " + e.getMessage());
     }
   } else {
     if (arduino != null) {
-      myBus.dispose();
+      myBusIn.dispose();
+      myBusOut.dispose();
       sendCommandBlackOut();
       BGColor(false);
       arduino.stop();
@@ -694,8 +754,10 @@ void refreshComList() {
 
 void refreshMidiList() {
   midilist.clear();
-  MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-  for (MidiDevice.Info info : infos) {
+  midioutlist.clear();
+
+  MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
+  for (MidiDevice.Info info : info_midiIn) {
     try {
       MidiDevice device = MidiSystem.getMidiDevice(info);
       if (device.getMaxTransmitters() != 0) {
@@ -707,9 +769,27 @@ void refreshMidiList() {
       // Handle the exception
     }
   }
+
+  MidiDevice.Info[] info_midiOut = MidiSystem.getMidiDeviceInfo();
+  for (MidiDevice.Info info : info_midiOut) {
+    try {
+      MidiDevice device = MidiSystem.getMidiDevice(info);
+      if (device.getMaxReceivers() != 0) {
+        midioutlist.add(info.getName());
+      }
+      device.close();
+    }
+    catch (MidiUnavailableException e) {
+      // Handle the exception
+    }
+  }
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
+
+  cp5.get(ScrollableList.class, "midiout").clear();
+  cp5.get(ScrollableList.class, "midiout").addItems(midioutlist);
+  cp5.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
 }
 
 int findDefaultMidi(List<String> values, List<String> keywords) {
@@ -728,34 +808,70 @@ int findDefaultMidi(List<String> values, List<String> keywords) {
   return 0;
 }
 
-void AdvanceUser()
-{
-  try {
-    String inputFirsKey = showInputDialog("First key? (A0(21),E1(28),C2(36),C2(36),etc...)");
-    int firstKey = Integer.parseInt(inputFirsKey);
-    firstNoteSelected = firstKey;
-    println("First note: " + firstKey);
-
-    String inputLastKey = showInputDialog("Last key? (C8(108),G7(103),C7(96)C6(84),etc...)");
-    int lastKey = Integer.parseInt(inputLastKey);
-    lastNoteSelected = lastKey;
-    println("Last note: " + lastKey);
-
-    String inputNumberLEDS = showInputDialog("Number of LEDS? (176,152,122,98,etc...)");
-    int ledNum = Integer.parseInt(inputNumberLEDS);
-    numberselected = ledNum;
-    println("Number of LEDS: " + ledNum);
-  }
-  catch (Exception e)
-  {
-  }
-}
-
 void CheckForUpdate()
 {
   checkForUpdates();
 }
 
+void LoadMidi() {
+  // Use a file chooser dialog box to get the MIDI file to play
+  JFileChooser chooser = new JFileChooser();
+  chooser.setCurrentDirectory(new File("."));
+
+  // Add a file filter to only allow MIDI files
+  FileFilter filter = new FileFilter() {
+    public boolean accept(File file) {
+      String filename = file.getName().toLowerCase();
+      return filename.endsWith(".mid") || filename.endsWith(".midi") || file.isDirectory();
+    }
+
+    public String getDescription() {
+      return "MIDI files (*.mid, *.midi)";
+    }
+  };
+  chooser.setFileFilter(filter);
+
+  int result = chooser.showOpenDialog(null);
+  if (result == JFileChooser.APPROVE_OPTION) {
+    File midiFile = chooser.getSelectedFile();
+
+    try {
+      // Initialize the sequencer object
+      sequencer = MidiSystem.getSequencer();
+      sequencer.setSequence(MidiSystem.getSequence(midiFile));
+      sequencer.open();
+      sequencer.start();
+
+      // Get the selected MIDI output device
+      int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
+      MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
+      MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
+      midiOutDevice.open();
+      Receiver receiver = midiOutDevice.getReceiver();
+
+      // Send the MIDI data to the selected output device
+      Transmitter transmitter = sequencer.getTransmitter();
+      transmitter.setReceiver(receiver);
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+}
+
+void StopMidi() {
+  try {
+    // Stop and close the sequencer
+    if (sequencer != null && sequencer.isRunning()) {
+      sequencer.stop();
+      sequencer.close();
+      sequencer = null;
+    }
+  }
+  catch (Exception ex) {
+    ex.printStackTrace();
+  }
+}
 void setLeftSide() {
   splitLeftRed =(Red);
   splitLeftGreen =(Green);
@@ -818,8 +934,9 @@ void dispose() {
   try {
     sendCommandBlackOut();
     sendCommandSetBG(0, 0, 0);
-    if (myBus != null) {
-      myBus.dispose();
+    if (myBusIn != null && myBusOut != null  ) {
+      myBusIn.dispose();
+      myBusOut.dispose();
     }
     if (arduino != null) {
       arduino.stop();
