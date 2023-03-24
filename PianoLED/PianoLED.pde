@@ -837,7 +837,7 @@ void LoadMidi() {
 
     try {
       // Initialize the sequencer object
-      sequencer = MidiSystem.getSequencer();
+      sequencer = MidiSystem.getSequencer(false);
       sequencer.setSequence(MidiSystem.getSequence(midiFile));
       sequencer.open();
       sequencer.start();

@@ -316,6 +316,7 @@ void hideAllControls()
   hideVelocityControls();
   hideSplitControls();
   hideAnimationControls();
+  hideLearnMidiControls();
 }
 
 //BG Controls
