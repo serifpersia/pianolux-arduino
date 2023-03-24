@@ -108,8 +108,8 @@ ControlP5 buildUI()
 
   addAnimationControls(cp5);
 
-  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15)
-    .close();
+  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15);
+   // .close();
 
   addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();

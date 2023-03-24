@@ -67,9 +67,11 @@ List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "S
 
 // Create an ArrayList to hold the names of the MIDI devices
 ArrayList<String> midilist = new ArrayList<String>();
+ArrayList<String> midioutlist = new ArrayList<String>();
 
 String portName;
-String midiName;
+String midiName; //midi input device
+String midiOutName; //midi output device
 String comlist[];
 String presetText;
 String os = System.getProperty("os.name").toLowerCase();
@@ -124,7 +126,8 @@ File[] listOfFiles = folder.listFiles();
 File versionFile = null;
 
 Serial arduino;
-MidiBus myBus;
+MidiBus myBusIn;
+MidiBus myBusOut;
 
 void setup() {
   size(930, 160);
@@ -327,12 +330,24 @@ void midi(int n) {
   try {
     // Set the midiName variable to the name of the selected MIDI device
     midiName = midilist.get(n);
-    println("Selected midi device: " + midiName);
+    println("Selected midi input device: " + midiName);
   }
   catch (Exception NoDevicesAvailable) {
     println("No devices Available. plugin devices into your computer first!");
   }
 }
+
+void midiout(int n) {
+  try {
+    // Set the midiName variable to the name of the selected MIDI device
+    midiOutName = midioutlist.get(n);
+    println("Selected midi output device: " + midiOutName);
+  }
+  catch (Exception NoDevicesAvailable) {
+    println("No devices Available. plugin devices into your computer first!");
+  }
+}
+
 
 void noteOn(int channel, int pitch, int velocity) {
 
@@ -622,8 +637,9 @@ void Open() {
 
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
-      myBus = new MidiBus(this, midiName, 0);
-      println("Midi Port Open: " + midiName);
+      myBusIn = new MidiBus(this, midiName, 0);
+      myBusOut = new MidiBus(this, midiOutName, 0);
+      println("Midi Input Port Open: " + midiName);
       arduino = new Serial(this, portName, 115200);
       println("Serial Port Open : " + portName);
       cp5.getController("Open").getCaptionLabel().setText("Close");
@@ -642,7 +658,8 @@ void Open() {
     }
   } else {
     if (arduino != null) {
-      myBus.dispose();
+      myBusIn.dispose();
+      myBusOut.dispose();
       sendCommandBlackOut();
       BGColor(false);
       arduino.stop();
@@ -737,8 +754,10 @@ void refreshComList() {
 
 void refreshMidiList() {
   midilist.clear();
-  MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-  for (MidiDevice.Info info : infos) {
+  midioutlist.clear();
+
+  MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
+  for (MidiDevice.Info info : info_midiIn) {
     try {
       MidiDevice device = MidiSystem.getMidiDevice(info);
       if (device.getMaxTransmitters() != 0) {
@@ -750,9 +769,27 @@ void refreshMidiList() {
       // Handle the exception
     }
   }
+
+  MidiDevice.Info[] info_midiOut = MidiSystem.getMidiDeviceInfo();
+  for (MidiDevice.Info info : info_midiOut) {
+    try {
+      MidiDevice device = MidiSystem.getMidiDevice(info);
+      if (device.getMaxReceivers() != 0) {
+        midioutlist.add(info.getName());
+      }
+      device.close();
+    }
+    catch (MidiUnavailableException e) {
+      // Handle the exception
+    }
+  }
   cp5.get(ScrollableList.class, "midi").clear();
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
+
+  cp5.get(ScrollableList.class, "midiout").clear();
+  cp5.get(ScrollableList.class, "midiout").addItems(midioutlist);
+  cp5.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
 }
 
 int findDefaultMidi(List<String> values, List<String> keywords) {
@@ -776,9 +813,8 @@ void CheckForUpdate()
   checkForUpdates();
 }
 
-void LoadMidi()
-{
-   // Use a file chooser dialog box to get the MIDI file to play
+void LoadMidi() {
+  // Use a file chooser dialog box to get the MIDI file to play
   JFileChooser chooser = new JFileChooser();
   chooser.setCurrentDirectory(new File("."));
 
@@ -799,28 +835,42 @@ void LoadMidi()
   if (result == JFileChooser.APPROVE_OPTION) {
     File midiFile = chooser.getSelectedFile();
 
-    // Load the MIDI file
     try {
+      // Initialize the sequencer object
       sequencer = MidiSystem.getSequencer();
       sequencer.setSequence(MidiSystem.getSequence(midiFile));
       sequencer.open();
+      sequencer.start();
+
+      // Get the selected MIDI output device
+      int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
+      MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
+      MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
+      midiOutDevice.open();
+      Receiver receiver = midiOutDevice.getReceiver();
+
+      // Send the MIDI data to the selected output device
+      Transmitter transmitter = sequencer.getTransmitter();
+      transmitter.setReceiver(receiver);
     }
     catch (Exception ex) {
       ex.printStackTrace();
     }
-
-    // Play the MIDI file
-    sequencer.start();
-  } else {
-    // The user cancelled the file chooser dialog, so do nothing
   }
 }
-// */
 
 void StopMidi() {
-  // Stop the MIDI file from playing
-  sequencer.stop();
-  sequencer.close();
+  try {
+    // Stop and close the sequencer
+    if (sequencer != null && sequencer.isRunning()) {
+      sequencer.stop();
+      sequencer.close();
+      sequencer = null;
+    }
+  }
+  catch (Exception ex) {
+    ex.printStackTrace();
+  }
 }
 void setLeftSide() {
   splitLeftRed =(Red);
@@ -884,8 +934,9 @@ void dispose() {
   try {
     sendCommandBlackOut();
     sendCommandSetBG(0, 0, 0);
-    if (myBus != null) {
-      myBus.dispose();
+    if (myBusIn != null && myBusOut != null  ) {
+      myBusIn.dispose();
+      myBusOut.dispose();
     }
     if (arduino != null) {
       arduino.stop();
