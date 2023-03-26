@@ -510,15 +510,15 @@ void animationlist(int n) {
     sendCommandAnimation(3);
     break;
   case 4:
-    // Select Animation 4
+    // Select Animation 5
     sendCommandAnimation(4);
     break;
   case 5:
-    // Select Animation 4
+    // Select Animation 6
     sendCommandAnimation(5);
     break;
   case 6:
-    // Select Animation 4
+    // Select Animation 7
     sendCommandAnimation(6);
     break;
   default:
@@ -814,31 +814,33 @@ void CheckForUpdate()
 }
 
 void LoadMidi() {
+  selectInput("Select an MP3 file to play:", "fileSelected");
   // Use a file chooser dialog box to get the MIDI file to play
-  JFileChooser chooser = new JFileChooser();
-  chooser.setCurrentDirectory(new File("."));
+}
 
-  // Add a file filter to only allow MIDI files
-  FileFilter filter = new FileFilter() {
-    public boolean accept(File file) {
-      String filename = file.getName().toLowerCase();
-      return filename.endsWith(".mid") || filename.endsWith(".midi") || file.isDirectory();
+void StopMidi() {
+  try {
+    // Stop and close the sequencer
+    if (sequencer != null && sequencer.isRunning()) {
+      sequencer.stop();
+      sequencer.close();
+      sequencer = null;
     }
+  }
+  catch (Exception ex) {
+    ex.printStackTrace();
+  }
+}
 
-    public String getDescription() {
-      return "MIDI files (*.mid, *.midi)";
-    }
-  };
-  chooser.setFileFilter(filter);
-
-  int result = chooser.showOpenDialog(null);
-  if (result == JFileChooser.APPROVE_OPTION) {
-    File midiFile = chooser.getSelectedFile();
-
+void fileSelected(File selection)
+{
+  if (selection == null) {
+    println("No file selected.");
+  } else {
     try {
       // Initialize the sequencer object
       sequencer = MidiSystem.getSequencer(false);
-      sequencer.setSequence(MidiSystem.getSequence(midiFile));
+      sequencer.setSequence(MidiSystem.getSequence(selection));
       sequencer.open();
       sequencer.start();
 
@@ -859,19 +861,6 @@ void LoadMidi() {
   }
 }
 
-void StopMidi() {
-  try {
-    // Stop and close the sequencer
-    if (sequencer != null && sequencer.isRunning()) {
-      sequencer.stop();
-      sequencer.close();
-      sequencer = null;
-    }
-  }
-  catch (Exception ex) {
-    ex.printStackTrace();
-  }
-}
 void setLeftSide() {
   splitLeftRed =(Red);
   splitLeftGreen =(Green);
