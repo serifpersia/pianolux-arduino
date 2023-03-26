@@ -42,9 +42,9 @@ int Red = MAX_COLOR, Green = MAX_COLOR,
   velRedH = MAX_COLOR, velGreenH = MAX_COLOR, velBlueH = MAX_COLOR,
   splitLeftRed = MAX_COLOR, splitLeftGreen = MAX_COLOR, splitLeftBlue = MAX_COLOR,
   splitRightRed = MAX_COLOR, splitRightGreen = MAX_COLOR, splitRightBlue = MAX_COLOR,
-  LeftSideGRed = MAX_COLOR, LeftSideGGreen = MAX_COLOR, LeftSideGBlue = 0,
-  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
-  MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
+  LeftSideGRed = 0, LeftSideGGreen = 0, LeftSideGBlue = 0,
+  RightSideGRed = 0, RightSideGGreen = 0, RightSideGBlue = 0,
+  MiddleSideGRed = 0, MiddleSideGGreen = 0, MiddleSideGBlue = 0;
 
 int splashRed = 0;
 int splashGreen = 0;
@@ -109,7 +109,7 @@ ControlP5 buildUI()
   addAnimationControls(cp5);
 
   addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15);
-   // .close();
+  // .close();
 
   addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
     .close();
@@ -118,7 +118,10 @@ ControlP5 buildUI()
 
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
+
   //  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
+
+  addButton(cp5, "Instructions", null, 15, 15, 60, 15);
 
   addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
   addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
@@ -533,7 +536,7 @@ List<Controller> getLearnMidiControllers()
 
   cl.add(cp5.getController("LoadMidi"));
   cl.add(cp5.getController("StopMidi"));
-  
+
   cl.add(cp5.getController("midiout"));
 
 
