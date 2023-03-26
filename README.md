@@ -7,8 +7,9 @@ This app is a simple Processing (Java) based GUI that controls a WS2812B LED str
 
 ## Donations
 If you want to help out on future development of the PianoLED project or just want to give some appreciation for the project consider donating. You can email @ `ramiserifpersia@gmail.com` & join the discord server where you can get the special role by helping out
-## PianoLED Discord Community
-https://discord.gg/S6xmuX4Hx5
+
+## PianoLED Discord Server Community 
+`https://discord.gg/S6xmuX4Hx5`
 
 ## Connecting the LED strip and Arduino
 Here is how you should connect the LED strip and Arduino.
