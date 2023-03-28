@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>//
+import processing.serial.*; //<>// //<>// //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -650,7 +650,7 @@ void Open() {
 
   if ( cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
     try {
-      myBusIn = new MidiBus(this, midiName, 0);
+      myBusIn = new MidiBus(this, midiName, 0); //<>//
       myBusOut = new MidiBus(this, midiOutName, 0);
       println("Midi Input Port Open: " + midiName);
       arduino = new Serial(this, portName, 115200);
@@ -800,9 +800,9 @@ void refreshMidiList() {
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 
-  cp5.get(ScrollableList.class, "PianoRollMidiOut").clear();
-  cp5.get(ScrollableList.class, "PianoRollMidiOut").addItems(midioutlist);
-  cp5.get(ScrollableList.class, "PianoRollMidiOut").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
+  cp5.get(ScrollableList.class, "midiout").clear();
+  cp5.get(ScrollableList.class, "midiout").addItems(midioutlist);
+  cp5.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
 }
 
 int findDefaultMidi(List<String> values, List<String> keywords) {

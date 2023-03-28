@@ -289,6 +289,7 @@ class PianoRoll
       rewindTick = 0;
     }
 
+    firstNote = 0;
     sequencer.setTickPosition(rewindTick);
   }
 
@@ -363,7 +364,7 @@ void PianoRollLoadMidi() {
     try {
 
       // Get the selected MIDI output device
-      int midiOutIndex = (int) cp5.get(ScrollableList.class, "PianoRollMidiOut").getValue();
+      int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
       MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
       MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
       surface.setSize(PIANO_ROLL_HEIGHT, PIANO_ROLL_WIDTH);

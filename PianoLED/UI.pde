@@ -105,13 +105,6 @@ ControlP5 buildUI()
 
   addAnimationControls(cp5);
 
-  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15);
-  // .close();
-
-  addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
-    .close();
-  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
-    .close();
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
 
@@ -145,7 +138,7 @@ void addPianoRollControls(ControlP5 cp5, int origX, int origY)
   int w = 25;
   PFont font = createFont("Arial", 12);
   
-  addScrollableList(cp5, "PianoRollMidiOut", "Midi Output Device", null, -1, x, y, 100, 110, 15, 15);
+  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, x, y, 100, 110, 15, 15);
   y += 25;
   addButton(cp5, "PianoRollLoadMidi", "Load Midi File", x, y, 110, 15).hide();
   y += 25;
@@ -160,7 +153,7 @@ void addPianoRollControls(ControlP5 cp5, int origX, int origY)
   y += h+5;
   //addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED, WHITE, GREEN).hide();
   
-  cp5.getController("PianoRollMidiOut").bringToFront();
+  cp5.getController("midiout").bringToFront();
 }
 
 void addSplashControls(ControlP5 cp5, int x, int y)
@@ -565,7 +558,7 @@ List<Controller> getPianoRollControllers()
 
   List<Controller> cl = new ArrayList<>();
 
-  cl.add(cp5.getController("PianoRollMidiOut"));
+  cl.add(cp5.getController("midiout"));
   cl.add(cp5.getController("PianoRollLoadMidi"));
   cl.add(cp5.getController("PianoRollRewind"));
   cl.add(cp5.getController("PianoRollBackwardFragment"));
@@ -573,7 +566,7 @@ List<Controller> getPianoRollControllers()
   cl.add(cp5.getController("PianoRollForwardFragment"));
   cl.add(cp5.getController("PianoRollFollowKey"));
 
-  cp5.getController("PianoRollMidiOut").bringToFront();
+  cp5.getController("midiout").bringToFront();
   return cl;
 }
 
