@@ -42,9 +42,9 @@ int Red = MAX_COLOR, Green = MAX_COLOR,
   velRedH = MAX_COLOR, velGreenH = MAX_COLOR, velBlueH = MAX_COLOR,
   splitLeftRed = MAX_COLOR, splitLeftGreen = MAX_COLOR, splitLeftBlue = MAX_COLOR,
   splitRightRed = MAX_COLOR, splitRightGreen = MAX_COLOR, splitRightBlue = MAX_COLOR,
-  LeftSideGRed = MAX_COLOR, LeftSideGGreen = MAX_COLOR, LeftSideGBlue = 0,
-  RightSideGRed = MAX_COLOR, RightSideGGreen = MAX_COLOR, RightSideGBlue = MAX_COLOR,
-  MiddleSideGRed = MAX_COLOR, MiddleSideGGreen = MAX_COLOR, MiddleSideGBlue = MAX_COLOR;
+  LeftSideGRed = 0, LeftSideGGreen = 0, LeftSideGBlue = 0,
+  RightSideGRed = 0, RightSideGGreen = 0, RightSideGBlue = 0,
+  MiddleSideGRed = 0, MiddleSideGGreen = 0, MiddleSideGBlue = 0;
 
 int splashRed = 0;
 int splashGreen = 0;
@@ -105,14 +105,23 @@ ControlP5 buildUI()
 
   addAnimationControls(cp5);
 
+  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15);
+  // .close();
+
+  addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
+    .close();
+  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
+    .close();
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
+
   //  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
   int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
   int SPLASH_CONTROL_Y = 60;
   addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
   addPianoRollControls(cp5, EFFECT_CONTROLS_X+10, 30);
+  addButton(cp5, "Instructions", null, 15, 15, 60, 15);
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
   addToggle(cp5, "stripDirection", "Reverse", 425, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);

@@ -28,9 +28,14 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.MidiSystem;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import java.awt.Color;
+import java.awt.Font;
 
-boolean midiPlay = false;
 Sequencer sequencer;
+JFrame newWindowFrame;
+boolean midiPlay = false;
 PianoRoll pianoRoll;
 int PIANO_ROLL_HEIGHT = 960;
 int PIANO_ROLL_WIDTH = 700;
@@ -65,7 +70,7 @@ int leftMinPitch = 21;
 int leftMaxPitch;
 int rightMaxPitch = 108;
 boolean useFixedMapping = false;
-
+boolean openNewWindow = false;
 boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false, LearnMidiOn = false;
 List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation", "Piano Roll");
 
@@ -138,7 +143,6 @@ void setup() {
   surface.setTitle("PianoLED");
   PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
   surface.setIcon(icon);
-
   cp5 = buildUI();
 
   cp5.getController("modelist").setValue(0);
@@ -514,15 +518,15 @@ void animationlist(int n) {
     sendCommandAnimation(3);
     break;
   case 4:
-    // Select Animation 4
+    // Select Animation 5
     sendCommandAnimation(4);
     break;
   case 5:
-    // Select Animation 4
+    // Select Animation 6
     sendCommandAnimation(5);
     break;
   case 6:
-    // Select Animation 4
+    // Select Animation 7
     sendCommandAnimation(6);
     break;
   default:
@@ -821,6 +825,104 @@ void CheckForUpdate()
 {
   checkForUpdates();
 }
+
+void LoadMidi() {
+  selectInput("Select an MP3 file to play:", "fileSelected");
+  // Use a file chooser dialog box to get the MIDI file to play
+}
+
+void StopMidi() {
+  try {
+    // Stop and close the sequencer
+    if (sequencer != null && sequencer.isRunning()) {
+      sequencer.stop();
+      sequencer.close();
+      sequencer = null;
+    }
+  }
+  catch (Exception ex) {
+    ex.printStackTrace();
+  }
+}
+
+void fileSelected(File selection)
+{
+  if (selection == null) {
+    println("No file selected.");
+  } else {
+    try {
+      // Initialize the sequencer object
+      sequencer = MidiSystem.getSequencer(false);
+      sequencer.setSequence(MidiSystem.getSequence(selection));
+      sequencer.open();
+      sequencer.start();
+
+      // Get the selected MIDI output device
+      int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
+      MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
+      MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
+      midiOutDevice.open();
+      Receiver receiver = midiOutDevice.getReceiver();
+
+      // Send the MIDI data to the selected output device
+      Transmitter transmitter = sequencer.getTransmitter();
+      transmitter.setReceiver(receiver);
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+}
+
+//Instruction Buttton
+void Instructions() {
+  if (newWindowFrame == null) {
+    // create a new window frame
+    newWindowFrame = new JFrame("Instructions");
+    newWindowFrame.setSize(600, 600);
+    newWindowFrame.setLocationRelativeTo(null);
+    newWindowFrame.setResizable(false);
+    // create a JTextArea object and add it to a JScrollPane
+    JTextArea textArea = new JTextArea("Short Instructions for PianoLED\n\n" + 
+        "Your Arduino and MIDI devices should be auto selected all you have to do is click open\n" + 
+        "to start using PianoLED.\n"+
+        "\nMake sure you upload the ArduinoPianoLED.ino file before using PianoLED app.\n" + 
+        "\nFixLED: Fixes the leds position if you your strip is soldered together and not a single strip.\n" + 
+        "\nReverse: Reverses the led strip directions useful if the default is not ideal for your setup.\n" + 
+        "\nBG: Turns on background color for all modes,color and brightness adjustable.\n" + 
+        "\nAvailable modes:\n" + 
+        "- Default: Single led based control,fade rate, brightness & color can be adjusted\n" + 
+        " with ui sliders,color wheel and premade color presets.\n" +
+        "- Splash: Multiple leds light up,fade rate, brightness,tail length & color can be adjusted.\n" + 
+        "- Random: Single led based control, this time random colors only, fade & brightness still\n" + 
+        "adjustable.\n" + 
+        "- Gradient: Three new buttons Set LG,MG,RG each setting color for corresponding sides.\n" + 
+        "Make sure you select color & set that as side color with LG,MG.RG buttons.If middle side\n" +
+        "color is not set the gradient will work in two sides color mode.\n" +
+        "\n- Velocity: Based on how hard the user is playing the notes,the single led will light up\n" + 
+        "differently.\n" + 
+        "- Split: Splits the led strip into two sides. The split point can be set by clicking on the key\n" + 
+        "in the piano UI.\n" + 
+        "\nMake sure you select color first,set the sides color with Set L, R & chose your split point.\n" + 
+        "\nAnimation: Led strip lights up depending on what animation preset you selected.\n" + 
+        "\nThat's all if you need more help check out the discord server for help & updates:\n" + 
+        "discord: https://discord.com/invite/S6xmuX4Hx5\n" + 
+        "\nPianoLED © 2023 by serifpersia. All rights reserved\n");
+    textArea.setBackground(Color.BLACK);
+    textArea.setForeground(Color.WHITE);
+    textArea.setFont(new Font("Arial", Font.PLAIN, 14));
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    newWindowFrame.add(scrollPane);
+    newWindowFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+      public void windowClosing(java.awt.event.WindowEvent e) {
+        newWindowFrame.dispose();
+        newWindowFrame = null;
+      }
+    });
+    newWindowFrame.setVisible(true);
+  }
+}
+
 
 void setLeftSide() {
   splitLeftRed =(Red);
