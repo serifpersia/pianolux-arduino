@@ -98,9 +98,6 @@ ControlP5 buildUI()
 
   addButton(cp5, "setBG", "Set BG", 670, 26, 30, 15).hide();
 
-  addButton(cp5, "LoadMidi", "Load Midi File", EFFECT_CONTROLS_X+15, 45, 60, 15).hide();
-  addButton(cp5, "StopMidi", "Stop Midi File", EFFECT_CONTROLS_X+15, 60, 60, 15).hide();
-
   addButton(cp5, "Open", null, 725, 45, 50, 15);
   addButton(cp5, "Refresh", null, 775, 45, 50, 15 );
 
@@ -108,32 +105,53 @@ ControlP5 buildUI()
 
   addAnimationControls(cp5);
 
-  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, 30, 100, 110, 15, 15);
-   // .close();
-
-  addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
-    .close();
-  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
-    .close();
-
   addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
   //  addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
-  addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
-  addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
-
+  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
+  int SPLASH_CONTROL_Y = 60;
+  addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+  addPianoRollControls(cp5, EFFECT_CONTROLS_X+10, 30);
 
   addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
   addToggle(cp5, "stripDirection", "Reverse", 425, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
   addToggle(cp5, "Fix", "Fix LED", 390, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
 
-  int SPLASH_CONTROL_X = EFFECT_CONTROLS_X+6;
-  int SPLASH_CONTROL_Y = 60;
-
-  addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+  addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15)
+    .close();
+  addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15)
+    .close();
+  addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X+15, 30, 100, 100, 15, 15);
+  addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X+15, 15, 100, 100, 15, 15).bringToFront();
 
   return cp5;
+}
+
+void addPianoRollControls(ControlP5 cp5, int origX, int origY)
+{
+  int x = origX;
+  int y = origY;
+  int h = 25;
+  int w = 25;
+  PFont font = createFont("Arial", 12);
+  
+  addScrollableList(cp5, "PianoRollMidiOut", "Midi Output Device", null, -1, x, y, 100, 110, 15, 15);
+  y += 25;
+  addButton(cp5, "PianoRollLoadMidi", "Load Midi File", x, y, 110, 15).hide();
+  y += 25;
+  addButton(cp5, "PianoRollRewind", "|<<", x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+  x += w+2;
+  addButton(cp5, "PianoRollBackwardFragment", "-"+REWIND_FRAGMENT_SEC, x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+  x += w+2;
+  addButton(cp5, "PianoRollPlayPause", ">", x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+  x += w+2;
+  addButton(cp5, "PianoRollForwardFragment", "+"+REWIND_FRAGMENT_SEC, x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+  x = origX;
+  y += h+5;
+  //addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED, WHITE, GREEN).hide();
+  
+  cp5.getController("PianoRollMidiOut").bringToFront();
 }
 
 void addSplashControls(ControlP5 cp5, int x, int y)
@@ -316,6 +334,14 @@ void hideAllControls()
   hideVelocityControls();
   hideSplitControls();
   hideAnimationControls();
+  hidePianoRollControls();
+  hidePianoRoll();
+}
+
+void hidePianoRoll()
+{
+  pianoRoll = null;
+  surface.setSize(930, 160);
 }
 
 //BG Controls
@@ -395,13 +421,13 @@ void hideAnimationControls()
 }
 
 //LearnMidi Controls
-void showLearnMidiControls()
+void showPianoRollControls()
 {
-  setControllersVisible(getLearnMidiControllers(), true);
+  setControllersVisible(getPianoRollControllers(), true);
 }
-void hideLearnMidiControls()
+void hidePianoRollControls()
 {
-  setControllersVisible(getLearnMidiControllers(), false);
+  setControllersVisible(getPianoRollControllers(), false);
 }
 
 void Color(color rgb)
@@ -523,20 +549,22 @@ List<Controller> getAnimationControllers()
 
   return cl;
 }
-//LearnMidi List
-List<Controller> getLearnMidiControllers()
+//PianoRoll List
+List<Controller> getPianoRollControllers()
 {
   if (cp5 == null) return null;
 
   List<Controller> cl = new ArrayList<>();
 
-  cl.add(cp5.getController("LoadMidi"));
-  cl.add(cp5.getController("StopMidi"));
-  
-  cl.add(cp5.getController("midiout"));
+  cl.add(cp5.getController("PianoRollMidiOut"));
+  cl.add(cp5.getController("PianoRollLoadMidi"));
+  cl.add(cp5.getController("PianoRollRewind"));
+  cl.add(cp5.getController("PianoRollBackwardFragment"));
+  cl.add(cp5.getController("PianoRollPlayPause"));
+  cl.add(cp5.getController("PianoRollForwardFragment"));
+  cl.add(cp5.getController("PianoRollFollowKey"));
 
-
-
+  cp5.getController("PianoRollMidiOut").bringToFront();
   return cl;
 }
 
@@ -608,4 +636,9 @@ void draw() {
   fill(0);
   rect(15, 54, rectASizeX, 10);
   rect(rectBX, 54, rectBSizeX, 10);
+
+  if ( pianoRoll != null )
+  {
+    pianoRoll.draw();
+  }
 }

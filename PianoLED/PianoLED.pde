@@ -1,4 +1,4 @@
-import processing.serial.*; //<>//
+import processing.serial.*; //<>// //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
@@ -29,7 +29,11 @@ import javax.sound.midi.MidiSystem;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+boolean midiPlay = false;
 Sequencer sequencer;
+PianoRoll pianoRoll;
+int PIANO_ROLL_HEIGHT = 960;
+int PIANO_ROLL_WIDTH = 700;
 
 final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds
@@ -63,7 +67,7 @@ int rightMaxPitch = 108;
 boolean useFixedMapping = false;
 
 boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false, SplashOn = false, AnimationOn = false, LearnMidiOn = false;
-List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation", "LearnMidi");
+List m = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation", "Piano Roll");
 
 // Create an ArrayList to hold the names of the MIDI devices
 ArrayList<String> midilist = new ArrayList<String>();
@@ -548,6 +552,11 @@ void stripDirection(boolean on) {
   sendCommandStripDirection(on ? 1 : 0, numberselected);
 }
 
+
+void TeacherFollowKey(boolean on) {
+  pianoRoll.setFollowKey(on);
+}
+
 void Fix()
 {
   useFixedMapping = !useFixedMapping; // toggle the state
@@ -620,10 +629,10 @@ void modelist(int n) {
       setAnimationDefaults(0, 127);
       AnimationOn = true;
       break;
-    case 7: // LearnMidi
+    case 7: // PianoRoll
       disableAllModes();
       hideAllControls();
-      showLearnMidiControls();
+      showPianoRollControls();
       LearnMidiOn = true;
       break;
     }
@@ -787,9 +796,9 @@ void refreshMidiList() {
   cp5.get(ScrollableList.class, "midi").addItems(midilist);
   cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 
-  cp5.get(ScrollableList.class, "midiout").clear();
-  cp5.get(ScrollableList.class, "midiout").addItems(midioutlist);
-  cp5.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
+  cp5.get(ScrollableList.class, "PianoRollMidiOut").clear();
+  cp5.get(ScrollableList.class, "PianoRollMidiOut").addItems(midioutlist);
+  cp5.get(ScrollableList.class, "PianoRollMidiOut").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
 }
 
 int findDefaultMidi(List<String> values, List<String> keywords) {
@@ -813,65 +822,6 @@ void CheckForUpdate()
   checkForUpdates();
 }
 
-void LoadMidi() {
-  // Use a file chooser dialog box to get the MIDI file to play
-  JFileChooser chooser = new JFileChooser();
-  chooser.setCurrentDirectory(new File("."));
-
-  // Add a file filter to only allow MIDI files
-  FileFilter filter = new FileFilter() {
-    public boolean accept(File file) {
-      String filename = file.getName().toLowerCase();
-      return filename.endsWith(".mid") || filename.endsWith(".midi") || file.isDirectory();
-    }
-
-    public String getDescription() {
-      return "MIDI files (*.mid, *.midi)";
-    }
-  };
-  chooser.setFileFilter(filter);
-
-  int result = chooser.showOpenDialog(null);
-  if (result == JFileChooser.APPROVE_OPTION) {
-    File midiFile = chooser.getSelectedFile();
-
-    try {
-      // Initialize the sequencer object
-      sequencer = MidiSystem.getSequencer();
-      sequencer.setSequence(MidiSystem.getSequence(midiFile));
-      sequencer.open();
-      sequencer.start();
-
-      // Get the selected MIDI output device
-      int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
-      MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
-      MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
-      midiOutDevice.open();
-      Receiver receiver = midiOutDevice.getReceiver();
-
-      // Send the MIDI data to the selected output device
-      Transmitter transmitter = sequencer.getTransmitter();
-      transmitter.setReceiver(receiver);
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-}
-
-void StopMidi() {
-  try {
-    // Stop and close the sequencer
-    if (sequencer != null && sequencer.isRunning()) {
-      sequencer.stop();
-      sequencer.close();
-      sequencer = null;
-    }
-  }
-  catch (Exception ex) {
-    ex.printStackTrace();
-  }
-}
 void setLeftSide() {
   splitLeftRed =(Red);
   splitLeftGreen =(Green);
@@ -920,6 +870,23 @@ void mouseReleased() {
   }
 }
 
+
+void keyPressed() {
+  
+  if (key == 'l') {
+    PianoRollLoadMidi();
+  } else if (key == ' ') {
+    PianoRollPlayPause();
+  } else if (key == CODED) {
+    if (keyCode == UP) {
+      PianoRollRewind();
+    } else if (keyCode == LEFT) {
+      PianoRollBackwardFragment();
+    } else if (keyCode == RIGHT) {
+      PianoRollForwardFragment();
+    }
+  }
+}
 
 public static void printArray(byte[] bytes) {
   print("Message:");
