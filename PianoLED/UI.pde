@@ -337,7 +337,7 @@ void hideAllControls()
   hideSplitControls();
   hideAnimationControls();
   hidePianoRollControls();
-  hidePianoRollControls();
+  hidePianoRoll();
 }
 
 void hidePianoRoll()
