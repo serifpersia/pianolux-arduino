@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>//
+import processing.serial.*; //<>//
 import javax.sound.midi.*;
 import themidibus.*;
 import static javax.swing.JOptionPane.*;
