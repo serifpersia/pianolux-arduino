@@ -1,4 +1,4 @@
-import themidibus.*; //<>// //<>// //<>//
+import themidibus.*; //<>// //<>// //<>// //<>//
 import javax.sound.midi.*;
 import java.io.File;
 import java.util.Arrays;
@@ -78,17 +78,17 @@ class PianoRoll
     // Draw piano roll
     drawPianoRoll();
     drawPianoKeys();
-    
+
     int delayOffset = (int)(pianoRollHeight/pianoRollTickHeight);
-    
+
     currentTick = sequencer.getTickPosition();
 
     int n = notes.size();
     for (int noteNum = firstNote; noteNum < n; noteNum++)
-    { //<>//
+    {
       Note note = notes.get(noteNum);
-      
-      // note is too far yet to display 
+
+      // note is too far yet to display
       if (note.start > currentTick+delayOffset)
         break;
 
@@ -104,7 +104,7 @@ class PianoRoll
 
     drawBorders();
   }
-  
+
   void drawBorders()
   {
     stroke(0);
@@ -236,7 +236,7 @@ class PianoRoll
   }
 
   float midiPitchToXPosition(int midiPitch) {
-    
+
     int pianoPitch = midiPitch - firstPianoKeyPitch + 1;
 
     int[] whiteKeyIndices = {0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6}; //A0
@@ -249,7 +249,7 @@ class PianoRoll
       offsetX += whiteKeyWidth*3/4;
     }
 
-    return pianoRollPaddingLeft + whiteKeyId * whiteKeyWidth + offsetX; //<>//
+    return pianoRollPaddingLeft + whiteKeyId * whiteKeyWidth + offsetX;
   }
 
 
@@ -338,29 +338,16 @@ void PianoRollBackwardFragment()
   if ( pianoRoll != null ) pianoRoll.rewind(-REWIND_FRAGMENT_SEC);
 }
 
-
 void PianoRollLoadMidi() {
+  selectInput("Select an MIDI file to play:", "fileSelected");
   // Use a file chooser dialog box to get the MIDI file to play
-  JFileChooser chooser = new JFileChooser(); //<>//
-  chooser.setCurrentDirectory(new File("."));
+}
 
-  // Add a file filter to only allow MIDI files
-  FileFilter filter = new FileFilter() {
-    public boolean accept(File file) {
-      String filename = file.getName().toLowerCase();
-      return filename.endsWith(".mid") || filename.endsWith(".midi") || file.isDirectory();
-    }
-
-    public String getDescription() {
-      return "MIDI files (*.mid, *.midi)";
-    }
-  };
-  chooser.setFileFilter(filter);
-
-  int result = chooser.showOpenDialog(null);
-  if (result == JFileChooser.APPROVE_OPTION) {
-    File midiFile = chooser.getSelectedFile();
-
+void fileSelected(File selection)
+{
+  if (selection == null) {
+    println("No file selected.");
+  } else {
     try {
 
       // Get the selected MIDI output device
@@ -368,7 +355,7 @@ void PianoRollLoadMidi() {
       MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
       MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
       surface.setSize(PIANO_ROLL_HEIGHT, PIANO_ROLL_WIDTH);
-      pianoRoll = new PianoRoll(midiFile, midiOutDevice);
+      pianoRoll = new PianoRoll(selection, midiOutDevice);
     }
     catch (Exception ex) {
       ex.printStackTrace();
