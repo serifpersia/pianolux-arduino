@@ -1,4 +1,3 @@
-
 //command start with 3 bytes: COMMAND_BYTE1 | COMMAND_BYTE2 | EFFECT_COMMAND
 //then goes effect bytes
 

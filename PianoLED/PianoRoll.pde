@@ -1,11 +1,4 @@
-import themidibus.*; //<>// //<>// //<>// //<>// //<>// //<>//
-import javax.sound.midi.*;
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-
-class PianoRoll
+class PianoRoll //<>// //<>// //<>// //<>// //<>//
 {
   File midiFile;
   MidiDevice midiOutDevice;
@@ -13,7 +6,7 @@ class PianoRoll
   Sequencer sequencer;
   Sequence sequence;
 
-  //boolean debug = true;
+  boolean debug = false;
 
   //////////////
   LinkedList<Note> notes;
@@ -103,7 +96,7 @@ class PianoRoll
         break;
 
       //note finished
-      if (note.end < currentTick-500)
+      if (note.end < currentTick-1500)
       {
         firstNote = noteNum;
         continue;
@@ -352,7 +345,6 @@ void PianoRollBackwardFragment()
 {
   if ( pianoRoll != null ) pianoRoll.rewind(-REWIND_FRAGMENT_SEC);
 }
-
 
 void PianoRollLoadMidi() {
   // Use a file chooser dialog box to get the MIDI file to play

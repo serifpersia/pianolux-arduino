@@ -137,10 +137,10 @@ void addPianoRollControls(ControlP5 cp5, int origX, int origY)
   int h = 25;
   int w = 25;
   PFont font = createFont("Arial", 12);
-  
-  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, x, y, 100, 110, 15, 15);
+
+  addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X+15, y, 100, 110, 15, 15);
   y += 25;
-  addButton(cp5, "PianoRollLoadMidi", "Load Midi File", x, y, 110, 15).hide();
+  addButton(cp5, "PianoRollLoadMidi", "Load Midi File", EFFECT_CONTROLS_X+15, y, 100, 15).hide();
   y += 25;
   addButton(cp5, "PianoRollRewind", "|<<", x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
   x += w+2;
@@ -152,7 +152,7 @@ void addPianoRollControls(ControlP5 cp5, int origX, int origY)
   x = origX;
   y += h+5;
   //addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED, WHITE, GREEN).hide();
-  
+
   cp5.getController("midiout").bringToFront();
 }
 
@@ -368,7 +368,7 @@ void hideDefaultControls()
 void showSplashControls()
 {
   setControllersVisible(getSplashControllers(), true);
-  cp5.getController("modelist").bringToFront();
+  cp5.getController("modelist");
 }
 
 void hideSplashControls()
@@ -566,7 +566,7 @@ List<Controller> getPianoRollControllers()
   cl.add(cp5.getController("PianoRollForwardFragment"));
   cl.add(cp5.getController("PianoRollFollowKey"));
 
-  cp5.getController("midiout").bringToFront();
+  cp5.getController("midiout");
   return cl;
 }
 
