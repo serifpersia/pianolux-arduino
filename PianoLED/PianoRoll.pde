@@ -1,8 +1,10 @@
-import themidibus.*; //<>// //<>// //<>//
+import themidibus.*; //<>// //<>// //<>// //<>// //<>// //<>//
 import javax.sound.midi.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
+
 class PianoRoll
 {
   File midiFile;
@@ -11,7 +13,7 @@ class PianoRoll
   Sequencer sequencer;
   Sequence sequence;
 
-  boolean isPlaying = false;
+  //boolean debug = true;
 
   //////////////
   LinkedList<Note> notes;
@@ -77,23 +79,31 @@ class PianoRoll
   void drawVisualization() {
     // Draw piano roll
     drawPianoRoll();
-    drawPianoKeys();
-    
+
     int delayOffset = (int)(pianoRollHeight/pianoRollTickHeight);
-    
-    currentTick = sequencer.getTickPosition();
+
+    for (int i = 0; i < keysOn.length; i++) {
+      keysOn[i] = false;
+    }
 
     int n = notes.size();
     for (int noteNum = firstNote; noteNum < n; noteNum++)
-    { //<>//
+    {
+      currentTick = sequencer.getTickPosition();
       Note note = notes.get(noteNum);
-      
-      // note is too far yet to display 
+
+      if (note.start < currentTick && note.end > currentTick)
+      {
+        if ( debug ) println("Key On: "+note.pitch + " "+note.start + " "+note.end);
+        keysOn[note.pitch-firstPianoKeyPitch+1] = true;
+      }
+
+      // note is too far yet to display
       if (note.start > currentTick+delayOffset)
         break;
 
-      // note finished
-      if (note.end < currentTick)
+      //note finished
+      if (note.end < currentTick-500)
       {
         firstNote = noteNum;
         continue;
@@ -102,9 +112,10 @@ class PianoRoll
       drawNote(note);
     }
 
+    drawPianoKeys();
     drawBorders();
   }
-  
+
   void drawBorders()
   {
     stroke(0);
@@ -117,12 +128,11 @@ class PianoRoll
     // Draw white keys
     fill(255);
     for (int i = 0; i < numWhiteKeys; i++) {
-      int pitch = whiteKeyToPitch(i);
       int posX = pianoRollPaddingLeft + i * whiteKeyWidth;
+      int pitch = whiteKeyToPitch(i);
       if (keysOn[pitch])
-      {
-        fill(0, 100, 0);
-      } else
+        fill(100, 255, 100);
+      else
         fill(255);
 
       stroke(200, 200, 200);
@@ -144,11 +154,15 @@ class PianoRoll
     int[] blackKeyIndices = {0, 2, 3, 5, 6};
     int numBlackKeys = 0;
     for (int i = 0; i < numWhiteKeys; i++) {
-      //int keyIndex = i + firstMidiKey;
       if (Arrays.binarySearch(blackKeyIndices, i % 7) >= 0) {
+        int pitch = whiteKeyToPitch(i)+1;
+        if (keysOn[pitch])
+          fill(100, 100, 255);
+        else
+          fill(0);
+
         int whiteKeyPosX = pianoRollPaddingLeft + i * whiteKeyWidth;
         int blackKeyPosX = whiteKeyPosX + whiteKeyWidth * 3 / 4;
-        fill(0);
         rect(blackKeyPosX, pianoRollBottom, blackKeyWidth, blackKeyHeight);
         numBlackKeys++;
       }
@@ -160,8 +174,10 @@ class PianoRoll
 
   int whiteKeyToPitch(int whiteKeyNum)
   {
-    int[] whiteKeysIndex = {0, 1, 1, 2, 3, 3, 4};
-    return whiteKeyNum/7*7 + whiteKeysIndex[whiteKeyNum%7];
+    int[] whiteKeysIndex = {0, 2, 3, 5, 7, 8, 10};
+    int octave = whiteKeyNum/7;
+    int numInOctave = whiteKeyNum%7;
+    return octave*12 + whiteKeysIndex[numInOctave];
   }
 
   int midiToPianoPitch(int pitch)
@@ -185,13 +201,21 @@ class PianoRoll
     int transperancy = min(note.velocity+50, 255);
     // Draw the note rectangle
     if ( isBlack(note.pitch) )
+    {
+      stroke(0, 0, 255);
       fill(0, 0, 255, transperancy);
-    else
+    } else
+    {
+      stroke(0, 255, 0);
       fill(0, 255, 0, transperancy);
+    }
     //noStroke();
     float cornerRadius = 30;
     rectMode(CORNERS);
     rect(x, y, x+w, y-h, cornerRadius);
+    if ( debug ) text(note.pitch, x, y-25);
+    if ( debug ) text(note.start, x, y-15);
+    if ( debug ) text(note.end, x, y-5);
     rectMode(CORNER);
 
     fill(0);
@@ -199,27 +223,18 @@ class PianoRoll
 
   float getTickY(long tick)
   {
-    return (float)(pianoRollBottom-tick * pianoRollTickHeight-10);
+    return (float)(pianoRollBottom-tick * pianoRollTickHeight);
   }
 
   void drawPianoRoll()
   {
-    long offset = (long)((currentTick % tickResolution) * pianoRollTickHeight);
-
     stroke(100, 100, 100);
     fill(255);
 
-    for (long tick = currentTick; tick >= 0; tick -= tickResolution) {
-      float y = (float)(getTickY(tick-currentTick) + offset);
-      if ( y > pianoRollBottom )
-        break;
-
-      //line(pianoRollSide, y, width-pianoRollSide, y);
-      text(String.valueOf(tick-currentTick % tickResolution), 10, y+5);
+    if ( debug ) {
+      line(pianoRollSide, pianoRollBottom, width-pianoRollSide, pianoRollBottom);
+      text(currentTick, width-150, pianoRollBottom);
     }
-
-    //line(pianoRollSide, pianoRollTop, width-pianoRollSide, pianoRollTop);
-    //text(currentTick, 10, pianoRollTop+5);
 
     stroke(0);
   }
@@ -236,7 +251,7 @@ class PianoRoll
   }
 
   float midiPitchToXPosition(int midiPitch) {
-    
+
     int pianoPitch = midiPitch - firstPianoKeyPitch + 1;
 
     int[] whiteKeyIndices = {0, 0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6}; //A0
@@ -249,7 +264,7 @@ class PianoRoll
       offsetX += whiteKeyWidth*3/4;
     }
 
-    return pianoRollPaddingLeft + whiteKeyId * whiteKeyWidth + offsetX; //<>//
+    return pianoRollPaddingLeft + whiteKeyId * whiteKeyWidth + offsetX;
   }
 
 
@@ -341,7 +356,7 @@ void PianoRollBackwardFragment()
 
 void PianoRollLoadMidi() {
   // Use a file chooser dialog box to get the MIDI file to play
-  JFileChooser chooser = new JFileChooser(); //<>//
+  JFileChooser chooser = new JFileChooser();
   chooser.setCurrentDirectory(new File("."));
 
   // Add a file filter to only allow MIDI files
