@@ -76,6 +76,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/themidibus"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/serif/eclipse-workspace/PianoLED/lib/user/json/json-20210307.jar"/>
+	<classpathentry kind="lib" path="lib/user/json/json-20210307.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
