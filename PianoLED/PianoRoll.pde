@@ -79,10 +79,10 @@ class PianoRoll //<>// //<>// //<>// //<>// //<>//
       keysOn[i] = false;
     }
 
+    currentTick = sequencer.getTickPosition();
     int n = notes.size();
     for (int noteNum = firstNote; noteNum < n; noteNum++)
     {
-      currentTick = sequencer.getTickPosition();
       Note note = notes.get(noteNum);
 
       if (note.start < currentTick && note.end > currentTick)
