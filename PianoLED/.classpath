@@ -6,26 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/dxf/dxf.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/dxf"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/net/net.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/net"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/pdf/itext.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/pdf"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/pdf/pdf.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/pdf"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/base/serial/jssc.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/serial"/>
@@ -36,27 +16,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/serial"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/svg/batik.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/svg"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/svg/svg.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/svg"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/base/core/core.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/core"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/core/gluegen-rt.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/core"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/base/core/jogl-all.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/base/core"/>
 		</attributes>
