@@ -38,7 +38,7 @@ JFrame newWindowFrame;
 boolean midiPlay = false;
 PianoRoll pianoRoll;
 int PIANO_ROLL_HEIGHT = 960;
-int PIANO_ROLL_WIDTH = 700;
+int PIANO_ROLL_WIDTH = 600;
 
 final static int TOP_COLOR = 255;
 //Map function maps pitch first last note and number of leds

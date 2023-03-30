@@ -1,4 +1,4 @@
-class PianoRoll //<>// //<>// //<>// //<>// //<>//
+class PianoRoll //<>//
 {
   File midiFile;
   MidiDevice midiOutDevice;
@@ -63,6 +63,7 @@ class PianoRoll //<>// //<>// //<>// //<>// //<>//
 
   public void draw() {
     background(0);
+    frameRate(120);
     drawVisualization();
   }
 
@@ -124,11 +125,11 @@ class PianoRoll //<>// //<>// //<>// //<>// //<>//
       int posX = pianoRollPaddingLeft + i * whiteKeyWidth;
       int pitch = whiteKeyToPitch(i);
       if (keysOn[pitch])
-        fill(100, 255, 100);
+        fill(145, 225, 66);
       else
         fill(255);
 
-      stroke(200, 200, 200);
+      stroke(127, 127, 127);
       rect(posX, pianoRollBottom, whiteKeyWidth, whiteKeyHeight);
       fill(255);
       if ( i == 23 ) //C4 in 88 key
@@ -150,7 +151,7 @@ class PianoRoll //<>// //<>// //<>// //<>// //<>//
       if (Arrays.binarySearch(blackKeyIndices, i % 7) >= 0) {
         int pitch = whiteKeyToPitch(i)+1;
         if (keysOn[pitch])
-          fill(100, 100, 255);
+          fill(122, 164, 212);
         else
           fill(0);
 
@@ -195,12 +196,14 @@ class PianoRoll //<>// //<>// //<>// //<>// //<>//
     // Draw the note rectangle
     if ( isBlack(note.pitch) )
     {
-      stroke(0, 0, 255);
-      fill(0, 0, 255, transperancy);
+      //removed transperancy
+      stroke(122, 164, 212);
+      fill(122, 164, 212);
     } else
     {
-      stroke(0, 255, 0);
-      fill(0, 255, 0, transperancy);
+      //removed transperancy
+      stroke(145, 225, 66);
+      fill(145, 225, 66);
     }
     //noStroke();
     float cornerRadius = 30;
