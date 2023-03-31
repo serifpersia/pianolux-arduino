@@ -33,7 +33,9 @@ public class UI {
 	int MAX_BRIGHT = 255;
 	int DEF_BRIGHT = 127;
 
-	Color[] presetColors = { Color.RED, // Red
+	Color[] presetColors = {
+			Color.WHITE,
+			Color.RED, // Red
 			Color.GREEN, // Green
 			Color.BLUE, // Blue
 			Color.YELLOW, // Yellow
@@ -52,7 +54,7 @@ public class UI {
 
 	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
 			"Piano Roll");
-	List<String> colorNames = Arrays.asList("Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal",
+	List<String> colorNames = Arrays.asList("White","Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal",
 			"Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 	List<String> splashColorNames = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple",
 			"Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
