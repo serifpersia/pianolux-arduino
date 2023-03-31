@@ -20,6 +20,9 @@ import processing.core.PFont;
 
 public class UI {
 
+	public static final int DEFAULT_WIDTH = 930;
+	public static final int DEFAULT_HEIGHT = 160;
+
 	public static final int EFFECT_CONTROLS_X = 811;
 
 	int MIN_FADE_RATE = 0;

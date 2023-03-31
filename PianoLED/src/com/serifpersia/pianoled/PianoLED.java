@@ -48,7 +48,6 @@ public class PianoLED extends PApplet {
 
 	// Create an ArrayList to hold the names of the MIDI devices
 	ArrayList<String> midilist = new ArrayList<String>();
-	ArrayList<String> midioutlist = new ArrayList<String>();
 
 	String portName;
 	String midiName; // midi input device
@@ -57,15 +56,12 @@ public class PianoLED extends PApplet {
 
 	MidiBus myBusIn;
 	MidiBus myBusOut;
-	final int DEFAULT_WIDTH = 930;
-	final int DEFAULT_HEIGHT = 160;
-
 	public void settings() {
-		size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT);
 	}
 
 	private void setDefaultSize() {
-		this.getSurface().setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		this.getSurface().setSize(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT);
 	}
 
 	public void setup() {
@@ -105,7 +101,7 @@ public class PianoLED extends PApplet {
 	public void midiout(int n) {
 		try {
 			// Set the midiName variable to the name of the selected MIDI device
-			midiOutName = midioutlist.get(n);
+			midiOutName = midilist.get(n);
 			println("Selected midi output device: " + midiOutName);
 		} catch (Exception NoDevicesAvailable) {
 			println("No devices Available. plugin devices into your computer first!");
@@ -479,7 +475,6 @@ public class PianoLED extends PApplet {
 
 	public void refreshMidiList() {
 		midilist.clear();
-		midioutlist.clear();
 
 		MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
 		for (MidiDevice.Info info : info_midiIn) {
@@ -494,27 +489,16 @@ public class PianoLED extends PApplet {
 			}
 		}
 
-		MidiDevice.Info[] info_midiOut = MidiSystem.getMidiDeviceInfo();
-		for (MidiDevice.Info info : info_midiOut) {
-			try {
-				MidiDevice device = MidiSystem.getMidiDevice(info);
-				if (device.getMaxReceivers() != 0) {
-					midioutlist.add(info.getName());
-				}
-				device.close();
-			} catch (MidiUnavailableException e) {
-				// Handle the exception
-			}
-		}
-		ui.getController(ScrollableList.class, "midi").clear();
-		ui.getController(ScrollableList.class, "midi").addItems(midilist);
-		ui.getController(ScrollableList.class, "midi")
-				.setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
+		int defaultValue = findDefaultMidi(midilist, Arrays.asList("piano", "midi"));
+		setListWithDefault("midi", midilist, defaultValue);
+		setListWithDefault("midiout", midilist, defaultValue);
+	}
 
-		ui.getController(ScrollableList.class, "midiout").clear();
-		ui.getController(ScrollableList.class, "midiout").addItems(midioutlist);
-		ui.getController(ScrollableList.class, "midiout")
-				.setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
+	private void setListWithDefault(String listName, ArrayList<String> list, int defaultValue) {
+		ui.getController(ScrollableList.class, listName).clear();
+		ui.getController(ScrollableList.class, listName).addItems(list);
+		ui.getController(ScrollableList.class, listName)
+				.setValue(defaultValue);
 	}
 
 	public int findDefaultMidi(List<String> values, List<String> keywords) {

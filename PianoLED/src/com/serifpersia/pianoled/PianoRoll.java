@@ -20,6 +20,7 @@ import javax.sound.midi.Track;
 import themidibus.MidiBus;
 
 public class PianoRoll {
+	private static final int DELAY_AFTER_NOTE_FINISHED = 1500;
 	PApplet app;
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
@@ -103,7 +104,7 @@ public class PianoRoll {
 		// Draw piano roll
 		drawPianoRoll();
 
-		int delayOffset = (int) (pianoRollHeight / pianoRollTickHeight);
+		int delayBeforeNotePLayed = (int) (pianoRollHeight / pianoRollTickHeight);
 
 		for (int i = 0; i < keysOn.length; i++) {
 			keysOn[i] = false;
@@ -122,11 +123,11 @@ public class PianoRoll {
 				}
 
 				// note is too far yet to display
-				if (note.start > currentTick + delayOffset)
+				if (note.start > currentTick + delayBeforeNotePLayed)
 					break;
 
 				// note finished
-				if (note.end < currentTick - 1500) {
+				if (note.end < currentTick - DELAY_AFTER_NOTE_FINISHED) {
 					firstNote = noteNum;
 					continue;
 				}
