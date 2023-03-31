@@ -42,7 +42,7 @@ public class PianoLED extends PApplet {
 
 	int counter = 0;
 	boolean useFixedMapping = false;
-	
+
 	boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false,
 			SplashOn = false, AnimationOn = false;
 
@@ -51,11 +51,12 @@ public class PianoLED extends PApplet {
 
 	String portName;
 	String midiName; // midi input device
-	String midiOutName; // midi output device
+//	String midiOutName; // midi output device
 	String comlist[];
 
 	MidiBus myBusIn;
-	MidiBus myBusOut;
+
+//	MidiBus myBusOut;
 	public void settings() {
 		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT);
 	}
@@ -74,7 +75,7 @@ public class PianoLED extends PApplet {
 
 		ui.setDefaultMode();
 		selectedColor = ui.getColorWheelValue();
-		
+
 		Refresh();
 
 		updater.checkLocalVersion();
@@ -98,17 +99,18 @@ public class PianoLED extends PApplet {
 		}
 	}
 
-	public void midiout(int n) {
-		try {
-			// Set the midiName variable to the name of the selected MIDI device
-			midiOutName = midilist.get(n);
-			println("Selected midi output device: " + midiOutName);
-		} catch (Exception NoDevicesAvailable) {
-			println("No devices Available. plugin devices into your computer first!");
-		}
-	}
+//	public void midiout(int n) {
+//		try {
+//			// Set the midiName variable to the name of the selected MIDI device
+////			midiOutName = midilist.get(n);
+//			println("Selected midi output device: " + midiOutName);
+//		} catch (Exception NoDevicesAvailable) {
+//			println("No devices Available. plugin devices into your computer first!");
+//		}
+//	}
 
 	public void noteOn(int channel, int pitch, int velocity) {
+		println("Pitch " + pitch);
 		int notePushed;
 		if (useFixedMapping) {
 			notePushed = mapMidiNoteToLEDFixed(pitch, ui.getFirstNoteSelected(), ui.getLastNoteSelected(),
@@ -357,7 +359,7 @@ public class PianoLED extends PApplet {
 		if (ui.getButtonCaption("Open").equals("Open")) {
 			try {
 				myBusIn = new MidiBus(this, midiName, 0);
-				myBusOut = new MidiBus(this, midiOutName, 0);
+//				myBusOut = new MidiBus(this, midiOutName, 0);
 				println("Midi Input Port Open: " + midiName);
 
 				arduino = new Arduino(this, portName, 115200);
@@ -380,7 +382,7 @@ public class PianoLED extends PApplet {
 			}
 		} else {
 			myBusIn.dispose();
-			myBusOut.dispose();
+//			myBusOut.dispose();
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
 				arduino.stop();
@@ -497,8 +499,7 @@ public class PianoLED extends PApplet {
 	private void setListWithDefault(String listName, ArrayList<String> list, int defaultValue) {
 		ui.getController(ScrollableList.class, listName).clear();
 		ui.getController(ScrollableList.class, listName).addItems(list);
-		ui.getController(ScrollableList.class, listName)
-				.setValue(defaultValue);
+		ui.getController(ScrollableList.class, listName).setValue(defaultValue);
 	}
 
 	public int findDefaultMidi(List<String> values, List<String> keywords) {
@@ -633,10 +634,14 @@ public class PianoLED extends PApplet {
 
 	public void dispose() {
 		try {
-			if (myBusIn != null && myBusOut != null) {
+			if (myBusIn != null ) {
 				myBusIn.dispose();
-				myBusOut.dispose();
 			}
+			
+//			if (myBusOut != null) {
+//				myBusOut.dispose();
+//			}
+
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
 				arduino.sendCommandSetBG(0, 0, 0);
