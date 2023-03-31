@@ -2,19 +2,27 @@ package com.serifpersia.pianoled;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import jssc.SerialPort;
+import jssc.SerialPortException;
 
 import processing.core.PApplet;
-import processing.serial.Serial;
 
 public class Arduino {
 
 	private PianoLED app;
 
-	private Serial serial;
+	private SerialPort serialPort;
 
-	public Arduino(PianoLED pianoLED, String portName, int bitrate) {
+	public Arduino(PianoLED pianoLED, String port, int baudrate) {
 		this.app = pianoLED;
-		this.serial = new Serial(pianoLED, portName, bitrate);
+		serialPort = new SerialPort(port);
+		try {
+			serialPort.openPort();
+            serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+					SerialPort.PARITY_NONE); 
+		} catch (SerialPortException ex) {
+			System.out.println(ex);
+		}
 	}
 
 	// command start with 3 bytes: COMMAND_BYTE1 | COMMAND_BYTE2 | EFFECT_COMMAND
@@ -34,7 +42,7 @@ public class Arduino {
 	final static byte COMMAND_VELOCITY = (byte) 246;
 	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
 
-	public ByteArrayOutputStream commandSetColor( Color c, int note) {
+	public ByteArrayOutputStream commandSetColor(Color c, int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
@@ -187,22 +195,24 @@ public class Arduino {
 	}
 
 	public void sendToArduino(ByteArrayOutputStream msg) {
-		if (serial != null && serial.active()) {
+		if (serialPort != null && serialPort.isOpened()) {
 			byte[] bytes = msg.toByteArray();
 			printArray(bytes);
-			serial.write(bytes);
-		}
-	}
-
-	public void sendToArduino(byte val) {
-		PApplet.println("Arduino command: " + (int) (val & 0xFF));
-		if (serial != null) {
-			serial.write(val);
+			try {
+				serialPort.writeBytes(bytes);
+			} catch (SerialPortException e) {
+				PApplet.println(e);
+			}
 		}
 	}
 
 	public void stop() {
-		serial.stop();
+		try {
+			serialPort.closePort();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+			PApplet.print(e);
+		}
 	}
 
 	public void printArray(byte[] bytes) {
