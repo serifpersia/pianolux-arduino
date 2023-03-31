@@ -1,5 +1,6 @@
 package com.serifpersia.pianoled;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 
 import processing.core.PApplet;
@@ -33,14 +34,14 @@ public class Arduino {
 	final static byte COMMAND_VELOCITY = (byte) 246;
 	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
 
-	public ByteArrayOutputStream commandSetColor(int r, int g, int b, int note) {
+	public ByteArrayOutputStream commandSetColor( Color c, int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_SET_COLOR);
-		message.write((byte) r);
-		message.write((byte) g);
-		message.write((byte) b);
+		message.write((byte) c.getRed());
+		message.write((byte) c.getGreen());
+		message.write((byte) c.getBlue());
 		message.write((byte) note);
 		return message;
 	}
@@ -122,16 +123,16 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int b) {
+	public ByteArrayOutputStream commandVelocity(int velocity, int note, Color c) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_VELOCITY);
 		message.write((byte) velocity);
 		message.write((byte) note);
-		message.write((byte) r);
-		message.write((byte) g);
-		message.write((byte) b);
+		message.write((byte) c.getRed());
+		message.write((byte) c.getGreen());
+		message.write((byte) c.getBlue());
 		return message;
 	}
 
@@ -177,8 +178,8 @@ public class Arduino {
 		sendToArduino(commandSetBG(hue, saturation, brightness));
 	}
 
-	public void sendCommandVelocity(int velocity, int note, int r, int g, int b) {
-		sendToArduino(commandVelocity(velocity, note, r, g, b));
+	public void sendCommandVelocity(int velocity, int note, Color c) {
+		sendToArduino(commandVelocity(velocity, note, c));
 	}
 
 	public void sendCommandStripDirection(int direction, int numLeds) {

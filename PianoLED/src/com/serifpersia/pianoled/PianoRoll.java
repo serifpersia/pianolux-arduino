@@ -20,12 +20,14 @@ import javax.sound.midi.Track;
 import themidibus.MidiBus;
 
 public class PianoRoll {
-	PApplet applet;
-	File midiFile;
+	PApplet app;
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
 	Sequencer sequencer;
 	Sequence sequence;
+
+	public static final int PIANO_ROLL_HEIGHT = 960;
+	public static final int PIANO_ROLL_WIDTH = 600;
 
 	boolean debug = false;
 
@@ -67,15 +69,21 @@ public class PianoRoll {
 
 	long currentTick;
 
-	public PianoRoll(PApplet applet, File midiFile, MidiDevice midiOutDevice) {
-		this.applet = applet;
-		this.midiFile = midiFile;
-		this.midiOutDevice = midiOutDevice;
-		pianoRollBottom = applet.height - paddingBottom - whiteKeyHeight;
+	public PianoRoll(PApplet app) {
+		this.app = app;
+		app.getSurface().setSize(PianoRoll.PIANO_ROLL_HEIGHT, PianoRoll.PIANO_ROLL_WIDTH);
+		pianoRollBottom = app.height - paddingBottom - whiteKeyHeight;
 		pianoRollHeight = pianoRollBottom - pianoRollTop;
+	}
 
+	public void setOutputDevice(MidiDevice midiOutDevice) {
+		this.midiOutDevice = midiOutDevice;
+	}
+
+	public void loadMidiFile(File midiFile) {
 		notes = readMidi(midiFile);
-		setupSequencer();
+		PApplet.println("Read "+notes.size()+" notes from "+midiFile);
+		setupSequencer(midiFile);
 	}
 
 	public void setFollowKey(boolean on) {
@@ -83,8 +91,8 @@ public class PianoRoll {
 	}
 
 	public void draw() {
-		applet.background(0);
-		applet.frameRate(120);
+		app.background(0);
+		app.frameRate(120);
 		drawVisualization();
 	}
 
@@ -101,28 +109,30 @@ public class PianoRoll {
 			keysOn[i] = false;
 		}
 
-		currentTick = sequencer.getTickPosition();
-		int n = notes.size();
-		for (int noteNum = firstNote; noteNum < n; noteNum++) {
-			Note note = notes.get(noteNum);
+		if (sequencer != null) {
+			currentTick = sequencer.getTickPosition();
+			int n = notes.size();
+			for (int noteNum = firstNote; noteNum < n; noteNum++) {
+				Note note = notes.get(noteNum);
 
-			if (note.start < currentTick && note.end > currentTick) {
-				if (debug)
-					PApplet.println("Key On: " + note.pitch + " " + note.start + " " + note.end);
-				keysOn[note.pitch - firstPianoKeyPitch + 1] = true;
+				if (note.start < currentTick && note.end > currentTick) {
+					if (debug)
+						PApplet.println("Key On: " + note.pitch + " " + note.start + " " + note.end);
+					keysOn[note.pitch - firstPianoKeyPitch + 1] = true;
+				}
+
+				// note is too far yet to display
+				if (note.start > currentTick + delayOffset)
+					break;
+
+				// note finished
+				if (note.end < currentTick - 1500) {
+					firstNote = noteNum;
+					continue;
+				}
+
+				drawNote(note);
 			}
-
-			// note is too far yet to display
-			if (note.start > currentTick + delayOffset)
-				break;
-
-			// note finished
-			if (note.end < currentTick - 1500) {
-				firstNote = noteNum;
-				continue;
-			}
-
-			drawNote(note);
 		}
 
 		drawPianoKeys();
@@ -130,35 +140,35 @@ public class PianoRoll {
 	}
 
 	public void drawBorders() {
-		applet.stroke(0);
-		applet.rect(0, applet.height - paddingBottom, applet.width, applet.height);
+		app.stroke(0);
+		app.rect(0, app.height - paddingBottom, app.width, app.height);
 	}
 
 	public void drawPianoKeys() {
 		int numWhiteKeys = 52; // There are 52 white keys on an 88-key piano
 
 		// Draw white keys
-		applet.fill(255);
+		app.fill(255);
 		for (int i = 0; i < numWhiteKeys; i++) {
 			int posX = pianoRollPaddingLeft + i * whiteKeyWidth;
 			int pitch = whiteKeyToPitch(i);
 			if (keysOn[pitch])
-				applet.fill(145, 225, 66);
+				app.fill(145, 225, 66);
 			else
-				applet.fill(255);
+				app.fill(255);
 
-			applet.stroke(127, 127, 127);
-			applet.rect(posX, pianoRollBottom, whiteKeyWidth, whiteKeyHeight);
-			applet.fill(255);
+			app.stroke(127, 127, 127);
+			app.rect(posX, pianoRollBottom, whiteKeyWidth, whiteKeyHeight);
+			app.fill(255);
 			if (i == 23) // C4 in 88 key
 			{
-				applet.fill(128);
-				applet.text("C", posX + whiteKeyWidth / 2 - 5, pianoRollBottom + whiteKeyHeight - 10);
-				applet.fill(255);
+				app.fill(128);
+				app.text("C", posX + whiteKeyWidth / 2 - 5, pianoRollBottom + whiteKeyHeight - 10);
+				app.fill(255);
 			}
 			if ((i - 2) % 7 == 0) {
-				applet.stroke(100, 100, 100);
-				applet.line(posX, pianoRollTop, posX, pianoRollBottom);
+				app.stroke(100, 100, 100);
+				app.line(posX, pianoRollTop, posX, pianoRollBottom);
 			}
 		}
 
@@ -169,13 +179,13 @@ public class PianoRoll {
 			if (Arrays.binarySearch(blackKeyIndices, i % 7) >= 0) {
 				int pitch = whiteKeyToPitch(i) + 1;
 				if (keysOn[pitch])
-					applet.fill(122, 164, 212);
+					app.fill(122, 164, 212);
 				else
-					applet.fill(0);
+					app.fill(0);
 
 				int whiteKeyPosX = pianoRollPaddingLeft + i * whiteKeyWidth;
 				int blackKeyPosX = whiteKeyPosX + whiteKeyWidth * 3 / 4;
-				applet.rect(blackKeyPosX, pianoRollBottom, blackKeyWidth, blackKeyHeight);
+				app.rect(blackKeyPosX, pianoRollBottom, blackKeyWidth, blackKeyHeight);
 				numBlackKeys++;
 			}
 			if (numBlackKeys == 36) { // We have drawn all the black keys
@@ -211,26 +221,26 @@ public class PianoRoll {
 		// Draw the note rectangle
 		if (isBlack(note.pitch)) {
 			// removed transparency
-			applet.stroke(122, 164, 212);
-			applet.fill(122, 164, 212);
+			app.stroke(122, 164, 212);
+			app.fill(122, 164, 212);
 		} else {
 			// removed transparency
-			applet.stroke(145, 225, 66);
-			applet.fill(145, 225, 66);
+			app.stroke(145, 225, 66);
+			app.fill(145, 225, 66);
 		}
 		// noStroke();
 		float cornerRadius = 30;
-		applet.rectMode(PConstants.CORNERS);
-		applet.rect(x, y, x + w, y - h, cornerRadius);
+		app.rectMode(PConstants.CORNERS);
+		app.rect(x, y, x + w, y - h, cornerRadius);
 		if (debug)
-			applet.text(note.pitch, x, y - 25);
+			app.text(note.pitch, x, y - 25);
 		if (debug)
-			applet.text(note.start, x, y - 15);
+			app.text(note.start, x, y - 15);
 		if (debug)
-			applet.text(note.end, x, y - 5);
-		applet.rectMode(PConstants.CORNER);
+			app.text(note.end, x, y - 5);
+		app.rectMode(PConstants.CORNER);
 
-		applet.fill(0);
+		app.fill(0);
 	}
 
 	public float getTickY(long tick) {
@@ -238,15 +248,15 @@ public class PianoRoll {
 	}
 
 	public void drawPianoRoll() {
-		applet.stroke(100, 100, 100);
-		applet.fill(255);
+		app.stroke(100, 100, 100);
+		app.fill(255);
 
 		if (debug) {
-			applet.line(pianoRollSide, pianoRollBottom, applet.width - pianoRollSide, pianoRollBottom);
-			applet.text(currentTick, applet.width - 150, pianoRollBottom);
+			app.line(pianoRollSide, pianoRollBottom, app.width - pianoRollSide, pianoRollBottom);
+			app.text(currentTick, app.width - 150, pianoRollBottom);
 		}
 
-		applet.stroke(0);
+		app.stroke(0);
 	}
 
 	public boolean isPaused() {
@@ -275,7 +285,7 @@ public class PianoRoll {
 	}
 
 	// MIDI handling
-	public void setupSequencer() {
+	private void setupSequencer(File midiFile) {
 		try {
 			sequencer = MidiSystem.getSequencer();
 			sequencer.open();
@@ -333,7 +343,7 @@ public class PianoRoll {
 		}
 	}
 
-	public LinkedList<Note> readMidi(File midiFile) {
+	private LinkedList<Note> readMidi(File midiFile) {
 		LinkedList<Note> fileNotes = new LinkedList<Note>();
 		try {
 			// Load the MIDI file

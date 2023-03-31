@@ -23,7 +23,7 @@ public class UIHelper {
 
 	private ControlP5 cp5;
 
-	public UIHelper(PianoLED pianoLED, ControlP5 _cp5) {
+	public UIHelper(ControlP5 _cp5) {
 		this.cp5 = _cp5;
 	}
 
@@ -135,7 +135,7 @@ public class UIHelper {
 		return cp5.getController(name);
 	}
 
-	public <T> T get(Class<T> class1, String name) {
+	public <T> T getController(Class<T> class1, String name) {
 
 		return cp5.get(class1, name);
 	}
