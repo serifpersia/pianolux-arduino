@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 
 public class PianoLED extends PApplet {
+	private UIHelper ui;
+	private Arduino arduino;
 
 	Sequencer sequencer;
 	JFrame newWindowFrame;
@@ -49,8 +51,16 @@ public class PianoLED extends PApplet {
 	PianoRoll pianoRoll;
 	int PIANO_ROLL_HEIGHT = 960;
 	int PIANO_ROLL_WIDTH = 600;
-
 	final static int TOP_COLOR = 255;
+
+	static public void main(String[] passedArgs) {
+		String[] appletArgs = new String[] { "com.serifpersia.pianoled.PianoLED" };
+		if (passedArgs != null) {
+			PApplet.main(concat(appletArgs, passedArgs));
+		} else {
+			PApplet.main(appletArgs);
+		}
+	}
 
 //Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -144,18 +154,24 @@ public class PianoLED extends PApplet {
 	File[] listOfFiles = folder.listFiles();
 	File versionFile = null;
 
-	Serial arduino;
 	MidiBus myBusIn;
 	MidiBus myBusOut;
 
+	public void settings() {
+		size(930, 160);
+	}
+
 	public void setup() {
-		/* size commented out by preprocessor */;
 		surface.setTitle("PianoLED");
+		surface.setSize(960, 160);
+
 		PImage icon = loadImage("images/PianoLED.png"); // replace with the name and extension of your icon file
 		surface.setIcon(icon);
-		cp5 = buildUI();
 
-		cp5.getController("modelist").setValue(0);
+		ControlP5 cp5 = new ControlP5(this);
+		ui = buildUI(this, cp5);
+
+		ui.getController("modelist").setValue(0);
 
 		Refresh();
 
@@ -374,17 +390,17 @@ public class PianoLED extends PApplet {
 
 			if (!AnimationOn) {
 				if (RandomOn) {
-					message = commandSetColor((int) random(1, 250), (int) random(1, 250), (int) random(1, 250),
+					message = arduino.commandSetColor((int) random(1, 250), (int) random(1, 250), (int) random(1, 250),
 							notePushed);
 				} else if (VelocityOn) {
-					message = commandVelocity(velocity, notePushed, Red, Green, Blue);
+					message = arduino.commandVelocity(velocity, notePushed, Red, Green, Blue);
 				} else if (SplitOn) {
 					if (pitch >= leftMinPitch && pitch <= leftMaxPitch - 1) {
 						println("Left Side Color");
-						message = commandSetColor(splitLeftRed, splitLeftGreen, splitLeftBlue, notePushed);
+						message = arduino.commandSetColor(splitLeftRed, splitLeftGreen, splitLeftBlue, notePushed);
 					} else if (pitch > leftMaxPitch - 1 && pitch <= rightMaxPitch) {
 						println("Right Side Color");
-						message = commandSetColor(splitRightRed, splitRightGreen, splitRightBlue, notePushed);
+						message = arduino.commandSetColor(splitRightRed, splitRightGreen, splitRightBlue, notePushed);
 					}
 				} else if (GradientOn) {
 					int numSteps = numberselected - 1;
@@ -412,15 +428,15 @@ public class PianoLED extends PApplet {
 					int green = (int) green(currentColor);
 					int blue = (int) blue(currentColor);
 
-					message = commandSetColor(red, green, blue, notePushed);
+					message = arduino.commandSetColor(red, green, blue, notePushed);
 				} else if (SplashOn) {
-					message = commandSplash(velocity, notePushed, getSplashColor());
+					message = arduino.commandSplash(velocity, notePushed, getSplashColor());
 				} else {
-					message = commandSetColor(Red, Green, Blue, notePushed);
+					message = arduino.commandSetColor(Red, Green, Blue, notePushed);
 				}
 
 				if (message != null) {
-					sendToArduino(message);
+					arduino.sendToArduino(message);
 				}
 			}
 		} catch (Exception e) {
@@ -449,7 +465,7 @@ public class PianoLED extends PApplet {
 		Keys[pitch - 21][1] = 0;
 		try {
 			if (!AnimationOn) {
-				sendCommandKeyOff(notePushed);
+				arduino.sendCommandKeyOff(notePushed);
 			}
 		} catch (Exception e) {
 		}
@@ -470,60 +486,27 @@ public class PianoLED extends PApplet {
 	}
 
 	public void colorlist(int n) {
-		if (cp5 != null) {
-			int selectedColor = presetColors[n];
+		int selectedColor = presetColors[n];
 
-			Red = round(red(selectedColor));
-			Green = round(green(selectedColor));
-			Blue = round(blue(selectedColor));
+		Red = round(red(selectedColor));
+		Green = round(green(selectedColor));
+		Blue = round(blue(selectedColor));
 
-			cp5.get(ColorWheel.class, "Color").setRGB(selectedColor);
+		ui.get(ColorWheel.class, "Color").setRGB(selectedColor);
 
-			println("Selected color: " + colorNames.get(n));
-			println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
-		} else {
-			println("cp5 object is null");
-		}
+		println("Selected color: " + colorNames.get(n));
+		println("RGB values: " + red(selectedColor) + ", " + green(selectedColor) + ", " + blue(selectedColor));
 	}
 
 	public void animationlist(int n) {
 		String selectedAnimation = animationNames.get(n);
 		println("Selected Animation: " + selectedAnimation);
-
-		// Select animation based on index
-		switch (n) {
-		case 0:
-			// Select Animation 1
-			sendCommandAnimation(0);
-			break;
-		case 1:
-			// Select Animation 2
-			sendCommandAnimation(1);
-			break;
-		case 2:
-			// Select Animation 3
-			sendCommandAnimation(2);
-			break;
-		case 3:
-			// Select Animation 4
-			sendCommandAnimation(3);
-			break;
-		case 4:
-			// Select Animation 5
-			sendCommandAnimation(4);
-			break;
-		case 5:
-			// Select Animation 6
-			sendCommandAnimation(5);
-			break;
-		case 6:
-			// Select Animation 7
-			sendCommandAnimation(6);
-			break;
-		default:
+		if (n < 0 || n > 6) {
 			println("Invalid animation selection.");
-			break;
+			return;
 		}
+		if (arduino != null)
+			arduino.sendCommandAnimation(n);
 	}
 
 	public void BGColor(boolean on) {
@@ -533,16 +516,17 @@ public class PianoLED extends PApplet {
 		int BG_BRIGHTNESS = 20;
 
 		if (on) {
-			sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
+			if( arduino != null )
+				arduino.sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
 			showBGControls();
 		} else {
-			sendCommandSetBG(0, 0, 0);
+			arduino.sendCommandSetBG(0, 0, 0);
 			hideBGControls();
 		}
 	}
 
 	public void stripDirection(boolean on) {
-		sendCommandStripDirection(on ? 1 : 0, numberselected);
+		arduino.sendCommandStripDirection(on ? 1 : 0, numberselected);
 	}
 
 	public void TeacherFollowKey(boolean on) {
@@ -563,93 +547,91 @@ public class PianoLED extends PApplet {
 		int saturation = (int) (hsbValues[1] * 255);
 		int brightness = 20;
 
-		sendCommandSetBG(hue, saturation, brightness);
+		if (arduino != null)
+			arduino.sendCommandSetBG(hue, saturation, brightness);
 	}
 
 	public void modelist(int n) {
-		if (cp5 != null) {
-			sendCommandBlackOut();
+		if (arduino != null)
+			arduino.sendCommandBlackOut();
 
-			switch (n) {
-			case 0: // Default
-				disableAllModes();
-				hideAllControls();
-				showDefaultControls();
-				setDefaultDefaults(255, 127);
-				break;
-			case 1: // Splash
-				disableAllModes();
-				hideAllControls();
-				showSplashControls();
-				setSplashDefaults(11, 110, 0, 127);
-				SplashOn = true;
-				break;
-			case 2: // Random
-				disableAllModes();
-				hideAllControls();
-				setDefaultDefaults(255, 127);
-				showRandomControls();
-				RandomOn = true;
-				break;
-			case 3: // Gradient
-				disableAllModes();
-				hideAllControls();
-				setDefaultDefaults(255, 127);
-				showGradientControls();
-				GradientOn = true;
-				break;
-			case 4: // Velocity
-				disableAllModes();
-				hideAllControls();
-				setDefaultDefaults(255, 127);
-				showVelocityControls();
-				VelocityOn = true;
-				break;
-			case 5: // Split
-				disableAllModes();
-				hideAllControls();
-				setDefaultDefaults(255, 127);
-				showSplitControls();
-				SplitOn = true;
-				break;
-			case 6: // Animation
-				disableAllModes();
-				hideAllControls();
-				showAnimationControls();
-				setAnimationDefaults(0, 127);
-				AnimationOn = true;
-				break;
-			case 7: // PianoRoll
-				disableAllModes();
-				hideAllControls();
-				showPianoRollControls();
-				LearnMidiOn = true;
-				break;
-			}
-			println("Selected mode: " + m.get(n));
-		} else {
-			println("cp5 object is null");
+		switch (n) {
+		case 0: // Default
+			disableAllModes();
+			hideAllControls();
+			showDefaultControls();
+			setDefaultDefaults(255, 127);
+			break;
+		case 1: // Splash
+			disableAllModes();
+			hideAllControls();
+			showSplashControls();
+			setSplashDefaults(11, 110, 0, 127);
+			SplashOn = true;
+			break;
+		case 2: // Random
+			disableAllModes();
+			hideAllControls();
+			setDefaultDefaults(255, 127);
+			showRandomControls();
+			RandomOn = true;
+			break;
+		case 3: // Gradient
+			disableAllModes();
+			hideAllControls();
+			setDefaultDefaults(255, 127);
+			showGradientControls();
+			GradientOn = true;
+			break;
+		case 4: // Velocity
+			disableAllModes();
+			hideAllControls();
+			setDefaultDefaults(255, 127);
+			showVelocityControls();
+			VelocityOn = true;
+			break;
+		case 5: // Split
+			disableAllModes();
+			hideAllControls();
+			setDefaultDefaults(255, 127);
+			showSplitControls();
+			SplitOn = true;
+			break;
+		case 6: // Animation
+			disableAllModes();
+			hideAllControls();
+			showAnimationControls();
+			setAnimationDefaults(0, 127);
+			AnimationOn = true;
+			break;
+		case 7: // PianoRoll
+			disableAllModes();
+			hideAllControls();
+			showPianoRollControls();
+			LearnMidiOn = true;
+			break;
 		}
+		println("Selected mode: " + m.get(n));
 	}
 
 	public void Open() {
 
-		if (cp5.getController("Open").getCaptionLabel().getText().equals("Open")) {
+		if (ui.getController("Open").getCaptionLabel().getText().equals("Open")) {
 			try {
 				myBusIn = new MidiBus(this, midiName, 0);
 				myBusOut = new MidiBus(this, midiOutName, 0);
 				println("Midi Input Port Open: " + midiName);
-				arduino = new Serial(this, portName, 115200);
+				arduino = new Arduino(this, portName, 115200);
 				println("Serial Port Open : " + portName);
-				cp5.getController("Open").getCaptionLabel().setText("Close");
-				cp5.getController("Open").setColorBackground(color(0, 255, 0));
+				ui.getController("Open").getCaptionLabel().setText("Close");
+				ui.getController("Open").setColorBackground(color(0, 255, 0));
 
-				sendCommandBlackOut();
-				Toggle bg = (Toggle) cp5.getController("BGColor");
+				arduino.sendCommandBlackOut();
+				Toggle bg = (Toggle) ui.getController("BGColor");
 				BGColor(bg.getState());
-				int fadeRate = (int) cp5.getController("FadeOnVal").getValue();
-				sendCommandFadeRate(fadeRate);
-				Toggle sd = (Toggle) cp5.getController("stripDirection");
+				int fadeRate = (int) ui.getController("FadeOnVal").getValue();
+				arduino.sendCommandFadeRate(fadeRate);
+				Toggle sd = (Toggle) ui.getController("stripDirection");
 				stripDirection(sd.getState());
 			} catch (Exception e) {
 				println("Error opening serial port: " + e.getMessage());
@@ -658,25 +640,27 @@ public class PianoLED extends PApplet {
 			if (arduino != null) {
 				myBusIn.dispose();
 				myBusOut.dispose();
-				sendCommandBlackOut();
+				arduino.sendCommandBlackOut();
 				BGColor(false);
 				arduino.stop();
 				println("Device closed: " + portName);
 				println("Device closed: " + midiName);
-				cp5.getController("Open").getCaptionLabel().setText("Open");
-				cp5.getController("Open").setColorBackground(color(0, 0, 0));
+				ui.getController("Open").getCaptionLabel().setText("Open");
+				ui.getController("Open").setColorBackground(color(0, 0, 0));
 			}
 		}
 	}
 
 //was float
 	public void FadeOnVal(int value) {
-		sendCommandFadeRate((int) value);
+		if (arduino != null)
+			arduino.sendCommandFadeRate((int) value);
 	}
 
 //was float
 	public void Brightness(int value) {
-		sendCommandBrightness((int) value);
+		if (arduino != null)
+			arduino.sendCommandBrightness((int) value);
 	}
 
 	public void Refresh() {
@@ -736,12 +720,12 @@ public class PianoLED extends PApplet {
 
 	public void refreshComList() {
 		comlist = Serial.list();
-		cp5.get(ScrollableList.class, "comlist").clear();
-		cp5.get(ScrollableList.class, "comlist").addItems(comlist);
+		ui.get(ScrollableList.class, "comlist").clear();
+		ui.get(ScrollableList.class, "comlist").addItems(comlist);
 
 		int portIndex = Arrays.asList(comlist).indexOf(portName);
 		if (portIndex >= 0) {
-			cp5.get(ScrollableList.class, "comlist").setValue(portIndex);
+			ui.get(ScrollableList.class, "comlist").setValue(portIndex);
 		}
 	}
 
@@ -774,13 +758,13 @@ public class PianoLED extends PApplet {
 				// Handle the exception
 			}
 		}
-		cp5.get(ScrollableList.class, "midi").clear();
-		cp5.get(ScrollableList.class, "midi").addItems(midilist);
-		cp5.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
+		ui.get(ScrollableList.class, "midi").clear();
+		ui.get(ScrollableList.class, "midi").addItems(midilist);
+		ui.get(ScrollableList.class, "midi").setValue(findDefaultMidi(midilist, Arrays.asList("piano", "midi")));
 
-		cp5.get(ScrollableList.class, "midiout").clear();
-		cp5.get(ScrollableList.class, "midiout").addItems(midioutlist);
-		cp5.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
+		ui.get(ScrollableList.class, "midiout").clear();
+		ui.get(ScrollableList.class, "midiout").addItems(midioutlist);
+		ui.get(ScrollableList.class, "midiout").setValue(findDefaultMidi(midioutlist, Arrays.asList("piano", "midi")));
 	}
 
 	public int findDefaultMidi(List<String> values, List<String> keywords) {
@@ -920,13 +904,13 @@ public class PianoLED extends PApplet {
 	public void PianoRollPlayPause() {
 		if (pianoRoll != null)
 			pianoRoll.pause();
-		Button button = cp5.get(Button.class, "PianoRollPlayPause");
+		Button button = ui.get(Button.class, "PianoRollPlayPause");
 		if (pianoRoll.isPaused()) {
 			button.getCaptionLabel().setText(">");
-			button.setColorBackground(BLUE);
+			button.setColorBackground(Color.BLUE.getRGB());
 		} else {
 			button.getCaptionLabel().setText("||");
-			button.setColorBackground(GREEN);
+			button.setColorBackground(Color.GREEN.getRGB());
 		}
 	}
 
@@ -970,7 +954,7 @@ public class PianoLED extends PApplet {
 			try {
 
 				// Get the selected MIDI output device
-				int midiOutIndex = (int) cp5.get(ScrollableList.class, "midiout").getValue();
+				int midiOutIndex = (int) ui.get(ScrollableList.class, "midiout").getValue();
 				MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
 				MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
 				surface.setSize(PIANO_ROLL_HEIGHT, PIANO_ROLL_WIDTH);
@@ -981,19 +965,10 @@ public class PianoLED extends PApplet {
 		}
 	}
 
-	public static void printArray(byte[] bytes) {
-		print("Message:");
-		for (byte b : bytes) {
-			int unsignedValue = b & 0xFF;
-			print(unsignedValue + " ");
-		}
-		println();
-	}
-
 	public void dispose() {
 		try {
-			sendCommandBlackOut();
-			sendCommandSetBG(0, 0, 0);
+			arduino.sendCommandBlackOut();
+			arduino.sendCommandSetBG(0, 0, 0);
 			if (myBusIn != null && myBusOut != null) {
 				myBusIn.dispose();
 				myBusOut.dispose();
@@ -1008,222 +983,39 @@ public class PianoLED extends PApplet {
 	}
 
 	public void setAnimationDefaults(int fadeRate, int brightness) {
-		cp5.getController("FadeOnVal").setValue(fadeRate);
-		cp5.getController("Brightness").setValue(brightness);
-		cp5.getController("Brightness").setPosition(EFFECT_CONTROLS_X - 15, 65);
-	}
-//command start with 3 bytes: COMMAND_BYTE1 | COMMAND_BYTE2 | EFFECT_COMMAND
-//then goes effect bytes
-
-	final static byte COMMAND_BYTE1 = (byte) 111;
-	final static byte COMMAND_BYTE2 = (byte) 222;
-
-	final static byte COMMAND_SET_COLOR = (byte) 255;
-	final static byte COMMAND_FADE_RATE = (byte) 254;
-	final static byte COMMAND_ANIMATION = (byte) 253;
-	final static byte COMMAND_BLACKOUT = (byte) 252;
-	final static byte COMMAND_SPLASH = (byte) 251;
-	final static byte COMMAND_SET_BRIGHTNESS = (byte) 250;
-	final static byte COMMAND_KEY_OFF = (byte) 249;
-	final static byte COMMAND_SPLASH_MAX_LENGTH = (byte) 248;
-	final static byte COMMAND_SET_BG = (byte) 247;
-	final static byte COMMAND_VELOCITY = (byte) 246;
-	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
-
-	public ByteArrayOutputStream commandSetColor(int r, int g, int b, int note) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SET_COLOR);
-		message.write((byte) r);
-		message.write((byte) g);
-		message.write((byte) b);
-		message.write((byte) note);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandSetBrightness(int brightness) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SET_BRIGHTNESS);
-		message.write((byte) brightness);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandSplash(int velocity, int note, int sc) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SPLASH);
-		message.write((byte) velocity);
-		message.write((byte) note);
-		message.write((byte) red(sc));
-		message.write((byte) green(sc));
-		message.write((byte) blue(sc));
-		return message;
-	}
-
-	public ByteArrayOutputStream commandFadeRate(int fadeRate) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_FADE_RATE);
-		message.write((byte) fadeRate);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandAnimation(int animationIndex) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_ANIMATION);
-		message.write((byte) animationIndex);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandBlackOut() {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_BLACKOUT);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandKeyOff(int note) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_KEY_OFF);
-		message.write((byte) note);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandSplashMaxLength(int value) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SPLASH_MAX_LENGTH);
-		message.write((byte) value);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandSetBG(int hue, int saturation, int brightness) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SET_BG);
-		message.write((byte) hue);
-		message.write((byte) saturation);
-		message.write((byte) brightness);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandVelocity(int velocity, int note, int r, int g, int b) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_VELOCITY);
-		message.write((byte) velocity);
-		message.write((byte) note);
-		message.write((byte) r);
-		message.write((byte) g);
-		message.write((byte) b);
-		return message;
-	}
-
-	public ByteArrayOutputStream commandStripDirection(int direction, int numLeds) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) COMMAND_BYTE1);
-		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_STRIP_DIRECTION);
-		message.write((byte) direction);
-		message.write((byte) numLeds);
-		return message;
-	}
-
-	public void sendCommandAnimation(int animationIndex) {
-		sendToArduino(commandAnimation(animationIndex));
-	}
-
-	public void sendCommandSplash(int velocity, int note, int sc) {
-		sendToArduino(commandSplash(velocity, note, sc));
-	}
-
-	public void sendCommandBlackOut() {
-		sendToArduino(commandBlackOut());
-	}
-
-	public void sendCommandBrightness(int value) {
-		sendToArduino(commandSetBrightness(value));
-	}
-
-	public void sendCommandKeyOff(int value) {
-		sendToArduino(commandKeyOff(value));
-	}
-
-	public void sendCommandFadeRate(int value) {
-		sendToArduino(commandFadeRate(value));
-	}
-
-	public void sendCommandSplashMaxLength(int value) {
-		sendToArduino(commandSplashMaxLength(value));
-	}
-
-	public void sendCommandSetBG(int hue, int saturation, int brightness) {
-		sendToArduino(commandSetBG(hue, saturation, brightness));
-	}
-
-	public void sendCommandVelocity(int velocity, int note, int r, int g, int b) {
-		sendToArduino(commandVelocity(velocity, note, r, g, b));
-	}
-
-	public void sendCommandStripDirection(int direction, int numLeds) {
-		sendToArduino(commandStripDirection(direction, numLeds));
-	}
-
-	public void sendToArduino(byte val) {
-		println("Arduino command: " + (int) (val & 0xFF));
-		if (arduino != null) {
-			arduino.write(val);
-		}
-	}
-
-	public void sendToArduino(ByteArrayOutputStream msg) {
-		if (arduino != null && arduino.active()) {
-			byte[] bytes = msg.toByteArray();
-			printArray(bytes);
-			arduino.write(bytes);
-		}
+		ui.getController("FadeOnVal").setValue(fadeRate);
+		ui.getController("Brightness").setValue(brightness);
+		ui.getController("Brightness").setPosition(EFFECT_CONTROLS_X - 15, 65);
 	}
 
 	public void setDefaultDefaults(int fadeRate, int brightness) {
-		cp5.getController("FadeOnVal").setValue(fadeRate);
-		cp5.getController("Brightness").setValue(brightness);
-		cp5.getController("Brightness").setPosition(EFFECT_CONTROLS_X - 4, 65);
+		ui.getController("FadeOnVal").setValue(fadeRate);
+		ui.getController("Brightness").setValue(brightness);
+		ui.getController("Brightness").setPosition(EFFECT_CONTROLS_X - 4, 65);
 	}
 
 	public void splashMaxLength(float value) {
-		sendCommandSplashMaxLength((int) value);
+		if (arduino != null)
+			arduino.sendCommandSplashMaxLength((int) value);
 	}
 
 	public void setSplashDefaults(int splashLen, int fadeRate, int splashColor, int brightness) {
-		cp5.getController("splashMaxLength").setValue(splashLen);
-		cp5.getController("FadeOnVal").setValue(fadeRate);
-		cp5.get(ScrollableList.class, "splashColor").setValue(splashColor);
-		cp5.getController("Brightness").setValue(brightness);
+		ui.getController("splashMaxLength").setValue(splashLen);
+		ui.getController("FadeOnVal").setValue(fadeRate);
+		ui.get(ScrollableList.class, "splashColor").setValue(splashColor);
+		ui.getController("Brightness").setValue(brightness);
 	}
 
 	public void splashColor(int n) {
 		int first = 0;
 		int last = splashColorNames.size() - 1;
 		if (n > first && n < last) {
-			cp5.get(ColorWheel.class, "Color").setRGB(presetColors[n - 1]);
+			ui.get(ColorWheel.class, "Color").setRGB(presetColors[n - 1]);
 		}
 	}
 
 	public int getSplashColor() {
-		int n = (int) cp5.get(ScrollableList.class, "splashColor").getValue();
+		int n = (int) ui.get(ScrollableList.class, "splashColor").getValue();
 		int first = 0;
 		int splashColor;
 		int last = splashColorNames.size() - 1;
@@ -1238,7 +1030,7 @@ public class PianoLED extends PApplet {
 
 		} else if (n == last) {
 			// Manual
-			splashColor = cp5.get(ColorWheel.class, "Color").getRGB();
+			splashColor = ui.get(ColorWheel.class, "Color").getRGB();
 		} else {
 			// Invalid color mode
 			println("Invalid color selection: " + n);
@@ -1247,30 +1039,11 @@ public class PianoLED extends PApplet {
 		return splashColor;
 	}
 
-	ControlP5 cp5;
+//	ControlP5 cp5;
 
 	int MIN_FADE_RATE = 0;
 	int MAX_FADE_RATE = 255;
 	int DEFAULT_FADE_RATE = 255;
-
-	int RED = color(255, 0, 0);
-	int DARK_GREEN = color(0, 200, 0);
-	int GREEN = color(0, 255, 0);
-	int LAVENDER = color(192, 128, 255);
-	int BLUE = color(0, 0, 255);
-	int BLACK = color(0, 0, 0);
-	int WHITE = color(255, 255, 255);
-	int GREY = color(150, 150, 150);
-	int YELLOW = color(255, 255, 0);
-	int MAGENTA = color(255, 0, 255);
-
-	int APP_COLOR_FG = RED;
-	int APP_COLOR_BG = BLACK;
-	int APP_COLOR_ACT = RED;
-
-	int SLIDER_COLOR_FG = GREY;
-	int SLIDER_COLOR_BG = BLACK;
-	int SLIDER_COLOR_ACT = GREY;
 
 	int MIN_BRIGHT = 0;
 	int MAX_BRIGHT = 255;
@@ -1318,91 +1091,92 @@ public class PianoLED extends PApplet {
 	List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors", "CloudColors",
 			"LavaColors", "ForestColors", "PartyColors");
 
-	public ControlP5 buildUI() {
-		ControlP5 cp5 = new ControlP5(this);
+	public UIHelper buildUI(PianoLED pianoLED, ControlP5 cp5) {
 
-		addSlider(cp5, "Brightness", "  B", EFFECT_CONTROLS_X - 4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT, BLUE,
-				BLACK, RED)
-		// .setLabelVisible(false)
-		;
+		ui = new UIHelper(pianoLED, cp5);
 
-		addSlider(cp5, "FadeOnVal", "  F", EFFECT_CONTROLS_X - 15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE,
-				DEFAULT_FADE_RATE, DARK_GREEN, BLACK, RED)
-		// .setLabelVisible(false)
-		;
+		ui.addToggle("BGColor2", " BG", 90, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
 
-		addButton(cp5, "CheckForUpdate", "Update", 620, 20, 45, 25);
+		ui.addSlider("Brightness", "  B", EFFECT_CONTROLS_X - 4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT,
+				Color.BLUE, Color.BLACK, Color.RED);
 
-		addButton(cp5, "setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
-		addButton(cp5, "setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
-		addButton(cp5, "setRightSideG", "Set RG", 765, 140, 30, 15).hide();
+		ui.addSlider("FadeOnVal", "  F", EFFECT_CONTROLS_X - 15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE,
+				DEFAULT_FADE_RATE, Color.GREEN, Color.BLACK, Color.RED);
 
-		addButton(cp5, "setLeftSide", "Set L", 735, 140, 30, 15).hide();
-		addButton(cp5, "setRightSide", "Set R", 765, 140, 30, 15).hide();
+		ui.addButton("CheckForUpdate", "Update", 620, 20, 45, 25);
 
-		addButton(cp5, "setBG", "Set BG", 670, 26, 30, 15).hide();
+		ui.addButton("setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
+		ui.addButton("setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
+		ui.addButton("setRightSideG", "Set RG", 765, 140, 30, 15).hide();
 
-		addButton(cp5, "Open", null, 725, 45, 50, 15);
-		addButton(cp5, "Refresh", null, 775, 45, 50, 15);
+		ui.addButton("setLeftSide", "Set L", 735, 140, 30, 15).hide();
+		ui.addButton("setRightSide", "Set R", 765, 140, 30, 15).hide();
 
-		addColorWheel(cp5, "Color", EFFECT_CONTROLS_X + 15, 45, 100);
+		ui.addButton("setBG", "Set BG", 670, 26, 30, 15).hide();
 
-		addAnimationControls(cp5);
+		ui.addButton("Open", null, 725, 45, 50, 15);
+		ui.addButton("Refresh", null, 775, 45, 50, 15);
 
-		addButton(cp5, "leftArrow", "<", 380, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
-		addButton(cp5, "rightArrow", ">", 415, 25, 30, 15, APP_COLOR_FG, BLUE, APP_COLOR_ACT);
+		ui.addColorWheel("Color", EFFECT_CONTROLS_X + 15, 45, 100);
+
+		addAnimationControls();
+
+		ui.addButton("leftArrow", "<", 380, 25, 30, 15, null, Color.BLUE, null);
+		ui.addButton("rightArrow", ">", 415, 25, 30, 15, null, Color.BLUE, null);
 
 		// addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
 
 		int SPLASH_CONTROL_X = EFFECT_CONTROLS_X + 6;
 		int SPLASH_CONTROL_Y = 60;
-		addSplashControls(cp5, SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
-		addPianoRollControls(cp5, EFFECT_CONTROLS_X + 10, 30);
-		addButton(cp5, "Instructions", null, 15, 15, 60, 15);
+		addSplashControls(SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
+		addPianoRollControls(EFFECT_CONTROLS_X + 10, 30);
+		ui.addButton("Instructions", null, 15, 15, 60, 15);
 
-		addToggle(cp5, "BGColor", " BG", 700, 25, 15, 15, RED, WHITE, GREEN);
-		addToggle(cp5, "stripDirection", "Reverse", 425, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel()
+		ui.addToggle("BGColor", " BG", 700, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
+		ui.addToggle("stripDirection", "Reverse", 425, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN).getCaptionLabel()
 				.alignX(ControlP5.CENTER);
-		addToggle(cp5, "Fix", "Fix LED", 390, 42, 10, 8, RED, WHITE, GREEN).getCaptionLabel().alignX(ControlP5.CENTER);
+		ui.addToggle("Fix", "Fix LED", 390, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN).getCaptionLabel()
+				.alignX(ControlP5.CENTER);
 
-		addScrollableList(cp5, "comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15).close();
-		addScrollableList(cp5, "midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15).close();
-		addScrollableList(cp5, "colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100, 15,
-				15);
-		addScrollableList(cp5, "modelist", "Mode", m, 0, EFFECT_CONTROLS_X + 15, 15, 100, 100, 15, 15).bringToFront();
+		ui.addScrollableList("comlist", "Arduino Port", null, -1, 725, 15, 100, 110, 15, 15).close();
+		ui.addScrollableList("midi", "Midi Device", null, -1, 725, 30, 100, 110, 15, 15).close();
+		ui.addScrollableList("colorlist", "Color Preset", colorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100, 15, 15);
+		ui.addScrollableList("modelist", "Mode", m, 0, EFFECT_CONTROLS_X + 15, 15, 100, 100, 15, 15).bringToFront();
 
-		return cp5;
+		return ui;
 	}
 
-	public void addPianoRollControls(ControlP5 cp5, int origX, int origY) {
+	public void addPianoRollControls(int origX, int origY) {
 		int x = origX;
 		int y = origY;
 		int h = 25;
 		int w = 25;
 		PFont font = createFont("Arial", 12);
 
-		addScrollableList(cp5, "midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X + 15, y, 100, 110, 15, 15);
+		ui.addScrollableList("midiout", "Midi Output Device", null, -1, EFFECT_CONTROLS_X + 15, y, 100, 110, 15, 15);
 		y += 25;
-		addButton(cp5, "PianoRollLoadMidi", "Load Midi File", EFFECT_CONTROLS_X + 15, y, 100, 15).hide();
+		ui.addButton("PianoRollLoadMidi", "Load Midi File", EFFECT_CONTROLS_X + 15, y, 100, 15).hide();
 		y += 25;
-		addButton(cp5, "PianoRollRewind", "|<<", x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+		ui.addButton("PianoRollRewind", "|<<", x, y, h, w, Color.RED, Color.BLUE, Color.GREEN).hide().getCaptionLabel()
+				.setFont(font);
 		x += w + 2;
-		addButton(cp5, "PianoRollBackwardFragment", "-" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, RED, BLUE, GREEN)
-				.hide().getCaptionLabel().setFont(font);
+		ui.addButton("PianoRollBackwardFragment", "-" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED,
+				Color.BLUE, Color.GREEN).hide().getCaptionLabel().setFont(font);
 		x += w + 2;
-		addButton(cp5, "PianoRollPlayPause", ">", x, y, h, w, RED, BLUE, GREEN).hide().getCaptionLabel().setFont(font);
+		ui.addButton("PianoRollPlayPause", ">", x, y, h, w, Color.RED, Color.BLUE, Color.GREEN).hide().getCaptionLabel()
+				.setFont(font);
 		x += w + 2;
-		addButton(cp5, "PianoRollForwardFragment", "+" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, RED, BLUE, GREEN)
-				.hide().getCaptionLabel().setFont(font);
+		ui.addButton("PianoRollForwardFragment", "+" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED, Color.BLUE,
+				Color.GREEN).hide().getCaptionLabel().setFont(font);
 		x = origX;
 		y += h + 5;
 		// addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED,
 		// WHITE, GREEN).hide();
 
-		cp5.getController("midiout").bringToFront();
+		ui.getController("midiout").bringToFront();
 	}
 
-	public void addSplashControls(ControlP5 cp5, int x, int y) {
+	public void addSplashControls(int x, int y) {
 		int SPLASH_MIN_LEN = 5;
 		int SPLASH_MAX_LEN = 15;
 		int SPLASH_DEFAULT_LEN = 8;
@@ -1421,34 +1195,34 @@ public class PianoLED extends PApplet {
 
 		int SPLASH_CONTROL_Y_STEP = 13;
 
-		addSlider(cp5, "splashMaxLength", "  L", EFFECT_CONTROLS_X + 7, 65, 10, 69, SPLASH_MIN_LEN, SPLASH_MAX_LEN,
-				SPLASH_DEFAULT_LEN, LAVENDER, BLACK, RED).hide();
+		ui.addSlider("splashMaxLength", "  L", EFFECT_CONTROLS_X + 7, 65, 10, 69, SPLASH_MIN_LEN, SPLASH_MAX_LEN,
+				SPLASH_DEFAULT_LEN, Color.BLUE, Color.BLACK, Color.RED).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
-		addScrollableList(cp5, "splashColor", "Color", splashColorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100, 15,
-				15).hide();
+		ui.addScrollableList("splashColor", "Color", splashColorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100, 15, 15)
+				.hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
-		addSlider(cp5, "splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE,
+		ui.addSlider("splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE,
 				SPLASH_DAFAULT_TAIL_FADE).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
-		// addSlider( cp5, "splashHeadFade", "Head Fade Rate", x, y,
+		// addSlider("splashHeadFade", "Head Fade Rate", x, y,
 		// SPLASH_MIN_HEAD_FADE, SPLASH_MAX_HEAD_FADE, SPLASH_DAFAULT_HEAD_FADE).hide();
 		// y += SPLASH_CONTROL_Y_STEP;
 
-		addSlider(cp5, "splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI,
+		ui.addSlider("splashVelocityBrightnessImpact", "Velocity To Bright", x, y, SPLASH_MIN_VELO_BRI,
 				SPLASH_MAX_VELO_BRI, SPLASH_DAFAULT_VELO_BRI).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
-		addSlider(cp5, "splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED,
+		ui.addSlider("splashVelocitySpeedImpact", "Velocity To Speed", x, y, SPLASH_MIN_VELO_SPEED,
 				SPLASH_MAX_VELO_SPEED, SPLASH_DAFAULT_VELO_SPEED).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 	}
 
-	public void addAnimationControls(ControlP5 cp5) {
-		addScrollableList(cp5, "animationlist", "Animations", animationNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100,
-				15, 15).hide();
+	public void addAnimationControls() {
+		ui.addScrollableList("animationlist", "Animations", animationNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100, 15,
+				15).hide();
 	}
 
 	int[][] Keys = new int[88][2];
@@ -1574,7 +1348,6 @@ public class PianoLED extends PApplet {
 
 	public void hidePianoRoll() {
 		pianoRoll = null;
-		surface.setSize(930, 160);
 	}
 
 //BG Controls
@@ -1598,7 +1371,7 @@ public class PianoLED extends PApplet {
 //Splash Controls
 	public void showSplashControls() {
 		setControllersVisible(getSplashControllers(), true);
-		cp5.getController("modelist");
+		ui.getController("modelist");
 	}
 
 	public void hideSplashControls() {
@@ -1663,18 +1436,15 @@ public class PianoLED extends PApplet {
 		Red = (int) red(rgb);
 		Green = (int) green(rgb);
 		Blue = (int) blue(rgb);
-		cp5.get(ScrollableList.class, "splashColor").setValue(splashColorNames.size() - 1);
+		ui.get(ScrollableList.class, "splashColor").setValue(splashColorNames.size() - 1);
 		println("Colors: RED" + Red + ", GREEN" + Green + ", BLUE" + Blue);
 	}
 
 //BG List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getBGControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
-		cl.add(cp5.getController("setBG"));
+		cl.add(ui.getController("setBG"));
 
 		return cl;
 	}
@@ -1682,14 +1452,11 @@ public class PianoLED extends PApplet {
 //Default List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getDefaultControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("FadeOnVal"));
-		cl.add(cp5.getController("Color"));
-		cl.add(cp5.getController("colorlist"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("FadeOnVal"));
+		cl.add(ui.getController("Color"));
+		cl.add(ui.getController("colorlist"));
 
 		return cl;
 	}
@@ -1697,50 +1464,41 @@ public class PianoLED extends PApplet {
 //Splash List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getSplashControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
-		cl.add(cp5.getController("splashMaxLength"));
-		cl.add(cp5.getController("FadeOnVal"));
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("splashHeadFade"));
-		cl.add(cp5.getController("splashColor"));
-		cl.add(cp5.getController("Color"));
+		cl.add(ui.getController("splashMaxLength"));
+		cl.add(ui.getController("FadeOnVal"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("splashHeadFade"));
+		cl.add(ui.getController("splashColor"));
+		cl.add(ui.getController("Color"));
 
-		// cl.add(cp5.getController("splashVelocityBrightnessImpact"));
-		// cl.add(cp5.getController("splashVelocitySpeedImpact"));
+		// cl.add(ui.getController("splashVelocityBrightnessImpact"));
+		// cl.add(ui.getController("splashVelocitySpeedImpact"));
 		return cl;
 	}
 
 //Random List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getRandomControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("FadeOnVal"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("FadeOnVal"));
 		return cl;
 	}
 
 //Gradient List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getGradinetControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("FadeOnVal"));
-		cl.add(cp5.getController("colorlist"));
-		cl.add(cp5.getController("Color"));
-		cl.add(cp5.getController("setLeftSideG"));
-		cl.add(cp5.getController("setMiddleSideG"));
-		cl.add(cp5.getController("setRightSideG"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("FadeOnVal"));
+		cl.add(ui.getController("colorlist"));
+		cl.add(ui.getController("Color"));
+		cl.add(ui.getController("setLeftSideG"));
+		cl.add(ui.getController("setMiddleSideG"));
+		cl.add(ui.getController("setRightSideG"));
 
 		return cl;
 	}
@@ -1748,13 +1506,10 @@ public class PianoLED extends PApplet {
 //Velocity List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getVelocityControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("FadeOnVal"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("FadeOnVal"));
 
 		return cl;
 	}
@@ -1762,32 +1517,26 @@ public class PianoLED extends PApplet {
 //Split List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getSplitControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("FadeOnVal"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("FadeOnVal"));
 
-		cl.add(cp5.getController("colorlist"));
-		cl.add(cp5.getController("Color"));
+		cl.add(ui.getController("colorlist"));
+		cl.add(ui.getController("Color"));
 
-		cl.add(cp5.getController("setLeftSide"));
-		cl.add(cp5.getController("setRightSide"));
+		cl.add(ui.getController("setLeftSide"));
+		cl.add(ui.getController("setRightSide"));
 		return cl;
 	}
 
 //Animation List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getAnimationControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("Brightness"));
-		cl.add(cp5.getController("animationlist"));
+		cl.add(ui.getController("Brightness"));
+		cl.add(ui.getController("animationlist"));
 
 		return cl;
 	}
@@ -1795,20 +1544,17 @@ public class PianoLED extends PApplet {
 //PianoRoll List
 	@SuppressWarnings("rawtypes")
 	public List<Controller> getPianoRollControllers() {
-		if (cp5 == null)
-			return null;
-
 		List<Controller> cl = new ArrayList<>();
 
-		cl.add(cp5.getController("midiout"));
-		cl.add(cp5.getController("PianoRollLoadMidi"));
-		cl.add(cp5.getController("PianoRollRewind"));
-		cl.add(cp5.getController("PianoRollBackwardFragment"));
-		cl.add(cp5.getController("PianoRollPlayPause"));
-		cl.add(cp5.getController("PianoRollForwardFragment"));
-		cl.add(cp5.getController("PianoRollFollowKey"));
+		cl.add(ui.getController("midiout"));
+		cl.add(ui.getController("PianoRollLoadMidi"));
+		cl.add(ui.getController("PianoRollRewind"));
+		cl.add(ui.getController("PianoRollBackwardFragment"));
+		cl.add(ui.getController("PianoRollPlayPause"));
+		cl.add(ui.getController("PianoRollForwardFragment"));
+		cl.add(ui.getController("PianoRollFollowKey"));
 
-		cp5.getController("midiout");
+		ui.getController("midiout");
 		return cl;
 	}
 
@@ -1898,121 +1644,4 @@ public class PianoLED extends PApplet {
 	int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356, 371, 401,
 			416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
 
-//Buttons
-	public Button addButton(ControlP5 cp5, String name, String label, int x, int y, int w, int h) {
-		return addButton(cp5, name, label, x, y, w, h, APP_COLOR_FG, APP_COLOR_BG, APP_COLOR_ACT);
-	}
-
-	public Button addButton(ControlP5 cp5, String name, String label, int x, int y, int w, int h, int fg, int bg,
-			int act) {
-		Button b = cp5.addButton(name).setPosition(x, y);
-
-		b.setColorForeground(fg);
-		b.setColorBackground(bg);
-		b.setColorActive(act);
-
-		if (x > 0 && y > 0)
-			b.setSize(w, h);
-		if (label != null)
-			b.setLabel(label);
-
-		return b;
-	}
-
-// SCrollable List
-	public ScrollableList addScrollableList(ControlP5 cp5, String name, String label, List<String> items, int defItem,
-			int x, int y, int w, int h, int barH, int itemH) {
-		return addScrollableList(cp5, name, label, items, defItem, x, y, w, h, barH, itemH, APP_COLOR_FG, APP_COLOR_BG,
-				APP_COLOR_ACT);
-	}
-
-	public ScrollableList addScrollableList(ControlP5 cp5, String name, String label, List<String> items, int defItem,
-			int x, int y, int w, int h, int barH, int itemH, int fg, int bg, int act) {
-		ScrollableList l = cp5.addScrollableList(name).setPosition(x, y);
-
-		if (items != null)
-			l.addItems(items);
-
-		if (barH > 0)
-			l.setBarHeight(barH);
-		if (itemH > 0)
-			l.setItemHeight(itemH);
-
-		if (defItem < 0)
-			defItem = 0;
-		l.setValue(defItem);
-
-		l.setColorForeground(fg);
-		l.setColorBackground(bg);
-		l.setColorActive(act);
-
-		if (x > 0 && y > 0)
-			l.setSize(w, h);
-		if (label != null)
-			l.setLabel(label);
-
-		return l;
-	}
-
-//Slider
-
-	public Slider addSlider(ControlP5 cp5, String name, String label, int x, int y, float min, float max, float def) {
-		return addSlider(cp5, name, label, x, y, 0, 0, min, max, def, SLIDER_COLOR_FG, SLIDER_COLOR_BG,
-				SLIDER_COLOR_ACT);
-	}
-
-	public Slider addSlider(ControlP5 cp5, String name, String label, int x, int y, int h, int w, float min, float max,
-			float def) {
-		return addSlider(cp5, name, label, x, y, h, w, min, max, def, SLIDER_COLOR_FG, SLIDER_COLOR_BG,
-				SLIDER_COLOR_ACT);
-	}
-
-	public Slider addSlider(ControlP5 cp5, String name, String label, int x, int y, int h, int w, float min, float max,
-			float def, int fg, int bg, int act) {
-		Slider s = cp5.addSlider(name).setCaptionLabel(label).setPosition(x, y).setRange(min, max).setValue(def);
-
-		s.setColorForeground(fg);
-		s.setColorBackground(bg);
-		s.setColorActive(act);
-
-		if (h > 0 && w >= 0)
-			s.setSize(h, w);
-		return s;
-	}
-
-	public ColorWheel addColorWheel(ControlP5 cp5, String name, int x, int y, int d) {
-		ColorWheel colorWheel = cp5.addColorWheel(name, x, y, d);
-		colorWheel.setPosition(x, y);
-		return colorWheel;
-	}
-
-//Toggles
-	public Toggle addToggle(ControlP5 cp5, String name, String label, int x, int y, int w, int h, int fg, int bg,
-			int act) {
-		Toggle t = cp5.addToggle(name).setPosition(x, y);
-
-		t.setColorForeground(fg);
-		t.setColorBackground(bg);
-		t.setColorActive(act);
-
-		if (x > 0 && y > 0)
-			t.setSize(w, h);
-		if (label != null)
-			t.setLabel(label);
-
-		return t;
-	}
-
-	public void settings() {
-		size(930, 160);
-	}
-
-	static public void main(String[] passedArgs) {
-		String[] appletArgs = new String[] { "com.serifpersia.pianoled.PianoLED" };
-		if (passedArgs != null) {
-			PApplet.main(concat(appletArgs, passedArgs));
-		} else {
-			PApplet.main(appletArgs);
-		}
-	}
 }
