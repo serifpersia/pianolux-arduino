@@ -48,8 +48,8 @@ void FadingRunEffect ::setHeadLED(int step) {
   int pos1 = ledNum(this->startPosition + calcOffset(step, velocity));
   int pos2 = ledNum(this->startPosition - calcOffset(step, velocity));
   if (isOnStrip(pos1)) {
-    if (splashColor != CHSV(0,0,0)) {
-      leds[pos1] = CHSV(splashColor.hue, getSaturation(velocity), getBrightness(velocity));
+    if (splashColor != CHSV(0, 0, 0)) {
+      leds[pos1] = CHSV(splashColor.hue, splashColor.saturation, getBrightness(velocity));
     } else {
       leds[pos1] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
     }
@@ -57,8 +57,8 @@ void FadingRunEffect ::setHeadLED(int step) {
   }
 
   if (pos1 != pos2 && isOnStrip(pos2)) {
-    if (splashColor != CHSV(0,0,0)) {
-      leds[pos2] = CHSV(splashColor.hue, getSaturation(velocity), getBrightness(velocity));
+    if (splashColor != CHSV(0, 0, 0)) {
+      leds[pos2] = CHSV(splashColor.hue, splashColor.saturation, getBrightness(velocity));
     } else {
       leds[pos2] += CHSV(getHueForPos(startPosition), getSaturation(velocity), getBrightness(velocity));
     }
