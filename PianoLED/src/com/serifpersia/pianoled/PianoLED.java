@@ -2,10 +2,10 @@ package com.serifpersia.pianoled;
 
 import processing.core.PApplet;
 
+import jssc.SerialPortException;
+import jssc.SerialPortList;
 import processing.core.*;
-import processing.serial.*;
 import themidibus.MidiBus;
-
 import javax.sound.midi.*;
 import static javax.swing.JOptionPane.*;
 import java.util.*;
@@ -218,9 +218,10 @@ public class PianoLED extends PApplet {
 		}
 	}
 
-	public void comlist(int n) {
-		portName = Serial.list()[n];
-		println("Selected serial device: " + portName);
+	public void comlist(int n) throws SerialPortException {
+	    String[] portNames = SerialPortList.getPortNames();
+	    portName = portNames[n];
+	    System.out.println("Selected serial device: " + portName);
 	}
 
 	public void disableAllModes() {
@@ -465,7 +466,7 @@ public class PianoLED extends PApplet {
 	}
 
 	public void refreshComList() {
-		comlist = Serial.list();
+		 comlist = SerialPortList.getPortNames();
 		ui.getController(ScrollableList.class, "comlist").clear();
 		ui.getController(ScrollableList.class, "comlist").addItems(comlist);
 
@@ -664,7 +665,7 @@ public class PianoLED extends PApplet {
 
 	int[][] Leds = new int[88][2];
 
-	public void leftArrow() {
+	public void rightArrow() {
 		if (counter >= 4) {
 			return;
 		}
@@ -673,7 +674,7 @@ public class PianoLED extends PApplet {
 		ui.setKeyboardSize(counter);
 	}
 
-	public void rightArrow() {
+	public void leftArrow() {
 		if (counter <= 0) {
 			return;
 		}
