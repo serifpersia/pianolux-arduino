@@ -66,7 +66,7 @@ public class PianoLED extends PApplet {
 	}
 
 	public void setup() {
-		PImage icon = loadImage("images/PianoLED.png"); // replace with the name and extension of your icon file
+		PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
 		surface.setIcon(icon);
 		surface.setTitle("PianoLED");
 
