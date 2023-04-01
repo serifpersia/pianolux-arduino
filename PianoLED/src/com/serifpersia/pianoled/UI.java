@@ -34,8 +34,8 @@ public class UI {
 	int MAX_BRIGHT = 255;
 	int DEF_BRIGHT = 127;
 
-	Color[] presetColors = { 
-			Color.WHITE, 
+	Color[] presetColors = {
+			new Color(255, 255, 254), //White
 			Color.RED,
 			Color.GREEN, 
 			Color.BLUE, 
@@ -52,7 +52,7 @@ public class UI {
 			new Color(128, 192, 192), // Turquoise
 			new Color(255, 215, 0) // Gold
 	};
-
+	
 	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
 			"Piano Roll");
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",

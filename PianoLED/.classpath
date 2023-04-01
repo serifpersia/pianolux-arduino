@@ -26,36 +26,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/controlP5"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/jl1.0.1.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/jsminim.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/minim.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/mp3spi1.9.5.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/tritonus_aos.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/user/minim/tritonus_share.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/minim"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/user/sound/javamp3-1.0.4.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PianoLED/lib/user/sound"/>
