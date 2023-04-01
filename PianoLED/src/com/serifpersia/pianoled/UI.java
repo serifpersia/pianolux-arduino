@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -20,6 +19,8 @@ import processing.core.PFont;
 
 public class UI {
 
+	private static final String SPLASH_COLOR_LIST = "splashColor";
+	public static final String COLOR_WHEEL = "ColorWheel";
 	public static final int DEFAULT_WIDTH = 930;
 	public static final int DEFAULT_HEIGHT = 160;
 
@@ -33,19 +34,19 @@ public class UI {
 	int MAX_BRIGHT = 255;
 	int DEF_BRIGHT = 127;
 
-	Color[] presetColors = {
-			Color.WHITE,
-			Color.RED, // Red
-			Color.GREEN, // Green
-			Color.BLUE, // Blue
-			Color.YELLOW, // Yellow
-			Color.ORANGE, // Yellow
+	Color[] presetColors = { 
+			Color.WHITE, 
+			Color.RED,
+			Color.GREEN, 
+			Color.BLUE, 
+			Color.YELLOW, 
+			Color.ORANGE, 
 			new Color(128, 0, 255), // Purple
-			Color.PINK, // Pink
+			Color.PINK, 
 			new Color(0, 255, 255), // Teal
 			new Color(128, 255, 0), // Lime
-			new Color(0, 255, 128), // Cyan
-			new Color(255, 0, 128), // Magenta
+			Color.CYAN,
+			Color.MAGENTA,
 			new Color(255, 128, 128), // Peach
 			new Color(192, 128, 255), // Lavender
 			new Color(128, 192, 192), // Turquoise
@@ -54,10 +55,10 @@ public class UI {
 
 	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
 			"Piano Roll");
-	List<String> colorNames = Arrays.asList("White","Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Teal",
-			"Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
-	List<String> splashColorNames = Arrays.asList("Full Spectrum", "Red", "Green", "Blue", "Yellow", "Orange", "Purple",
-			"Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
+	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
+			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
+	List<String> splashColorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
+			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Manual");
 	List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors", "CloudColors",
 			"LavaColors", "ForestColors", "PartyColors");
 
@@ -148,14 +149,13 @@ public class UI {
 		uiHelper.addButton("Open", null, 725, 45, 50, 15);
 		uiHelper.addButton("Refresh", null, 775, 45, 50, 15);
 
-		uiHelper.addColorWheel("ColorWheel", EFFECT_CONTROLS_X + 15, 45, 100);
-
 		addAnimationControls();
 
 		uiHelper.addButton("leftArrow", "<", 380, 25, 30, 15, null, Color.BLUE, null);
 		uiHelper.addButton("rightArrow", ">", 415, 25, 30, 15, null, Color.BLUE, null);
 
 		// addButton(cp5, "AdvanceUser", null, 15, 15, 60, 15);
+		uiHelper.addColorWheel(COLOR_WHEEL, EFFECT_CONTROLS_X + 15, 45, 100);
 
 		int SPLASH_CONTROL_X = EFFECT_CONTROLS_X + 6;
 		int SPLASH_CONTROL_Y = 60;
@@ -233,8 +233,8 @@ public class UI {
 				SPLASH_DEFAULT_LEN, Color.BLUE, Color.BLACK, Color.RED).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
-		uiHelper.addScrollableList("splashColor", "Color", splashColorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100, 100,
-				15, 15).hide();
+		uiHelper.addScrollableList(SPLASH_COLOR_LIST, "Color", splashColorNames, 0, EFFECT_CONTROLS_X + 15, 30, 100,
+				100, 15, 15).hide();
 		y += SPLASH_CONTROL_Y_STEP;
 
 		uiHelper.addSlider("splashTailFade", "Tail Fade Rate", x, y, SPLASH_MIN_TAIL_FADE, SPLASH_MAX_TAIL_FADE,
@@ -255,36 +255,26 @@ public class UI {
 	}
 
 	public void setSplashColor(int n) {
-		int first = 0;
 		int last = splashColorNames.size() - 1;
-		if (n > first && n < last) {
-			getController(ColorWheel.class, "ColorWheel").setRGB(presetColors[n - 1].getRGB());
+
+		Color colorToSet = Color.BLACK;
+		if (n == 0) { // spectrum
+			colorToSet = Color.BLACK;
+		} else if (n == last) {
+			colorToSet = null;
+		} else {
+			colorToSet = presetColors[n - 1];
+		}
+
+		ColorWheel splashControl = getController(ColorWheel.class, COLOR_WHEEL);
+		if (splashControl != null && colorToSet != null) {
+			getController(ColorWheel.class, COLOR_WHEEL).setRGB(colorToSet.getRGB());
 		}
 	}
 
 	public Color getSplashColor() {
-		int n = (int) getController(ScrollableList.class, "splashColor").getValue();
-		int first = 0;
-		Color splashColor;
-		int last = splashColorNames.size() - 1;
-		if (n == first) {
-			// Full Spectrum mode
-			splashColor = Color.BLACK;
-			PApplet.println("Selected color: Full Spectrum");
-		} else if (n > first && n < last) {
-			// Preset color mode
-			splashColor = presetColors[n - 1];
-			PApplet.println("Selected color: " + colorNames.get(n - 1));
-
-		} else if (n == last) {
-			// Manual
-			splashColor = new Color(getController(ColorWheel.class, "ColorWheel").getRGB());
-		} else {
-			// Invalid color mode
-			PApplet.println("Invalid color selection: " + n);
-			return null;
-		}
-		return splashColor;
+//		int n = (int) getController(ScrollableList.class, SPLASH_COLOR_LIST).getValue();
+		return  new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
 	}
 
 	public void addAnimationControls() {
@@ -413,7 +403,7 @@ public class UI {
 		List<Controller> cl = new ArrayList<>();
 		cl.add(uiHelper.getController("Brightness"));
 		cl.add(uiHelper.getController("FadeOnVal"));
-		cl.add(uiHelper.getController("ColorWheel"));
+		cl.add(uiHelper.getController(COLOR_WHEEL));
 		cl.add(uiHelper.getController("colorlist"));
 
 		return cl;
@@ -427,8 +417,8 @@ public class UI {
 		cl.add(uiHelper.getController("FadeOnVal"));
 		cl.add(uiHelper.getController("Brightness"));
 		cl.add(uiHelper.getController("splashHeadFade"));
-		cl.add(uiHelper.getController("splashColor"));
-		cl.add(uiHelper.getController("ColorWheel"));
+		cl.add(uiHelper.getController(SPLASH_COLOR_LIST));
+		cl.add(uiHelper.getController(COLOR_WHEEL));
 
 		// cl.add(ui.getController("splashVelocityBrightnessImpact"));
 		// cl.add(ui.getController("splashVelocitySpeedImpact"));
@@ -453,7 +443,7 @@ public class UI {
 		cl.add(uiHelper.getController("Brightness"));
 		cl.add(uiHelper.getController("FadeOnVal"));
 		cl.add(uiHelper.getController("colorlist"));
-		cl.add(uiHelper.getController("ColorWheel"));
+		cl.add(uiHelper.getController(COLOR_WHEEL));
 		cl.add(uiHelper.getController("setLeftSideG"));
 		cl.add(uiHelper.getController("setMiddleSideG"));
 		cl.add(uiHelper.getController("setRightSideG"));
@@ -541,7 +531,7 @@ public class UI {
 	}
 
 	public void setSplashColorsToManual() {
-		getController(ScrollableList.class, "splashColor").setValue(splashColorNames.size() - 1);
+		getController(ScrollableList.class, SPLASH_COLOR_LIST).setValue(splashColorNames.size() - 1);
 	}
 
 	public void setDefaultMode() {
@@ -677,14 +667,13 @@ public class UI {
 		}
 	}
 
-
 	public void setSplashDefaults(int splashLen, int fadeRate, int splashColor, int brightness) {
 		getController("splashMaxLength").setValue(splashLen);
 		getController("FadeOnVal").setValue(fadeRate);
-		getController(ScrollableList.class, "splashColor").setValue(splashColor);
+		getController(ScrollableList.class, SPLASH_COLOR_LIST).setValue(splashColor);
 		getController("Brightness").setValue(brightness);
 	}
-	
+
 	public int getLastNoteSelected() {
 		return lastNoteSelected;
 	}
@@ -711,13 +700,12 @@ public class UI {
 	}
 
 	public void setColorWheelValue(Color selectedColor) {
-		getController(ColorWheel.class, "ColorWheel").setRGB(selectedColor.getRGB());
-	}
-	
-	public Color getColorWheelValue() {
-		return new Color(getController(ColorWheel.class, "ColorWheel").getRGB());
+		getController(ColorWheel.class, COLOR_WHEEL).setRGB(selectedColor.getRGB());
 	}
 
+	public Color getColorWheelValue() {
+		return new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
+	}
 
 	public String getButtonCaption(String buttonName) {
 		return getController(buttonName).getCaptionLabel().getText();

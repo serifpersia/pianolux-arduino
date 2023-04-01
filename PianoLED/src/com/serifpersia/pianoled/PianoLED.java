@@ -74,6 +74,9 @@ public class PianoLED extends PApplet {
 		ui.buildUI();
 
 		ui.setDefaultMode();
+		selectedColor = Color.RED;
+		ui.setColorWheelValue(selectedColor);
+		
 		selectedColor = ui.getColorWheelValue();
 
 		Refresh();
@@ -110,7 +113,6 @@ public class PianoLED extends PApplet {
 //	}
 
 	public void noteOn(int channel, int pitch, int velocity) {
-		println("Pitch " + pitch);
 		int notePushed;
 		if (useFixedMapping) {
 			notePushed = mapMidiNoteToLEDFixed(pitch, ui.getFirstNoteSelected(), ui.getLastNoteSelected(),
@@ -120,8 +122,6 @@ public class PianoLED extends PApplet {
 					ui.getStripLedNum(), 1);
 		}
 
-		println("Pitch "+pitch+ " mapped to "+notePushed);
-		
 		ui.setPianoKey(pitch, 1);
 		try {
 			ByteArrayOutputStream message = null;
@@ -627,10 +627,12 @@ public class PianoLED extends PApplet {
 		}
 	}
 	
-	public void ColorWheel(int rgb)
+	public void ColorWheel(int rgbColor)
 	{
-		selectedColor = new Color(rgb);
+		selectedColor = new Color(rgbColor);
+		ui.setSplashColorsToManual();
 	}
+
 
 	public void dispose() {
 		try {
