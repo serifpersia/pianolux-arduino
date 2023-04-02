@@ -75,8 +75,8 @@ public class UI {
 
 	JFrame newWindowFrame;
 
-	// Instruction Buttton
-	public void Instructions() {
+	// Instruction Button
+	public void showInstructions() {
 		if (newWindowFrame == null) {
 			// create a new window frame
 			newWindowFrame = new JFrame("Instructions");

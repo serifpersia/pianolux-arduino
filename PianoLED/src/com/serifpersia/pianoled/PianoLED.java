@@ -70,6 +70,9 @@ public class PianoLED extends PApplet {
 		PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
 		surface.setIcon(icon);
 		surface.setTitle("PianoLED");
+		
+		//Centre the window
+		centreWindow();
 
 		ui = new UI(this);
 		ui.buildUI();
@@ -84,10 +87,21 @@ public class PianoLED extends PApplet {
 
 		updater.checkLocalVersion();
 	}
-
+	
+	public void centreWindow()
+	{
+	 int centerX = displayWidth/2 - width/2;
+	 int centerY = displayHeight/2 - height/2;
+	 surface.setLocation(centerX, centerY);
+	}
+	
 	public void setSystemFileDownload() {
 	}
 
+	public void Instructions()
+	{
+	ui.showInstructions();
+	}
 //button update
 	public void checkForUpdates() {
 		updater.checkUpdates();
@@ -353,15 +367,21 @@ public class PianoLED extends PApplet {
 	public void PianoRollToggle(boolean on) {
 		if( on )
 		{
+			
+			
 			ui.showPianoRollControls();
 			pianoRoll = new PianoRoll(this);
+			//Centre the window
+			centreWindow();
 		}
 		else
 		{
 			pianoRoll.pause();
 			pianoRoll = null;
 			ui.hidePianoRollControls();
-			setDefaultSize();
+			//setDefaultSize();
+			//Centre the window
+			centreWindow();
 		}
 	}
 	
