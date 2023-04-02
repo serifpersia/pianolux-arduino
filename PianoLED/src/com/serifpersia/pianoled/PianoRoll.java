@@ -34,7 +34,7 @@ public class PianoRoll {
 	public static final int PIANO_ROLL_HEIGHT = 960;
 	public static final int PIANO_ROLL_WIDTH = 600;
 
-	boolean debug = true;
+	boolean debug = false;
 
 	//////////////
 	LinkedList<Note> notes;
