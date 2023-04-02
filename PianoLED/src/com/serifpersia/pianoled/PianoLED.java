@@ -376,7 +376,7 @@ public class PianoLED extends PApplet {
 		}
 		else
 		{
-			pianoRoll.pause();
+			pianoRoll.stop();
 			pianoRoll = null;
 			ui.hidePianoRollControls();
 			//setDefaultSize();

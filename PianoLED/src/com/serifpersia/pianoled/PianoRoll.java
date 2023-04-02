@@ -373,6 +373,17 @@ public class PianoRoll {
 			}
 		}
 	}
+	
+	public void stop() {
+	    if (sequencer != null) {
+	        if (sequencer.isRunning()) {
+	            sequencer.stop();
+	        }
+	        sequencer.close();
+	    }
+	}
+	    
+
 
 	class Note {
 		int pitch;
