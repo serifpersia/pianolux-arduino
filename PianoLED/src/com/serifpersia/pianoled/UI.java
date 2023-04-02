@@ -53,8 +53,7 @@ public class UI {
 			new Color(255, 215, 0) // Gold
 	};
 	
-	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
-			"Piano Roll");
+	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
 			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 	List<String> splashColorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
@@ -127,15 +126,11 @@ public class UI {
 
 	public UIHelper buildUI() {
 
-		uiHelper.addToggle("BGColor2", " BG", 90, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
-
 		uiHelper.addSlider("Brightness", "  B", EFFECT_CONTROLS_X - 4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT,
 				Color.BLUE, Color.BLACK, Color.RED);
 
 		uiHelper.addSlider("FadeOnVal", "  F", EFFECT_CONTROLS_X - 15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE,
 				DEFAULT_FADE_RATE, Color.GREEN, Color.BLACK, Color.RED);
-
-		uiHelper.addButton("CheckForUpdate", "Update", 620, 20, 45, 25);
 
 		uiHelper.addButton("setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
 		uiHelper.addButton("setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
@@ -143,8 +138,6 @@ public class UI {
 
 		uiHelper.addButton("setLeftSide", "Set L", 735, 140, 30, 15).hide();
 		uiHelper.addButton("setRightSide", "Set R", 765, 140, 30, 15).hide();
-
-		uiHelper.addButton("setBG", "Set BG", 670, 26, 30, 15).hide();
 
 		uiHelper.addButton("Open", null, 725, 45, 50, 15);
 		uiHelper.addButton("Refresh", null, 775, 45, 50, 15);
@@ -160,10 +153,13 @@ public class UI {
 		int SPLASH_CONTROL_X = EFFECT_CONTROLS_X + 6;
 		int SPLASH_CONTROL_Y = 60;
 		addSplashControls(SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
-		addPianoRollControls(EFFECT_CONTROLS_X + 10, 30);
+		addPianoRollControls(EFFECT_CONTROLS_X + 10, 200);
 		uiHelper.addButton("Instructions", null, 15, 15, 60, 15);
 
-		uiHelper.addToggle("BGColor", " BG", 700, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
+		uiHelper.addButton("CheckForUpdate", "Update", 600, 20, 45, 25);
+		uiHelper.addButton("setBG", "Set BG", 650, 26, 30, 15).hide();
+		uiHelper.addToggle("BGColor", " BG", 680, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
+		uiHelper.addToggle("PianoRollToggle", "Roll", 700, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
 		uiHelper.addToggle("stripDirection", "Reverse", 425, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN)
 				.getCaptionLabel().alignX(ControlP5.CENTER);
 		uiHelper.addToggle("Fix", "Fix LED", 390, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN).getCaptionLabel()
@@ -303,7 +299,6 @@ public class UI {
 		hideVelocityControls();
 		hideSplitControls();
 		hideAnimationControls();
-		hidePianoRollControls();
 	}
 
 	// BG Controls
@@ -649,19 +644,17 @@ public class UI {
 	}
 
 	int leftMinPitch = 21;
-	int leftMaxPitch;
 	int rightMaxPitch = 108;
+	int leftMaxPitch = leftMinPitch+(rightMaxPitch-leftMinPitch)/2;
 
 	void pianoKeyAction(int x, int y, boolean released) {
 		for (int i = 0; i < whiteKeys.length; i++) {
 			// Check if the mouse click was inside a white key
 			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y > 64 && y < 134) {
-				leftMaxPitch = whiteKeyPitches[i];
 				if (released) {
 					Keys[whiteKeys[i]][0] = 0;
 				} else {
 					Keys[whiteKeys[i]][0] = 1;
-					PApplet.println("Left Max Pitch: " + leftMaxPitch);
 				}
 			}
 		}

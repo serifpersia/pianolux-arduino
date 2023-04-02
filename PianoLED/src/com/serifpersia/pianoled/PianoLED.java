@@ -33,12 +33,12 @@ public class PianoLED extends PApplet {
 	int MAX_VALUE = 255;
 
 	Color selectedColor;
-	Color splitLeftColor;
-	Color splitRightColor;
+	Color splitLeftColor = Color.RED;
+	Color splitRightColor = Color.BLUE;
 
-	Color LeftSideGColor;
-	Color MiddleSideGColor;
-	Color RightSideGColor;
+	Color LeftSideGColor = Color.RED;
+	Color MiddleSideGColor = Color.GREEN;
+	Color RightSideGColor = Color.BLUE;
 
 	int counter = 0;
 	boolean useFixedMapping = false;
@@ -58,7 +58,7 @@ public class PianoLED extends PApplet {
 
 //	MidiBus myBusOut;
 	public void settings() {
-		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT);
+		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT+700);
 	}
 
 	private void setDefaultSize() {
@@ -66,6 +66,8 @@ public class PianoLED extends PApplet {
 	}
 
 	public void setup() {
+		setDefaultSize();
+
 		PImage icon = loadImage("images/PianoLED.png"); // replace with the name and extension of your icon file
 		surface.setIcon(icon);
 		surface.setTitle("PianoLED");
@@ -133,8 +135,9 @@ public class PianoLED extends PApplet {
 				} else if (VelocityOn) {
 					message = arduino.commandVelocity(velocity, notePushed, selectedColor);
 				} else if (SplitOn) {
+					println("Left Side Color: "+pitch+" "+ui.getLeftMinPitch()+" "+ui.getLeftMaxPitch());
 					if (pitch >= ui.getLeftMinPitch() && pitch <= ui.getLeftMaxPitch() - 1) {
-						println("Left Side Color");
+						println("Left Side Color: "+pitch+" "+ui.getLeftMinPitch()+" "+ui.getLeftMaxPitch());
 						message = arduino.commandSetColor(splitLeftColor, notePushed);
 					} else if (pitch > ui.getLeftMaxPitch() - 1 && pitch <= ui.getRightMaxPitch()) {
 						println("Right Side Color");
@@ -166,7 +169,8 @@ public class PianoLED extends PApplet {
 				} else if (SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, ui.getSplashColor().getRGB());
 				} else {
-					message = arduino.commandSetColor(selectedColor, notePushed);
+					if( arduino != null )
+						message = arduino.commandSetColor(selectedColor, notePushed);
 				}
 
 				if (message != null) {
@@ -230,8 +234,6 @@ public class PianoLED extends PApplet {
 		SplitOn = false;
 		GradientOn = false;
 		SplashOn = false;
-		pianoRoll = null;
-		setDefaultSize();
 	}
 
 	public void colorlist(int n) {
@@ -344,16 +346,23 @@ public class PianoLED extends PApplet {
 			ui.setAnimationDefaults(0, 127);
 			AnimationOn = true;
 			break;
-		case "Piano Roll":
-			disableAllModes();
-			ui.hideAllControls();
-			ui.showPianoRollControls();
-			pianoRoll = new PianoRoll(this);
-			break;
 		}
 		println("Selected mode: " + ui.getModeName(n));
 	}
 
+	public void PianoRollToggle(boolean on) {
+		if( on )
+		{
+			ui.showPianoRollControls();
+			pianoRoll = new PianoRoll(this);
+		}
+		else
+		{
+			pianoRoll.pause();
+			ui.hidePianoRollControls();
+		}
+	}
+	
 	public void Open() {
 
 		if (ui.getButtonCaption("Open").equals("Open")) {
@@ -567,7 +576,13 @@ public class PianoLED extends PApplet {
 	public void PianoRollPlayPause() {
 		if (pianoRoll != null)
 			pianoRoll.pause();
-		Button button = ui.getController(Button.class, "PianoRollPlayPause");
+		
+		toggleButton("PianoRollPlayPause");
+	}
+	
+	public void toggleButton(String buttonName)
+	{
+		Button button = ui.getController(Button.class, buttonName);
 		if (pianoRoll.isPaused()) {
 			button.getCaptionLabel().setText(">");
 			button.setColorBackground(Color.BLUE.getRGB());

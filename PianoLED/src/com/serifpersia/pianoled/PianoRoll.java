@@ -10,9 +10,13 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sound.midi.MetaEventListener;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
@@ -21,7 +25,7 @@ import themidibus.MidiBus;
 
 public class PianoRoll {
 	private static final int DELAY_AFTER_NOTE_FINISHED = 1500;
-	PApplet app;
+	PianoLED app;
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
 	Sequencer sequencer;
@@ -30,7 +34,7 @@ public class PianoRoll {
 	public static final int PIANO_ROLL_HEIGHT = 960;
 	public static final int PIANO_ROLL_WIDTH = 600;
 
-	boolean debug = false;
+	boolean debug = true;
 
 	//////////////
 	LinkedList<Note> notes;
@@ -56,7 +60,7 @@ public class PianoRoll {
 	int whiteKeyWidth = 15;
 	int whiteKeyHeight = 70;
 	int blackKeyWidth = 8;
-	int blackKeyHeight = 40;
+	int blackKeyHeight = 45;
 
 	double pianoRollTickHeightMult = 100;
 	int tickResolution = 1000;
@@ -70,7 +74,7 @@ public class PianoRoll {
 
 	long currentTick;
 
-	public PianoRoll(PApplet app) {
+	public PianoRoll(PianoLED app) {
 		this.app = app;
 		app.getSurface().setSize(PianoRoll.PIANO_ROLL_HEIGHT, PianoRoll.PIANO_ROLL_WIDTH);
 		pianoRollBottom = app.height - paddingBottom - whiteKeyHeight;
@@ -83,7 +87,7 @@ public class PianoRoll {
 
 	public void loadMidiFile(File midiFile) {
 		notes = readMidi(midiFile);
-		PApplet.println("Read "+notes.size()+" notes from "+midiFile);
+		PApplet.println("Read " + notes.size() + " notes from " + midiFile);
 		setupSequencer(midiFile);
 	}
 
@@ -164,7 +168,7 @@ public class PianoRoll {
 			if (i == 23) // C4 in 88 key
 			{
 				app.fill(128);
-				app.text("C", posX + whiteKeyWidth / 2 - 5, pianoRollBottom + whiteKeyHeight - 10);
+				app.text("C", posX + whiteKeyWidth / 2 - 2, pianoRollBottom + whiteKeyHeight - 6);
 				app.fill(255);
 			}
 			if ((i - 2) % 7 == 0) {
@@ -253,8 +257,10 @@ public class PianoRoll {
 		app.fill(255);
 
 		if (debug) {
+			
+			long ticks = sequence == null ? 0 : sequence.getTickLength();	
 			app.line(pianoRollSide, pianoRollBottom, app.width - pianoRollSide, pianoRollBottom);
-			app.text(currentTick, app.width - 150, pianoRollBottom);
+			app.text(currentTick + " / " + ticks, app.width - 150, pianoRollBottom);
 		}
 
 		app.stroke(0);
@@ -293,40 +299,78 @@ public class PianoRoll {
 			sequence = MidiSystem.getSequence(midiFile);
 			sequencer.setSequence(sequence);
 
+			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
+
 			int ticksPerBeat = sequence.getResolution();
 			double bpm = sequencer.getTempoInBPM();
 			ticksPerSec = ticksPerBeat * bpm / 60;
-
 			pianoRollTickHeight = (60.0f / ticksPerBeat) / bpm * pianoRollTickHeightMult;
+			
+			sequencer.addMetaEventListener(new MetaEventListener() {
+			    @Override
+			    public void meta(MetaMessage meta) {
+			    	if (meta.getType() == 0x2F) {
+			    		app.toggleButton("PianoRollPlayPause");
+			        }
+			    }
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	class MidiLEDReceiver implements Receiver {
+		@Override
+		public void send(MidiMessage midiMessage, long timeStamp) {
+			if (midiMessage instanceof ShortMessage message) {
+				int pitch = message.getData1();
+				int velocity = message.getData2();
+				if (message.getCommand() == ShortMessage.NOTE_ON && message.getData2() != 0) {
+					app.noteOn(0, pitch, velocity);
+				} else if (message.getCommand() == ShortMessage.NOTE_OFF
+						|| message.getCommand() == ShortMessage.NOTE_ON && message.getData2() == 0) {
+					if (sequencer.isRunning())
+						app.noteOff(0, pitch, velocity);
+				} else {
+					PApplet.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				}
+			}
+		}
+
+		@Override
+		public void close() {
+		}
+	}
+
 	public void rewind() {
-		sequencer.setTickPosition(0);
+		if (sequencer != null) {
+			sequencer.setTickPosition(0);
+		}
 		firstNote = 0;
 	}
 
 	public void rewind(int sec) {
-		long currentTick = sequencer.getTickPosition();
-		long rewindTick = (long) (currentTick + ticksPerSec * sec);
+		if (sequencer != null) {
+			long currentTick = sequencer.getTickPosition();
+			long rewindTick = (long) (currentTick + ticksPerSec * sec);
 
-		// Make sure the rewindTick is not negative
-		if (rewindTick < 0) {
-			rewindTick = 0;
+			// Make sure the rewindTick is not negative
+			if (rewindTick < 0) {
+				rewindTick = 0;
+			}
+
+			firstNote = 0;
+			sequencer.setTickPosition(rewindTick);
 		}
-
-		firstNote = 0;
-		sequencer.setTickPosition(rewindTick);
 	}
 
 	public void pause() {
-		// pause = !pause;
-		if (sequencer.isRunning()) {
-			sequencer.stop();
-		} else {
-			sequencer.start();
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			} else {
+				sequencer.start();
+			}
 		}
 	}
 
