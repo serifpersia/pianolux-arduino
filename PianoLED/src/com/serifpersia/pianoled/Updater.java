@@ -134,9 +134,9 @@ public class Updater {
 					extractZipFile(saveDir + fileName, destinationFolderPath);
 					dialog.dispose(); // Close progress bar dialog
 					String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name")
-							+ ". Please restart PianoLED.";
+							+ ". Delete everything except Arudino folder & new PianoLED!";
 					JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
-					deleteOldFile();
+					System.exit(0);
 				} catch (Exception e) {
 				}
 			}
@@ -181,20 +181,7 @@ public class Updater {
 			return null;
 		}
 	}
-
-
-
-	public void deleteOldFile() {
-		if (versionFile != null) { // check the flag value before deleting the version file
-			boolean deleted = versionFile.delete();
-			if (deleted) {
-				System.out.println("Deleted version file: " + versionFile.getName());
-			} else {
-				System.out.println("Failed to delete version file: " + versionFile.getName());
-			}
-		}
-	}
-
+	
 	public void extractZipFile(String zipFilePath, String destinationFolderPath) {
 		try {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath));
