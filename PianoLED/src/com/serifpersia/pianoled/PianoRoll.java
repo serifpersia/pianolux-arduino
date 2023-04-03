@@ -374,13 +374,6 @@ public class PianoRoll {
 			midiOutDevice.close();
 	}
 
-	public void stop() {
-		if (sequencer != null) {
-			if (sequencer.isRunning()) {
-				sequencer.stop();
-			}
-		}
-	}
 
 	public void startStop() {
 		if (sequencer != null) {
@@ -390,6 +383,15 @@ public class PianoRoll {
 				sequencer.start();
 			}
 		}
+	}
+	
+	public void stop() {
+	    if (sequencer != null) {
+	        if (sequencer.isRunning()) {
+	            sequencer.stop();
+	        }
+	        sequencer.close();
+	    }
 	}
 
 	class Note {

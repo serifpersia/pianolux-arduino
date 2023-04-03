@@ -75,8 +75,8 @@ public class UI {
 
 	JFrame newWindowFrame;
 
-	// Instruction Buttton
-	public void Instructions() {
+	// Instruction Button
+	public void showInstructions() {
 		if (newWindowFrame == null) {
 			// create a new window frame
 			newWindowFrame = new JFrame("Instructions");
@@ -690,6 +690,10 @@ public class UI {
 	public void setPianoKey(int pitch, int on) {
 		Keys[pitch - 21][0] = on;
 		Keys[pitch - 21][1] = on;
+	}
+
+	public void resetPianoKeys() {
+		Keys = new int[88][2];
 	}
 
 	public void setColorWheelValue(Color selectedColor) {
