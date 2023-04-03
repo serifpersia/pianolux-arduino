@@ -257,8 +257,8 @@ public class PianoRoll {
 		app.fill(255);
 
 		if (debug) {
-			
-			long ticks = sequence == null ? 0 : sequence.getTickLength();	
+
+			long ticks = sequence == null ? 0 : sequence.getTickLength();
 			app.line(pianoRollSide, pianoRollBottom, app.width - pianoRollSide, pianoRollBottom);
 			app.text(currentTick + " / " + ticks, app.width - 150, pianoRollBottom);
 		}
@@ -267,7 +267,7 @@ public class PianoRoll {
 	}
 
 	public boolean isPaused() {
-		return !sequencer.isRunning();
+		return sequencer== null || !sequencer.isRunning();
 	}
 
 	public boolean isBlack(int midiPitch) {
@@ -305,14 +305,14 @@ public class PianoRoll {
 			double bpm = sequencer.getTempoInBPM();
 			ticksPerSec = ticksPerBeat * bpm / 60;
 			pianoRollTickHeight = (60.0f / ticksPerBeat) / bpm * pianoRollTickHeightMult;
-			
+
 			sequencer.addMetaEventListener(new MetaEventListener() {
-			    @Override
-			    public void meta(MetaMessage meta) {
-			    	if (meta.getType() == 0x2F) {
-			    		app.toggleButton("PianoRollPlayPause");
-			        }
-			    }
+				@Override
+				public void meta(MetaMessage meta) {
+					if (meta.getType() == 0x2F) {
+						app.togglePianoRollButton();
+					}
+				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -339,6 +339,7 @@ public class PianoRoll {
 
 		@Override
 		public void close() {
+			stop();
 		}
 	}
 
@@ -364,7 +365,24 @@ public class PianoRoll {
 		}
 	}
 
-	public void pause() {
+	public void close() {
+		if (sequencer != null && sequencer.isRunning())
+			sequencer.close();
+		if (myBus != null)
+			myBus.close();
+		if (midiOutDevice != null)
+			midiOutDevice.close();
+	}
+
+	public void stop() {
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			}
+		}
+	}
+
+	public void startStop() {
 		if (sequencer != null) {
 			if (sequencer.isRunning()) {
 				sequencer.stop();

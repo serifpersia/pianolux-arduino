@@ -358,7 +358,8 @@ public class PianoLED extends PApplet {
 		}
 		else
 		{
-			pianoRoll.pause();
+			togglePianoRollButton(false);
+			pianoRoll.close();
 			pianoRoll = null;
 			ui.hidePianoRollControls();
 			setDefaultSize();
@@ -577,20 +578,29 @@ public class PianoLED extends PApplet {
 
 	public void PianoRollPlayPause() {
 		if (pianoRoll != null)
-			pianoRoll.pause();
+			pianoRoll.startStop();
 		
-		toggleButton("PianoRollPlayPause");
+		togglePianoRollButton();
 	}
 	
-	public void toggleButton(String buttonName)
+	public void togglePianoRollButton()
 	{
-		Button button = ui.getController(Button.class, buttonName);
-		if (pianoRoll.isPaused()) {
-			button.getCaptionLabel().setText(">");
-			button.setColorBackground(Color.BLUE.getRGB());
+		if (pianoRoll == null || pianoRoll.isPaused()) {
+			togglePianoRollButton(false);
 		} else {
+			togglePianoRollButton(true);
+		}
+	
+	}
+	public void togglePianoRollButton(boolean on)
+	{
+		Button button = ui.getController(Button.class, "PianoRollPlayPause");
+		if (on) {
 			button.getCaptionLabel().setText("||");
 			button.setColorBackground(Color.GREEN.getRGB());
+		} else {
+			button.getCaptionLabel().setText(">");
+			button.setColorBackground(Color.BLUE.getRGB());
 		}
 	}
 
