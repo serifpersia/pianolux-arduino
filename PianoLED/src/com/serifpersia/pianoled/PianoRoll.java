@@ -16,6 +16,7 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
@@ -81,8 +82,12 @@ public class PianoRoll {
 		pianoRollHeight = pianoRollBottom - pianoRollTop;
 	}
 
-	public void setOutputDevice(MidiDevice midiOutDevice) {
+	public void setOutputDevice(MidiDevice midiOutDevice) throws MidiUnavailableException {
 		this.midiOutDevice = midiOutDevice;
+		if( sequencer!= null )
+		{
+			sequencer.getTransmitter().setReceiver(midiOutDevice.getReceiver());
+		}
 	}
 
 	public void loadMidiFile(File midiFile) {
@@ -267,7 +272,7 @@ public class PianoRoll {
 	}
 
 	public boolean isPaused() {
-		return sequencer== null || !sequencer.isRunning();
+		return sequencer == null || !sequencer.isRunning();
 	}
 
 	public boolean isBlack(int midiPitch) {
@@ -294,12 +299,25 @@ public class PianoRoll {
 	// MIDI handling
 	private void setupSequencer(File midiFile) {
 		try {
-			sequencer = MidiSystem.getSequencer();
+			boolean connected = true;
+			Receiver midiOutReceiver = null;
+			if (midiOutDevice != null) {
+				openMidiDevice(midiOutDevice);
+				if (midiOutDevice.isOpen()) {
+					midiOutReceiver = midiOutDevice.getReceiver();
+					connected = false;
+				}
+			}
+
+			sequencer = MidiSystem.getSequencer(connected);
 			sequencer.open();
 			sequence = MidiSystem.getSequence(midiFile);
 			sequencer.setSequence(sequence);
 
 			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
+			if (midiOutReceiver != null) {
+				sequencer.getTransmitter().setReceiver(midiOutReceiver);
+			}
 
 			int ticksPerBeat = sequence.getResolution();
 			double bpm = sequencer.getTempoInBPM();
@@ -316,6 +334,27 @@ public class PianoRoll {
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+
+	private void openMidiDevice(MidiDevice outDevice) {
+		if (outDevice == null)
+			return;
+		if (!outDevice.isOpen()) {
+			try {
+				outDevice.open();
+			} catch (MidiUnavailableException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeMidiDevice(MidiDevice outDevice) {
+		if (outDevice == null)
+			return;
+		if (outDevice.isOpen()) {
+			outDevice.close();
 		}
 	}
 
@@ -372,8 +411,8 @@ public class PianoRoll {
 			myBus.close();
 		if (midiOutDevice != null)
 			midiOutDevice.close();
+		firstNote = 0;
 	}
-
 
 	public void startStop() {
 		if (sequencer != null) {
@@ -384,14 +423,13 @@ public class PianoRoll {
 			}
 		}
 	}
-	
+
 	public void stop() {
-	    if (sequencer != null) {
-	        if (sequencer.isRunning()) {
-	            sequencer.stop();
-	        }
-	        sequencer.close();
-	    }
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			}
+		}
 	}
 
 	class Note {
@@ -407,7 +445,7 @@ public class PianoRoll {
 			this.end = end;
 		}
 	}
-
+	
 	private LinkedList<Note> readMidi(File midiFile) {
 		LinkedList<Note> fileNotes = new LinkedList<Note>();
 		try {
