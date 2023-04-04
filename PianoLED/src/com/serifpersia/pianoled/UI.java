@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 import controlP5.ColorWheel;
 import controlP5.ControlP5;
 import controlP5.Controller;
+import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Toggle;
 import processing.core.PApplet;
@@ -25,6 +26,8 @@ public class UI {
 	public static final int DEFAULT_HEIGHT = 160;
 
 	public static final int EFFECT_CONTROLS_X = 811;
+	private static final int UI_BORDERS = 5;
+	private static final int MAX_PIANO_ROLL_TRACKS = 32;
 
 	int MIN_FADE_RATE = 0;
 	int MAX_FADE_RATE = 255;
@@ -34,25 +37,16 @@ public class UI {
 	int MAX_BRIGHT = 255;
 	int DEF_BRIGHT = 127;
 
-	Color[] presetColors = {
-			new Color(255, 255, 254), //White
-			Color.RED,
-			Color.GREEN, 
-			Color.BLUE, 
-			Color.YELLOW, 
-			Color.ORANGE, 
-			new Color(128, 0, 255), // Purple
-			Color.PINK, 
-			new Color(0, 255, 255), // Teal
+	Color[] presetColors = { new Color(255, 255, 254), // White
+			Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, new Color(128, 0, 255), // Purple
+			Color.PINK, new Color(0, 255, 255), // Teal
 			new Color(128, 255, 0), // Lime
-			Color.CYAN,
-			Color.MAGENTA,
-			new Color(255, 128, 128), // Peach
+			Color.CYAN, Color.MAGENTA, new Color(255, 128, 128), // Peach
 			new Color(192, 128, 255), // Lavender
 			new Color(128, 192, 192), // Turquoise
 			new Color(255, 215, 0) // Gold
 	};
-	
+
 	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
 			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
@@ -203,7 +197,40 @@ public class UI {
 		// addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED,
 		// WHITE, GREEN).hide();
 
+		addPianoRollTracks(MAX_PIANO_ROLL_TRACKS);
+
 		uiHelper.getController("midiout").bringToFront();
+	}
+
+	public void addPianoRollTracks(int numTracks) {
+		int x = EFFECT_CONTROLS_X + 45;
+		int y = 310;
+		int h = 15;
+		int w = 15;
+
+		for (int i = 0; i < MAX_PIANO_ROLL_TRACKS; i++) {
+			uiHelper.addToggle("Track" + (i + 1), "", x, y, h, w, Color.RED, Color.WHITE, Color.GREEN).setState(true)
+					.hide();
+			x += 17;
+			if ((i + 1) % 5 == 0) {
+				x = EFFECT_CONTROLS_X + 45;
+				y += 17;
+			}
+		}
+	}
+
+	public void showPianoRollTracks(int numTracks) {
+		for (int i = 0; i < MAX_PIANO_ROLL_TRACKS; i++) {
+			Toggle t = uiHelper.getController(Toggle.class, "Track" + i);
+			if (t != null) {
+				if (i > numTracks) {
+					t.hide();
+				} else {
+					t.show();
+				}
+				t.setState(true);
+			}
+		}
 	}
 
 	public void addSplashControls(int x, int y) {
@@ -270,7 +297,7 @@ public class UI {
 
 	public Color getSplashColor() {
 //		int n = (int) getController(ScrollableList.class, SPLASH_COLOR_LIST).getValue();
-		return  new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
+		return new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
 	}
 
 	public void addAnimationControls() {
@@ -645,7 +672,7 @@ public class UI {
 
 	int leftMinPitch = 21;
 	int rightMaxPitch = 108;
-	int leftMaxPitch = leftMinPitch+(rightMaxPitch-leftMinPitch)/2;
+	int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
 
 	void pianoKeyAction(int x, int y, boolean released) {
 		for (int i = 0; i < whiteKeys.length; i++) {

@@ -24,7 +24,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 
 public class PianoLED extends PApplet {
-	private UI ui;
+	public UI ui;
 	private Updater updater = new Updater();
 	private Arduino arduino;
 
@@ -119,7 +119,7 @@ public class PianoLED extends PApplet {
 
 	public void midiout(int n) {
 		try {
-			println("Selected midi output device: " + midioutlist.get(n)+"("+n+")");
+			println("Selected midi output device: " + midioutlist.get(n) + "(" + n + ")");
 
 			if (pianoRoll != null) {
 				pianoRoll.setOutputDevice(getMidiDeviceByName(midioutlist.get(n)));
@@ -371,7 +371,7 @@ public class PianoLED extends PApplet {
 			ui.showPianoRollControls();
 			pianoRoll = new PianoRoll(this);
 			// Centre the window
-			centreWindow();
+//			centreWindow();
 		} else {
 			togglePianoRollButton(false);
 			pianoRoll.close();
@@ -379,8 +379,88 @@ public class PianoLED extends PApplet {
 			ui.hidePianoRollControls();
 			ui.resetPianoKeys();
 			setDefaultSize();
-			centreWindow();
+//			centreWindow();
 		}
+	}
+
+	public void Track1(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(0, on);
+	}
+
+	public void Track2(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(1, on);
+	}
+
+	public void Track3(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(2, on);
+	}
+
+	public void Track4(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(3, on);
+	}
+
+	public void Track5(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(4, on);
+	}
+
+	public void Track6(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(5, on);
+	}
+
+	public void Track7(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(6, on);
+	}
+
+	public void Track8(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(7, on);
+	}
+
+	public void Track9(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(8, on);
+	}
+
+	public void Track10(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(9, on);
+	}
+
+	public void Track11(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(10, on);
+	}
+
+	public void Track12(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(11, on);
+	}
+
+	public void Track13(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(12, on);
+	}
+
+	public void Track14(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(13, on);
+	}
+
+	public void Track15(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(14, on);
+	}
+
+	public void Track16(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(15, on);
 	}
 
 	public void Open() {
