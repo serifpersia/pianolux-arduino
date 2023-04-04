@@ -235,7 +235,7 @@ public class ui extends JFrame {
 		HomePanel.setLayout(null);
 
 		JLabel lbDashboard = new JLabel("Dashboard");
-		lbDashboard.setBounds(10, 11, 175, 37);
+		lbDashboard.setBounds(10, 10, 175, 30);
 		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
 		lbDashboard.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbDashboard.setForeground(new Color(255, 255, 255));
@@ -247,7 +247,7 @@ public class ui extends JFrame {
 		LivePlayPanel.setLayout(null);
 
 		JLabel lbLivePlay = new JLabel("LivePlay");
-		lbLivePlay.setBounds(10, 11, 132, 37);
+		lbLivePlay.setBounds(10, 10, 135, 30);
 		lbLivePlay.setHorizontalAlignment(SwingConstants.CENTER);
 		lbLivePlay.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbLivePlay.setForeground(new Color(255, 255, 255));
@@ -259,7 +259,7 @@ public class ui extends JFrame {
 		LearnPanel.setLayout(null);
 
 		JLabel lbLearn = new JLabel("Learn");
-		lbLearn.setBounds(10, 11, 90, 37);
+		lbLearn.setBounds(10, 10, 90, 30);
 		lbLearn.setHorizontalAlignment(SwingConstants.CENTER);
 		lbLearn.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbLearn.setForeground(new Color(255, 255, 255));
@@ -271,7 +271,7 @@ public class ui extends JFrame {
 		ControlsPanel.setLayout(null);
 
 		JLabel lbControls = new JLabel("Controls");
-		lbControls.setBounds(10, 11, 134, 37);
+		lbControls.setBounds(10, 10, 135, 30);
 		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
 		lbControls.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbControls.setForeground(new Color(255, 255, 255));
