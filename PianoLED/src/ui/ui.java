@@ -1,6 +1,9 @@
 package ui;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -23,6 +26,9 @@ import java.awt.event.ActionEvent;
 public class ui extends JFrame {
 
 	private JPanel contentPane;
+	private final JPanel leftPanel;
+	private final JPanel rightPanel;
+	private final CardLayout cardLayout;
 
 	/**
 	 * Launch the application.
@@ -41,15 +47,11 @@ public class ui extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
-	/**
-	 * Create the frame.
-	 */
+	// Create the frame.
+
 	public ui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0,930, 600);
+		setBounds(0, 0, 930, 600);
 		setLocationRelativeTo(null);
 
 		// Main content pane
@@ -83,16 +85,13 @@ public class ui extends JFrame {
 				y = e.getYOnScreen();
 			}
 		});
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
 
 		// X label
 		JLabel lbX = new JLabel("X");
-		lbX.setBounds(905, 5, 30, 30);
-		lbX.setFont(new Font("Tahoma", Font.PLAIN, 28));
+		lbX.setBounds(5, 5, 30, 30);
+		lbX.setFont(new Font("Montserrat", Font.BOLD, 20));
 		lbX.setOpaque(true);
-		lbX.setBackground(new Color(21, 25, 28));
+		lbX.setBackground(Color.BLACK);
 		lbX.setForeground(Color.WHITE);
 		lbX.addMouseListener(new MouseAdapter() {
 			@Override
@@ -100,15 +99,16 @@ public class ui extends JFrame {
 				System.exit(0);
 			}
 		});
-		contentPane.add(lbX);
 
-		// New panel at the left bottom side
-		JPanel LeftPane = new JPanel();
-		LeftPane.setBounds(0, 0, 110, 600);
-		LeftPane.setBackground(Color.BLACK);
-		contentPane.add(LeftPane);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
 
-		// LivePlay Button
+		leftPanel = new JPanel();
+		leftPanel.setBounds(0, 0, 110, 600);
+		leftPanel.setBackground(Color.BLACK);
+		contentPane.add(leftPanel);
+
 		JButton LivePlay = new JButton("LivePlay");
 		LivePlay.setFont(new Font("Montserrat", Font.BOLD, 14));
 		LivePlay.setBounds(0, 250, 110, 50);
@@ -118,15 +118,26 @@ public class ui extends JFrame {
 		LivePlay.setBorderPainted(false);
 		LivePlay.setOpaque(true); // Set opaque to true
 		LivePlay.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("LivePlay clicked");
+
+			public void mouseEntered(MouseEvent e) {
+				LivePlay.setBackground(Color.WHITE);
+				LivePlay.setForeground(Color.BLACK);
+			}
+
+			public void mouseExited(MouseEvent e) {
+				LivePlay.setBackground(Color.BLACK);
+				LivePlay.setForeground(Color.WHITE);
+			}
+
+			public void mousePressed(MouseEvent e) {
+				LivePlay.setBackground(Color.WHITE);
+				cardLayout.show(rightPanel, "RED");
 			}
 		});
-		LeftPane.setLayout(null);
-		LeftPane.add(LivePlay);
 
-		// Learn Button
+		leftPanel.add(lbX);
+		leftPanel.add(LivePlay);
+
 		JButton Learn = new JButton("Learn");
 		Learn.setBounds(0, 300, 110, 50);
 		Learn.setFont(new Font("Montserrat", Font.BOLD, 14));
@@ -136,14 +147,24 @@ public class ui extends JFrame {
 		Learn.setBorderPainted(false);
 		Learn.setOpaque(true); // Set opaque to true
 		Learn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("Learn clicked");
+
+			public void mouseEntered(MouseEvent e) {
+				Learn.setBackground(Color.WHITE);
+				Learn.setForeground(Color.BLACK);
+			}
+
+			public void mouseExited(MouseEvent e) {
+				Learn.setBackground(Color.BLACK);
+				Learn.setForeground(Color.WHITE);
+			}
+
+			public void mousePressed(MouseEvent e) {
+				cardLayout.show(rightPanel, "GREEN");
 			}
 		});
-		LeftPane.add(Learn);
 
-		// Controls Button
+		leftPanel.add(Learn);
+
 		JButton Controls = new JButton("Controls");
 		Controls.setBounds(0, 350, 110, 50);
 		Controls.setFont(new Font("Montserrat", Font.BOLD, 14));
@@ -153,38 +174,76 @@ public class ui extends JFrame {
 		Controls.setBorderPainted(false);
 		Controls.setOpaque(true); // Set opaque to true
 		Controls.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("Controls clicked");
-			}
-		});
-		LeftPane.add(Controls);
 
-		// Home Button
-		JButton Home = new JButton("");
-		Home.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void mouseEntered(MouseEvent e) {
+				Controls.setBackground(Color.WHITE);
+				Controls.setForeground(Color.BLACK);
+			}
+
+			public void mouseExited(MouseEvent e) {
+				Controls.setBackground(Color.BLACK);
+				Controls.setForeground(Color.WHITE);
+			}
+
+			public void mousePressed(MouseEvent e) {
+				cardLayout.show(rightPanel, "BLUE");
 			}
 		});
+
+		leftPanel.setLayout(null);
+		leftPanel.add(Controls);
+
+		JButton homeButton = new JButton("");
+		homeButton.setBounds(0, 550, 110, 50);
 
 		// Load the image and scale it to fit the button
 		ImageIcon homeIcon = new ImageIcon(ui.class.getResource("/icons/home.png"));
 		Image img = homeIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 
-		Home.setIcon(new ImageIcon(img));
-		Home.setBounds(0, 550, 100, 50);
-		Home.setBackground(Color.BLACK);
-		Home.setFocusable(false);
-		Home.setBorderPainted(false);
-		Home.setOpaque(true); // Set opaque to true
-		Home.addMouseListener(new MouseAdapter() { // Add mouse listener to change background color
-			@Override
-			public void mousePressed(MouseEvent e) {
-				System.out.println("Color test");
+		homeButton.setIcon(new ImageIcon(img));
+		homeButton.setBackground(Color.BLACK);
+		homeButton.setFocusable(false);
+		homeButton.setBorderPainted(false);
+		homeButton.setOpaque(true); // Set opaque to true
+		homeButton.addMouseListener(new MouseAdapter() {
+
+			public void mouseEntered(MouseEvent e) {
+				homeButton.setBackground(Color.WHITE);
+				homeButton.setForeground(Color.BLACK);
 			}
 
-		});
-		LeftPane.add(Home);
-	}
+			public void mouseExited(MouseEvent e) {
+				homeButton.setBackground(Color.BLACK);
+				homeButton.setForeground(Color.WHITE);
+			}
 
+			public void mousePressed(MouseEvent e) {
+				cardLayout.show(rightPanel, "YELLOW");
+			}
+		});
+
+		leftPanel.add(homeButton);
+
+		rightPanel = new JPanel();
+		rightPanel.setBounds(110, 0, 930, 600);
+		cardLayout = new CardLayout();
+		rightPanel.setLayout(cardLayout);
+		contentPane.add(rightPanel);
+
+		JPanel redPanel = new JPanel();
+		redPanel.setBackground(Color.RED);
+		rightPanel.add(redPanel, "RED");
+
+		JPanel greenPanel = new JPanel();
+		greenPanel.setBackground(Color.GREEN);
+		rightPanel.add(greenPanel, "GREEN");
+
+		JPanel bluePanel = new JPanel();
+		bluePanel.setBackground(Color.BLUE);
+		rightPanel.add(bluePanel, "BLUE");
+
+		JPanel yellowPanel = new JPanel();
+		yellowPanel.setBackground(Color.YELLOW);
+		rightPanel.add(yellowPanel, "YELLOW");
+	}
 }
