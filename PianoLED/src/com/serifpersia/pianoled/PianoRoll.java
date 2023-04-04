@@ -41,7 +41,7 @@ public class PianoRoll {
 	LinkedList<Note> notes;
 	Note currentNote;
 
-	public static int REWIND_FRAGMENT_SEC = 3;
+	public static int REWIND_FRAGMENT_SEC = 5;
 
 	boolean[] keysOn = new boolean[128];
 	double pianoRollTickHeight;
