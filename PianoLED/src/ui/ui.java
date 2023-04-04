@@ -1,9 +1,7 @@
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -19,8 +17,7 @@ import java.awt.Image;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class ui extends JFrame {
@@ -33,6 +30,7 @@ public class ui extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -89,7 +87,7 @@ public class ui extends JFrame {
 		// X label
 		JLabel lbX = new JLabel("X");
 		lbX.setBounds(5, 5, 30, 30);
-		lbX.setFont(new Font("Montserrat", Font.BOLD, 20));
+		lbX.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbX.setOpaque(true);
 		lbX.setBackground(Color.BLACK);
 		lbX.setForeground(Color.WHITE);
@@ -107,6 +105,7 @@ public class ui extends JFrame {
 		leftPanel = new JPanel();
 		leftPanel.setBounds(0, 0, 110, 600);
 		leftPanel.setBackground(Color.BLACK);
+		contentPane.add(lbX);
 		contentPane.add(leftPanel);
 
 		JButton LivePlay = new JButton("LivePlay");
@@ -131,11 +130,10 @@ public class ui extends JFrame {
 
 			public void mousePressed(MouseEvent e) {
 				LivePlay.setBackground(Color.WHITE);
-				cardLayout.show(rightPanel, "RED");
+				cardLayout.show(rightPanel, "2");
 			}
 		});
 
-		leftPanel.add(lbX);
 		leftPanel.add(LivePlay);
 
 		JButton Learn = new JButton("Learn");
@@ -159,7 +157,7 @@ public class ui extends JFrame {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				cardLayout.show(rightPanel, "GREEN");
+				cardLayout.show(rightPanel, "3");
 			}
 		});
 
@@ -186,10 +184,9 @@ public class ui extends JFrame {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				cardLayout.show(rightPanel, "BLUE");
+				cardLayout.show(rightPanel, "4");
 			}
 		});
-
 		leftPanel.setLayout(null);
 		leftPanel.add(Controls);
 
@@ -208,17 +205,17 @@ public class ui extends JFrame {
 		homeButton.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
-				homeButton.setBackground(Color.WHITE);
-				homeButton.setForeground(Color.BLACK);
+				// homeButton.setBackground(Color.WHITE);
+				// homeButton.setForeground(Color.BLACK);
 			}
 
 			public void mouseExited(MouseEvent e) {
-				homeButton.setBackground(Color.BLACK);
-				homeButton.setForeground(Color.WHITE);
+				// homeButton.setBackground(Color.BLACK);
+				// homeButton.setForeground(Color.WHITE);
 			}
 
 			public void mousePressed(MouseEvent e) {
-				cardLayout.show(rightPanel, "YELLOW");
+				cardLayout.show(rightPanel, "1");
 			}
 		});
 
@@ -226,24 +223,59 @@ public class ui extends JFrame {
 
 		rightPanel = new JPanel();
 		rightPanel.setBounds(110, 0, 930, 600);
+		rightPanel.setBackground(new Color(21, 25, 28));
 		cardLayout = new CardLayout();
 		rightPanel.setLayout(cardLayout);
 		contentPane.add(rightPanel);
 
-		JPanel redPanel = new JPanel();
-		redPanel.setBackground(Color.RED);
-		rightPanel.add(redPanel, "RED");
+		JPanel HomePanel = new JPanel();
+		HomePanel.setBackground(new Color(21, 25, 28));
+		// HomePanel.setBackground(Color.YELLOW);
+		rightPanel.add(HomePanel, "1");
+		HomePanel.setLayout(null);
 
-		JPanel greenPanel = new JPanel();
-		greenPanel.setBackground(Color.GREEN);
-		rightPanel.add(greenPanel, "GREEN");
+		JLabel lbDashboard = new JLabel("Dashboard");
+		lbDashboard.setBounds(10, 11, 175, 37);
+		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+		lbDashboard.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbDashboard.setForeground(new Color(255, 255, 255));
+		HomePanel.add(lbDashboard);
 
-		JPanel bluePanel = new JPanel();
-		bluePanel.setBackground(Color.BLUE);
-		rightPanel.add(bluePanel, "BLUE");
+		JPanel LivePlayPanel = new JPanel();
+		LivePlayPanel.setBackground(new Color(21, 25, 28));
+		rightPanel.add(LivePlayPanel, "2");
+		LivePlayPanel.setLayout(null);
 
-		JPanel yellowPanel = new JPanel();
-		yellowPanel.setBackground(Color.YELLOW);
-		rightPanel.add(yellowPanel, "YELLOW");
+		JLabel lbLivePlay = new JLabel("LivePlay");
+		lbLivePlay.setBounds(10, 11, 132, 37);
+		lbLivePlay.setHorizontalAlignment(SwingConstants.CENTER);
+		lbLivePlay.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbLivePlay.setForeground(new Color(255, 255, 255));
+		LivePlayPanel.add(lbLivePlay);
+
+		JPanel LearnPanel = new JPanel();
+		LearnPanel.setBackground(new Color(21, 25, 28));
+		rightPanel.add(LearnPanel, "3");
+		LearnPanel.setLayout(null);
+
+		JLabel lbLearn = new JLabel("Learn");
+		lbLearn.setBounds(10, 11, 90, 37);
+		lbLearn.setHorizontalAlignment(SwingConstants.CENTER);
+		lbLearn.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbLearn.setForeground(new Color(255, 255, 255));
+		LearnPanel.add(lbLearn);
+
+		JPanel ControlsPanel = new JPanel();
+		ControlsPanel.setBackground(new Color(21, 25, 28));
+		rightPanel.add(ControlsPanel, "4");
+		ControlsPanel.setLayout(null);
+
+		JLabel lbControls = new JLabel("Controls");
+		lbControls.setBounds(10, 11, 134, 37);
+		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
+		lbControls.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbControls.setForeground(new Color(255, 255, 255));
+		ControlsPanel.add(lbControls);
+
 	}
 }
