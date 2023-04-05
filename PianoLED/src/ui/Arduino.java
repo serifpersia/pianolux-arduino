@@ -1,27 +1,29 @@
-package ui;
+/*package ui;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
+import processing.core.PApplet;
+
 public class Arduino {
 
-	SerialPort serialPort;
+	private PianoLED app;
 
-	public Arduino(PianoLED PianoLED, String portName, int baudrate) {
-	    serialPort = new SerialPort(portName);
-	    try {
-	        serialPort.openPort();
-	        serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-	                SerialPort.PARITY_NONE);
-	    } catch (SerialPortException ex) {
-	        System.out.println(ex);
-	    }
+	private SerialPort serialPort;
+
+	public Arduino(PianoLED pianoLED, String port, int baudrate) {
+		this.app = pianoLED;
+		serialPort = new SerialPort(port);
+		try {
+			serialPort.openPort();
+            serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+					SerialPort.PARITY_NONE); 
+		} catch (SerialPortException ex) {
+			System.out.println(ex);
+		}
 	}
-
-
-
 
 	// command start with 3 bytes: COMMAND_BYTE1 | COMMAND_BYTE2 | EFFECT_COMMAND
 	// then goes effect bytes
@@ -68,9 +70,9 @@ public class Arduino {
 		message.write((byte) COMMAND_SPLASH);
 		message.write((byte) velocity);
 		message.write((byte) note);
-		//.write((byte) app.red(sc));
-		//message.write((byte) app.green(sc));
-		///message.write((byte) app.blue(sc));
+		//message.write((byte) app.red(sc));
+		///message.write((byte) app.green(sc));
+		//message.write((byte) app.blue(sc));
 		return message;
 	}
 
@@ -199,7 +201,7 @@ public class Arduino {
 			try {
 				serialPort.writeBytes(bytes);
 			} catch (SerialPortException e) {
-				System.out.println(e);
+				PApplet.println(e);
 			}
 		}
 	}
@@ -209,14 +211,17 @@ public class Arduino {
 			serialPort.closePort();
 		} catch (SerialPortException e) {
 			e.printStackTrace();
-			//PApplet.print(e);
+			PApplet.print(e);
 		}
 	}
 
 	public void printArray(byte[] bytes) {
-		System.out.println("Message:");
+		PApplet.print("Message:");
 		for (byte b : bytes) {
+			int unsignedValue = b & 0xFF;
+			PApplet.print(unsignedValue + " ");
 		}
-		System.out.println();
+		PApplet.println();
 	}
 }
+*/

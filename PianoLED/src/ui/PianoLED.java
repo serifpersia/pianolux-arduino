@@ -1,5 +1,7 @@
 package ui;
 
+//import processing.core.PApplet;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -9,6 +11,7 @@ import javax.swing.JPanel;
 
 import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseMotionAdapter;
+import java.io.ByteArrayOutputStream;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 
@@ -28,23 +31,133 @@ import javax.swing.JComboBox;
 //Serial & Midi imports
 import java.util.ArrayList;
 
+import jssc.SerialPort;
+import jssc.SerialPortException;
 import jssc.SerialPortList;
-import javax.sound.midi.*;
 import themidibus.MidiBus;
 
-@SuppressWarnings("serial")
-public class PianoLED extends JFrame {
+import javax.sound.midi.*;
 
-	private Arduino arduino;
+@SuppressWarnings({ "serial", "unused" })
+public class PianoLED extends JFrame {
 
 	private JPanel contentPane;
 	private final JPanel leftPanel;
 	private final JPanel rightPanel;
 	private final CardLayout cardLayout;
 
-	/**
-	 * Launch the application.
-	 */
+	private static final long serialVersionUID = 1L;
+	private JComboBox<String> serialPorts;
+	private JComboBox<String> midiDropdownList;
+	private JButton openButton;
+	private MidiBus myBusIn;
+
+	private volatile SerialPort serialPort;
+
+	private String[] getSerialPorts() {
+		String[] portNames = SerialPortList.getPortNames();
+		if (portNames.length == 0) {
+			return new String[] { "No serial ports available" };
+		} else {
+			return portNames;
+		}
+	}
+
+	private String[] getMidiDevices() {
+		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+		ArrayList<String> deviceNames = new ArrayList<String>();
+		for (MidiDevice.Info info : infos) {
+			MidiDevice device = null;
+			try {
+				device = MidiSystem.getMidiDevice(info);
+				if (device.getMaxTransmitters() != 0) {
+					deviceNames.add(info.getName());
+				}
+			} catch (MidiUnavailableException ex) {
+				System.err.println("Error getting MIDI device " + info.getName() + ": " + ex.getMessage());
+			} finally {
+				if (device != null) {
+					device.close();
+				}
+			}
+		}
+		if (deviceNames.isEmpty()) {
+			return new String[] { "No MIDI input devices available" };
+		} else {
+			return deviceNames.toArray(new String[deviceNames.size()]);
+		}
+	}
+
+	private void openSerial() {
+		String portName = (String) serialPorts.getSelectedItem();
+		this.serialPort = new SerialPort(portName);
+		try {
+			serialPort.openPort();
+			serialPort.setParams(9600, 8, 1, 0);
+			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+			System.out.println("Serial port " + portName + " opened successfully.");
+		} catch (Exception ex) {
+			System.err.println("Error opening serial port " + portName + ": " + ex.getMessage());
+		}
+	}
+
+	private void closeSerial() {
+		if (serialPort == null) {
+			System.err.println("Serial port is not open.");
+			return;
+		}
+		String portName = serialPort.getPortName();
+		try {
+			serialPort.closePort();
+			System.out.println("Serial port " + portName + " closed successfully.");
+		} catch (SerialPortException ex) {
+			System.err.println("Error closing serial port " + portName + ": " + ex.getMessage());
+		}
+	}
+
+	private void openMidi() {
+		String deviceName = (String) midiDropdownList.getSelectedItem();
+		MidiDevice device = null;
+		try {
+			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
+			device.open();
+			System.out.println("MIDI device " + deviceName + " opened successfully.");
+
+			// Create a new instance of MidiBus and assign it to myBusIn
+			myBusIn = new MidiBus(this, deviceName, 0);
+		} catch (MidiUnavailableException ex) {
+			System.err.println("Error opening MIDI device " + deviceName + ": " + ex.getMessage());
+		}
+	}
+
+	private void closeMidi() {
+		String deviceName = (String) midiDropdownList.getSelectedItem();
+		MidiDevice device = null;
+		try {
+			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
+			if (myBusIn != null) {
+				myBusIn.dispose();
+			}
+			device.close();
+			System.out.println("MIDI device " + deviceName + " closed successfully.");
+		} catch (MidiUnavailableException ex) {
+			System.err.println("Error closing MIDI device " + deviceName + ": " + ex.getMessage());
+		}
+	}
+
+	private MidiDevice.Info getDeviceInfo(String deviceName) {
+		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+		for (MidiDevice.Info info : infos) {
+			if (info.getName().equals(deviceName)) {
+				return info;
+			}
+		}
+		return null;
+	}
+
+	public void noteOn(int channel, int pitch, int velocity) {
+		System.out.println(pitch);
+	}
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -73,12 +186,6 @@ public class PianoLED extends JFrame {
 // Create a list of x-coordinates for each key
 	int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356, 371, 401,
 			416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
-
-	void drawPiano() {
-
-	}
-
-	// Create the frame.
 
 	public PianoLED() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -297,17 +404,9 @@ public class PianoLED extends JFrame {
 		rightPanel.add(Dashboard, "1");
 		Dashboard.setLayout(null);
 
-		final String[] portNames = SerialPortList.getPortNames();
-		final JComboBox<?> serialDropdownList = new JComboBox<Object>(portNames);
-		final String[] portName = { portNames[0] }; // create an array to hold the selected port name
-		serialDropdownList.setBounds(10, 229, 200, 25);
-		serialDropdownList.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				portName[0] = (String) serialDropdownList.getSelectedItem(); // update the selected port name
-				System.out.println("Selected item: " + portName[0]);
-			}
-		});
-		Dashboard.add(serialDropdownList);
+		serialPorts = new JComboBox<String>(getSerialPorts());
+		serialPorts.setBounds(10, 229, 200, 25);
+		Dashboard.add(serialPorts);
 
 		JLabel lbDashboard = new JLabel("Dashboard");
 		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
@@ -339,56 +438,37 @@ public class PianoLED extends JFrame {
 		lbMidiDevices.setBounds(0, 365, 210, 30);
 		Dashboard.add(lbMidiDevices);
 
-		ArrayList<String> midilist = new ArrayList<String>();
-		MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
-		for (MidiDevice.Info info : info_midiIn) {
-			try {
-				MidiDevice device = MidiSystem.getMidiDevice(info);
-				if (device.getMaxTransmitters() != 0) {
-					midilist.add(info.getName());
-				}
-				device.close();
-			} catch (MidiUnavailableException e) {
-				// Handle the exception
-			}
-		}
-
-		String[] midiNames = midilist.toArray(new String[0]);
-		JComboBox<?> midiDropdownList = new JComboBox<Object>(midiNames);
+		midiDropdownList = new JComboBox<String>(getMidiDevices());
 		midiDropdownList.setBounds(10, 405, 200, 25);
 		Dashboard.add(midiDropdownList);
 
-		MidiBus myBusIn;
-		// Define the JButton for opening/closing the MIDI and Arduino ports
-		JButton btOpen = new JButton("Open");
-		btOpen.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		btOpen.setBounds(47, 452, 117, 41);
-		btOpen.setBackground(Color.WHITE);
-		btOpen.setForeground(Color.BLACK);
-		btOpen.setFocusable(false);
-		btOpen.setBorderPainted(false);
-		btOpen.setOpaque(true); // Set opaque to true
-		btOpen.addActionListener(new ActionListener() {
-		    @Override
+		// Define the JButton for opening/closing
+		openButton = new JButton("Open");
+		openButton.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		openButton.setBounds(47, 452, 117, 41);
+		openButton.setBackground(Color.WHITE);
+		openButton.setForeground(Color.BLACK);
+		openButton.setFocusable(false);
+		openButton.setBorderPainted(false);
+		openButton.setOpaque(true); // Set opaque to true
+		openButton.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        if (btOpen.getBackground().equals(Color.WHITE)) { // Button is closed
-		            String portName = (String) serialDropdownList.getSelectedItem();
-		            arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(btOpen), portName, 115200); // Replace 115200 with your actual baudrate value
-		        	System.out.println("Device opened: " + portName);
-		            btOpen.setBackground(Color.GREEN);
-		            btOpen.setForeground(Color.WHITE);
-		        } else { // Button is open
-					if (arduino != null) {
-						arduino.sendCommandBlackOut();
-						arduino.stop();
-						System.out.println("Device closed: " + portName);
-					}
-		            btOpen.setBackground(Color.WHITE);
-		            btOpen.setForeground(Color.BLACK);
-				}
-			}
+		        if (openButton.getBackground() == Color.WHITE) {
+		            openSerial();
+		            openMidi();
+		            openButton.setBackground(Color.GREEN);
+		            openButton.setForeground(Color.WHITE);
+		            openButton.setText("Close");
+		        } else {
+		            closeSerial();
+		            closeMidi();
+		            openButton.setBackground(Color.WHITE);
+		            openButton.setForeground(Color.BLACK);
+		            openButton.setText("Open");
+		        }
+		    }
 		});
-		Dashboard.add(btOpen);
+		Dashboard.add(openButton);
 
 		// LivePlay Panel
 		JPanel LivePlayPanel = new JPanel();
