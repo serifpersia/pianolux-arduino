@@ -16,21 +16,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JComboBox;
 
 //Serial & Midi imports
 import java.util.ArrayList;
+
 import jssc.SerialPortList;
 import javax.sound.midi.*;
 import themidibus.MidiBus;
 
 @SuppressWarnings("serial")
-public class ui extends JFrame {
+public class PianoLED extends JFrame {
+
+	private Arduino arduino;
 
 	private JPanel contentPane;
 	private final JPanel leftPanel;
@@ -45,7 +50,7 @@ public class ui extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ui frame = new ui();
+					PianoLED frame = new PianoLED();
 					frame.setUndecorated(true);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -55,9 +60,27 @@ public class ui extends JFrame {
 		});
 	}
 
+	int[][] Keys = new int[88][2];
+	int whiteKeyPitches[] = { 21, 23, 24, 26, 28, 29, 31, 33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57,
+			59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98, 100, 101,
+			103, 105, 107, 108 };
+// List of white keys in a 88-key piano
+	int whiteKeys[] = { 0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36, 38, 39, 41,
+			43, 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79, 80, 82, 84, 86,
+			87 };
+	int[] blackKeys = { 1, 4, 6, 9, 11, 13, 16, 18, 21, 23, 25, 28, 30, 33, 35, 37, 40, 42, 45, 47, 49, 52, 54, 57, 59,
+			61, 64, 66, 69, 71, 73, 76, 78, 81, 83, 85 };
+// Create a list of x-coordinates for each key
+	int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356, 371, 401,
+			416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
+
+	void drawPiano() {
+
+	}
+
 	// Create the frame.
 
-	public ui() {
+	public PianoLED() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 930, 600);
 		setLocationRelativeTo(null);
@@ -204,7 +227,7 @@ public class ui extends JFrame {
 		homeButton.setBounds(0, 550, 110, 50);
 
 		// Load the image and scale it to fit the button
-		ImageIcon homeIcon = new ImageIcon(ui.class.getResource("/icons/home.png"));
+		ImageIcon homeIcon = new ImageIcon(PianoLED.class.getResource("/icons/home.png"));
 		Image img = homeIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 
 		homeButton.setIcon(new ImageIcon(img));
@@ -239,19 +262,49 @@ public class ui extends JFrame {
 		contentPane.add(rightPanel);
 
 		// Dashboard Panel
-		JPanel Dashboard = new JPanel();
+		JPanel Dashboard = new JPanel() {
+			// Draw Piano Keyboard
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+
+				// white keys
+				int x = 0;
+				for (int i = 0; i < whiteKeys.length; i++) {
+					if (Keys[whiteKeys[i]][0] == 1) {
+						g.setColor(new Color(255, 0, 0));
+					} else {
+						g.setColor(Color.WHITE);
+					}
+					g.fillRect(x + 15, 510, 15, 70);
+					g.setColor(Color.BLACK);
+					g.drawRect(x + 15, 510, 15, 70);
+					x += 15;
+				}
+
+				for (int i = 0; i < blackKeys.length; i++) {
+					if (Keys[blackKeys[i]][1] == 1) {
+						g.setColor(new Color(255, 0, 0));
+					} else {
+						g.setColor(Color.BLACK);
+					}
+					g.fillRect(keyXCoordinates[i] + 15, 510, 8, 40);
+					g.setColor(Color.WHITE);
+				}
+			}
+		};
 		Dashboard.setBackground(new Color(21, 25, 28));
-		// HomePanel.setBackground(Color.YELLOW);
 		rightPanel.add(Dashboard, "1");
 		Dashboard.setLayout(null);
 
-		String[] portNames = SerialPortList.getPortNames();
-		JComboBox<?> serialDropdownList = new JComboBox<Object>(portNames);
+		final String[] portNames = SerialPortList.getPortNames();
+		final JComboBox<?> serialDropdownList = new JComboBox<Object>(portNames);
+		final String[] portName = { portNames[0] }; // create an array to hold the selected port name
 		serialDropdownList.setBounds(10, 229, 200, 25);
 		serialDropdownList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String selected = (String) serialDropdownList.getSelectedItem();
-				System.out.println("Selected item: " + selected);
+				portName[0] = (String) serialDropdownList.getSelectedItem(); // update the selected port name
+				System.out.println("Selected item: " + portName[0]);
 			}
 		});
 		Dashboard.add(serialDropdownList);
@@ -269,8 +322,8 @@ public class ui extends JFrame {
 		lbConnections.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbConnections.setBounds(0, 70, 210, 60);
 		Dashboard.add(lbConnections);
-		
-		//Serial Devices
+
+		// Serial Devices
 		JLabel lbSerialDevices = new JLabel("Serial");
 		lbSerialDevices.setBounds(0, 190, 210, 30);
 		lbSerialDevices.setHorizontalAlignment(SwingConstants.CENTER);
@@ -278,7 +331,7 @@ public class ui extends JFrame {
 		lbSerialDevices.setForeground(new Color(255, 255, 255));
 		Dashboard.add(lbSerialDevices);
 
-		//Midi Devices
+		// Midi Devices
 		JLabel lbMidiDevices = new JLabel("Midi");
 		lbMidiDevices.setHorizontalAlignment(SwingConstants.CENTER);
 		lbMidiDevices.setForeground(Color.WHITE);
@@ -289,27 +342,53 @@ public class ui extends JFrame {
 		ArrayList<String> midilist = new ArrayList<String>();
 		MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
 		for (MidiDevice.Info info : info_midiIn) {
-		    try {
-		        MidiDevice device = MidiSystem.getMidiDevice(info);
-		        if (device.getMaxTransmitters() != 0) {
-		            midilist.add(info.getName());
-		        }
-		        device.close();
-		    } catch (MidiUnavailableException e) {
-		        // Handle the exception
-		    }
+			try {
+				MidiDevice device = MidiSystem.getMidiDevice(info);
+				if (device.getMaxTransmitters() != 0) {
+					midilist.add(info.getName());
+				}
+				device.close();
+			} catch (MidiUnavailableException e) {
+				// Handle the exception
+			}
 		}
 
 		String[] midiNames = midilist.toArray(new String[0]);
-		JComboBox<String> midiDropdownList = new JComboBox<>(midiNames);
+		JComboBox<?> midiDropdownList = new JComboBox<Object>(midiNames);
 		midiDropdownList.setBounds(10, 405, 200, 25);
 		Dashboard.add(midiDropdownList);
-		midiDropdownList.addActionListener(new ActionListener() {
+
+		MidiBus myBusIn;
+		// Define the JButton for opening/closing the MIDI and Arduino ports
+		JButton btOpen = new JButton("Open");
+		btOpen.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		btOpen.setBounds(47, 452, 117, 41);
+		btOpen.setBackground(Color.WHITE);
+		btOpen.setForeground(Color.BLACK);
+		btOpen.setFocusable(false);
+		btOpen.setBorderPainted(false);
+		btOpen.setOpaque(true); // Set opaque to true
+		btOpen.addActionListener(new ActionListener() {
+		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        String selected = (String) midiDropdownList.getSelectedItem();
-		        System.out.println("Selected MIDI input device: " + selected);
-		    }
+		        if (btOpen.getBackground().equals(Color.WHITE)) { // Button is closed
+		            String portName = (String) serialDropdownList.getSelectedItem();
+		            arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(btOpen), portName, 115200); // Replace 115200 with your actual baudrate value
+		        	System.out.println("Device opened: " + portName);
+		            btOpen.setBackground(Color.GREEN);
+		            btOpen.setForeground(Color.WHITE);
+		        } else { // Button is open
+					if (arduino != null) {
+						arduino.sendCommandBlackOut();
+						arduino.stop();
+						System.out.println("Device closed: " + portName);
+					}
+		            btOpen.setBackground(Color.WHITE);
+		            btOpen.setForeground(Color.BLACK);
+				}
+			}
 		});
+		Dashboard.add(btOpen);
 
 		// LivePlay Panel
 		JPanel LivePlayPanel = new JPanel();
