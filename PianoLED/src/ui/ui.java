@@ -11,6 +11,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.Font;
 import java.awt.Image;
@@ -18,6 +21,13 @@ import java.awt.Image;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
+
+//Serial & Midi imports
+import java.util.ArrayList;
+import jssc.SerialPortList;
+import javax.sound.midi.*;
+import themidibus.MidiBus;
 
 @SuppressWarnings("serial")
 public class ui extends JFrame {
@@ -228,50 +238,113 @@ public class ui extends JFrame {
 		rightPanel.setLayout(cardLayout);
 		contentPane.add(rightPanel);
 
-		JPanel HomePanel = new JPanel();
-		HomePanel.setBackground(new Color(21, 25, 28));
+		// Dashboard Panel
+		JPanel Dashboard = new JPanel();
+		Dashboard.setBackground(new Color(21, 25, 28));
 		// HomePanel.setBackground(Color.YELLOW);
-		rightPanel.add(HomePanel, "1");
-		HomePanel.setLayout(null);
+		rightPanel.add(Dashboard, "1");
+		Dashboard.setLayout(null);
+
+		String[] portNames = SerialPortList.getPortNames();
+		JComboBox<?> serialDropdownList = new JComboBox<Object>(portNames);
+		serialDropdownList.setBounds(10, 229, 200, 25);
+		serialDropdownList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selected = (String) serialDropdownList.getSelectedItem();
+				System.out.println("Selected item: " + selected);
+			}
+		});
+		Dashboard.add(serialDropdownList);
 
 		JLabel lbDashboard = new JLabel("Dashboard");
-		lbDashboard.setBounds(10, 10, 175, 30);
 		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+		lbDashboard.setForeground(Color.WHITE);
 		lbDashboard.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbDashboard.setForeground(new Color(255, 255, 255));
-		HomePanel.add(lbDashboard);
+		lbDashboard.setBounds(630, 10, 175, 30);
+		Dashboard.add(lbDashboard);
 
+		JLabel lbConnections = new JLabel("Connections");
+		lbConnections.setHorizontalAlignment(SwingConstants.CENTER);
+		lbConnections.setForeground(Color.WHITE);
+		lbConnections.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbConnections.setBounds(0, 70, 210, 60);
+		Dashboard.add(lbConnections);
+		
+		//Serial Devices
+		JLabel lbSerialDevices = new JLabel("Serial");
+		lbSerialDevices.setBounds(0, 190, 210, 30);
+		lbSerialDevices.setHorizontalAlignment(SwingConstants.CENTER);
+		lbSerialDevices.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbSerialDevices.setForeground(new Color(255, 255, 255));
+		Dashboard.add(lbSerialDevices);
+
+		//Midi Devices
+		JLabel lbMidiDevices = new JLabel("Midi");
+		lbMidiDevices.setHorizontalAlignment(SwingConstants.CENTER);
+		lbMidiDevices.setForeground(Color.WHITE);
+		lbMidiDevices.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbMidiDevices.setBounds(0, 365, 210, 30);
+		Dashboard.add(lbMidiDevices);
+
+		ArrayList<String> midilist = new ArrayList<String>();
+		MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
+		for (MidiDevice.Info info : info_midiIn) {
+		    try {
+		        MidiDevice device = MidiSystem.getMidiDevice(info);
+		        if (device.getMaxTransmitters() != 0) {
+		            midilist.add(info.getName());
+		        }
+		        device.close();
+		    } catch (MidiUnavailableException e) {
+		        // Handle the exception
+		    }
+		}
+
+		String[] midiNames = midilist.toArray(new String[0]);
+		JComboBox<String> midiDropdownList = new JComboBox<>(midiNames);
+		midiDropdownList.setBounds(10, 405, 200, 25);
+		Dashboard.add(midiDropdownList);
+		midiDropdownList.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String selected = (String) midiDropdownList.getSelectedItem();
+		        System.out.println("Selected MIDI input device: " + selected);
+		    }
+		});
+
+		// LivePlay Panel
 		JPanel LivePlayPanel = new JPanel();
 		LivePlayPanel.setBackground(new Color(21, 25, 28));
 		rightPanel.add(LivePlayPanel, "2");
 		LivePlayPanel.setLayout(null);
 
 		JLabel lbLivePlay = new JLabel("LivePlay");
-		lbLivePlay.setBounds(10, 10, 135, 30);
+		lbLivePlay.setBounds(630, 10, 175, 30);
 		lbLivePlay.setHorizontalAlignment(SwingConstants.CENTER);
 		lbLivePlay.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbLivePlay.setForeground(new Color(255, 255, 255));
 		LivePlayPanel.add(lbLivePlay);
 
+		// Learn Panel
 		JPanel LearnPanel = new JPanel();
 		LearnPanel.setBackground(new Color(21, 25, 28));
 		rightPanel.add(LearnPanel, "3");
 		LearnPanel.setLayout(null);
 
 		JLabel lbLearn = new JLabel("Learn");
-		lbLearn.setBounds(10, 10, 90, 30);
+		lbLearn.setBounds(630, 10, 175, 30);
 		lbLearn.setHorizontalAlignment(SwingConstants.CENTER);
 		lbLearn.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbLearn.setForeground(new Color(255, 255, 255));
 		LearnPanel.add(lbLearn);
 
+		// Controls Panel
 		JPanel ControlsPanel = new JPanel();
 		ControlsPanel.setBackground(new Color(21, 25, 28));
 		rightPanel.add(ControlsPanel, "4");
 		ControlsPanel.setLayout(null);
 
 		JLabel lbControls = new JLabel("Controls");
-		lbControls.setBounds(10, 10, 135, 30);
+		lbControls.setBounds(630, 10, 175, 30);
 		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
 		lbControls.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbControls.setForeground(new Color(255, 255, 255));
