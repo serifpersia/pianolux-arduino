@@ -1,163 +1,33 @@
-package ui;
-
-//import processing.core.PApplet;
 
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseMotionAdapter;
-import java.io.ByteArrayOutputStream;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
-//Serial & Midi imports
-import java.util.ArrayList;
-
-import jssc.SerialPort;
-import jssc.SerialPortException;
-import jssc.SerialPortList;
-import themidibus.MidiBus;
-
-import javax.sound.midi.*;
-
-@SuppressWarnings({ "serial", "unused" })
+@SuppressWarnings("serial")
 public class PianoLED extends JFrame {
 
 	private JPanel contentPane;
 	private final JPanel leftPanel;
 	private final JPanel rightPanel;
 	private final CardLayout cardLayout;
-
-	private static final long serialVersionUID = 1L;
-	private JComboBox<String> serialPorts;
-	private JComboBox<String> midiDropdownList;
-	private JButton openButton;
-	private MidiBus myBusIn;
-
-	private volatile SerialPort serialPort;
-
-	private String[] getSerialPorts() {
-		String[] portNames = SerialPortList.getPortNames();
-		if (portNames.length == 0) {
-			return new String[] { "No serial ports available" };
-		} else {
-			return portNames;
-		}
-	}
-
-	private String[] getMidiDevices() {
-		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-		ArrayList<String> deviceNames = new ArrayList<String>();
-		for (MidiDevice.Info info : infos) {
-			MidiDevice device = null;
-			try {
-				device = MidiSystem.getMidiDevice(info);
-				if (device.getMaxTransmitters() != 0) {
-					deviceNames.add(info.getName());
-				}
-			} catch (MidiUnavailableException ex) {
-				System.err.println("Error getting MIDI device " + info.getName() + ": " + ex.getMessage());
-			} finally {
-				if (device != null) {
-					device.close();
-				}
-			}
-		}
-		if (deviceNames.isEmpty()) {
-			return new String[] { "No MIDI input devices available" };
-		} else {
-			return deviceNames.toArray(new String[deviceNames.size()]);
-		}
-	}
-
-	private void openSerial() {
-		String portName = (String) serialPorts.getSelectedItem();
-		this.serialPort = new SerialPort(portName);
-		try {
-			serialPort.openPort();
-			serialPort.setParams(9600, 8, 1, 0);
-			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-			System.out.println("Serial port " + portName + " opened successfully.");
-		} catch (Exception ex) {
-			System.err.println("Error opening serial port " + portName + ": " + ex.getMessage());
-		}
-	}
-
-	private void closeSerial() {
-		if (serialPort == null) {
-			System.err.println("Serial port is not open.");
-			return;
-		}
-		String portName = serialPort.getPortName();
-		try {
-			serialPort.closePort();
-			System.out.println("Serial port " + portName + " closed successfully.");
-		} catch (SerialPortException ex) {
-			System.err.println("Error closing serial port " + portName + ": " + ex.getMessage());
-		}
-	}
-
-	private void openMidi() {
-		String deviceName = (String) midiDropdownList.getSelectedItem();
-		MidiDevice device = null;
-		try {
-			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
-			device.open();
-			System.out.println("MIDI device " + deviceName + " opened successfully.");
-
-			// Create a new instance of MidiBus and assign it to myBusIn
-			myBusIn = new MidiBus(this, deviceName, 0);
-		} catch (MidiUnavailableException ex) {
-			System.err.println("Error opening MIDI device " + deviceName + ": " + ex.getMessage());
-		}
-	}
-
-	private void closeMidi() {
-		String deviceName = (String) midiDropdownList.getSelectedItem();
-		MidiDevice device = null;
-		try {
-			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
-			if (myBusIn != null) {
-				myBusIn.dispose();
-			}
-			device.close();
-			System.out.println("MIDI device " + deviceName + " closed successfully.");
-		} catch (MidiUnavailableException ex) {
-			System.err.println("Error closing MIDI device " + deviceName + ": " + ex.getMessage());
-		}
-	}
-
-	private MidiDevice.Info getDeviceInfo(String deviceName) {
-		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-		for (MidiDevice.Info info : infos) {
-			if (info.getName().equals(deviceName)) {
-				return info;
-			}
-		}
-		return null;
-	}
-
-	public void noteOn(int channel, int pitch, int velocity) {
-		System.out.println(pitch);
-	}
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -186,6 +56,9 @@ public class PianoLED extends JFrame {
 // Create a list of x-coordinates for each key
 	int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356, 371, 401,
 			416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
+	private JTextField txtR;
+	private JTextField txtG;
+	private JTextField txtB;
 
 	public PianoLED() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -404,9 +277,9 @@ public class PianoLED extends JFrame {
 		rightPanel.add(Dashboard, "1");
 		Dashboard.setLayout(null);
 
-		serialPorts = new JComboBox<String>(getSerialPorts());
-		serialPorts.setBounds(10, 229, 200, 25);
-		Dashboard.add(serialPorts);
+		JComboBox<?> SerialList = new JComboBox<Object>();
+		SerialList.setBounds(10, 229, 200, 25);
+		Dashboard.add(SerialList);
 
 		JLabel lbDashboard = new JLabel("Dashboard");
 		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
@@ -438,12 +311,12 @@ public class PianoLED extends JFrame {
 		lbMidiDevices.setBounds(0, 365, 210, 30);
 		Dashboard.add(lbMidiDevices);
 
-		midiDropdownList = new JComboBox<String>(getMidiDevices());
-		midiDropdownList.setBounds(10, 405, 200, 25);
-		Dashboard.add(midiDropdownList);
+		JComboBox<?> MidiList = new JComboBox<Object>();
+		MidiList.setBounds(10, 405, 200, 25);
+		Dashboard.add(MidiList);
 
 		// Define the JButton for opening/closing
-		openButton = new JButton("Open");
+		JButton openButton = new JButton("Open");
 		openButton.setFont(new Font("Montserrat", Font.PLAIN, 25));
 		openButton.setBounds(47, 452, 117, 41);
 		openButton.setBackground(Color.WHITE);
@@ -452,22 +325,19 @@ public class PianoLED extends JFrame {
 		openButton.setBorderPainted(false);
 		openButton.setOpaque(true); // Set opaque to true
 		openButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        if (openButton.getBackground() == Color.WHITE) {
-		            openSerial();
-		            openMidi();
-		            openButton.setBackground(Color.GREEN);
-		            openButton.setForeground(Color.WHITE);
-		            openButton.setText("Close");
-		        } else {
-		            closeSerial();
-		            closeMidi();
-		            openButton.setBackground(Color.WHITE);
-		            openButton.setForeground(Color.BLACK);
-		            openButton.setText("Open");
-		        }
-		    }
+			public void actionPerformed(ActionEvent e) {
+				if (openButton.getBackground() == Color.WHITE) {
+					openButton.setBackground(Color.GREEN);
+					openButton.setForeground(Color.WHITE);
+					openButton.setText("Close");
+				} else {
+					openButton.setBackground(Color.WHITE);
+					openButton.setForeground(Color.BLACK);
+					openButton.setText("Open");
+				}
+			}
 		});
+
 		Dashboard.add(openButton);
 
 		// LivePlay Panel
@@ -508,6 +378,117 @@ public class PianoLED extends JFrame {
 		lbControls.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbControls.setForeground(new Color(255, 255, 255));
 		ControlsPanel.add(lbControls);
+
+		JLabel lbLEDEffect = new JLabel("LED Effect");
+		lbLEDEffect.setHorizontalAlignment(SwingConstants.CENTER);
+		lbLEDEffect.setForeground(Color.WHITE);
+		lbLEDEffect.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbLEDEffect.setBounds(1, 95, 209, 47);
+		ControlsPanel.add(lbLEDEffect);
+
+		JComboBox<Object> LEDEffects = new JComboBox<Object>();
+		LEDEffects.setBounds(10, 153, 200, 25);
+		ControlsPanel.add(LEDEffects);
+
+		JLabel lbPianoSize = new JLabel("Piano Keys");
+		lbPianoSize.setHorizontalAlignment(SwingConstants.CENTER);
+		lbPianoSize.setForeground(Color.WHITE);
+		lbPianoSize.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbPianoSize.setBounds(1, 429, 209, 47);
+		ControlsPanel.add(lbPianoSize);
+
+		JButton lbLeftArrow = new JButton("<");
+		lbLeftArrow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		lbLeftArrow.setOpaque(true);
+		lbLeftArrow.setForeground(Color.BLACK);
+		lbLeftArrow.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		lbLeftArrow.setFocusable(false);
+		lbLeftArrow.setBorderPainted(false);
+		lbLeftArrow.setBackground(Color.WHITE);
+		lbLeftArrow.setBounds(27, 487, 72, 41);
+		ControlsPanel.add(lbLeftArrow);
+
+		JButton lbRightArrow = new JButton(">");
+		lbRightArrow.setOpaque(true);
+		lbRightArrow.setForeground(Color.BLACK);
+		lbRightArrow.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		lbRightArrow.setFocusable(false);
+		lbRightArrow.setBorderPainted(false);
+		lbRightArrow.setBackground(Color.WHITE);
+		lbRightArrow.setBounds(114, 487, 72, 41);
+		ControlsPanel.add(lbRightArrow);
+
+		JLabel lbColors = new JLabel("Colors");
+		lbColors.setHorizontalAlignment(SwingConstants.CENTER);
+		lbColors.setForeground(Color.WHITE);
+		lbColors.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbColors.setBounds(482, 95, 209, 47);
+		ControlsPanel.add(lbColors);
+
+		JComboBox<Object> ColorPresets = new JComboBox<Object>();
+		ColorPresets.setBounds(474, 153, 219, 25);
+		ControlsPanel.add(ColorPresets);
+		
+		JButton lbColorPicker = new JButton("");// Load the image and scale it to fit the button
+		ImageIcon ColorWheel = new ImageIcon(PianoLED.class.getResource("/icons/Color.png"));
+		Image wheelImg = ColorWheel.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		lbColorPicker.setIcon(new ImageIcon(wheelImg));
+		
+		lbColorPicker.setOpaque(false);
+		lbColorPicker.setForeground(Color.BLACK);
+		lbColorPicker.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		lbColorPicker.setFocusable(false);
+		lbColorPicker.setBorderPainted(false);
+		lbColorPicker.setBackground(Color.WHITE);
+		lbColorPicker.setBounds(385, 189, 386, 263);
+		ControlsPanel.add(lbColorPicker);
+		
+		JLabel lbColor_R = new JLabel("R:");
+		lbColor_R.setHorizontalAlignment(SwingConstants.CENTER);
+		lbColor_R.setForeground(Color.WHITE);
+		lbColor_R.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbColor_R.setBounds(339, 482, 92, 46);
+		ControlsPanel.add(lbColor_R);
+		
+		JLabel lbColor_G = new JLabel("G:");
+		lbColor_G.setHorizontalAlignment(SwingConstants.CENTER);
+		lbColor_G.setForeground(Color.WHITE);
+		lbColor_G.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbColor_G.setBounds(474, 482, 92, 46);
+		ControlsPanel.add(lbColor_G);
+		
+		JLabel lbColor_B = new JLabel("B:");
+		lbColor_B.setHorizontalAlignment(SwingConstants.CENTER);
+		lbColor_B.setForeground(Color.WHITE);
+		lbColor_B.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbColor_B.setBounds(599, 482, 92, 46);
+		ControlsPanel.add(lbColor_B);
+		
+		txtR = new JTextField();
+		txtR.setBounds(413, 487, 79, 35);
+		ControlsPanel.add(txtR);
+		txtR.setColumns(10);
+		
+		txtG = new JTextField();
+		txtG.setColumns(10);
+		txtG.setBounds(540, 487, 79, 35);
+		ControlsPanel.add(txtG);
+		
+		txtB = new JTextField();
+		txtB.setColumns(10);
+		txtB.setBounds(675, 487, 79, 35);
+		ControlsPanel.add(txtB);
+		lbColorPicker.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Color selectedColor = JColorChooser.showDialog(PianoLED.this, "Choose a color", Color.WHITE);
+				if (selectedColor != null) {
+					System.out.println(selectedColor);
+				}
+			}
+		});
 
 	}
 }
