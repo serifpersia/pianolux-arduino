@@ -31,7 +31,6 @@ public class PianoLED extends JFrame {
 	public PianoLED() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 950, 800);
-
 		RightPanel rightPanel = new RightPanel();
 		getContentPane().add(rightPanel, BorderLayout.CENTER);
 
