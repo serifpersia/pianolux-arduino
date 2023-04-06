@@ -40,10 +40,11 @@ public class LeftPanel extends JPanel {
 		dashboardButton = createButton("", "Dashboard");
 		dashboardButton.setIcon(dashboardIcon);
 
+		add(dashboardButton);
 		add(livePlayButton);
 		add(controlsButton);
 		add(learnButton);
-		add(dashboardButton);
+
 	}
 
 	private JButton createButton(String text, String cardName) {
@@ -57,8 +58,8 @@ public class LeftPanel extends JPanel {
 		button.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(Color.WHITE);
-				button.setForeground(Color.BLACK);
+				button.setBackground(new Color(200, 63, 73));
+				button.setForeground(Color.WHITE);
 			}
 
 			public void mouseExited(MouseEvent e) {
@@ -69,8 +70,8 @@ public class LeftPanel extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				button.setBackground(Color.WHITE);
-				button.setForeground(Color.BLACK);
+				button.setBackground(new Color(200, 63, 73));
+				button.setForeground(Color.WHITE);
 				button.setSelected(true);
 				CardLayout cardLayout = (CardLayout) rightPanel.getLayout();
 				cardLayout.show(rightPanel, cardName);
@@ -82,7 +83,7 @@ public class LeftPanel extends JPanel {
 					}
 				}
 				if (button == dashboardButton) {
-					dashboardButton.setIcon(dashboardDarkIcon);
+					dashboardButton.setIcon(dashboardIcon);
 				} else {
 					dashboardButton.setIcon(dashboardIcon);
 				}
