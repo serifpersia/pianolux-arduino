@@ -37,7 +37,5 @@ public class PianoLED extends JFrame {
 
 		LeftPanel leftPanel = new LeftPanel(rightPanel);
 		getContentPane().add(leftPanel, BorderLayout.WEST);
-
-		pack();
 	}
 }
