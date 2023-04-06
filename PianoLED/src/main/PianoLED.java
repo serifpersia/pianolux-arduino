@@ -1,8 +1,12 @@
+package main;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+
+import ui.LeftPanel;
+import ui.RightPanel;
 
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {

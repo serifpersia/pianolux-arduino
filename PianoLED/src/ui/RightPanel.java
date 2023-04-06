@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Color;
 import javax.swing.JPanel;
 import java.awt.CardLayout;

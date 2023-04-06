@@ -1,3 +1,5 @@
+package ui;
+import main.PianoLED;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
 import javax.swing.JTextField;
 import java.awt.Image;
 import javax.swing.ImageIcon;
