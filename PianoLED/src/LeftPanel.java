@@ -5,19 +5,22 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import java.awt.Image;
-import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 public class LeftPanel extends JPanel {
 
 	private RightPanel rightPanel;
+	private JButton dashboardButton;
+	private ImageIcon dashboardIcon;
+	private ImageIcon dashboardDarkIcon;
 
 	public LeftPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
@@ -29,11 +32,13 @@ public class LeftPanel extends JPanel {
 		JButton livePlayButton = createButton("LivePlay", "LivePlay");
 		JButton controlsButton = createButton("Controls", "Controls");
 		JButton learnButton = createButton("Learn", "Learn");
-		JButton dashboardButton = createButton("", "Dashboard");
-		// Set the Dashboard button icon
-		ImageIcon DashboardIcon = new ImageIcon(PianoLED.class.getResource("/icons/home.png"));
-		Image img = DashboardIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-		dashboardButton.setIcon(new ImageIcon(img));
+
+		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
+				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		dashboardDarkIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home_dark.png")).getImage()
+				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		dashboardButton = createButton("", "Dashboard");
+		dashboardButton.setIcon(dashboardIcon);
 
 		add(livePlayButton);
 		add(controlsButton);
@@ -76,8 +81,15 @@ public class LeftPanel extends JPanel {
 						((JButton) c).setForeground(Color.WHITE);
 					}
 				}
+				if (button == dashboardButton) {
+					dashboardButton.setIcon(dashboardDarkIcon);
+				} else {
+					dashboardButton.setIcon(dashboardIcon);
+				}
 			}
+
 		});
+
 		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
 		return button;
