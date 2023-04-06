@@ -85,7 +85,7 @@ public class DashboardPanel extends JPanel {
 		});
 		add(openButton);
 
-		DrawUI pianoKeyboard = new DrawUI();
+		DrawPiano pianoKeyboard = new DrawPiano();
 		pianoKeyboard.setBounds(0, 160, 810, 600);
 		pianoKeyboard.setBackground(new Color(21, 25, 29));
 		add(pianoKeyboard);

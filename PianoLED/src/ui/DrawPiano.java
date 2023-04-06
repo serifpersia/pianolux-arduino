@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class DrawUI extends JPanel {
+public class DrawPiano extends JPanel {
 
 	int[][] Keys = new int[88][2];
 	int whiteKeyPitches[] = { 21, 23, 24, 26, 28, 29, 31, 33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57,
@@ -20,7 +20,7 @@ public class DrawUI extends JPanel {
 	int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356, 371, 401,
 			416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
 
-	public DrawUI() {
+	public DrawPiano() {
 		 super();
 	}
 		
