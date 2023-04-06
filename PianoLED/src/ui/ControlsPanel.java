@@ -1,5 +1,4 @@
 package ui;
-import main.PianoLED;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,15 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import javax.swing.JTextField;
-import java.awt.Image;
-import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
@@ -84,19 +80,9 @@ public class ControlsPanel extends JPanel {
 		ColorPresets.setBounds(474, 153, 219, 25);
 		add(ColorPresets);
 
-		JButton lbColorPicker = new JButton("");// Load the image and scale it to fit the button
-		ImageIcon ColorWheel = new ImageIcon(PianoLED.class.getResource("/icons/Color.png"));
-		Image wheelImg = ColorWheel.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
-		lbColorPicker.setIcon(new ImageIcon(wheelImg));
-
-		lbColorPicker.setOpaque(false);
-		lbColorPicker.setForeground(Color.BLACK);
-		lbColorPicker.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		lbColorPicker.setFocusable(false);
-		lbColorPicker.setBorderPainted(false);
-		lbColorPicker.setBackground(Color.WHITE);
-		lbColorPicker.setBounds(385, 189, 386, 263);
-		add(lbColorPicker);
+		// Color Wheel
+		
+		
 
 		JLabel lbColor_R = new JLabel("R:");
 		lbColor_R.setHorizontalAlignment(SwingConstants.CENTER);
@@ -133,13 +119,6 @@ public class ControlsPanel extends JPanel {
 		txtB.setColumns(10);
 		txtB.setBounds(675, 487, 79, 35);
 		add(txtB);
-		lbColorPicker.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Color selectedColor = JColorChooser.showDialog(ControlsPanel.this, "Choose a color", Color.WHITE);
-				if (selectedColor != null) {
-					System.out.println(selectedColor);
-				}
-			}
-		});
+
 	}
 }

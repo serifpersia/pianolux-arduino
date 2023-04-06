@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/jgoodies-forms-1.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/themidibus.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/controlP5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
