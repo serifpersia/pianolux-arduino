@@ -1,7 +1,5 @@
 package ui;
 
-import main.PianoLED;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -14,12 +12,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import com.serifpersia.pianoled.PianoLED;
+
 import javax.swing.JTextField;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
+
+	public static Color selectedColor = Color.WHITE;
 
 	public ControlsPanel() {
 		setBackground(new Color(21, 25, 28));
@@ -130,16 +132,37 @@ public class ControlsPanel extends JPanel {
 		txtG.setBounds(540, 487, 79, 35);
 		add(txtG);
 
+		JButton lbSet = new JButton("Set");
+		lbSet.setOpaque(true);
+		lbSet.setForeground(Color.BLACK);
+		lbSet.setFont(new Font("Montserrat", Font.PLAIN, 25));
+		lbSet.setFocusable(false);
+		lbSet.setBorderPainted(false);
+		lbSet.setBackground(Color.WHITE);
+		lbSet.setBounds(500, 600, 100, 50);
+		add(lbSet);
+		lbSet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int r = Integer.parseInt(txtR.getText());
+				int g = Integer.parseInt(txtG.getText());
+				int b = 0; // You can set a default value for blue, or add a text field for it
+
+				selectedColor = new Color(r, g, b);
+
+				System.out.println(selectedColor);
+			}
+		});
+
 		JTextField txtB = new JTextField();
 		txtB.setColumns(10);
 		txtB.setBounds(675, 487, 79, 35);
 		add(txtB);
 		lbColorPicker.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Color selectedColor = JColorChooser.showDialog(ControlsPanel.this, "Choose a color", Color.WHITE);
-				if (selectedColor != null) {
-					System.out.println(selectedColor);
-				}
+				selectedColor = JColorChooser.showDialog(ControlsPanel.this, "Choose a color", Color.WHITE);
+
+				System.out.println(selectedColor);
+
 			}
 		});
 	}

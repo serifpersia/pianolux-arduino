@@ -1,9 +1,9 @@
-package main;
+package com.serifpersia.pianoled;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
+
 
 import ui.LeftPanel;
 import ui.RightPanel;
@@ -11,9 +11,10 @@ import ui.RightPanel;
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
 
-	/**
-	 * Launch the application.
-	 */
+
+	
+
+    
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -28,10 +29,9 @@ public class PianoLED extends JFrame {
 			}
 		});
 	}
+	
+	
 
-	/**
-	 * Create the frame.
-	 */
 	public PianoLED() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 950, 800);
