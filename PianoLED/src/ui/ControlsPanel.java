@@ -2,8 +2,14 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -16,6 +22,8 @@ import com.serifpersia.pianoled.PianoLED;
 
 import javax.swing.JTextField;
 import java.awt.Image;
+import java.awt.RenderingHints;
+
 import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
@@ -23,9 +31,24 @@ public class ControlsPanel extends JPanel {
 
 	public static Color selectedColor = Color.WHITE;
 
+	private static final int PANEL_SIZE = 200;
+	private static final int HUE_PANEL_WIDTH = 20;
+
+	private float hue;
+	private float saturation;
+	private float brightness;
+
+	private Rectangle2D huePanel;
+	private Rectangle2D colorPanel;
+	private Rectangle2D newPanel;
+
 	public ControlsPanel() {
 		setBackground(new Color(21, 25, 28));
 		setLayout(null);
+
+		huePanel = new Rectangle2D.Float(PANEL_SIZE + 20, 0, HUE_PANEL_WIDTH, PANEL_SIZE);
+		colorPanel = new Rectangle2D.Float(0, 0, PANEL_SIZE, PANEL_SIZE);
+		newPanel = new Rectangle2D.Float(0, PANEL_SIZE + 10, PANEL_SIZE, PANEL_SIZE / 10);
 
 		JLabel lbControls = new JLabel("Controls");
 		lbControls.setBounds(630, 10, 175, 30);
@@ -87,20 +110,6 @@ public class ControlsPanel extends JPanel {
 		ColorPresets.setBounds(474, 153, 219, 25);
 		add(ColorPresets);
 
-		JButton lbColorPicker = new JButton("");// Load the image and scale it to fit the button
-		ImageIcon ColorWheel = new ImageIcon(PianoLED.class.getResource("/icons/Color.png"));
-		Image wheelImg = ColorWheel.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
-		lbColorPicker.setIcon(new ImageIcon(wheelImg));
-
-		lbColorPicker.setOpaque(false);
-		lbColorPicker.setForeground(Color.BLACK);
-		lbColorPicker.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		lbColorPicker.setFocusable(false);
-		lbColorPicker.setBorderPainted(false);
-		lbColorPicker.setBackground(Color.WHITE);
-		lbColorPicker.setBounds(385, 189, 386, 263);
-		add(lbColorPicker);
-
 		JLabel lbColor_R = new JLabel("R:");
 		lbColor_R.setHorizontalAlignment(SwingConstants.CENTER);
 		lbColor_R.setForeground(Color.WHITE);
@@ -157,13 +166,81 @@ public class ControlsPanel extends JPanel {
 		txtB.setColumns(10);
 		txtB.setBounds(675, 487, 79, 35);
 		add(txtB);
-		lbColorPicker.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedColor = JColorChooser.showDialog(ControlsPanel.this, "Choose a color", Color.WHITE);
 
-				System.out.println(selectedColor);
+		// ColorChooser Panel
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (huePanel.contains(e.getPoint())) {
+				} else if (colorPanel.contains(e.getPoint())) {
+					updateSaturationAndBrightness(e);
+				}
+				repaint();
+			}
 
+			@Override
+			public void mouseReleased(MouseEvent e) {
 			}
 		});
+
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (huePanel.contains(e.getPoint())) {
+					updateHue(e);
+				} else if (colorPanel.contains(e.getPoint())) {
+					updateSaturationAndBrightness(e);
+				}
+				repaint();
+			}
+		});
+	}
+
+	private void updateHue(MouseEvent e) {
+		hue = (float) (e.getY() / (float) PANEL_SIZE);
+	}
+
+	private void updateSaturationAndBrightness(MouseEvent e) {
+		saturation = (float) (e.getX() / (float) PANEL_SIZE);
+		brightness = 1 - (float) (e.getY() / (float) PANEL_SIZE);
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		Graphics2D g2d = (Graphics2D) g.create();
+
+		// draw hue panel
+		for (int y = 0; y < PANEL_SIZE; y++) {
+			float h = y / (float) PANEL_SIZE;
+			g2d.setColor(Color.getHSBColor(hue, h, 1f));
+			g2d.fillRect((int) huePanel.getX(), y, HUE_PANEL_WIDTH, 1);
+		}
+		// draw hue indicator
+		g2d.setColor(Color.BLACK);
+		int hy = (int) (hue * PANEL_SIZE);
+		int hx = (int) huePanel.getMaxX() - 20;
+		g2d.fillRect(hx, hy - 1, HUE_PANEL_WIDTH, 2);
+
+		// draw color panel
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		for (int x = 0; x < PANEL_SIZE; x++) {
+			for (int y = 0; y < PANEL_SIZE; y++) {
+				float s = x / (float) PANEL_SIZE;
+				float b = 1f - y / (float) PANEL_SIZE;
+
+				g2d.setColor(Color.getHSBColor(hue, s, b));
+				g2d.fillRect(x, y, 1, 1);
+			}
+		}
+		// draw color indicator
+		g2d.setColor(Color.WHITE);
+		int cx = (int) (saturation * PANEL_SIZE);
+		int cy = (int) ((1 - brightness) * PANEL_SIZE);
+		g2d.drawOval(cx - 5, cy - 5, 10, 10);
+
+		g2d.dispose();
+
 	}
 }
