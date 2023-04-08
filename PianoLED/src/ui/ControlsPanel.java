@@ -2,53 +2,42 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import com.serifpersia.pianoled.PianoLED;
-
 import javax.swing.JTextField;
-import java.awt.Image;
-import java.awt.RenderingHints;
-
-import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
 
+	ColorPicker colorPicker = new ColorPicker();
+
 	public static Color selectedColor = Color.WHITE;
 
-	private static final int PANEL_SIZE = 200;
-	private static final int HUE_PANEL_WIDTH = 20;
+	Color[] presetColors = { new Color(255, 255, 254), // White
+			Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, new Color(128, 0, 255), // Purple
+			Color.PINK, new Color(0, 255, 255), // Teal
+			new Color(128, 255, 0), // Lime
+			Color.CYAN, Color.MAGENTA, new Color(255, 128, 128), // Peach
+			new Color(192, 128, 255), // Lavender
+			new Color(128, 192, 192), // Turquoise
+			new Color(255, 215, 0) // Gold
+	};
 
-	private float hue;
-	private float saturation;
-	private float brightness;
-
-	private Rectangle2D huePanel;
-	private Rectangle2D colorPanel;
-	private Rectangle2D newPanel;
+	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
+			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 
 	public ControlsPanel() {
 		setBackground(new Color(21, 25, 28));
 		setLayout(null);
-
-		huePanel = new Rectangle2D.Float(PANEL_SIZE + 20, 0, HUE_PANEL_WIDTH, PANEL_SIZE);
-		colorPanel = new Rectangle2D.Float(0, 0, PANEL_SIZE, PANEL_SIZE);
-		newPanel = new Rectangle2D.Float(0, PANEL_SIZE + 10, PANEL_SIZE, PANEL_SIZE / 10);
 
 		JLabel lbControls = new JLabel("Controls");
 		lbControls.setBounds(630, 10, 175, 30);
@@ -106,9 +95,19 @@ public class ControlsPanel extends JPanel {
 		lbColors.setBounds(482, 95, 209, 47);
 		add(lbColors);
 
-		JComboBox<Object> ColorPresets = new JComboBox<Object>();
-		ColorPresets.setBounds(474, 153, 219, 25);
-		add(ColorPresets);
+		JComboBox<String> colorPresets = new JComboBox<>(colorNames.toArray(new String[0]));
+		colorPresets.setBounds(475, 150, 240, 25);
+		add(colorPresets);
+		colorPresets.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedColorName = (String) colorPresets.getSelectedItem();
+				int index = colorNames.indexOf(selectedColorName);
+				if (index >= 0) {
+					selectedColor = presetColors[index];
+					System.out.println("Preset Color selected: " + selectedColorName);
+				}
+			}
+		});
 
 		JLabel lbColor_R = new JLabel("R:");
 		lbColor_R.setHorizontalAlignment(SwingConstants.CENTER);
@@ -141,6 +140,11 @@ public class ControlsPanel extends JPanel {
 		txtG.setBounds(540, 487, 79, 35);
 		add(txtG);
 
+		JTextField txtB = new JTextField();
+		txtB.setColumns(10);
+		txtB.setBounds(675, 487, 79, 35);
+		add(txtB);
+
 		JButton lbSet = new JButton("Set");
 		lbSet.setOpaque(true);
 		lbSet.setForeground(Color.BLACK);
@@ -154,7 +158,7 @@ public class ControlsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int r = Integer.parseInt(txtR.getText());
 				int g = Integer.parseInt(txtG.getText());
-				int b = 0; // You can set a default value for blue, or add a text field for it
+				int b = Integer.parseInt(txtB.getText());
 
 				selectedColor = new Color(r, g, b);
 
@@ -162,85 +166,7 @@ public class ControlsPanel extends JPanel {
 			}
 		});
 
-		JTextField txtB = new JTextField();
-		txtB.setColumns(10);
-		txtB.setBounds(675, 487, 79, 35);
-		add(txtB);
-
-		// ColorChooser Panel
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (huePanel.contains(e.getPoint())) {
-				} else if (colorPanel.contains(e.getPoint())) {
-					updateSaturationAndBrightness(e);
-				}
-				repaint();
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-		});
-
-		addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if (huePanel.contains(e.getPoint())) {
-					updateHue(e);
-				} else if (colorPanel.contains(e.getPoint())) {
-					updateSaturationAndBrightness(e);
-				}
-				repaint();
-			}
-		});
-	}
-
-	private void updateHue(MouseEvent e) {
-		hue = (float) (e.getY() / (float) PANEL_SIZE);
-	}
-
-	private void updateSaturationAndBrightness(MouseEvent e) {
-		saturation = (float) (e.getX() / (float) PANEL_SIZE);
-		brightness = 1 - (float) (e.getY() / (float) PANEL_SIZE);
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		Graphics2D g2d = (Graphics2D) g.create();
-
-		// draw hue panel
-		for (int y = 0; y < PANEL_SIZE; y++) {
-			float h = y / (float) PANEL_SIZE;
-			g2d.setColor(Color.getHSBColor(hue, h, 1f));
-			g2d.fillRect((int) huePanel.getX(), y, HUE_PANEL_WIDTH, 1);
-		}
-		// draw hue indicator
-		g2d.setColor(Color.BLACK);
-		int hy = (int) (hue * PANEL_SIZE);
-		int hx = (int) huePanel.getMaxX() - 20;
-		g2d.fillRect(hx, hy - 1, HUE_PANEL_WIDTH, 2);
-
-		// draw color panel
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		for (int x = 0; x < PANEL_SIZE; x++) {
-			for (int y = 0; y < PANEL_SIZE; y++) {
-				float s = x / (float) PANEL_SIZE;
-				float b = 1f - y / (float) PANEL_SIZE;
-
-				g2d.setColor(Color.getHSBColor(hue, s, b));
-				g2d.fillRect(x, y, 1, 1);
-			}
-		}
-		// draw color indicator
-		g2d.setColor(Color.WHITE);
-		int cx = (int) (saturation * PANEL_SIZE);
-		int cy = (int) ((1 - brightness) * PANEL_SIZE);
-		g2d.drawOval(cx - 5, cy - 5, 10, 10);
-
-		g2d.dispose();
-
+		colorPicker.setBounds(475, 250, 240, 200);
+		add(colorPicker);
 	}
 }
