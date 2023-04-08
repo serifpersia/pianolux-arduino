@@ -1,6 +1,9 @@
 package ui;
 
-public class PianoSizeArrows {
+import java.util.Arrays;
+import java.util.List;
+
+public class GetUI {
 
 	static int counter = 0;
 
@@ -8,11 +11,26 @@ public class PianoSizeArrows {
 	static int firstNoteSelected = 21;
 	static int lastNoteSelected = 108;
 
+	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
+			"Piano Roll");
+
+	static String getModeName(int n) {
+		return modes.get(n);
+	}
+
+	public static int getFirstNoteSelected() {
+		return firstNoteSelected;
+	}
+
+	public static int getLastNoteSelected() {
+		return lastNoteSelected;
+	}
+
 	static int getNumPianoKeys() {
 		return lastNoteSelected - firstNoteSelected + 1;
 	}
 
-	int getStripLedNum() {
+	static int getStripLedNum() {
 		return stripLedNum;
 	}
 

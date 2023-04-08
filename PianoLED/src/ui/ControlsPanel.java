@@ -20,11 +20,15 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
 
-	DrawPiano pianoKeyboard = new DrawPiano();
-
 	ColorPicker colorPicker = new ColorPicker();
 
-	static Color selectedColor = Color.RED;
+	DrawPiano piano = new DrawPiano();
+
+
+	private ModesController modesController;
+	private JComboBox<Object> LEDEffects;
+
+	public static Color selectedColor = Color.RED;
 	static JTextField txtR;
 	static JTextField txtG;
 	static JTextField txtB;
@@ -44,7 +48,17 @@ public class ControlsPanel extends JPanel {
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
 			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 
+	public void setPiano(DrawPiano piano) {
+		this.piano = piano;
+	}
+
+	public JComboBox<Object> getModes() {
+		return LEDEffects;
+	}
+
 	public ControlsPanel() {
+
+		modesController = new ModesController();
 
 		setBackground(new Color(21, 25, 28));
 		setLayout(null);
@@ -57,22 +71,55 @@ public class ControlsPanel extends JPanel {
 		add(lbControls);
 
 		JLabel lbLEDEffect = new JLabel("LED Effect");
-		lbLEDEffect.setHorizontalAlignment(SwingConstants.CENTER);
+		lbLEDEffect.setHorizontalAlignment(SwingConstants.LEFT);
 		lbLEDEffect.setForeground(Color.WHITE);
 		lbLEDEffect.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbLEDEffect.setBounds(1, 95, 209, 47);
 		add(lbLEDEffect);
 
-		JComboBox<Object> LEDEffects = new JComboBox<Object>();
+		LEDEffects = new JComboBox<Object>();
 		LEDEffects.setBounds(10, 153, 200, 25);
+		LEDEffects.addItem("Default");
+		LEDEffects.addItem("Splash");
+		LEDEffects.addItem("Random");
+		LEDEffects.addItem("Gradient");
+		LEDEffects.addItem("Velocity");
+		LEDEffects.addItem("Split");
+		LEDEffects.addItem("Animation");
 		add(LEDEffects);
+		LEDEffects.addActionListener(e -> {
+			int selectedIndex = LEDEffects.getSelectedIndex();
+			modesController.modeSelect(selectedIndex);
+		});
 
-		JLabel lbPianoSize = new JLabel("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
-		lbPianoSize.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lbPianoSize = new JLabel("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+		lbPianoSize.setBounds(0, 430, 250, 50);
+		lbPianoSize.setHorizontalAlignment(SwingConstants.LEFT);
 		lbPianoSize.setForeground(Color.WHITE);
 		lbPianoSize.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbPianoSize.setBounds(0, 430, 250, 50);
 		add(lbPianoSize);
+
+		JLabel lbFixLED = new JLabel("Fix LED Strip");
+		lbFixLED.setBounds(0, 530, 250, 50);
+		lbFixLED.setHorizontalAlignment(SwingConstants.LEFT);
+		lbFixLED.setForeground(Color.WHITE);
+		lbFixLED.setFont(new Font("Montserrat", Font.BOLD, 30));
+		add(lbFixLED);
+
+		String[] options = { "No", "Yes", };
+		JComboBox<String> FixLed = new JComboBox<>(options);
+		FixLed.setBounds(10, 580, 200, 25);
+		add(FixLed);
+		FixLed.addActionListener(e -> {
+			String selectedOption = (String) FixLed.getSelectedItem();
+			if (selectedOption.equals("Yes")) {
+				DashboardPanel.useFixedMapping = true;
+				System.out.println(DashboardPanel.useFixedMapping);
+			} else {
+				DashboardPanel.useFixedMapping = false;
+				System.out.println(DashboardPanel.useFixedMapping);
+			}
+		});
 
 		JButton lbLeftArrow = new JButton("<");
 
@@ -87,12 +134,13 @@ public class ControlsPanel extends JPanel {
 		lbLeftArrow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (PianoSizeArrows.counter <= 0) {
+				if (GetUI.counter <= 0) {
 					return;
 				}
-				PianoSizeArrows.counter--;
-				PianoSizeArrows.setKeyboardSize(PianoSizeArrows.counter);
-				lbPianoSize.setText("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
+				GetUI.counter--;
+				GetUI.setKeyboardSize(GetUI.counter);
+				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+				piano.repaint();
 			}
 		});
 
@@ -107,13 +155,14 @@ public class ControlsPanel extends JPanel {
 		add(lbRightArrow);
 		lbRightArrow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (PianoSizeArrows.counter >= 4) {
+				if (GetUI.counter >= 4) {
 					return;
 				}
-				PianoSizeArrows.counter++;
+				GetUI.counter++;
 
-				PianoSizeArrows.setKeyboardSize(PianoSizeArrows.counter);
-				lbPianoSize.setText("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
+				GetUI.setKeyboardSize(GetUI.counter);
+				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+				piano.repaint();
 			}
 		});
 
@@ -189,6 +238,7 @@ public class ControlsPanel extends JPanel {
 					colorPicker.setSaturation(hsb[1]);
 					colorPicker.setBrightness(hsb[2]);
 					colorPicker.repaint();
+					System.out.println(color);
 				} catch (NumberFormatException ex) {
 					// handle exception
 				}
@@ -244,35 +294,21 @@ public class ControlsPanel extends JPanel {
 		colorPicker.setBounds(475, 250, 240, 200);
 		add(colorPicker);
 
-		pianoKeyboard.setBounds(0, 650, 810, 70);
-		pianoKeyboard.setBackground(new Color(21, 25, 29));
-		add(pianoKeyboard);
-		pianoKeyboard.addMouseListener(new MouseAdapter() {
+		piano.setBounds(0, 650, 810, 70);
+		add(piano);
+		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				// Call the pianoKeyAction method with the mouse coordinates and the pressed
 				// flag set to true
-				pianoKeyAction(e.getX(), e.getY(), true);
+				piano.pianoKeyAction(e.getX(), e.getY(), true);
 			}
 
 			public void mouseReleased(MouseEvent e) {
 				// Call the pianoKeyAction method with the mouse coordinates and the pressed
 				// flag set to false
-				pianoKeyAction(e.getX(), e.getY(), false);
+				piano.pianoKeyAction(e.getX(), e.getY(), false);
 			}
 		});
 	}
 
-	void pianoKeyAction(int x, int y, boolean released) {
-		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
-			// Check if the mouse click was inside a white key
-			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y >= 0 && y <= 133) {
-				if (released) {
-					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 1;
-				} else {
-					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 0;
-				}
-				pianoKeyboard.repaint();
-			}
-		}
-	}
 }

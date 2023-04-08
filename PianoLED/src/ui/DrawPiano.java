@@ -23,10 +23,10 @@ public class DrawPiano extends JPanel {
 	static int[] keyXCoordinates = { 11, 40, 56, 86, 101, 116, 145, 161, 191, 206, 221, 251, 266, 296, 311, 326, 356,
 			371, 401, 416, 431, 461, 476, 506, 521, 536, 566, 581, 611, 626, 641, 671, 686, 715, 731, 746 };
 
-	public DrawPiano()
-	{
-		 piano = this;
+	public DrawPiano() {
+		piano = this;
 	}
+
 	public static void setPianoKey(int pitch, int on) {
 		Keys[pitch - 21][1] = on;
 		Keys[pitch - 21][0] = on;
@@ -66,7 +66,21 @@ public class DrawPiano extends JPanel {
 		}
 		// Highlight Piano Size
 		g.setColor(new Color(0, 0, 0, 127)); // set the color of the rectangles to black with 50% transparency
-		g.fillRect(15, 0, PianoSizeArrows.rectASizeX, 70); // draw the first rectangle
-		g.fillRect(PianoSizeArrows.rectBX, 0, PianoSizeArrows.rectBSizeX, 70); // draw the second rectangle
+		g.fillRect(15, 0, GetUI.rectASizeX, 70); // draw the first rectangle
+		g.fillRect(GetUI.rectBX, 0, GetUI.rectBSizeX, 70); // draw the second rectangle
+	}
+
+	void pianoKeyAction(int x, int y, boolean released) {
+		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
+			// Check if the mouse click was inside a white key
+			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y >= 0 && y <= 133) {
+				if (released) {
+					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 1;
+				} else {
+					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 0;
+				}
+				repaint();
+			}
+		}
 	}
 }

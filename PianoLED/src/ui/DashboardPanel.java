@@ -24,6 +24,8 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class DashboardPanel extends JPanel {
 
+	DrawPiano piano = new DrawPiano();
+
 	private JLabel lbDashboard;
 	private JLabel lbConnections;
 	private JLabel lbSerialDevices;
@@ -89,6 +91,15 @@ public class DashboardPanel extends JPanel {
 		}
 	}
 
+	static boolean useFixedMapping = false;
+	
+	// Map function maps pitch first last note and number of leds
+	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+		int outMax = outMin + stripLEDNumber - 1; // highest LED number
+		int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+		return mappedLED + outMin;
+	}
+
 	public int mapMidiNoteToLEDFixed(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
 		int outMax = outMin + stripLEDNumber - 1; // highest LED number
 		int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
@@ -105,30 +116,92 @@ public class DashboardPanel extends JPanel {
 
 	public void noteOn(int channel, int pitch, int velocity) {
 		int notePushed;
-		notePushed = mapMidiNoteToLEDFixed(pitch, 21, 108, 176, 1);
+		if (useFixedMapping) {
+			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		} else {
+			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		}
 
 		DrawPiano.setPianoKey(pitch, 1);
-
 		try {
 			ByteArrayOutputStream message = null;
-			message = arduino.commandSetColor(ControlsPanel.selectedColor, notePushed);
+
+			// if (!AnimationOn) {
+			// if (RandomOn) {
+			// message = arduino.commandSetColor(
+			// new Color((int) random(1, 250), (int) random(1, 250), (int) random(1, 250)),
+			// notePushed);
+			// } else if (VelocityOn) {
+			// message = arduino.commandVelocity(velocity, notePushed, selectedColor);
+			// } else if (SplitOn) {
+			// println("Left Side Color: " + pitch + " " + ui.getLeftMinPitch() + " " +
+			// ui.getLeftMaxPitch());
+			// if (pitch >= ui.getLeftMinPitch() && pitch <= ui.getLeftMaxPitch() - 1) {
+			// println("Left Side Color: " + pitch + " " + ui.getLeftMinPitch() + " " +
+			// ui.getLeftMaxPitch());
+			// message = arduino.commandSetColor(splitLeftColor, notePushed);
+			// } else if (pitch > ui.getLeftMaxPitch() - 1 && pitch <=
+			// ui.getRightMaxPitch()) {
+			// println("Right Side Color");
+			// message = arduino.commandSetColor(splitRightColor, notePushed);
+			// }
+			// } else if (GradientOn) {
+			// int numSteps = ui.getStripLedNum() - 1;
+			// int step = notePushed - 1;
+			// float ratio = (float) step / (float) numSteps;
+			//
+			// int startColor = LeftSideGColor.getRGB();
+			// int endColor = RightSideGColor.getRGB();
+			//
+			// int currentColor;
+			// if (MiddleSideGColor == Color.BLACK) {
+			// currentColor = lerpColor(startColor, endColor, ratio);
+			// } else {
+			// int middleColor = MiddleSideGColor.getRGB();
+			// float leftRatio = ratio * 0.5f;
+			// float rightRatio = (ratio - 0.5f) * 2f;
+			//
+			// int leftColor = lerpColor(startColor, middleColor, leftRatio);
+			// int rightColor = lerpColor(middleColor, endColor, rightRatio);
+			//
+			// currentColor = lerpColor(leftColor, rightColor, ratio);
+			// }
+			//
+			// message = arduino.commandSetColor(new Color(currentColor), notePushed);
+			// } else if (SplashOn) {
+			// message = arduino.commandSplash(velocity, notePushed,
+			// ui.getSplashColor().getRGB());
+			// } else {
+			if (arduino != null) {
+				message = arduino.commandSetColor(ControlsPanel.selectedColor, notePushed);
+			}
+
 			if (message != null) {
 				arduino.sendToArduino(message);
 			}
+			// }
 		} catch (Exception e) {
+			System.out.println("Error sending command: " + e);
 		}
 	}
 
 	public void noteOff(int channel, int pitch, int velocity) {
 		int notePushed;
-
-		notePushed = mapMidiNoteToLEDFixed(pitch, 21, 108, 176, 1);
-
+		if (useFixedMapping) {
+			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		} else {
+			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		}
 		DrawPiano.setPianoKey(pitch, 0);
 		try {
+			// if (!AnimationOn) {
 			arduino.sendCommandKeyOff(notePushed);
+			// }
 		} catch (Exception e) {
-
 		}
 	}
 
