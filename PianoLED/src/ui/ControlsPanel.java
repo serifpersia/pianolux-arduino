@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,15 +20,16 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
 
+	DrawPiano pianoKeyboard = new DrawPiano();
+
 	ColorPicker colorPicker = new ColorPicker();
 
-	public static Color selectedColor = Color.WHITE;
+	static Color selectedColor = Color.RED;
 	static JTextField txtR;
 	static JTextField txtG;
 	static JTextField txtB;
 
-	Color[] presetColors = {
-			Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
 			new Color(128, 0, 255), // Purple
 			new Color(255, 35, 35), // Pink
@@ -42,6 +45,7 @@ public class ControlsPanel extends JPanel {
 			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 
 	public ControlsPanel() {
+
 		setBackground(new Color(21, 25, 28));
 		setLayout(null);
 
@@ -63,18 +67,15 @@ public class ControlsPanel extends JPanel {
 		LEDEffects.setBounds(10, 153, 200, 25);
 		add(LEDEffects);
 
-		JLabel lbPianoSize = new JLabel("Piano Keys");
+		JLabel lbPianoSize = new JLabel("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
 		lbPianoSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lbPianoSize.setForeground(Color.WHITE);
 		lbPianoSize.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbPianoSize.setBounds(1, 429, 209, 47);
+		lbPianoSize.setBounds(0, 430, 250, 50);
 		add(lbPianoSize);
 
 		JButton lbLeftArrow = new JButton("<");
-		lbLeftArrow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+
 		lbLeftArrow.setOpaque(true);
 		lbLeftArrow.setForeground(Color.BLACK);
 		lbLeftArrow.setFont(new Font("Montserrat", Font.PLAIN, 25));
@@ -83,6 +84,17 @@ public class ControlsPanel extends JPanel {
 		lbLeftArrow.setBackground(Color.WHITE);
 		lbLeftArrow.setBounds(27, 487, 72, 41);
 		add(lbLeftArrow);
+		lbLeftArrow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (PianoSizeArrows.counter <= 0) {
+					return;
+				}
+				PianoSizeArrows.counter--;
+				PianoSizeArrows.setKeyboardSize(PianoSizeArrows.counter);
+				lbPianoSize.setText("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
+			}
+		});
 
 		JButton lbRightArrow = new JButton(">");
 		lbRightArrow.setOpaque(true);
@@ -93,6 +105,17 @@ public class ControlsPanel extends JPanel {
 		lbRightArrow.setBackground(Color.WHITE);
 		lbRightArrow.setBounds(114, 487, 72, 41);
 		add(lbRightArrow);
+		lbRightArrow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (PianoSizeArrows.counter >= 4) {
+					return;
+				}
+				PianoSizeArrows.counter++;
+
+				PianoSizeArrows.setKeyboardSize(PianoSizeArrows.counter);
+				lbPianoSize.setText("Piano: " + PianoSizeArrows.getNumPianoKeys() + " Keys");
+			}
+		});
 
 		JLabel lbColors = new JLabel("Colors");
 		lbColors.setHorizontalAlignment(SwingConstants.CENTER);
@@ -220,5 +243,36 @@ public class ControlsPanel extends JPanel {
 
 		colorPicker.setBounds(475, 250, 240, 200);
 		add(colorPicker);
+
+		pianoKeyboard.setBounds(0, 650, 810, 70);
+		pianoKeyboard.setBackground(new Color(21, 25, 29));
+		add(pianoKeyboard);
+		pianoKeyboard.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				// Call the pianoKeyAction method with the mouse coordinates and the pressed
+				// flag set to true
+				pianoKeyAction(e.getX(), e.getY(), true);
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				// Call the pianoKeyAction method with the mouse coordinates and the pressed
+				// flag set to false
+				pianoKeyAction(e.getX(), e.getY(), false);
+			}
+		});
+	}
+
+	void pianoKeyAction(int x, int y, boolean released) {
+		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
+			// Check if the mouse click was inside a white key
+			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y >= 0 && y <= 133) {
+				if (released) {
+					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 1;
+				} else {
+					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 0;
+				}
+				pianoKeyboard.repaint();
+			}
+		}
 	}
 }

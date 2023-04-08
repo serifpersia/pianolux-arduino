@@ -39,8 +39,6 @@ public class DashboardPanel extends JPanel {
 	private MidiBus myBusIn;
 	String midiName;
 
-	ControlsPanel controlsPanel = new ControlsPanel();
-
 	private MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		for (MidiDevice.Info info : infos) {
@@ -109,6 +107,8 @@ public class DashboardPanel extends JPanel {
 		int notePushed;
 		notePushed = mapMidiNoteToLEDFixed(pitch, 21, 108, 176, 1);
 
+		DrawPiano.setPianoKey(pitch, 1);
+
 		try {
 			ByteArrayOutputStream message = null;
 			message = arduino.commandSetColor(ControlsPanel.selectedColor, notePushed);
@@ -124,6 +124,7 @@ public class DashboardPanel extends JPanel {
 
 		notePushed = mapMidiNoteToLEDFixed(pitch, 21, 108, 176, 1);
 
+		DrawPiano.setPianoKey(pitch, 0);
 		try {
 			arduino.sendCommandKeyOff(notePushed);
 		} catch (Exception e) {
@@ -231,12 +232,5 @@ public class DashboardPanel extends JPanel {
 				}
 			}
 		});
-
-
-		// DrawPiano pianoKeyboard = new DrawPiano();
-		// pianoKeyboard.setBounds(0, 160, 810, 600);
-		// pianoKeyboard.setBackground(new Color(21, 25, 29));
-		// add(pianoKeyboard);
-
 	}
 }
