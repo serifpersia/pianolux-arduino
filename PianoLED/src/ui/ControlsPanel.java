@@ -25,14 +25,16 @@ public class ControlsPanel extends JPanel {
 	static JTextField txtG;
 	static JTextField txtB;
 
-	Color[] presetColors = { new Color(255, 255, 254), // White
-			Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, new Color(128, 0, 255), // Purple
-			Color.PINK, new Color(0, 255, 255), // Teal
+	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+			new Color(255, 35, 0), // Orange
+			new Color(128, 0, 255), // Purple
+			new Color(255, 35, 35), // Pink
+			new Color(0, 255, 255), // Teal
 			new Color(128, 255, 0), // Lime
-			Color.CYAN, Color.MAGENTA, new Color(255, 128, 128), // Peach
-			new Color(192, 128, 255), // Lavender
+			Color.CYAN, Color.MAGENTA, new Color(255, 25, 25), // Peach
+			new Color(160, 128, 255), // Lavender
 			new Color(128, 192, 192), // Turquoise
-			new Color(255, 215, 0) // Gold
+			new Color(255, 80, 0) // Gold
 	};
 
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
