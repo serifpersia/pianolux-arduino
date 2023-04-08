@@ -25,7 +25,8 @@ public class ControlsPanel extends JPanel {
 	static JTextField txtG;
 	static JTextField txtB;
 
-	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+	Color[] presetColors = {
+			Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
 			new Color(128, 0, 255), // Purple
 			new Color(255, 35, 35), // Pink

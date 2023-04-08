@@ -93,7 +93,7 @@ public class ColorPicker extends JPanel {
 			g2d.fillRect((int) huePanel.getX(), y, HUE_PANEL_WIDTH, 1);
 		}
 		// draw hue indicator
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(Color.WHITE);
 		int hy = (int) (hue * PANEL_SIZE);
 		int hx = (int) huePanel.getMaxX() - 20;
 		g2d.fillRect(hx, hy - 1, HUE_PANEL_WIDTH, 2);
