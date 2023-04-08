@@ -24,7 +24,6 @@ public class ControlsPanel extends JPanel {
 
 	DrawPiano piano = new DrawPiano();
 
-
 	private ModesController modesController;
 	private JComboBox<Object> LEDEffects;
 
@@ -294,7 +293,8 @@ public class ControlsPanel extends JPanel {
 		colorPicker.setBounds(475, 250, 240, 200);
 		add(colorPicker);
 
-		piano.setBounds(0, 650, 810, 70);
+		piano.setBounds(0, 670, 795, 70);
+		piano.setBackground(new Color(21, 25, 28));
 		add(piano);
 		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {

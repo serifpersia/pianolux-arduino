@@ -5,7 +5,7 @@ import com.serifpersia.pianoled.Arduino;
 public class ModesController {
 	private Arduino arduino;
 
-	boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false,
+	static boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false,
 			SplashOn = false, AnimationOn = false;
 
 	public void disableAllModes() {
