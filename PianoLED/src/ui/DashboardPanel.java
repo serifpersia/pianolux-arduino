@@ -111,7 +111,7 @@ public class DashboardPanel extends JPanel {
 
 		try {
 			ByteArrayOutputStream message = null;
-			message = arduino.commandSetColor(controlsPanel.selectedColor, notePushed);
+			message = arduino.commandSetColor(ControlsPanel.selectedColor, notePushed);
 			if (message != null) {
 				arduino.sendToArduino(message);
 			}
@@ -195,6 +195,7 @@ public class DashboardPanel extends JPanel {
 		openButton.setFocusable(false);
 		openButton.setBorderPainted(false);
 		openButton.setOpaque(true); // Set opaque to true
+		add(openButton);
 		openButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (openButton.getText().equals("Open")) {
@@ -231,7 +232,6 @@ public class DashboardPanel extends JPanel {
 			}
 		});
 
-		add(openButton);
 
 		// DrawPiano pianoKeyboard = new DrawPiano();
 		// pianoKeyboard.setBounds(0, 160, 810, 600);

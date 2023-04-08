@@ -50,6 +50,7 @@ public class DrawPiano extends JPanel {
 				g.fillRect(keyXCoordinates[i] + 15, 510, 8, 40);
 				g.setColor(Color.WHITE);
 			}
+			//repaint();
 		
 	}
 	

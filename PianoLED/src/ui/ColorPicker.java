@@ -23,9 +23,9 @@ public class ColorPicker extends JPanel {
 	private static final int PANEL_SIZE = 200;
 	private static final int HUE_PANEL_WIDTH = 20;
 
-	public float hue;
-	public float saturation;
-	public float brightness;
+	private float hue = 1f;
+	private float saturation = 1f;
+	private float brightness = 1f;
 
 	public ColorPicker() {
 		setBackground(new Color(21, 25, 28));
@@ -62,8 +62,11 @@ public class ColorPicker extends JPanel {
 				}
 				repaint();
 				colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
-				ControlsPanel.selectedColor = ColorPicker.colorPickerColor;
-				// System.out.println(colorPickerColor);
+				ControlsPanel.selectedColor = colorPickerColor;
+				ControlsPanel.txtR.setText(Integer.toString(colorPickerColor.getRed()));
+				ControlsPanel.txtG.setText(Integer.toString(colorPickerColor.getGreen()));
+				ControlsPanel.txtB.setText(Integer.toString(colorPickerColor.getBlue()));
+
 			}
 		});
 	}
@@ -110,8 +113,29 @@ public class ColorPicker extends JPanel {
 		g2d.setColor(Color.WHITE);
 		int cx = (int) (saturation * PANEL_SIZE);
 		int cy = (int) ((1 - brightness) * PANEL_SIZE);
-		g2d.drawOval(cx - 5, cy - 5, 10, 10);
+		g2d.drawOval(cx - 6, cy - 6, 12, 12);
 
 		g2d.dispose();
+	}
+
+	public void setHue(float hue) {
+		this.hue = hue;
+		updateSelectedColor();
+	}
+
+	public void setSaturation(float saturation) {
+		this.saturation = saturation;
+		updateSelectedColor();
+	}
+
+	public void setBrightness(float brightness) {
+		this.brightness = brightness;
+		updateSelectedColor();
+	}
+
+	private void updateSelectedColor() {
+
+		ControlsPanel.selectedColor = Color.getHSBColor(hue, saturation, brightness);
+		// You can also update any UI element that displays the selected color here
 	}
 }

@@ -21,6 +21,9 @@ public class ControlsPanel extends JPanel {
 	ColorPicker colorPicker = new ColorPicker();
 
 	public static Color selectedColor = Color.WHITE;
+	static JTextField txtR;
+	static JTextField txtG;
+	static JTextField txtB;
 
 	Color[] presetColors = { new Color(255, 255, 254), // White
 			Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, new Color(128, 0, 255), // Purple
@@ -105,6 +108,19 @@ public class ControlsPanel extends JPanel {
 				if (index >= 0) {
 					selectedColor = presetColors[index];
 					System.out.println("Preset Color selected: " + selectedColorName);
+
+					// Update text fields with RGB values of selected color
+					txtR.setText(String.valueOf(selectedColor.getRed()));
+					txtG.setText(String.valueOf(selectedColor.getGreen()));
+					txtB.setText(String.valueOf(selectedColor.getBlue()));
+
+					// Update color picker with HSB values of selected color
+					float[] hsb = Color.RGBtoHSB(selectedColor.getRed(), selectedColor.getGreen(),
+							selectedColor.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
 				}
 			}
 		});
@@ -130,39 +146,72 @@ public class ControlsPanel extends JPanel {
 		lbColor_B.setBounds(599, 482, 92, 46);
 		add(lbColor_B);
 
-		JTextField txtR = new JTextField();
+		txtR = new JTextField("255");
+		txtR.setColumns(10);
 		txtR.setBounds(413, 487, 79, 35);
 		add(txtR);
-		txtR.setColumns(10);
+		txtR.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
+			}
+		});
 
-		JTextField txtG = new JTextField();
+		txtG = new JTextField("255");
 		txtG.setColumns(10);
 		txtG.setBounds(540, 487, 79, 35);
 		add(txtG);
+		txtG.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
+			}
+		});
 
-		JTextField txtB = new JTextField();
+		txtB = new JTextField("255");
 		txtB.setColumns(10);
 		txtB.setBounds(675, 487, 79, 35);
 		add(txtB);
-
-		JButton lbSet = new JButton("Set");
-		lbSet.setOpaque(true);
-		lbSet.setForeground(Color.BLACK);
-		lbSet.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		lbSet.setFocusable(false);
-		lbSet.setBorderPainted(false);
-		lbSet.setBackground(Color.WHITE);
-		lbSet.setBounds(500, 600, 100, 50);
-		add(lbSet);
-		lbSet.addActionListener(new ActionListener() {
+		txtB.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				int r = Integer.parseInt(txtR.getText());
-				int g = Integer.parseInt(txtG.getText());
-				int b = Integer.parseInt(txtB.getText());
-
-				selectedColor = new Color(r, g, b);
-
-				System.out.println(selectedColor);
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
 			}
 		});
 
