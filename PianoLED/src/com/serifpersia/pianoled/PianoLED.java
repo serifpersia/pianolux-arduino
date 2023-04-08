@@ -7,6 +7,8 @@ import jssc.SerialPortList;
 import processing.core.*;
 import themidibus.MidiBus;
 import javax.sound.midi.*;
+import javax.sound.midi.MidiDevice.Info;
+
 import static javax.swing.JOptionPane.*;
 import java.util.*;
 import java.util.regex.*;
@@ -22,7 +24,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 
 public class PianoLED extends PApplet {
-	private UI ui;
+	public UI ui;
 	private Updater updater = new Updater();
 	private Arduino arduino;
 
@@ -33,12 +35,12 @@ public class PianoLED extends PApplet {
 	int MAX_VALUE = 255;
 
 	Color selectedColor;
-	Color splitLeftColor;
-	Color splitRightColor;
+	Color splitLeftColor = Color.RED;
+	Color splitRightColor = Color.BLUE;
 
-	Color LeftSideGColor;
-	Color MiddleSideGColor;
-	Color RightSideGColor;
+	Color LeftSideGColor = Color.RED;
+	Color MiddleSideGColor = Color.GREEN;
+	Color RightSideGColor = Color.BLUE;
 
 	int counter = 0;
 	boolean useFixedMapping = false;
@@ -48,17 +50,16 @@ public class PianoLED extends PApplet {
 
 	// Create an ArrayList to hold the names of the MIDI devices
 	ArrayList<String> midilist = new ArrayList<String>();
+	ArrayList<String> midioutlist = new ArrayList<String>();
 
 	String portName;
 	String midiName; // midi input device
-//	String midiOutName; // midi output device
 	String comlist[];
 
 	MidiBus myBusIn;
 
-//	MidiBus myBusOut;
 	public void settings() {
-		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT);
+		size(UI.DEFAULT_WIDTH, UI.DEFAULT_HEIGHT + 700);
 	}
 
 	private void setDefaultSize() {
@@ -66,9 +67,13 @@ public class PianoLED extends PApplet {
 	}
 
 	public void setup() {
+		setDefaultSize();
 		PImage icon = loadImage("PianoLED.png"); // replace with the name and extension of your icon file
 		surface.setIcon(icon);
 		surface.setTitle("PianoLED");
+
+		// Centre the window
+		centreWindow();
 
 		ui = new UI(this);
 		ui.buildUI();
@@ -76,7 +81,7 @@ public class PianoLED extends PApplet {
 		ui.setDefaultMode();
 		selectedColor = Color.RED;
 		ui.setColorWheelValue(selectedColor);
-		
+
 		selectedColor = ui.getColorWheelValue();
 
 		Refresh();
@@ -84,10 +89,20 @@ public class PianoLED extends PApplet {
 		updater.checkLocalVersion();
 	}
 
+	public void centreWindow() {
+		int centerX = displayWidth / 2 - width / 2;
+		int centerY = displayHeight / 2 - height / 2;
+		surface.setLocation(centerX, centerY);
+	}
+
 	public void setSystemFileDownload() {
 	}
 
-//button update
+	public void Instructions() {
+		ui.showInstructions();
+	}
+
+	// button update
 	public void checkForUpdates() {
 		updater.checkUpdates();
 	}
@@ -102,15 +117,17 @@ public class PianoLED extends PApplet {
 		}
 	}
 
-//	public void midiout(int n) {
-//		try {
-//			// Set the midiName variable to the name of the selected MIDI device
-////			midiOutName = midilist.get(n);
-//			println("Selected midi output device: " + midiOutName);
-//		} catch (Exception NoDevicesAvailable) {
-//			println("No devices Available. plugin devices into your computer first!");
-//		}
-//	}
+	public void midiout(int n) {
+		try {
+			println("Selected midi output device: " + midioutlist.get(n) + "(" + n + ")");
+
+			if (pianoRoll != null) {
+				pianoRoll.setOutputDevice(getMidiDeviceByName(midioutlist.get(n)));
+			}
+		} catch (Exception NoDevicesAvailable) {
+			println("No devices Available. plugin devices into your computer first!");
+		}
+	}
 
 	public void noteOn(int channel, int pitch, int velocity) {
 		int notePushed;
@@ -133,8 +150,9 @@ public class PianoLED extends PApplet {
 				} else if (VelocityOn) {
 					message = arduino.commandVelocity(velocity, notePushed, selectedColor);
 				} else if (SplitOn) {
+					println("Left Side Color: " + pitch + " " + ui.getLeftMinPitch() + " " + ui.getLeftMaxPitch());
 					if (pitch >= ui.getLeftMinPitch() && pitch <= ui.getLeftMaxPitch() - 1) {
-						println("Left Side Color");
+						println("Left Side Color: " + pitch + " " + ui.getLeftMinPitch() + " " + ui.getLeftMaxPitch());
 						message = arduino.commandSetColor(splitLeftColor, notePushed);
 					} else if (pitch > ui.getLeftMaxPitch() - 1 && pitch <= ui.getRightMaxPitch()) {
 						println("Right Side Color");
@@ -166,7 +184,8 @@ public class PianoLED extends PApplet {
 				} else if (SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, ui.getSplashColor().getRGB());
 				} else {
-					message = arduino.commandSetColor(selectedColor, notePushed);
+					if (arduino != null)
+						message = arduino.commandSetColor(selectedColor, notePushed);
 				}
 
 				if (message != null) {
@@ -219,9 +238,9 @@ public class PianoLED extends PApplet {
 	}
 
 	public void comlist(int n) throws SerialPortException {
-	    String[] portNames = SerialPortList.getPortNames();
-	    portName = portNames[n];
-	    System.out.println("Selected serial device: " + portName);
+		String[] portNames = SerialPortList.getPortNames();
+		portName = portNames[n];
+		System.out.println("Selected serial device: " + portName);
 	}
 
 	public void disableAllModes() {
@@ -231,8 +250,6 @@ public class PianoLED extends PApplet {
 		SplitOn = false;
 		GradientOn = false;
 		SplashOn = false;
-		pianoRoll = null;
-		setDefaultSize();
 	}
 
 	public void colorlist(int n) {
@@ -345,14 +362,105 @@ public class PianoLED extends PApplet {
 			ui.setAnimationDefaults(0, 127);
 			AnimationOn = true;
 			break;
-		case "Piano Roll":
-			disableAllModes();
-			ui.hideAllControls();
-			ui.showPianoRollControls();
-			pianoRoll = new PianoRoll(this);
-			break;
 		}
 		println("Selected mode: " + ui.getModeName(n));
+	}
+
+	public void PianoRollToggle(boolean on) {
+		if (on) {
+			ui.showPianoRollControls();
+			pianoRoll = new PianoRoll(this);
+			// Centre the window
+//			centreWindow();
+		} else {
+			togglePianoRollButton(false);
+			pianoRoll.close();
+			pianoRoll = null;
+			ui.hidePianoRollControls();
+			ui.resetPianoKeys();
+			setDefaultSize();
+//			centreWindow();
+		}
+	}
+
+	public void Track1(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(0, on);
+	}
+
+	public void Track2(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(1, on);
+	}
+
+	public void Track3(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(2, on);
+	}
+
+	public void Track4(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(3, on);
+	}
+
+	public void Track5(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(4, on);
+	}
+
+	public void Track6(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(5, on);
+	}
+
+	public void Track7(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(6, on);
+	}
+
+	public void Track8(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(7, on);
+	}
+
+	public void Track9(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(8, on);
+	}
+
+	public void Track10(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(9, on);
+	}
+
+	public void Track11(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(10, on);
+	}
+
+	public void Track12(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(11, on);
+	}
+
+	public void Track13(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(12, on);
+	}
+
+	public void Track14(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(13, on);
+	}
+
+	public void Track15(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(14, on);
+	}
+
+	public void Track16(boolean on) {
+		if (pianoRoll != null)
+			pianoRoll.toggleMidiTrack(15, on);
 	}
 
 	public void Open() {
@@ -360,7 +468,6 @@ public class PianoLED extends PApplet {
 		if (ui.getButtonCaption("Open").equals("Open")) {
 			try {
 				myBusIn = new MidiBus(this, midiName, 0);
-//				myBusOut = new MidiBus(this, midiOutName, 0);
 				println("Midi Input Port Open: " + midiName);
 
 				arduino = new Arduino(this, portName, 115200);
@@ -383,7 +490,6 @@ public class PianoLED extends PApplet {
 			}
 		} else {
 			myBusIn.dispose();
-//			myBusOut.dispose();
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
 				arduino.stop();
@@ -419,6 +525,7 @@ public class PianoLED extends PApplet {
 		}
 		refreshComList();
 		refreshMidiList();
+		refreshMidiOutList();
 	}
 
 	public void findPortNameOnWindows(String deviceName) {
@@ -466,7 +573,7 @@ public class PianoLED extends PApplet {
 	}
 
 	public void refreshComList() {
-		 comlist = SerialPortList.getPortNames();
+		comlist = SerialPortList.getPortNames();
 		ui.getController(ScrollableList.class, "comlist").clear();
 		ui.getController(ScrollableList.class, "comlist").addItems(comlist);
 
@@ -494,7 +601,26 @@ public class PianoLED extends PApplet {
 
 		int defaultValue = findDefaultMidi(midilist, Arrays.asList("piano", "midi"));
 		setListWithDefault("midi", midilist, defaultValue);
-		setListWithDefault("midiout", midilist, defaultValue);
+	}
+
+	public void refreshMidiOutList() {
+		midioutlist.clear();
+
+		MidiDevice.Info[] info_midiIn = MidiSystem.getMidiDeviceInfo();
+		for (MidiDevice.Info info : info_midiIn) {
+			try {
+				MidiDevice device = MidiSystem.getMidiDevice(info);
+				if (device.getMaxReceivers() != 0) {
+					midioutlist.add(info.getName());
+				}
+				device.close();
+			} catch (MidiUnavailableException e) {
+				// Handle the exception
+			}
+		}
+
+		int defaultValue = findDefaultMidi(midioutlist, Arrays.asList("piano"));
+		setListWithDefault("midiout", midioutlist, defaultValue);
 	}
 
 	private void setListWithDefault(String listName, ArrayList<String> list, int defaultValue) {
@@ -567,14 +693,28 @@ public class PianoLED extends PApplet {
 
 	public void PianoRollPlayPause() {
 		if (pianoRoll != null)
-			pianoRoll.pause();
-		Button button = ui.getController(Button.class, "PianoRollPlayPause");
-		if (pianoRoll.isPaused()) {
-			button.getCaptionLabel().setText(">");
-			button.setColorBackground(Color.BLUE.getRGB());
+			pianoRoll.startStop();
+
+		togglePianoRollButton();
+	}
+
+	public void togglePianoRollButton() {
+		if (pianoRoll == null || pianoRoll.isPaused()) {
+			togglePianoRollButton(false);
 		} else {
+			togglePianoRollButton(true);
+		}
+
+	}
+
+	public void togglePianoRollButton(boolean on) {
+		Button button = ui.getController(Button.class, "PianoRollPlayPause");
+		if (on) {
 			button.getCaptionLabel().setText("||");
 			button.setColorBackground(Color.GREEN.getRGB());
+		} else {
+			button.getCaptionLabel().setText(">");
+			button.setColorBackground(Color.BLUE.getRGB());
 		}
 	}
 
@@ -617,30 +757,38 @@ public class PianoLED extends PApplet {
 
 			try {
 				// Get the selected MIDI output device
+				pianoRoll.stop();
+				togglePianoRollButton(false);
 				int midiOutIndex = (int) ui.getController(ScrollableList.class, "midiout").getValue();
-				MidiDevice.Info[] midiOutDeviceInfo = MidiSystem.getMidiDeviceInfo();
-				MidiDevice midiOutDevice = MidiSystem.getMidiDevice(midiOutDeviceInfo[midiOutIndex]);
-				pianoRoll.setOutputDevice(midiOutDevice);
+				pianoRoll.setOutputDevice(getMidiDeviceByName(midioutlist.get(midiOutIndex)));
 				pianoRoll.loadMidiFile(midiFile);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
 	}
-	
-	public void ColorWheel(int rgbColor)
-	{
+
+	public void ColorWheel(int rgbColor) {
 		selectedColor = new Color(rgbColor);
 		ui.setSplashColorsToManual();
 	}
 
+	MidiDevice getMidiDeviceByName(String deviceName) throws MidiUnavailableException {
+		MidiDevice.Info[] deviceInfo = MidiSystem.getMidiDeviceInfo();
+		for (Info info : deviceInfo) {
+			if (info.getName().equalsIgnoreCase(deviceName))
+				return MidiSystem.getMidiDevice(info);
+		}
+
+		return null;
+	}
 
 	public void dispose() {
 		try {
-			if (myBusIn != null ) {
+			if (myBusIn != null) {
 				myBusIn.dispose();
 			}
-			
+
 //			if (myBusOut != null) {
 //				myBusOut.dispose();
 //			}

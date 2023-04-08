@@ -7,6 +7,7 @@ import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlP5;
 import controlP5.Controller;
+import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Toggle;

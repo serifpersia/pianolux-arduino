@@ -10,9 +10,14 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sound.midi.MetaEventListener;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
@@ -21,7 +26,7 @@ import themidibus.MidiBus;
 
 public class PianoRoll {
 	private static final int DELAY_AFTER_NOTE_FINISHED = 1500;
-	PApplet app;
+	PianoLED app;
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
 	Sequencer sequencer;
@@ -36,9 +41,8 @@ public class PianoRoll {
 	LinkedList<Note> notes;
 	Note currentNote;
 
-	public static int REWIND_FRAGMENT_SEC = 3;
+	public static int REWIND_FRAGMENT_SEC = 5;
 
-	// List<Note> notesDisplayed = new boolean[512];
 	boolean[] keysOn = new boolean[128];
 	double pianoRollTickHeight;
 	double ticksPerSec;
@@ -56,7 +60,7 @@ public class PianoRoll {
 	int whiteKeyWidth = 15;
 	int whiteKeyHeight = 70;
 	int blackKeyWidth = 8;
-	int blackKeyHeight = 40;
+	int blackKeyHeight = 45;
 
 	double pianoRollTickHeightMult = 100;
 	int tickResolution = 1000;
@@ -69,21 +73,85 @@ public class PianoRoll {
 	float blackKeyHeightRatio = 0.7f;
 
 	long currentTick;
+	private int midiNumTracks;
+	private String midiFileName;
+	
+	int firstNote = 0;
+	private OutMidiReceiver myMidiReceiver;
 
-	public PianoRoll(PApplet app) {
+	public PianoRoll(PianoLED app) {
 		this.app = app;
 		app.getSurface().setSize(PianoRoll.PIANO_ROLL_HEIGHT, PianoRoll.PIANO_ROLL_WIDTH);
 		pianoRollBottom = app.height - paddingBottom - whiteKeyHeight;
 		pianoRollHeight = pianoRollBottom - pianoRollTop;
 	}
 
-	public void setOutputDevice(MidiDevice midiOutDevice) {
+	public void setOutputDevice(MidiDevice midiOutDevice) throws MidiUnavailableException {
 		this.midiOutDevice = midiOutDevice;
+		myMidiReceiver = new OutMidiReceiver(midiOutDevice);
+		if (sequencer != null) {
+			sequencer.getTransmitter().setReceiver(myMidiReceiver);
+		}
+	}
+	
+	class OutMidiReceiver implements Receiver {
+		
+		boolean[] disableMidiTrack = new boolean[128];
+		private Receiver receiver;
+
+
+		public OutMidiReceiver(MidiDevice midiDevice) throws MidiUnavailableException
+		{
+			this.receiver = midiDevice.getReceiver();
+		}
+		
+		public void toggleTrackToPlay(int track, boolean on)
+		{
+			disableMidiTrack[track] = !on;
+		}
+		
+		boolean isTrackPlaying(int trackNum)
+		{
+			return !disableMidiTrack[trackNum];
+		}
+		
+	    @Override
+	    public void send(MidiMessage message, long timeStamp) {
+	    	if( receiver == null)
+	    		return;
+	    	
+	        if (message instanceof ShortMessage) {
+	            ShortMessage shortMessage = (ShortMessage) message;
+	            int trackNumber = shortMessage.getChannel();
+	            if (!disableMidiTrack[trackNumber]) {
+	                // Process the message for the desired track
+	            	receiver.send(message, timeStamp);
+	            }
+	        } else if (message instanceof MetaMessage) {
+	            // Process meta messages for all tracks
+	        	receiver.send(message, timeStamp);
+	        }
+	    }
+
+	    @Override
+	    public void close() {
+	        // Close the receiver
+	    	receiver.close();
+	    }
+	};
+	
+	public void toggleMidiTrack(int trackNum, boolean on)
+	{
+		myMidiReceiver.toggleTrackToPlay(trackNum, on);
 	}
 
+	
 	public void loadMidiFile(File midiFile) {
 		notes = readMidi(midiFile);
-		PApplet.println("Read "+notes.size()+" notes from "+midiFile);
+		this.midiFileName = midiFile.getName();
+		this.firstNote = 0;
+		PApplet.println("Read " + notes.size() + " notes from " + midiFile);
+		app.ui.showPianoRollTracks(this.midiNumTracks);
 		setupSequencer(midiFile);
 	}
 
@@ -96,8 +164,6 @@ public class PianoRoll {
 		app.frameRate(120);
 		drawVisualization();
 	}
-
-	int firstNote = 0;
 
 	// Visualisation
 	public void drawVisualization() {
@@ -116,23 +182,26 @@ public class PianoRoll {
 			for (int noteNum = firstNote; noteNum < n; noteNum++) {
 				Note note = notes.get(noteNum);
 
-				if (note.start < currentTick && note.end > currentTick) {
-					if (debug)
-						PApplet.println("Key On: " + note.pitch + " " + note.start + " " + note.end);
-					keysOn[note.pitch - firstPianoKeyPitch + 1] = true;
+				if (myMidiReceiver.isTrackPlaying(note.trackNum)) {
+
+					if (note.start < currentTick && note.end > currentTick) {
+						if (debug)
+							PApplet.println("Key On: " + note.pitch + " " + note.start + " " + note.end);
+						keysOn[note.pitch - firstPianoKeyPitch + 1] = true;
+					}
+
+					// note is too far yet to display
+					if (note.start > currentTick + delayBeforeNotePLayed)
+						break;
+
+					// note finished
+					if (note.end < currentTick - DELAY_AFTER_NOTE_FINISHED) {
+						firstNote = noteNum;
+						continue;
+					}
+
+					drawNote(note);
 				}
-
-				// note is too far yet to display
-				if (note.start > currentTick + delayBeforeNotePLayed)
-					break;
-
-				// note finished
-				if (note.end < currentTick - DELAY_AFTER_NOTE_FINISHED) {
-					firstNote = noteNum;
-					continue;
-				}
-
-				drawNote(note);
 			}
 		}
 
@@ -164,7 +233,7 @@ public class PianoRoll {
 			if (i == 23) // C4 in 88 key
 			{
 				app.fill(128);
-				app.text("C", posX + whiteKeyWidth / 2 - 5, pianoRollBottom + whiteKeyHeight - 10);
+				app.text("C", posX + whiteKeyWidth / 2 - 2, pianoRollBottom + whiteKeyHeight - 6);
 				app.fill(255);
 			}
 			if ((i - 2) % 7 == 0) {
@@ -252,16 +321,33 @@ public class PianoRoll {
 		app.stroke(100, 100, 100);
 		app.fill(255);
 
+		int textBlockX = UI.EFFECT_CONTROLS_X;
+
+		if (this.midiFileName != null) {
+			app.text(this.midiFileName, textBlockX, 300);
+			app.text("Tracks:", textBlockX, 320);
+		}
+
 		if (debug) {
+
+			long ticks = sequence == null ? 0 : sequence.getTickLength();
 			app.line(pianoRollSide, pianoRollBottom, app.width - pianoRollSide, pianoRollBottom);
-			app.text(currentTick, app.width - 150, pianoRollBottom);
+			app.text(currentTick + " / " + ticks, textBlockX, pianoRollBottom);
+
+			int textBlockY = pianoRollBottom - 50;
+			app.text("midiNumTracks: " + midiNumTracks, textBlockX, textBlockY);
+			textBlockY += 15;
+			app.text("numNotes: " + (notes == null ? 0 : notes.size()), textBlockX, textBlockY);
+			textBlockY += 15;
+			app.text("firstNote: " + firstNote, textBlockX, textBlockY);
+
 		}
 
 		app.stroke(0);
 	}
 
 	public boolean isPaused() {
-		return !sequencer.isRunning();
+		return sequencer == null || !sequencer.isRunning();
 	}
 
 	public boolean isBlack(int midiPitch) {
@@ -288,45 +374,131 @@ public class PianoRoll {
 	// MIDI handling
 	private void setupSequencer(File midiFile) {
 		try {
-			sequencer = MidiSystem.getSequencer();
+			boolean connected = true;
+			if (midiOutDevice != null) {
+				openMidiDevice(midiOutDevice);
+				if (midiOutDevice.isOpen()) {
+					connected = false;
+				}
+			}
+
+			sequencer = MidiSystem.getSequencer(connected);
 			sequencer.open();
 			sequence = MidiSystem.getSequence(midiFile);
 			sequencer.setSequence(sequence);
 
+			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
+			setOutputDevice(midiOutDevice);
+			
 			int ticksPerBeat = sequence.getResolution();
 			double bpm = sequencer.getTempoInBPM();
 			ticksPerSec = ticksPerBeat * bpm / 60;
-
 			pianoRollTickHeight = (60.0f / ticksPerBeat) / bpm * pianoRollTickHeightMult;
+
+			sequencer.addMetaEventListener(new MetaEventListener() {
+				@Override
+				public void meta(MetaMessage meta) {
+					if (meta.getType() == 0x2F) {
+						app.togglePianoRollButton();
+					}
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	private void openMidiDevice(MidiDevice outDevice) {
+		if (outDevice == null)
+			return;
+		if (!outDevice.isOpen()) {
+			try {
+				outDevice.open();
+			} catch (MidiUnavailableException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeMidiDevice(MidiDevice outDevice) {
+		if (outDevice == null)
+			return;
+		if (outDevice.isOpen()) {
+			outDevice.close();
+		}
+	}
+
+	class MidiLEDReceiver implements Receiver {
+		@Override
+		public void send(MidiMessage midiMessage, long timeStamp) {
+			if (midiMessage instanceof ShortMessage message) {
+				int pitch = message.getData1();
+				int velocity = message.getData2();
+				if (message.getCommand() == ShortMessage.NOTE_ON && message.getData2() != 0) {
+					app.noteOn(0, pitch, velocity);
+				} else if (message.getCommand() == ShortMessage.NOTE_OFF
+						|| message.getCommand() == ShortMessage.NOTE_ON && message.getData2() == 0) {
+					if (sequencer.isRunning())
+						app.noteOff(0, pitch, velocity);
+				} else {
+					PApplet.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				}
+			}
+		}
+
+		@Override
+		public void close() {
+			stop();
+		}
+	}
+
 	public void rewind() {
-		sequencer.setTickPosition(0);
+		if (sequencer != null) {
+			sequencer.setTickPosition(0);
+		}
 		firstNote = 0;
 	}
 
 	public void rewind(int sec) {
-		long currentTick = sequencer.getTickPosition();
-		long rewindTick = (long) (currentTick + ticksPerSec * sec);
+		if (sequencer != null) {
+			long currentTick = sequencer.getTickPosition();
+			long rewindTick = (long) (currentTick + ticksPerSec * sec);
 
-		// Make sure the rewindTick is not negative
-		if (rewindTick < 0) {
-			rewindTick = 0;
+			// Make sure the rewindTick is not negative
+			if (rewindTick < 0) {
+				rewindTick = 0;
+			}
+
+			firstNote = 0;
+			sequencer.setTickPosition(rewindTick);
 		}
-
-		firstNote = 0;
-		sequencer.setTickPosition(rewindTick);
 	}
 
-	public void pause() {
-		// pause = !pause;
-		if (sequencer.isRunning()) {
-			sequencer.stop();
-		} else {
-			sequencer.start();
+	public void close() {
+		if (sequencer != null && sequencer.isRunning())
+			sequencer.close();
+		if (myBus != null)
+			myBus.close();
+		if (midiOutDevice != null)
+			midiOutDevice.close();
+		firstNote = 0;
+	}
+
+	public void startStop() {
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			} else {
+				sequencer.start();
+			}
+		}
+	}
+
+	public void stop() {
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			}
 		}
 	}
 
@@ -335,12 +507,18 @@ public class PianoRoll {
 		int velocity;
 		int start;
 		int end;
+		int trackNum;
 
-		Note(int pitch, int velocity, int start, int end) {
+		Note(int pitch, int velocity, int start, int end, int trackNum) {
 			this.pitch = pitch;
 			this.velocity = velocity;
 			this.start = start;
 			this.end = end;
+			this.trackNum = trackNum;
+		}
+
+		public int getTrack() {
+			return trackNum;
 		}
 	}
 
@@ -349,9 +527,10 @@ public class PianoRoll {
 		try {
 			// Load the MIDI file
 			Sequence sequence = MidiSystem.getSequence(midiFile);
-
 			// Iterate over each track in the sequence
+			int trackNum = 0;
 			for (Track track : sequence.getTracks()) {
+				int notesInTrack = 0;
 				// Iterate over each event in the track
 				for (int i = 0; i < track.size(); i++) {
 					MidiEvent event = track.get(i);
@@ -379,12 +558,16 @@ public class PianoRoll {
 								noteEnd = (int) sequence.getTickLength();
 							}
 							// Create a new Note object and add it to the list
-							Note note = new Note(noteValue, noteVelocity, noteStart, noteEnd);
-							fileNotes.add(note);
+							fileNotes.add(new Note(noteValue, noteVelocity, noteStart, noteEnd, trackNum));
+							notesInTrack++;
 						}
 					}
 				}
+				if( notesInTrack > 0 )
+					trackNum++;
 			}
+			this.midiNumTracks = trackNum;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -396,7 +579,6 @@ public class PianoRoll {
 				return Integer.compare(n1.start, n2.start);
 			}
 		});
-
 		return fileNotes;
 	}
 }
