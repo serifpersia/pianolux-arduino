@@ -23,12 +23,9 @@ public class DashboardPanel extends JPanel {
 	private JLabel lbConnections;
 	private JLabel lbSerialDevices;
 	private JLabel lbMidiDevices;
-	public static JComboBox<String> SerialList;
-	public static JComboBox<String> MidiList;
+	public static JComboBox<?> SerialList;
+	public static JComboBox<?> MidiList;
 	private JButton openButton;
-
-
-	
 
 	public DashboardPanel() {
 		setBackground(new Color(21, 25, 28));
@@ -55,7 +52,7 @@ public class DashboardPanel extends JPanel {
 		lbSerialDevices.setForeground(new Color(255, 255, 255));
 		add(lbSerialDevices);
 
-		SerialList = new JComboBox<>(PianoController.portNames);
+		SerialList = new JComboBox<Object>(PianoController.portNames);
 		SerialList.setBounds(10, 229, 200, 25);
 		add(SerialList);
 
@@ -66,7 +63,7 @@ public class DashboardPanel extends JPanel {
 		lbMidiDevices.setBounds(0, 365, 210, 30);
 		add(lbMidiDevices);
 
-		MidiList = new JComboBox<String>(PianoController.getMidiDevices());
+		MidiList = new JComboBox<Object>(PianoController.getMidiDevices());
 		MidiList.setBounds(10, 405, 200, 25);
 		add(MidiList);
 
@@ -86,10 +83,10 @@ public class DashboardPanel extends JPanel {
 					try {
 						PianoController.portName = (String) SerialList.getSelectedItem();
 						PianoController.midiName = (String) MidiList.getSelectedItem();
-						
+
 						pianoController.openMidi();
-						PianoController.arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(openButton), PianoController.portName,
-								115200);
+						PianoController.arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(openButton),
+								PianoController.portName, 115200);
 						System.out.println("Serial device opened: " + PianoController.portName);
 
 						openButton.setBackground(Color.GREEN);
@@ -98,7 +95,7 @@ public class DashboardPanel extends JPanel {
 
 						if (PianoController.arduino != null) {
 							PianoController.arduino.sendCommandBlackOut();
-							PianoController.arduino.sendCommandFadeRate((int) 255);
+							PianoController.arduino.sendCommandFadeRate(255);
 						}
 					} catch (Exception OpenError) {
 					}

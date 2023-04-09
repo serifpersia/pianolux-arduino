@@ -13,11 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoController;
 
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
@@ -27,12 +30,26 @@ public class ControlsPanel extends JPanel {
 	DrawPiano piano = new DrawPiano();
 
 	private ModesController modesController;
+	private PianoController pianoController;
+
 	private JComboBox<Object> LEDEffects;
 
 	public static Color selectedColor = Color.RED;
 	static JTextField txtR;
 	static JTextField txtG;
 	static JTextField txtB;
+
+	public static int BrightnessVal;
+	public static int FadeVal;
+	public static int SplashLength;
+
+	public static JSlider sliderBrightness;
+	public static JSlider sliderFade;
+	public static JSlider sliderMaxSplashLengthVal;
+
+	public static int defaultBrighntessVal;
+	public static int defaultFadeVal;
+	public static int defaultMaxSplashLengthVal;
 
 	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
@@ -60,12 +77,13 @@ public class ControlsPanel extends JPanel {
 	public ControlsPanel() {
 
 		modesController = new ModesController();
+		pianoController = new PianoController();
 
 		setBackground(new Color(21, 25, 28));
 		setLayout(null);
 
 		JLabel lbControls = new JLabel("Controls");
-		lbControls.setBounds(630, 10, 175, 30);
+		lbControls.setBounds(630, 10, 200, 45);
 		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
 		lbControls.setFont(new Font("Montserrat", Font.BOLD, 30));
 		lbControls.setForeground(new Color(255, 255, 255));
@@ -75,11 +93,11 @@ public class ControlsPanel extends JPanel {
 		lbLEDEffect.setHorizontalAlignment(SwingConstants.LEFT);
 		lbLEDEffect.setForeground(Color.WHITE);
 		lbLEDEffect.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbLEDEffect.setBounds(1, 95, 209, 47);
+		lbLEDEffect.setBounds(10, 50, 200, 45);
 		add(lbLEDEffect);
 
 		LEDEffects = new JComboBox<Object>();
-		LEDEffects.setBounds(10, 153, 200, 25);
+		LEDEffects.setBounds(10, 100, 200, 25);
 		LEDEffects.addItem("Default");
 		LEDEffects.addItem("Splash");
 		LEDEffects.addItem("Random");
@@ -94,22 +112,22 @@ public class ControlsPanel extends JPanel {
 		});
 
 		JLabel lbPianoSize = new JLabel("Piano: " + GetUI.getNumPianoKeys() + " Keys");
-		lbPianoSize.setBounds(0, 430, 250, 50);
+		lbPianoSize.setBounds(560, 555, 235, 45);
 		lbPianoSize.setHorizontalAlignment(SwingConstants.LEFT);
 		lbPianoSize.setForeground(Color.WHITE);
 		lbPianoSize.setFont(new Font("Montserrat", Font.BOLD, 30));
 		add(lbPianoSize);
 
 		JLabel lbFixLED = new JLabel("Fix LED Strip");
-		lbFixLED.setBounds(0, 530, 250, 50);
-		lbFixLED.setHorizontalAlignment(SwingConstants.LEFT);
+		lbFixLED.setBounds(10, 555, 200, 45);
+		lbFixLED.setHorizontalAlignment(SwingConstants.CENTER);
 		lbFixLED.setForeground(Color.WHITE);
 		lbFixLED.setFont(new Font("Montserrat", Font.BOLD, 30));
 		add(lbFixLED);
 
 		String[] options = { "No", "Yes", };
-		JComboBox<String> FixLed = new JComboBox<>(options);
-		FixLed.setBounds(10, 580, 200, 25);
+		JComboBox<?> FixLed = new JComboBox<Object>(options);
+		FixLed.setBounds(10, 600, 200, 25);
 		add(FixLed);
 		FixLed.addActionListener(e -> {
 			String selectedOption = (String) FixLed.getSelectedItem();
@@ -130,7 +148,7 @@ public class ControlsPanel extends JPanel {
 		lbLeftArrow.setFocusable(false);
 		lbLeftArrow.setBorderPainted(false);
 		lbLeftArrow.setBackground(Color.WHITE);
-		lbLeftArrow.setBounds(27, 487, 72, 41);
+		lbLeftArrow.setBounds(600, 611, 72, 41);
 		add(lbLeftArrow);
 		lbLeftArrow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -152,7 +170,7 @@ public class ControlsPanel extends JPanel {
 		lbRightArrow.setFocusable(false);
 		lbRightArrow.setBorderPainted(false);
 		lbRightArrow.setBackground(Color.WHITE);
-		lbRightArrow.setBounds(114, 487, 72, 41);
+		lbRightArrow.setBounds(682, 611, 72, 41);
 		add(lbRightArrow);
 		lbRightArrow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,7 +192,7 @@ public class ControlsPanel extends JPanel {
 		lbColors.setBounds(482, 95, 209, 47);
 		add(lbColors);
 
-		JComboBox<String> colorPresets = new JComboBox<>(colorNames.toArray(new String[0]));
+		JComboBox<?> colorPresets = new JComboBox<Object>(colorNames.toArray(new String[0]));
 		colorPresets.setBounds(475, 150, 240, 25);
 		add(colorPresets);
 		colorPresets.addActionListener(new ActionListener() {
@@ -292,12 +310,82 @@ public class ControlsPanel extends JPanel {
 			}
 		});
 
+		JLabel lbBrightness = new JLabel("Brightness");
+		lbBrightness.setBounds(10, 136, 200, 45);
+		lbBrightness.setHorizontalAlignment(SwingConstants.LEFT);
+		lbBrightness.setForeground(Color.WHITE);
+		lbBrightness.setFont(new Font("Montserrat", Font.BOLD, 30));
+		add(lbBrightness);
+
+		sliderBrightness = new JSlider();
+		sliderBrightness.setBounds(10, 192, 200, 25);
+		sliderBrightness.setMinimum(0);
+		sliderBrightness.setMaximum(255);
+		sliderBrightness.setValue(defaultBrighntessVal);
+		add(sliderBrightness);
+		sliderBrightness.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				BrightnessVal = sliderBrightness.getValue();
+				sliderBrightness.setToolTipText(Integer.toString(BrightnessVal));
+				pianoController.BrightnessRate(BrightnessVal);
+				System.out.println("Brightness Slider value: " + BrightnessVal);
+			}
+		});
+
+		JLabel lbFade = new JLabel("Fade");
+		lbFade.setBounds(10, 230, 200, 45);
+		lbFade.setHorizontalAlignment(SwingConstants.LEFT);
+		lbFade.setForeground(Color.WHITE);
+		lbFade.setFont(new Font("Montserrat", Font.BOLD, 30));
+		add(lbFade);
+
+		sliderFade = new JSlider();
+		sliderFade.setBounds(10, 284, 200, 25);
+		sliderFade.setMinimum(0);
+		sliderFade.setMaximum(255);
+		sliderFade.setValue(defaultFadeVal);
+		add(sliderFade);
+		sliderFade.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				FadeVal = sliderFade.getValue();
+				sliderFade.setToolTipText(Integer.toString(FadeVal));
+				pianoController.FadeRate(FadeVal);
+				System.out.println("Fade Slider value: " + FadeVal);
+			}
+		});
+
+		JLabel lbSplashLength = new JLabel("Splash Length");
+		lbSplashLength.setBounds(10, 320, 226, 45);
+		lbSplashLength.setHorizontalAlignment(SwingConstants.LEFT);
+		lbSplashLength.setForeground(Color.WHITE);
+		lbSplashLength.setFont(new Font("Montserrat", Font.BOLD, 30));
+		add(lbSplashLength);
+
+		sliderMaxSplashLengthVal = new JSlider();
+		sliderMaxSplashLengthVal.setBounds(10, 376, 200, 25);
+		sliderMaxSplashLengthVal.setMinimum(5);
+		sliderMaxSplashLengthVal.setMaximum(15);
+		sliderMaxSplashLengthVal.setValue(defaultMaxSplashLengthVal);
+		add(sliderMaxSplashLengthVal);
+		sliderMaxSplashLengthVal.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				SplashLength = sliderMaxSplashLengthVal.getValue();
+				sliderFade.setToolTipText(Integer.toString(SplashLength));
+				pianoController.SplashLengthRate(SplashLength);
+				System.out.println("Fade Slider value: " + SplashLength);
+			}
+		});
+
 		colorPicker.setBounds(475, 250, 240, 200);
 		add(colorPicker);
 
 		piano.setBounds(0, 670, 795, 70);
 		piano.setBackground(new Color(21, 25, 28));
 		add(piano);
+
 		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				// Call the pianoKeyAction method with the mouse coordinates and the pressed
@@ -312,5 +400,4 @@ public class ControlsPanel extends JPanel {
 			}
 		});
 	}
-
 }

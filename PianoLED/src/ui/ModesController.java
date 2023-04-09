@@ -37,48 +37,36 @@ public class ModesController {
 			disableAllModes();
 			// GetUI.hideAllControls();
 			// GetUI.showDefaultControls();
-			// GetUI.setDefaults(255, 127);
+			GetUI.setDefaults(255, 255);
 			break;
 		case "Splash":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.showSplashControls();
-			// GetUI.setSplashDefaults(11, 110, 0, 127);
+			GetUI.setSplashDefaults(255, 80, 8);
 			SplashOn = true;
 			break;
 		case "Random":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.setDefaults(255, 127);
-			// GetUI.showRandomControls();
+			GetUI.setDefaults(255, 255);
 			RandomOn = true;
 			break;
 		case "Gradient":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.setDefaults(255, 127);
-			// GetUI.showGradientControls();
-			// GradientOn = true;
+			GetUI.setDefaults(255, 255);
+			GradientOn = true;
 			break;
 		case "Velocity":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.setDefaults(255, 127);
-			// GetUI.showVelocityControls();
-			// VelocityOn = true;
+			GetUI.setDefaults(255, 255);
+			VelocityOn = true;
 			break;
 		case "Split":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.setDefaults(255, 127);
-			// GetUI.showSplitControls();
+			GetUI.setDefaults(255, 255);
 			SplitOn = true;
 			break;
 		case "Animation":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.showAnimationControls();
-			// GetUI.setAnimationDefaults(0, 127);
+			GetUI.setDefaults(255, 255);
 			AnimationOn = true;
 			break;
 		}

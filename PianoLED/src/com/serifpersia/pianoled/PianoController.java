@@ -216,4 +216,22 @@ public class PianoController {
 		} catch (Exception e) {
 		}
 	}
+
+	public void FadeRate(int value) {
+		if (arduino != null) {
+			arduino.sendCommandFadeRate(value);
+		}
+	}
+	
+	public void BrightnessRate(int value) {
+		if (arduino != null) {
+			arduino.sendCommandBrightness(value);
+		}
+	}
+	
+	public void SplashLengthRate(int value) {
+		if (arduino != null) {
+			arduino.sendCommandSplashMaxLength(value);
+		}
+	}
 }

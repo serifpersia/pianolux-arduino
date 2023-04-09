@@ -18,7 +18,7 @@ public class GetUI {
 	public static int getLeftMaxPitch() {
 		return leftMaxPitch;
 	}
-	
+
 	public static int getRightMaxPitch() {
 		return rightMaxPitch;
 	}
@@ -95,5 +95,26 @@ public class GetUI {
 		System.out.println("Selected number led: " + stripLedNum);
 		System.out.println("Selected first note: " + firstNoteSelected);
 		System.out.println("Selected last note: " + lastNoteSelected);
+	}
+
+	public static void setDefaults(int brightness, int fade) {
+		ControlsPanel.defaultBrighntessVal = brightness;
+		ControlsPanel.defaultFadeVal = fade;
+
+		ControlsPanel.sliderBrightness.setValue(ControlsPanel.defaultBrighntessVal);
+		ControlsPanel.sliderFade.setValue(ControlsPanel.defaultFadeVal);
+
+	}
+
+	public static void setSplashDefaults(int brightness, int fade, int maxSplashLength) {
+		ControlsPanel.defaultBrighntessVal = brightness;
+		ControlsPanel.defaultFadeVal = fade;
+		ControlsPanel.defaultFadeVal = fade;
+		ControlsPanel.defaultMaxSplashLengthVal = maxSplashLength;
+
+		ControlsPanel.sliderBrightness.setValue(ControlsPanel.defaultBrighntessVal);
+		ControlsPanel.sliderFade.setValue(ControlsPanel.defaultFadeVal);
+		ControlsPanel.sliderMaxSplashLengthVal.setValue(ControlsPanel.defaultMaxSplashLengthVal);
+
 	}
 }
