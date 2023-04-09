@@ -106,6 +106,7 @@ public class PianoController {
 	}
 
 	public static boolean useFixedMapping = false;
+	public static boolean stripReverse = false; // default value
 
 	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -184,7 +185,8 @@ public class PianoController {
 
 					message = arduino.commandSetColor(new Color(currentColor), notePushed);
 				} else if (ModesController.SplashOn) {
-					message = arduino.commandSplash(velocity, notePushed, ControlsPanel.selectedColor.getRGB());
+					message = arduino.commandSplash(velocity, notePushed, PianoController.getSplashColor());
+
 				} else {
 					if (arduino != null)
 						message = arduino.commandSetColor(ControlsPanel.selectedColor, notePushed);
@@ -222,16 +224,24 @@ public class PianoController {
 			arduino.sendCommandFadeRate(value);
 		}
 	}
-	
+
 	public void BrightnessRate(int value) {
 		if (arduino != null) {
 			arduino.sendCommandBrightness(value);
 		}
 	}
-	
+
+	public static Color getSplashColor() {
+		return new Color(ControlsPanel.selectedColor.getRGB());
+	}
+
 	public void SplashLengthRate(int value) {
 		if (arduino != null) {
 			arduino.sendCommandSplashMaxLength(value);
 		}
+	}
+
+	public static void stripReverse(boolean on) {
+		arduino.sendCommandStripDirection(on ? 1 : 0, GetUI.getStripLedNum());
 	}
 }

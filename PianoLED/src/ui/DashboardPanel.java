@@ -97,6 +97,7 @@ public class DashboardPanel extends JPanel {
 							PianoController.arduino.sendCommandBlackOut();
 							PianoController.arduino.sendCommandFadeRate(255);
 						}
+
 					} catch (Exception OpenError) {
 					}
 				} else {
@@ -105,7 +106,6 @@ public class DashboardPanel extends JPanel {
 						PianoController.arduino.sendCommandBlackOut();
 						PianoController.arduino.stop();
 					}
-
 					System.out.println("Serial device closed: " + PianoController.portName);
 					openButton.setBackground(Color.WHITE);
 					openButton.setForeground(Color.BLACK);

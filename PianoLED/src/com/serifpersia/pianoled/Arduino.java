@@ -7,12 +7,9 @@ import jssc.SerialPortException;
 
 public class Arduino {
 
-	private PianoLED app;
-
 	private SerialPort serialPort;
 
 	public Arduino(PianoLED pianoLED, String port, int baudrate) {
-		this.app = pianoLED;
 		serialPort = new SerialPort(port);
 		try {
 			serialPort.openPort();
@@ -60,16 +57,16 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandSplash(int velocity, int note, int sc) {
+	public ByteArrayOutputStream commandSplash(int velocity, int note, Color color) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_SPLASH);
 		message.write((byte) velocity);
 		message.write((byte) note);
-		// message.write((byte) app.red(sc));
-		// message.write((byte) app.green(sc));
-		// message.write((byte) app.blue(sc));
+		message.write((byte) color.getRed());
+		message.write((byte) color.getGreen());
+		message.write((byte) color.getBlue());
 		return message;
 	}
 
@@ -155,8 +152,8 @@ public class Arduino {
 		sendToArduino(commandAnimation(animationIndex));
 	}
 
-	public void sendCommandSplash(int velocity, int note, int sc) {
-		sendToArduino(commandSplash(velocity, note, sc));
+	public void sendCommandSplash(int velocity, int note, Color color) {
+		sendToArduino(commandSplash(velocity, note, color));
 	}
 
 	public void sendCommandBlackOut() {

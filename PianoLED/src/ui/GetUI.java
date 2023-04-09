@@ -103,7 +103,6 @@ public class GetUI {
 
 		ControlsPanel.sliderBrightness.setValue(ControlsPanel.defaultBrighntessVal);
 		ControlsPanel.sliderFade.setValue(ControlsPanel.defaultFadeVal);
-
 	}
 
 	public static void setSplashDefaults(int brightness, int fade, int maxSplashLength) {

@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Color;
+
 import com.serifpersia.pianoled.Arduino;
 
 public class ModesController {
@@ -42,6 +44,7 @@ public class ModesController {
 		case "Splash":
 			disableAllModes();
 			GetUI.setSplashDefaults(255, 80, 8);
+			ControlsPanel.selectedColor = Color.BLACK;
 			SplashOn = true;
 			break;
 		case "Random":

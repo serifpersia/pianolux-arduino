@@ -21,7 +21,7 @@ public class LeftPanel extends JPanel {
 	private RightPanel rightPanel;
 	private JButton dashboardButton;
 	private ImageIcon dashboardIcon;
-	private ImageIcon dashboardDarkIcon;
+	// private ImageIcon dashboardDarkIcon;
 
 	public LeftPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
@@ -36,8 +36,9 @@ public class LeftPanel extends JPanel {
 
 		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
 				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-		dashboardDarkIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home_dark.png")).getImage()
-				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		// dashboardDarkIcon = new ImageIcon(new
+		// ImageIcon(getClass().getResource("/icons/home_dark.png")).getImage()
+		// .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		dashboardButton = createButton("", "Dashboard");
 		dashboardButton.setIcon(dashboardIcon);
 
