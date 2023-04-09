@@ -11,8 +11,8 @@ public class GetUI {
 	static int firstNoteSelected = 21;
 	static int lastNoteSelected = 108;
 
-	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
-			"Piano Roll");
+	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
+			"Animation", "Piano Roll");
 
 	static String getModeName(int n) {
 		return modes.get(n);
@@ -30,7 +30,7 @@ public class GetUI {
 		return lastNoteSelected - firstNoteSelected + 1;
 	}
 
-	static int getStripLedNum() {
+	public static int getStripLedNum() {
 		return stripLedNum;
 	}
 

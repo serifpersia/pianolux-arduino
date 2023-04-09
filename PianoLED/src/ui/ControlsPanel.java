@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import com.serifpersia.pianoled.PianoController;
+
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
@@ -112,11 +114,11 @@ public class ControlsPanel extends JPanel {
 		FixLed.addActionListener(e -> {
 			String selectedOption = (String) FixLed.getSelectedItem();
 			if (selectedOption.equals("Yes")) {
-				DashboardPanel.useFixedMapping = true;
-				System.out.println(DashboardPanel.useFixedMapping);
+				PianoController.useFixedMapping = true;
+				System.out.println(PianoController.useFixedMapping);
 			} else {
-				DashboardPanel.useFixedMapping = false;
-				System.out.println(DashboardPanel.useFixedMapping);
+				PianoController.useFixedMapping = false;
+				System.out.println(PianoController.useFixedMapping);
 			}
 		});
 
