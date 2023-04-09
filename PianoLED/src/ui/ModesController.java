@@ -5,8 +5,19 @@ import com.serifpersia.pianoled.Arduino;
 public class ModesController {
 	private Arduino arduino;
 
-	static boolean BGColor = false, VelocityOn = false, RandomOn = false, SplitOn = false, GradientOn = false,
-			SplashOn = false, AnimationOn = false;
+	static boolean BGColor = false;
+
+	public static boolean VelocityOn = false;
+
+	public static boolean RandomOn = false;
+
+	public static boolean SplitOn = false;
+
+	public static boolean GradientOn = false;
+
+	public static boolean SplashOn = false;
+
+	public static boolean AnimationOn = false;
 
 	public void disableAllModes() {
 		RandomOn = false;
