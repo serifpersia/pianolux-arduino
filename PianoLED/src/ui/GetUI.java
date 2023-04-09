@@ -30,7 +30,7 @@ public class GetUI {
 	private static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
 			"Animation", "Piano Roll");
 
-	static String getModeName(int n) {
+	public static String getModeName(int n) {
 		return modes.get(n);
 	}
 

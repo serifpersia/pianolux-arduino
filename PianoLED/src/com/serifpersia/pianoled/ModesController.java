@@ -1,8 +1,9 @@
-package ui;
+package com.serifpersia.pianoled;
 
 import java.awt.Color;
 
-import com.serifpersia.pianoled.Arduino;
+import ui.ControlsPanel;
+import ui.GetUI;
 
 public class ModesController {
 	private Arduino arduino;
@@ -37,9 +38,8 @@ public class ModesController {
 		switch (GetUI.getModeName(n)) {
 		case "Default":
 			disableAllModes();
-			// GetUI.hideAllControls();
-			// GetUI.showDefaultControls();
 			GetUI.setDefaults(255, 255);
+			ControlsPanel.selectedColor = Color.RED;
 			break;
 		case "Splash":
 			disableAllModes();
@@ -69,7 +69,7 @@ public class ModesController {
 			break;
 		case "Animation":
 			disableAllModes();
-			GetUI.setDefaults(255, 255);
+			//GetUI.setDefaults(255, 0);
 			AnimationOn = true;
 			break;
 		}

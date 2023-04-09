@@ -14,7 +14,7 @@ import ui.ControlsPanel;
 import ui.DashboardPanel;
 import ui.DrawPiano;
 import ui.GetUI;
-import ui.ModesController;
+
 import java.util.Random;
 
 public class PianoController {
@@ -107,6 +107,7 @@ public class PianoController {
 
 	public static boolean useFixedMapping = false;
 	public static boolean stripReverse = false; // default value
+	public static boolean bgToggle = false; // default value
 
 	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -243,5 +244,58 @@ public class PianoController {
 
 	public static void stripReverse(boolean on) {
 		arduino.sendCommandStripDirection(on ? 1 : 0, GetUI.getStripLedNum());
+	}
+
+	public static void setLedBG(boolean on) {
+		int BG_HUE = 100;
+		int BG_SATURATION = 0;
+		int BG_BRIGHTNESS = 20;
+
+		if (on) {
+			if (arduino != null)
+				arduino.sendCommandSetBG(BG_HUE, BG_SATURATION, BG_BRIGHTNESS);
+		} else {
+			arduino.sendCommandSetBG(0, 0, 0);
+		}
+	}
+
+	public static void setBG() {
+		int red = ControlsPanel.selectedColor.getRed();
+		int green = ControlsPanel.selectedColor.getGreen();
+		int blue = ControlsPanel.selectedColor.getBlue();
+
+		float[] hsbValues = Color.RGBtoHSB(red, green, blue, null);
+		int hue = (int) (hsbValues[0] * 255);
+		int saturation = (int) (hsbValues[1] * 255);
+		int brightness = 30;
+
+		if (arduino != null)
+			arduino.sendCommandSetBG(hue, saturation, brightness);
+	}
+
+	public void animationlist(int n) {
+		if (arduino != null)
+			arduino.sendCommandAnimation(n);
+	}
+
+	public static void dispose() {
+		// Dispose your app here
+		try {
+			if (myBusIn != null) {
+				myBusIn.dispose();
+			}
+
+//			if (myBusOut != null) {
+//				myBusOut.dispose();
+//			}
+
+			if (arduino != null) {
+				arduino.sendCommandBlackOut();
+				arduino.sendCommandSetBG(0, 0, 0);
+				arduino.stop();
+			}
+		} catch (Exception e) {
+			System.out.println("Error while exiting: " + e);
+		}
 	}
 }

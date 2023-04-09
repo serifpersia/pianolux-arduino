@@ -104,6 +104,7 @@ public class DashboardPanel extends JPanel {
 					PianoController.closeMidi();
 					if (PianoController.arduino != null) {
 						PianoController.arduino.sendCommandBlackOut();
+						PianoController.setLedBG(false);
 						PianoController.arduino.stop();
 					}
 					System.out.println("Serial device closed: " + PianoController.portName);

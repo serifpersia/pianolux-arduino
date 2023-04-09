@@ -22,6 +22,14 @@ public class PianoLED extends JFrame {
 					frame.setTitle("PianoLED");
 					frame.setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
 					frame.setVisible(true);
+
+					// Register a shutdown hook
+					Runtime.getRuntime().addShutdownHook(new Thread() {
+						public void run() {
+							// Execute the dispose method
+							PianoController.dispose();
+						}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

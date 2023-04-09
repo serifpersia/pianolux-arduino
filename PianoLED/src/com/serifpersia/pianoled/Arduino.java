@@ -6,11 +6,13 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 public class Arduino {
+	//private PianoLED app;
 
 	private SerialPort serialPort;
 
 	public Arduino(PianoLED pianoLED, String port, int baudrate) {
 		serialPort = new SerialPort(port);
+		//this.app = pianoLED;
 		try {
 			serialPort.openPort();
 			serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
@@ -158,6 +160,7 @@ public class Arduino {
 
 	public void sendCommandBlackOut() {
 		sendToArduino(commandBlackOut());
+		System.out.println("blackout");
 	}
 
 	public void sendCommandBrightness(int value) {
