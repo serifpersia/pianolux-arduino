@@ -23,7 +23,7 @@ public class DashboardPanel extends JPanel {
 	private JLabel lbConnections;
 	private JLabel lbSerialDevices;
 	private JLabel lbMidiDevices;
-	public static JComboBox<?> SerialList;
+	static JComboBox<?> SerialList;
 	public static JComboBox<?> MidiList;
 	private JButton openButton;
 

@@ -18,7 +18,7 @@ public class ColorPicker extends JPanel {
 	private Rectangle2D colorPanel;
 	// private Rectangle2D newPanel;
 
-	public static Color colorPickerColor = Color.WHITE;
+	 static Color colorPickerColor = Color.WHITE;
 
 	private static final int PANEL_SIZE = 200;
 	private static final int HUE_PANEL_WIDTH = 20;

@@ -7,9 +7,9 @@ public class GetUI {
 
 	static int counter = 0;
 
-	static int leftMinPitch = 21;
-	static int rightMaxPitch = 108;
-	static int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
+	private static int leftMinPitch = 21;
+	private static int rightMaxPitch = 108;
+	private static int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
 
 	public static int getLeftMinPitch() {
 		return leftMinPitch;
@@ -23,11 +23,11 @@ public class GetUI {
 		return rightMaxPitch;
 	}
 
-	static int stripLedNum = 176;
-	static int firstNoteSelected = 21;
-	static int lastNoteSelected = 108;
+	private static int stripLedNum = 176;
+	private static int firstNoteSelected = 21;
+	private static int lastNoteSelected = 108;
 
-	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
+	private static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
 			"Animation", "Piano Roll");
 
 	static String getModeName(int n) {

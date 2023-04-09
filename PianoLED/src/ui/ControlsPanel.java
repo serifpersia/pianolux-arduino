@@ -39,17 +39,17 @@ public class ControlsPanel extends JPanel {
 	static JTextField txtG;
 	static JTextField txtB;
 
-	public static int BrightnessVal;
-	public static int FadeVal;
-	public static int SplashLength;
+	static int BrightnessVal;
+	static int FadeVal;
+	static int SplashLength;
 
-	public static JSlider sliderBrightness;
-	public static JSlider sliderFade;
-	public static JSlider sliderMaxSplashLengthVal;
+	static JSlider sliderBrightness;
+	static JSlider sliderFade;
+	static JSlider sliderMaxSplashLengthVal;
 
-	public static int defaultBrighntessVal;
-	public static int defaultFadeVal;
-	public static int defaultMaxSplashLengthVal;
+	static int defaultBrighntessVal = 255;
+	static int defaultFadeVal = 255;
+	static int defaultMaxSplashLengthVal = 8;
 
 	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange

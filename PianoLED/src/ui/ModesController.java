@@ -19,7 +19,7 @@ public class ModesController {
 
 	public static boolean AnimationOn = false;
 
-	public void disableAllModes() {
+	private void disableAllModes() {
 		RandomOn = false;
 		VelocityOn = false;
 		AnimationOn = false;
