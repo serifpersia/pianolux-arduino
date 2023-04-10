@@ -31,7 +31,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	String VersionTag;
+	public String VersionTag = " v4.0";
 	String VersionFile;
 	
 	public String getDownloadUrl(JSONObject release, String fileName) {

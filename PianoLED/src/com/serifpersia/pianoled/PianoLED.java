@@ -11,8 +11,6 @@ import ui.LeftPanel;
 import ui.RightPanel;
 import ui.BottomPanel;
 
-import java.io.File;
-
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
 
@@ -30,10 +28,6 @@ public class PianoLED extends JFrame {
 					// Register a shutdown hook
 					Runtime.getRuntime().addShutdownHook(new Thread() {
 						public void run() {
-							// Delete files here
-							File file1 = new File("somefile tbt");
-							file1.delete();
-
 							// Execute the dispose method
 							PianoController.dispose();
 						}
@@ -46,27 +40,27 @@ public class PianoLED extends JFrame {
 	}
 
 	public PianoLED() {
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	    RightPanel rightPanel = new RightPanel();
-	    getContentPane().add(rightPanel, BorderLayout.CENTER);
+		RightPanel rightPanel = new RightPanel();
+		getContentPane().add(rightPanel, BorderLayout.CENTER);
 
-	    LeftPanel leftPanel = new LeftPanel(rightPanel);
-	    getContentPane().add(leftPanel, BorderLayout.WEST);
+		LeftPanel leftPanel = new LeftPanel(rightPanel);
+		getContentPane().add(leftPanel, BorderLayout.WEST);
 
-	    BottomPanel bottomPanel = new BottomPanel();
-	    getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		BottomPanel bottomPanel = new BottomPanel();
+		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 
-	    // Remove the bottomPanel from the frame's SOUTH region
-	    getContentPane().remove(bottomPanel);
+		// Remove the bottomPanel from the frame's SOUTH region
+		getContentPane().remove(bottomPanel);
 
-	    // Add the bottomPanel to the frame's SOUTH region of the rightPanel
-	    JPanel rightPanelWrapper = new JPanel(new BorderLayout());
-	    rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
-	    rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
-	    getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
+		// Add the bottomPanel to the frame's SOUTH region of the rightPanel
+		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
+		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
+		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
+		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
 
-	    pack();
+		pack();
 	}
 
 }

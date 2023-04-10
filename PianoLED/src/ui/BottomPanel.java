@@ -2,22 +2,29 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+
+import com.serifpersia.pianoled.Updater;
+
+import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class BottomPanel extends JPanel {
 
 	static DrawPiano piano = new DrawPiano();
 
+	static Updater updator = new Updater();
+
 	public void setPiano(DrawPiano piano) {
 		BottomPanel.piano = piano;
 	}
 
 	public BottomPanel() {
-		setBackground(Color.YELLOW);
+		setBackground(Color.BLUE);
 		setLayout(null);
 		setPreferredSize(new Dimension(getWidth(), 90)); // Set the height to 50 pixels
 
@@ -36,6 +43,12 @@ public class BottomPanel extends JPanel {
 				piano.pianoKeyAction(e.getX(), e.getY(), false);
 			}
 		});
+
+		JLabel version = new JLabel("PianoLED" + updator.VersionTag);
+		version.setBounds(5, 72, 150, 15);
+		version.setFont(new Font("Montserrat", Font.BOLD, 15));
+		version.setForeground(Color.WHITE);
+		add(version);
 	}
 
 }
