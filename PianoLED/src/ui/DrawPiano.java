@@ -49,9 +49,9 @@ public class DrawPiano extends JPanel {
 			} else {
 				g.setColor(Color.WHITE);
 			}
-			g.fillRect(x , 0, 15, 70);
+			g.fillRect(x, 0, 15, 70);
 			g.setColor(new Color(100, 100, 100));
-			g.drawRect(x , 0, 15, 70);
+			g.drawRect(x, 0, 15, 70);
 			x += 15;
 		}
 
@@ -62,9 +62,9 @@ public class DrawPiano extends JPanel {
 			} else {
 				g.setColor(Color.BLACK);
 			}
-			g.fillRect(keyXCoordinates[i] , 0, 8, 40);
+			g.fillRect(keyXCoordinates[i], 0, 8, 40);
 			g.setColor(new Color(100, 100, 100));
-			g.drawRect(keyXCoordinates[i] , 0, 8, 40);
+			g.drawRect(keyXCoordinates[i], 0, 8, 40);
 		}
 
 		// Highlight Piano Size
@@ -76,7 +76,7 @@ public class DrawPiano extends JPanel {
 	void pianoKeyAction(int x, int y, boolean released) {
 		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
 			// Check if the mouse click was inside a white key
-			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y >= 0 && y <= 133) {
+			if (x > i * 15 && x < (i + 1) * 15 && y >= 0 && y <= 133) {
 				if (released) {
 					DrawPiano.Keys[DrawPiano.whiteKeys[i]][0] = 1;
 				} else {

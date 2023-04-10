@@ -31,7 +31,7 @@ public class PianoLED extends JFrame {
 					Runtime.getRuntime().addShutdownHook(new Thread() {
 						public void run() {
 							// Delete files here
-							File file1 = new File("/" + "PianoLED");
+							File file1 = new File("somefile tbt");
 							file1.delete();
 
 							// Execute the dispose method
