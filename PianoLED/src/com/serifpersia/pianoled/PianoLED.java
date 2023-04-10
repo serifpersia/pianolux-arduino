@@ -2,6 +2,8 @@ package com.serifpersia.pianoled;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -43,6 +45,37 @@ public class PianoLED extends JFrame {
 	public PianoLED() {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Window dragging 
+		addMouseMotionListener(new MouseMotionAdapter() {
+			int x, y;
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// Get the new mouse position
+				int newX = e.getXOnScreen();
+				int newY = e.getYOnScreen();
+
+				// Calculate the distance the mouse has moved
+				int deltaX = newX - x;
+				int deltaY = newY - y;
+
+				// Move the window by the same distance
+				if(!TopPanel.isMaximized) {
+				setLocation(getX() + deltaX, getY() + deltaY);
+				}
+				// Update the stored mouse position
+				x = newX;
+				y = newY;
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// Store the initial mouse position
+				x = e.getXOnScreen();
+				y = e.getYOnScreen();
+			}
+		});
 
 		TopPanel topPanel = new TopPanel(this);
 		getContentPane().add(topPanel, BorderLayout.NORTH);

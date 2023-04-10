@@ -17,6 +17,8 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class TopPanel extends JPanel {
 
+	public static boolean isMaximized = false;
+
 	public TopPanel(JFrame parentFrame) {
 		setBackground(new Color(21, 25, 28));
 		setPreferredSize(new Dimension(getWidth(), 40)); // Set the height to 50 pixels
@@ -46,8 +48,6 @@ public class TopPanel extends JPanel {
 		maximize.setBorder(BorderFactory.createEmptyBorder(-10, 0, 0, 20)); // Add an empty border on the right side
 		buttonsPanel.add(maximize);
 		maximize.addMouseListener(new MouseAdapter() {
-			boolean isMaximized = false; // Add a boolean flag to keep track of the window state
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (isMaximized) {
