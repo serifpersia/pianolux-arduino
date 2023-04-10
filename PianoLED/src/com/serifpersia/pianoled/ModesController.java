@@ -6,7 +6,6 @@ import ui.ControlsPanel;
 import ui.GetUI;
 
 public class ModesController {
-	private Arduino arduino;
 
 	static boolean BGColor = false;
 
@@ -32,8 +31,8 @@ public class ModesController {
 	}
 
 	public void modeSelect(int n) {
-		if (arduino != null)
-			arduino.sendCommandBlackOut();
+		if (PianoController.arduino != null)
+			PianoController.arduino.sendCommandBlackOut();
 
 		switch (GetUI.getModeName(n)) {
 		case "Default":
@@ -69,7 +68,7 @@ public class ModesController {
 			break;
 		case "Animation":
 			disableAllModes();
-			//GetUI.setDefaults(255, 0);
+			GetUI.setDefaults(255, 0);
 			AnimationOn = true;
 			break;
 		}

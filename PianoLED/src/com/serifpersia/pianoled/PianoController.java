@@ -19,12 +19,12 @@ import java.util.Random;
 
 public class PianoController {
 
-	private int lerpColor(int startColor, int endColor, float ratio) {
-		int r = (int) ((1 - ratio) * ((startColor >> 16) & 0xff) + ratio * ((endColor >> 16) & 0xff));
-		int g = (int) ((1 - ratio) * ((startColor >> 8) & 0xff) + ratio * ((endColor >> 8) & 0xff));
-		int b = (int) ((1 - ratio) * (startColor & 0xff) + ratio * (endColor & 0xff));
-		return 0xff000000 | (r << 16) | (g << 8) | b;
-	}
+	public static Arduino arduino;
+	public static String portName;
+	public static String[] portNames = SerialPortList.getPortNames();
+
+	private static MidiBus myBusIn;
+	public static String midiName;
 
 	Color splitLeftColor = Color.RED;
 	Color splitRightColor = Color.BLUE;
@@ -33,12 +33,12 @@ public class PianoController {
 	Color MiddleSideGColor = Color.GREEN;
 	Color RightSideGColor = Color.BLUE;
 
-	public static String[] portNames = SerialPortList.getPortNames();
-	public static String portName;
-	public static Arduino arduino;
-
-	private static MidiBus myBusIn;
-	public static String midiName;
+	private int lerpColor(int startColor, int endColor, float ratio) {
+		int r = (int) ((1 - ratio) * ((startColor >> 16) & 0xff) + ratio * ((endColor >> 16) & 0xff));
+		int g = (int) ((1 - ratio) * ((startColor >> 8) & 0xff) + ratio * ((endColor >> 8) & 0xff));
+		int b = (int) ((1 - ratio) * (startColor & 0xff) + ratio * (endColor & 0xff));
+		return 0xff000000 | (r << 16) | (g << 8) | b;
+	}
 
 	private static MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
