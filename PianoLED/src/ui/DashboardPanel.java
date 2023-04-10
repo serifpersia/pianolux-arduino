@@ -16,6 +16,8 @@ import javax.swing.SwingUtilities;
 @SuppressWarnings("serial")
 public class DashboardPanel extends JPanel {
 
+	private Updater updater = new Updater();
+	
 	DrawPiano piano = new DrawPiano();
 	PianoController pianoController = new PianoController();
 
@@ -26,6 +28,7 @@ public class DashboardPanel extends JPanel {
 	static JComboBox<?> SerialList;
 	public static JComboBox<?> MidiList;
 	private JButton openButton;
+	private JButton updateButton;
 
 	public DashboardPanel() {
 		setBackground(new Color(21, 25, 28));
@@ -70,7 +73,7 @@ public class DashboardPanel extends JPanel {
 		// Open Connections Button
 		openButton = new JButton("Open");
 		openButton.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		openButton.setBounds(47, 452, 117, 41);
+		openButton.setBounds(50, 450, 120, 45);
 		openButton.setBackground(Color.WHITE);
 		openButton.setForeground(Color.BLACK);
 		openButton.setFocusable(false);
@@ -112,6 +115,22 @@ public class DashboardPanel extends JPanel {
 					openButton.setForeground(Color.BLACK);
 					openButton.setText("Open");
 				}
+			}
+		});
+
+		// Update Button
+		updateButton = new JButton("Update");
+		updateButton.setBounds(50, 600, 120, 45);
+		updateButton.setFont(new Font("Montserrat", Font.PLAIN, 20));
+		updateButton.setBackground(Color.WHITE);
+		updateButton.setForeground(Color.BLACK);
+		updateButton.setFocusable(false);
+		updateButton.setBorderPainted(false);
+		updateButton.setOpaque(true); // Set opaque to true
+		add(updateButton);
+		updateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updater.checkUpdates();
 			}
 		});
 	}

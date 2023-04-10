@@ -1,5 +1,5 @@
-package com.serifpersia.pianoled;
-
+/*package com.serifpersia.pianoled;
+/*
 
 import java.awt.Color;
 import java.util.List;
@@ -141,3 +141,4 @@ public class UIHelper {
 		return cp5.get(class1, name);
 	}
 }
+*/

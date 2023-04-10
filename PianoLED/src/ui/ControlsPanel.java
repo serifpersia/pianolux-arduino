@@ -28,8 +28,6 @@ public class ControlsPanel extends JPanel {
 
 	ColorPicker colorPicker = new ColorPicker();
 
-	DrawPiano piano = new DrawPiano();
-
 	private ModesController modesController;
 	private PianoController pianoController;
 
@@ -72,10 +70,6 @@ public class ControlsPanel extends JPanel {
 
 	List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors", "CloudColors",
 			"LavaColors", "ForestColors", "PartyColors");
-
-	public void setPiano(DrawPiano piano) {
-		this.piano = piano;
-	}
 
 	public JComboBox<Object> getModes() {
 		return LEDEffects;
@@ -405,7 +399,7 @@ public class ControlsPanel extends JPanel {
 				GetUI.counter--;
 				GetUI.setKeyboardSize(GetUI.counter);
 				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
-				piano.repaint();
+				BottomPanel.piano.repaint();
 			}
 		});
 
@@ -427,7 +421,7 @@ public class ControlsPanel extends JPanel {
 
 				GetUI.setKeyboardSize(GetUI.counter);
 				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
-				piano.repaint();
+				BottomPanel.piano.repaint();
 			}
 		});
 
@@ -470,9 +464,5 @@ public class ControlsPanel extends JPanel {
 
 		colorPicker.setBounds(555, 271, 240, 200);
 		add(colorPicker);
-
-		piano.setBounds(0, 670, 795, 70);
-		piano.setBackground(new Color(21, 25, 28));
-		add(piano);
 	}
 }

@@ -49,9 +49,9 @@ public class DrawPiano extends JPanel {
 			} else {
 				g.setColor(Color.WHITE);
 			}
-			g.fillRect(x + 15, 0, 15, 70);
+			g.fillRect(x , 0, 15, 70);
 			g.setColor(new Color(100, 100, 100));
-			g.drawRect(x + 15, 0, 15, 70);
+			g.drawRect(x , 0, 15, 70);
 			x += 15;
 		}
 
@@ -62,14 +62,14 @@ public class DrawPiano extends JPanel {
 			} else {
 				g.setColor(Color.BLACK);
 			}
-			g.fillRect(keyXCoordinates[i] + 15, 0, 8, 40);
+			g.fillRect(keyXCoordinates[i] , 0, 8, 40);
 			g.setColor(new Color(100, 100, 100));
-			g.drawRect(keyXCoordinates[i] + 15, 0, 8, 40);
+			g.drawRect(keyXCoordinates[i] , 0, 8, 40);
 		}
 
 		// Highlight Piano Size
 		g.setColor(new Color(0, 0, 0, 127)); // set the color of the rectangles to black with 50% transparency
-		g.fillRect(15, 0, GetUI.rectASizeX, 70); // draw the first rectangle
+		g.fillRect(0, 0, GetUI.rectASizeX, 70); // draw the first rectangle
 		g.fillRect(GetUI.rectBX, 0, GetUI.rectBSizeX, 70); // draw the second rectangle
 	}
 

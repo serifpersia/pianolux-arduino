@@ -1,5 +1,5 @@
-package com.serifpersia.pianoled;
-/*
+/*package com.serifpersia.pianoled;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -11,8 +11,7 @@ import javax.swing.JTextArea;
 
 import controlP5.ColorWheel;
 import controlP5.ControlP5;
-import controlP5.Controller;
-import controlP5.ScrollableList;
+import controlP5.Controller;mport controlP5.ScrollableList;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PFont;
