@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import ui.LeftPanel;
 import ui.RightPanel;
+import ui.TopPanel;
 import ui.BottomPanel;
 
 @SuppressWarnings("serial")
@@ -40,7 +41,11 @@ public class PianoLED extends JFrame {
 	}
 
 	public PianoLED() {
+		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		TopPanel topPanel = new TopPanel(this);
+		getContentPane().add(topPanel, BorderLayout.NORTH);
 
 		RightPanel rightPanel = new RightPanel();
 		getContentPane().add(rightPanel, BorderLayout.CENTER);
@@ -53,14 +58,14 @@ public class PianoLED extends JFrame {
 
 		// Remove the bottomPanel from the frame's SOUTH region
 		getContentPane().remove(bottomPanel);
+		getContentPane().remove(topPanel);
 
-		// Add the bottomPanel to the frame's SOUTH region of the rightPanel
+		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
 		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
+		rightPanelWrapper.add(topPanel, BorderLayout.NORTH);
 		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
 		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
 		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
-
-		pack();
 	}
 
 }

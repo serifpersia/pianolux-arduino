@@ -26,7 +26,6 @@ public class LeftPanel extends JPanel {
 	public LeftPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
 
-		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(100, getHeight()));
 		setLayout(new GridLayout(4, 1));
 
