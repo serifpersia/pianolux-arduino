@@ -24,9 +24,9 @@ public class BottomPanel extends JPanel {
 	}
 
 	public BottomPanel() {
-		setBackground(Color.BLUE);
+		setBackground(new Color(21,25,28));
 		setLayout(null);
-		setPreferredSize(new Dimension(getWidth(), 120)); // Set the height to 50 pixels
+		setPreferredSize(new Dimension(getWidth(), 90)); // Set the height to 50 pixels
 
 		piano.setBounds(15, 0, 780, 70);
 		add(piano);
