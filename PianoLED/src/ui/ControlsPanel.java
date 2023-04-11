@@ -376,6 +376,54 @@ public class ControlsPanel extends JPanel {
 		ReverseLed.setFont(new Font("Tahoma", Font.BOLD, 14));
 		ReverseLed.setBounds(206, 155, 196, 25);
 		colorPicker.add(ReverseLed);
+
+		JButton btnL = new JButton("L");
+		btnL.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PianoController.splitLeftColor = selectedColor;
+				PianoController.LeftSideGColor = selectedColor;
+			}
+		});
+		btnL.setForeground(Color.WHITE);
+		btnL.setFont(new Font("Tahoma", Font.BOLD, 8));
+		btnL.setFocusable(false);
+		btnL.setBorderPainted(false);
+		btnL.setBackground(new Color(52, 152, 219));
+		btnL.setBounds(326, 16, 50, 40);
+		colorPicker.add(btnL);
+
+		JButton btnM = new JButton("M");
+		btnM.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PianoController.MiddleSideGColor = selectedColor;
+
+			}
+		});
+		btnM.setForeground(Color.WHITE);
+		btnM.setFont(new Font("Tahoma", Font.BOLD, 8));
+		btnM.setFocusable(false);
+		btnM.setBorderPainted(false);
+		btnM.setBackground(new Color(52, 152, 219));
+		btnM.setBounds(326, 60, 50, 40);
+		colorPicker.add(btnM);
+
+		JButton btnR = new JButton("R");
+		btnR.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PianoController.splitRightColor = selectedColor;
+				PianoController.RightSideGColor = selectedColor;
+			}
+		});
+		btnR.setForeground(Color.WHITE);
+		btnR.setFont(new Font("Tahoma", Font.BOLD, 8));
+		btnR.setFocusable(false);
+		btnR.setBorderPainted(false);
+		btnR.setBackground(new Color(52, 152, 219));
+		btnR.setBounds(326, 104, 50, 40);
+		colorPicker.add(btnR);
 		ReverseLed.addActionListener(e -> {
 			String selectedOption = (String) ReverseLed.getSelectedItem();
 			if (selectedOption.equals("Reverse LED Strip -Yes")) {

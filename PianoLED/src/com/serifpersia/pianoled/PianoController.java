@@ -26,19 +26,30 @@ public class PianoController {
 	private static MidiBus myBusIn;
 	public static String midiName;
 
-	Color splitLeftColor = Color.RED;
-	Color splitRightColor = Color.BLUE;
+	public static Color splitLeftColor = Color.RED;
+	public static Color splitRightColor = Color.BLUE;
 
-	Color LeftSideGColor = Color.RED;
-	Color MiddleSideGColor = Color.GREEN;
-	Color RightSideGColor = Color.BLUE;
+	public static Color LeftSideGColor = Color.RED;
+	public static Color MiddleSideGColor = Color.GREEN;
+	public static Color RightSideGColor = Color.BLUE;
 
-	private int lerpColor(int startColor, int endColor, float ratio) {
-		int r = (int) ((1 - ratio) * ((startColor >> 16) & 0xff) + ratio * ((endColor >> 16) & 0xff));
-		int g = (int) ((1 - ratio) * ((startColor >> 8) & 0xff) + ratio * ((endColor >> 8) & 0xff));
-		int b = (int) ((1 - ratio) * (startColor & 0xff) + ratio * (endColor & 0xff));
-		return 0xff000000 | (r << 16) | (g << 8) | b;
-	}
+	public static int lerpColor(int startColor, int endColor, float ratio) {
+		  int startRed = (startColor >> 16) & 0xFF;
+		  int startGreen = (startColor >> 8) & 0xFF;
+		  int startBlue = startColor & 0xFF;
+
+		  int endRed = (endColor >> 16) & 0xFF;
+		  int endGreen = (endColor >> 8) & 0xFF;
+		  int endBlue = endColor & 0xFF;
+
+		  int currentRed = (int) (startRed + (endRed - startRed) * ratio);
+		  int currentGreen = (int) (startGreen + (endGreen - startGreen) * ratio);
+		  int currentBlue = (int) (startBlue + (endBlue - startBlue) * ratio);
+
+		  return (currentRed << 16) | (currentGreen << 8) | currentBlue;
+		}
+
+
 
 	private static MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
