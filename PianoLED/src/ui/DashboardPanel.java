@@ -12,19 +12,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 @SuppressWarnings("serial")
 public class DashboardPanel extends JPanel {
 
 	private Updater updater = new Updater();
-	
-	DrawPiano piano = new DrawPiano();
+
 	PianoController pianoController = new PianoController();
 
 	private JLabel lbDashboard;
-	private JLabel lbConnections;
-	private JLabel lbSerialDevices;
-	private JLabel lbMidiDevices;
 	static JComboBox<?> SerialList;
 	public static JComboBox<?> MidiList;
 	private JButton openButton;
@@ -32,54 +30,69 @@ public class DashboardPanel extends JPanel {
 
 	public DashboardPanel() {
 		setBackground(new Color(21, 25, 28));
-		setLayout(null);
+		setLayout(new BorderLayout(0, 0));
 
 		lbDashboard = new JLabel("Dashboard");
-		lbDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+		lbDashboard.setHorizontalAlignment(SwingConstants.LEFT);
 		lbDashboard.setForeground(Color.WHITE);
-		lbDashboard.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbDashboard.setBounds(10, 5, 175, 43);
-		add(lbDashboard);
+		lbDashboard.setFont(new Font("Tahoma", Font.BOLD, 30));
+		add(lbDashboard, BorderLayout.NORTH);
 
-		lbConnections = new JLabel("Connections");
-		lbConnections.setHorizontalAlignment(SwingConstants.CENTER);
-		lbConnections.setForeground(Color.WHITE);
-		lbConnections.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbConnections.setBounds(0, 70, 210, 60);
-		add(lbConnections);
+		JPanel Container = new JPanel();
+		Container.setBackground(new Color(21, 25, 28));
+		add(Container, BorderLayout.CENTER);
+		Container.setLayout(new GridLayout(1, 2, 0, 0));
 
-		lbSerialDevices = new JLabel("Serial");
-		lbSerialDevices.setBounds(0, 190, 210, 30);
-		lbSerialDevices.setHorizontalAlignment(SwingConstants.CENTER);
-		lbSerialDevices.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbSerialDevices.setForeground(new Color(255, 255, 255));
-		add(lbSerialDevices);
+		JPanel LeftPane = new JPanel();
+		LeftPane.setBackground(new Color(231, 76, 60));
+		Container.add(LeftPane);
+		LeftPane.setLayout(new BorderLayout(0, 0));
+
+		JLabel lbConnect = new JLabel("Connect");
+		lbConnect.setHorizontalAlignment(SwingConstants.CENTER);
+		lbConnect.setForeground(Color.WHITE);
+		lbConnect.setFont(new Font("Tahoma", Font.BOLD, 30));
+		LeftPane.add(lbConnect, BorderLayout.NORTH);
+
+		JPanel connectionPanel = new JPanel();
+		connectionPanel.setBackground(new Color(21, 25, 28));
+		LeftPane.add(connectionPanel, BorderLayout.CENTER);
+		connectionPanel.setLayout(new GridLayout(3, 2, 0, 0));
+
+		JLabel lbSerial = new JLabel("Serial");
+		lbSerial.setHorizontalAlignment(SwingConstants.CENTER);
+		lbSerial.setForeground(Color.WHITE);
+		lbSerial.setFont(new Font("Tahoma", Font.BOLD, 25));
+		connectionPanel.add(lbSerial);
 
 		SerialList = new JComboBox<Object>(PianoController.portNames);
-		SerialList.setBounds(10, 229, 200, 25);
-		add(SerialList);
+		SerialList.setBackground(new Color(21, 25, 28));
+		SerialList.setForeground(Color.WHITE);
+		SerialList.setFont(new Font("Tahoma", Font.BOLD, 25));
+		SerialList.setFocusable(false);
+		connectionPanel.add(SerialList);
 
-		lbMidiDevices = new JLabel("Midi");
-		lbMidiDevices.setHorizontalAlignment(SwingConstants.CENTER);
-		lbMidiDevices.setForeground(Color.WHITE);
-		lbMidiDevices.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbMidiDevices.setBounds(0, 365, 210, 30);
-		add(lbMidiDevices);
+		JLabel lbMidi = new JLabel("Midi");
+		lbMidi.setHorizontalAlignment(SwingConstants.CENTER);
+		lbMidi.setForeground(Color.WHITE);
+		lbMidi.setFont(new Font("Tahoma", Font.BOLD, 25));
+		connectionPanel.add(lbMidi);
 
 		MidiList = new JComboBox<Object>(PianoController.getMidiDevices());
-		MidiList.setBounds(10, 405, 200, 25);
-		add(MidiList);
+		MidiList.setBackground(new Color(21, 25, 28));
+		MidiList.setForeground(Color.WHITE);
+		MidiList.setFont(new Font("Tahoma", Font.BOLD, 25));
+		MidiList.setFocusable(false);
+		connectionPanel.add(MidiList);
 
-		// Open Connections Button
 		openButton = new JButton("Open");
-		openButton.setFont(new Font("Montserrat", Font.PLAIN, 25));
-		openButton.setBounds(50, 450, 120, 45);
-		openButton.setBackground(Color.WHITE);
-		openButton.setForeground(Color.BLACK);
+		openButton.setHorizontalAlignment(SwingConstants.CENTER);
+		openButton.setBackground(new Color(231, 76, 60));
+		openButton.setForeground(Color.WHITE);
+		openButton.setFont(new Font("Tahoma", Font.BOLD, 25));
 		openButton.setFocusable(false);
-		openButton.setBorderPainted(false);
 		openButton.setOpaque(true); // Set opaque to true
-		add(openButton);
+		connectionPanel.add(openButton);
 		openButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (openButton.getText().equals("Open")) {
@@ -92,8 +105,7 @@ public class DashboardPanel extends JPanel {
 								PianoController.portName, 115200);
 						System.out.println("Serial device opened: " + PianoController.portName);
 
-						openButton.setBackground(Color.GREEN);
-						openButton.setForeground(Color.WHITE);
+						openButton.setBackground(new Color(46, 204, 113));
 						openButton.setText("Close");
 
 						if (PianoController.arduino != null) {
@@ -111,27 +123,25 @@ public class DashboardPanel extends JPanel {
 						PianoController.arduino.stop();
 					}
 					System.out.println("Serial device closed: " + PianoController.portName);
-					openButton.setBackground(Color.WHITE);
-					openButton.setForeground(Color.BLACK);
+					openButton.setBackground(new Color(231, 76, 60));
 					openButton.setText("Open");
 				}
 			}
 		});
 
-		// Update Button
 		updateButton = new JButton("Update");
-		updateButton.setBounds(50, 600, 120, 45);
-		updateButton.setFont(new Font("Montserrat", Font.PLAIN, 20));
-		updateButton.setBackground(Color.WHITE);
-		updateButton.setForeground(Color.BLACK);
+		updateButton.setHorizontalAlignment(SwingConstants.CENTER);
+		updateButton.setBackground(new Color(52, 152, 219));
+		updateButton.setForeground(Color.WHITE);
 		updateButton.setFocusable(false);
-		updateButton.setBorderPainted(false);
-		updateButton.setOpaque(true); // Set opaque to true
-		add(updateButton);
+		updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
+		connectionPanel.add(updateButton);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updater.checkUpdates();
 			}
 		});
+		updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
+		connectionPanel.add(updateButton);
 	}
 }
