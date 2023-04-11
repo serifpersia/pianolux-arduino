@@ -42,8 +42,8 @@ public class LeftPanel extends JPanel {
 		dashboardButton.setIcon(dashboardIcon);
 
 		add(dashboardButton);
-		add(livePlayButton);
 		add(controlsButton);
+		add(livePlayButton);
 		add(learnButton);
 
 	}

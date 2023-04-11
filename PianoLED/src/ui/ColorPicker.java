@@ -20,7 +20,7 @@ public class ColorPicker extends JPanel {
 
 	 static Color colorPickerColor = Color.WHITE;
 
-	private static final int PANEL_SIZE = 200;
+	private static final int PANEL_SIZE = 150;
 	private static final int HUE_PANEL_WIDTH = 20;
 
 	private float hue = 1f;
