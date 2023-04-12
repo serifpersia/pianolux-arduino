@@ -16,8 +16,11 @@ import ui.DrawPiano;
 import ui.GetUI;
 
 import java.util.Random;
+import processing.core.PApplet;
 
 public class PianoController {
+	
+	PApplet pApplet = new PApplet();
 
 	public static Arduino arduino;
 	public static String portName;
@@ -32,24 +35,6 @@ public class PianoController {
 	public static Color LeftSideGColor = Color.RED;
 	public static Color MiddleSideGColor = Color.GREEN;
 	public static Color RightSideGColor = Color.BLUE;
-
-	public static int lerpColor(int startColor, int endColor, float ratio) {
-		  int startRed = (startColor >> 16) & 0xFF;
-		  int startGreen = (startColor >> 8) & 0xFF;
-		  int startBlue = startColor & 0xFF;
-
-		  int endRed = (endColor >> 16) & 0xFF;
-		  int endGreen = (endColor >> 8) & 0xFF;
-		  int endBlue = endColor & 0xFF;
-
-		  int currentRed = (int) (startRed + (endRed - startRed) * ratio);
-		  int currentGreen = (int) (startGreen + (endGreen - startGreen) * ratio);
-		  int currentBlue = (int) (startBlue + (endBlue - startBlue) * ratio);
-
-		  return (currentRed << 16) | (currentGreen << 8) | currentBlue;
-		}
-
-
 
 	private static MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -183,16 +168,16 @@ public class PianoController {
 
 					int currentColor;
 					if (MiddleSideGColor == Color.BLACK) {
-						currentColor = lerpColor(startColor, endColor, ratio);
+						currentColor = pApplet.lerpColor(startColor, endColor, ratio);
 					} else {
 						int middleColor = MiddleSideGColor.getRGB();
 						float leftRatio = ratio * 0.5f;
 						float rightRatio = (ratio - 0.5f) * 2f;
 
-						int leftColor = lerpColor(startColor, middleColor, leftRatio);
-						int rightColor = lerpColor(middleColor, endColor, rightRatio);
+						int leftColor = pApplet.lerpColor(startColor, middleColor, leftRatio);
+						int rightColor = pApplet.lerpColor(middleColor, endColor, rightRatio);
 
-						currentColor = lerpColor(leftColor, rightColor, ratio);
+						currentColor = pApplet.lerpColor(leftColor, rightColor, ratio);
 					}
 
 					message = arduino.commandSetColor(new Color(currentColor), notePushed);
