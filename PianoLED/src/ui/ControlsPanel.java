@@ -397,7 +397,7 @@ public class ControlsPanel extends JPanel {
 		btnM.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PianoController.MiddleSideGColor = selectedColor;
+				PianoController.MiddleSideColor = selectedColor;
 
 			}
 		});

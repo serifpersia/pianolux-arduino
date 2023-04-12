@@ -19,7 +19,7 @@ import java.util.Random;
 import processing.core.PApplet;
 
 public class PianoController {
-	
+
 	PApplet pApplet = new PApplet();
 
 	public static Arduino arduino;
@@ -33,7 +33,7 @@ public class PianoController {
 	public static Color splitRightColor = Color.BLUE;
 
 	public static Color LeftSideGColor = Color.RED;
-	public static Color MiddleSideGColor = Color.GREEN;
+	public static Color MiddleSideColor = Color.GREEN;
 	public static Color RightSideGColor = Color.BLUE;
 
 	private static MidiDevice.Info getDeviceInfo(String deviceName) {
@@ -167,10 +167,10 @@ public class PianoController {
 					int endColor = RightSideGColor.getRGB();
 
 					int currentColor;
-					if (MiddleSideGColor == Color.BLACK) {
+					if (MiddleSideColor == Color.BLACK) {
 						currentColor = pApplet.lerpColor(startColor, endColor, ratio);
 					} else {
-						int middleColor = MiddleSideGColor.getRGB();
+						int middleColor = MiddleSideColor.getRGB();
 						float leftRatio = ratio * 0.5f;
 						float rightRatio = (ratio - 0.5f) * 2f;
 
