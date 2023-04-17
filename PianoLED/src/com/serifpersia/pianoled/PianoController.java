@@ -27,6 +27,9 @@ public class PianoController {
 	public static String[] portNames = SerialPortList.getPortNames();
 
 	private static MidiBus myBusIn;
+	public static MidiBus myBusOut;
+	
+	public static String MidiOutName;
 	public static String midiName;
 
 	public static Color splitLeftColor = Color.RED;
@@ -45,6 +48,32 @@ public class PianoController {
 		}
 		return null;
 	}
+	
+	public static String[] getMidiOutDevices() {
+		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+		ArrayList<String> deviceNames = new ArrayList<String>();
+		for (MidiDevice.Info info : infos) {
+			MidiDevice device = null;
+			try {
+				device = MidiSystem.getMidiDevice(info);
+				if (device.getMaxReceivers() != 0) {
+					deviceNames.add(info.getName());
+				}
+			} catch (MidiUnavailableException ex) {
+				System.err.println("Error getting MIDI device " + info.getName() + ": " + ex.getMessage());
+			} finally {
+				if (device != null) {
+					device.close();
+				}
+			}
+		}
+		if (deviceNames.isEmpty()) {
+			return new String[] { "No MIDI input devices available" };
+		} else {
+			return deviceNames.toArray(new String[deviceNames.size()]);
+		}
+	}
+	
 
 	public static String[] getMidiDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();

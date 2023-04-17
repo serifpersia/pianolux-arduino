@@ -11,6 +11,9 @@ import java.awt.Font;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+
+import com.serifpersia.pianoled.PianoController;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -19,9 +22,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
 
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel {
+
+	public static JComboBox<?> MidiOutList;
 
 	public LearnPanel() {
 		setBackground(new Color(21, 25, 28));
@@ -88,10 +94,10 @@ public class LearnPanel extends JPanel {
 		controlsPane.setBackground(Color.BLACK);
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
-		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, -103, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 209, 209, 209, 0 };
-		gbl_controlsPane.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 209, 0, 0, 209, 209, 0 };
+		gbl_controlsPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
 		JButton lbLoadMidi = new JButton("Load Midi File");
@@ -107,11 +113,26 @@ public class LearnPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+
+		MidiOutList = new JComboBox<Object>(PianoController.getMidiOutDevices());
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.gridwidth = 4;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 0;
+		gbc_comboBox.gridy = 1;
+		controlsPane.add(MidiOutList, gbc_comboBox);
+		MidiOutList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Midi Out Device: " + MidiOutList.getSelectedItem());
+			}
+		});
+
 		GridBagConstraints gbc_lbStart = new GridBagConstraints();
-		gbc_lbStart.anchor = GridBagConstraints.NORTH;
+		gbc_lbStart.anchor = GridBagConstraints.NORTHEAST;
 		gbc_lbStart.insets = new Insets(0, 0, 5, 5);
 		gbc_lbStart.gridx = 0;
-		gbc_lbStart.gridy = 1;
+		gbc_lbStart.gridy = 3;
 		controlsPane.add(lbStart, gbc_lbStart);
 
 		JButton lbGoBack = new JButton("-3");
@@ -119,7 +140,7 @@ public class LearnPanel extends JPanel {
 		gbc_lbGoBack.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoBack.insets = new Insets(0, 0, 5, 5);
 		gbc_lbGoBack.gridx = 1;
-		gbc_lbGoBack.gridy = 1;
+		gbc_lbGoBack.gridy = 3;
 		controlsPane.add(lbGoBack, gbc_lbGoBack);
 
 		JButton lbPlayMidi = new JButton(">");
@@ -127,7 +148,7 @@ public class LearnPanel extends JPanel {
 		gbc_lbPlayMidi.anchor = GridBagConstraints.NORTH;
 		gbc_lbPlayMidi.insets = new Insets(0, 0, 5, 5);
 		gbc_lbPlayMidi.gridx = 2;
-		gbc_lbPlayMidi.gridy = 1;
+		gbc_lbPlayMidi.gridy = 3;
 		controlsPane.add(lbPlayMidi, gbc_lbPlayMidi);
 
 		JButton lbGoForwards = new JButton("+3");
@@ -135,7 +156,7 @@ public class LearnPanel extends JPanel {
 		gbc_lbGoForwards.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoForwards.insets = new Insets(0, 0, 5, 0);
 		gbc_lbGoForwards.gridx = 3;
-		gbc_lbGoForwards.gridy = 1;
+		gbc_lbGoForwards.gridy = 3;
 		controlsPane.add(lbGoForwards, gbc_lbGoForwards);
 
 	}
