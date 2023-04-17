@@ -1,5 +1,6 @@
-package ui;
+package com.serifpersia.pianoled.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,11 +22,10 @@ public class BottomPanel extends JPanel {
 
 	public BottomPanel() {
 		setBackground(new Color(21,25,28));
-		setLayout(null);
-		setPreferredSize(new Dimension(getWidth(), 90)); // Set the height to 50 pixels
-
-		piano.setBounds(15, 0, 780, 70);
-		add(piano);
+		setLayout(new BorderLayout());
+//		setPreferredSize(new Dimension(getWidth(), 100));
+		
+		add(piano, BorderLayout.CENTER);
 		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				// Call the pianoKeyAction method with the mouse coordinates and the pressed
@@ -44,7 +44,7 @@ public class BottomPanel extends JPanel {
 		version.setBounds(5, 72, 150, 15);
 		version.setFont(new Font("Montserrat", Font.BOLD, 15));
 		version.setForeground(Color.WHITE);
-		add(version);
+		add(version, BorderLayout.SOUTH);
 	}
 
 }

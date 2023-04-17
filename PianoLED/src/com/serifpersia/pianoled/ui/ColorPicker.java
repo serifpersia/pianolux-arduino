@@ -1,4 +1,4 @@
-package ui;
+package com.serifpersia.pianoled.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;

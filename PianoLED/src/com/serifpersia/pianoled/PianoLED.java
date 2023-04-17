@@ -1,7 +1,10 @@
 package com.serifpersia.pianoled;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
@@ -9,10 +12,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import ui.LeftPanel;
-import ui.RightPanel;
-import ui.TopPanel;
-import ui.BottomPanel;
+import com.serifpersia.pianoled.ui.BottomPanel;
+import com.serifpersia.pianoled.ui.LeftPanel;
+import com.serifpersia.pianoled.ui.RightPanel;
+import com.serifpersia.pianoled.ui.TopPanel;
+
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
@@ -45,8 +50,8 @@ public class PianoLED extends JFrame {
 	public PianoLED() {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//Window dragging 
+
+		// Window dragging
 		addMouseMotionListener(new MouseMotionAdapter() {
 			int x, y;
 
@@ -61,8 +66,8 @@ public class PianoLED extends JFrame {
 				int deltaY = newY - y;
 
 				// Move the window by the same distance
-				if(!TopPanel.isMaximized) {
-				setLocation(getX() + deltaX, getY() + deltaY);
+				if (!TopPanel.isMaximized) {
+					setLocation(getX() + deltaX, getY() + deltaY);
 				}
 				// Update the stored mouse position
 				x = newX;
@@ -77,21 +82,13 @@ public class PianoLED extends JFrame {
 			}
 		});
 
-		TopPanel topPanel = new TopPanel(this);
-		getContentPane().add(topPanel, BorderLayout.NORTH);
-
-		RightPanel rightPanel = new RightPanel();
-		getContentPane().add(rightPanel, BorderLayout.CENTER);
-
-		LeftPanel leftPanel = new LeftPanel(rightPanel);
-		getContentPane().add(leftPanel, BorderLayout.WEST);
-
 		BottomPanel bottomPanel = new BottomPanel();
-		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		bottomPanel.setBackground(new Color(0, 0, 0));
+		TopPanel topPanel = new TopPanel(this);
+		RightPanel rightPanel = new RightPanel();
+		LeftPanel leftPanel = new LeftPanel(rightPanel);
 
-		// Remove the bottomPanel from the frame's SOUTH region
-		getContentPane().remove(bottomPanel);
-		getContentPane().remove(topPanel);
+		getContentPane().add(leftPanel, BorderLayout.WEST);
 
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
 		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
@@ -99,6 +96,20 @@ public class PianoLED extends JFrame {
 		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
 		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
 		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
+
+		// Add a ComponentListener to the parent JPanel to detect size changes
+		rightPanelWrapper.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// Calculate the new preferred size based on the parent's size
+				Dimension parentSize = rightPanelWrapper.getSize();
+				double newHeight = parentSize.height * 0.12;
+
+				// Update the child JPanel's preferred size and revalidate the layout
+				bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
+				bottomPanel.revalidate();
+			}
+		});
 	}
 
 }

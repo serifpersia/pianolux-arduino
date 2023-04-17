@@ -1,4 +1,4 @@
-package ui;
+package com.serifpersia.pianoled.ui;
 
 import javax.swing.JPanel;
 import java.awt.CardLayout;

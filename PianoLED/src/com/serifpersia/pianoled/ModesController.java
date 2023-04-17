@@ -2,8 +2,8 @@ package com.serifpersia.pianoled;
 
 import java.awt.Color;
 
-import ui.ControlsPanel;
-import ui.GetUI;
+import com.serifpersia.pianoled.ui.ControlsPanel;
+import com.serifpersia.pianoled.ui.GetUI;
 
 public class ModesController {
 

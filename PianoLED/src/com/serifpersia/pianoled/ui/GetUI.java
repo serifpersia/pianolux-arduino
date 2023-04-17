@@ -1,4 +1,4 @@
-package ui;
+package com.serifpersia.pianoled.ui;
 
 import java.util.Arrays;
 import java.util.List;

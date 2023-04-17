@@ -8,12 +8,13 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 
+import com.serifpersia.pianoled.ui.ControlsPanel;
+import com.serifpersia.pianoled.ui.DashboardPanel;
+import com.serifpersia.pianoled.ui.DrawPiano;
+import com.serifpersia.pianoled.ui.GetUI;
+
 import jssc.SerialPortList;
 import themidibus.MidiBus;
-import ui.ControlsPanel;
-import ui.DashboardPanel;
-import ui.DrawPiano;
-import ui.GetUI;
 
 import java.util.Random;
 import processing.core.PApplet;
