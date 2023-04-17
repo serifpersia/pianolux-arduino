@@ -132,7 +132,7 @@ public class DrawPiano extends JPanel {
 		int whiteKeyHeight = getWhiteKeyHeight();
 		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
 			// Check if the mouse click was inside a white key
-			if (x > i * whiteKeyWidth && x < (i + 1) * whiteKeyWidth && y >= 0 && y <= whiteKeyHeight) {
+			if (x > getStartX() + i * whiteKeyWidth && x < getStartX()+(i + 1) * whiteKeyWidth && y >= 0 && y <= whiteKeyHeight) {
 				if (released) {
 					DrawPiano.Keys[DrawPiano.whiteKeys[i]] = 1;
 				} else {
