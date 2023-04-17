@@ -27,7 +27,7 @@ public class PianoController {
 	public static String[] portNames = SerialPortList.getPortNames();
 
 	private static MidiBus myBusIn;
-	public static MidiBus myBusOut;
+	private static MidiBus myBusOut;
 	
 	public static String MidiOutName;
 	public static String midiName;
@@ -68,7 +68,7 @@ public class PianoController {
 			}
 		}
 		if (deviceNames.isEmpty()) {
-			return new String[] { "No MIDI input devices available" };
+			return new String[] { "No MIDI out devices available" };
 		} else {
 			return deviceNames.toArray(new String[deviceNames.size()]);
 		}
