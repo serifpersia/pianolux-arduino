@@ -546,19 +546,5 @@ public class ControlsPanel extends JPanel {
 		lbPianoSize.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lbPianoSize.setForeground(Color.WHITE);
 		PianoPane.add(lbPianoSize);
-
-		/*
-		 * 
-		 * 
-		 * JLabel lblReverseLedStrip = new JLabel("Reverse LED Strip");
-		 * lblReverseLedStrip.setHorizontalAlignment(SwingConstants.CENTER);
-		 * lblReverseLedStrip.setForeground(Color.WHITE); lblReverseLedStrip.setFont(new
-		 * Font("Montserrat", Font.BOLD, 17)); lblReverseLedStrip.setBounds(630, 565,
-		 * 165, 30); add(lblReverseLedStrip);
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
 	}
 }
