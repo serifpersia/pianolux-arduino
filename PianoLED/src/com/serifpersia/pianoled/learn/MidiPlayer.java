@@ -22,6 +22,8 @@ import themidibus.MidiBus;
 
 public class MidiPlayer {
 
+	private MidiPlayerConsumer consumer;
+
 	private LinkedList<Note> notes;
 
 	MidiDevice midiOutDevice;
@@ -41,13 +43,16 @@ public class MidiPlayer {
 		setupSequencer(midiFile);
 	}
 
-	public String getFileName()
-	{
+	public String getFileName() {
 		return this.midiFile.getName();
 	}
-	
+
 	public LinkedList<Note> getNotes() {
 		return notes;
+	}
+
+	public void setConsumer(MidiPlayerConsumer consumer) {
+		this.consumer = consumer;
 	}
 
 	// MIDI handling
@@ -64,25 +69,26 @@ public class MidiPlayer {
 				openMidiDevice(midiOutDevice);
 				setOutputDevice(midiOutDevice);
 			}
-			
+
 			int ticksPerBeat = sequence.getResolution();
 			double bpm = sequencer.getTempoInBPM();
 			ticksPerSec = ticksPerBeat * bpm / 60;
 //			pianoRollTickHeight = (60.0f / ticksPerBeat) / bpm * pianoRollTickHeightMult;
 
-//			sequencer.addMetaEventListener(new MetaEventListener() {
-//				@Override
-//				public void meta(MetaMessage meta) {
-//					if (meta.getType() == 0x2F) {
-//						app.togglePianoRollButton();
-//					}
-//				}
-//			});
+			sequencer.addMetaEventListener(new MetaEventListener() {
+				@Override
+				public void meta(MetaMessage meta) {
+					if (meta.getType() == 0x2F) {
+						if (consumer != null)
+							consumer.onPlaybackFinished();
+					}
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void openMidiDevice(MidiDevice outDevice) {
 		if (outDevice == null)
 			return;
@@ -160,10 +166,10 @@ public class MidiPlayer {
 
 		return fileNotes;
 	}
-	
+
 	public void setOutputDevice(MidiDevice midiOutDevice) throws MidiUnavailableException {
 		this.midiOutDevice = midiOutDevice;
-		if( !midiOutDevice.isOpen() )
+		if (!midiOutDevice.isOpen())
 			midiOutDevice.open();
 		myMidiReceiver = new OutMidiReceiver(midiOutDevice);
 		if (sequencer != null) {
@@ -171,7 +177,6 @@ public class MidiPlayer {
 			sequencer.getTransmitter().setReceiver(myMidiReceiver);
 		}
 	}
-
 
 	public void rewind() {
 		sequencer.setTickPosition(0);
@@ -196,8 +201,9 @@ public class MidiPlayer {
 			sequencer.start();
 		}
 	}
-	
+
 	public boolean isPaused() {
 		return !sequencer.isRunning();
 	}
+
 }

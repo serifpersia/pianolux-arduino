@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.learn.MidiPlayer;
+import com.serifpersia.pianoled.learn.MidiPlayerConsumer;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -32,11 +33,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
 @SuppressWarnings("serial")
-public class LearnPanel extends JPanel {
+public class LearnPanel extends JPanel implements MidiPlayerConsumer{
 
 	public static JComboBox<String> MidiOutList;
 	protected MidiPlayer midiPlayer;
 
+	JButton lbPlayMidi = new JButton("⏯");
 	public LearnPanel() {
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
@@ -135,6 +137,7 @@ public class LearnPanel extends JPanel {
 					String deviceName = (String) MidiOutList.getSelectedItem();
 					midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()),
 							getMidiDeviceByName(deviceName));
+					midiPlayer.setConsumer(LearnPanel.this);
 				}
 			}
 		});
@@ -232,7 +235,6 @@ public class LearnPanel extends JPanel {
 			}
 		});
 
-		JButton lbPlayMidi = new JButton("⏯");
 		GridBagConstraints gbc_lbPlayMidi = new GridBagConstraints();
 		gbc_lbPlayMidi.anchor = GridBagConstraints.NORTH;
 		gbc_lbPlayMidi.insets = new Insets(0, 0, 5, 5);
@@ -245,11 +247,12 @@ public class LearnPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				midiPlayer.playPause();
 				if (midiPlayer.isPaused()) {
-					lbPlayMidi.setText("⏯");
+					setPlaybackButtonStop();
 				} else {
-					lbPlayMidi.setText("⏸");
+					setPlaybackButtonPlay();
 				}
 			}
+
 		});
 
 		JButton lbGoForwards = new JButton("⏩");
@@ -266,5 +269,18 @@ public class LearnPanel extends JPanel {
 				midiPlayer.rewind(5);
 			}
 		});
+	}
+	
+	private void setPlaybackButtonStop() {
+		lbPlayMidi.setText("⏯");
+	}
+
+	private void setPlaybackButtonPlay() {
+		lbPlayMidi.setText("⏸");
+	}
+
+	@Override
+	public void onPlaybackFinished() {
+		setPlaybackButtonStop();
 	}
 }
