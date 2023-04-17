@@ -19,10 +19,6 @@ public class BottomPanel extends JPanel {
 
 	static Updater updator = new Updater();
 
-	public void setPiano(DrawPiano piano) {
-		BottomPanel.piano = piano;
-	}
-
 	public BottomPanel() {
 		setBackground(new Color(21,25,28));
 		setLayout(null);

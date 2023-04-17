@@ -332,18 +332,76 @@ public class ControlsPanel extends JPanel {
 		txtR.setColumns(10);
 		txtR.setBounds(230, 20, 86, 20);
 		colorPicker.add(txtR);
+		txtR.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+					System.out.println(color);
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
+			}
+		});
 
 		txtG = new JTextField("255");
 		txtG.setHorizontalAlignment(SwingConstants.CENTER);
 		txtG.setColumns(10);
 		txtG.setBounds(230, 76, 86, 20);
 		colorPicker.add(txtG);
+		txtG.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+					System.out.println(color);
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
+			}
+		});
 
 		txtB = new JTextField("255");
 		txtB.setHorizontalAlignment(SwingConstants.CENTER);
 		txtB.setColumns(10);
 		txtB.setBounds(229, 123, 86, 20);
 		colorPicker.add(txtB);
+		txtB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int r = Integer.parseInt(txtR.getText());
+					int g = Integer.parseInt(txtG.getText());
+					int b = Integer.parseInt(txtB.getText());
+					Color color = new Color(r, g, b);
+					float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+					colorPicker.setHue(hsb[0]);
+					colorPicker.setSaturation(hsb[1]);
+					colorPicker.setBrightness(hsb[2]);
+					colorPicker.repaint();
+					System.out.println(color);
+				} catch (NumberFormatException ex) {
+					// handle exception
+				}
+			}
+		});
+		
 		colorPresets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String selectedColorName = (String) colorPresets.getSelectedItem();
