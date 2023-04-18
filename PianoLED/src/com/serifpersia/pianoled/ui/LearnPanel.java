@@ -45,7 +45,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel slideControlsPane = new JPanel();
-		slideControlsPane.setBackground(Color.RED);
+		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
 		slideControlsPane.setLayout(new BorderLayout(0, 0));
@@ -102,7 +102,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		slideControlsPane.add(lbControls, BorderLayout.NORTH);
 
 		JPanel controlsPane = new JPanel();
-		controlsPane.setBackground(Color.BLACK);
+		controlsPane.setBackground(new Color(21, 25, 28));
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0, 0 };
@@ -120,6 +120,11 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	private void addLoadMidiFileControl(JPanel controlsPane, int gridy, JLabel midiFileName) {
 		JButton lbLoadMidi = new JButton("Load Midi File");
 		GridBagConstraints gbc_lbLoadMidi = new GridBagConstraints();
+		lbLoadMidi.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbLoadMidi.setBackground(new Color(231, 76, 60));
+		lbLoadMidi.setForeground(Color.WHITE);
+		lbLoadMidi.setFocusable(false);
+		lbLoadMidi.setBorderPainted(false);
 		gbc_lbLoadMidi.gridwidth = 4;
 		gbc_lbLoadMidi.insets = new Insets(0, 0, 0, 0);
 		gbc_lbLoadMidi.gridx = 0;
@@ -160,6 +165,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
 		MidiOutList = new JComboBox<Object>(PianoController.getMidiOutDevices());
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		MidiOutList.setBackground(new Color(21, 25, 28));
+		MidiOutList.setForeground(Color.WHITE);
+		MidiOutList.setFocusable(false);
 		gbc_comboBox.gridwidth = 4;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -207,6 +215,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
 		JButton lbStart = new JButton("⏮");
 		GridBagConstraints gbc_lbStart = new GridBagConstraints();
+		lbStart.setBackground(new Color(52, 152, 219));
+		lbStart.setForeground(Color.WHITE);
+		lbStart.setFocusable(false);
 		gbc_lbStart.anchor = GridBagConstraints.NORTH;
 		gbc_lbStart.insets = new Insets(0, 0, 5, 5);
 		gbc_lbStart.gridx = 0;
@@ -222,6 +233,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
 		JButton lbGoBack = new JButton("⏪");
 		GridBagConstraints gbc_lbGoBack = new GridBagConstraints();
+		lbGoBack.setBackground(new Color(52, 152, 219));
+		lbGoBack.setForeground(Color.WHITE);
+		lbGoBack.setFocusable(false);
 		gbc_lbGoBack.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoBack.insets = new Insets(0, 0, 5, 5);
 		gbc_lbGoBack.gridx = 1;
@@ -236,6 +250,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		});
 
 		GridBagConstraints gbc_lbPlayMidi = new GridBagConstraints();
+		lbPlayMidi.setBackground(new Color(52, 152, 219));
+		lbPlayMidi.setForeground(Color.WHITE);
+		lbPlayMidi.setFocusable(false);
 		gbc_lbPlayMidi.anchor = GridBagConstraints.NORTH;
 		gbc_lbPlayMidi.insets = new Insets(0, 0, 5, 5);
 		gbc_lbPlayMidi.gridx = 2;
@@ -257,6 +274,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
 		JButton lbGoForwards = new JButton("⏩");
 		GridBagConstraints gbc_lbGoForwards = new GridBagConstraints();
+		lbGoForwards.setBackground(new Color(52, 152, 219));
+		lbGoForwards.setForeground(Color.WHITE);
+		lbGoForwards.setFocusable(false);
 		gbc_lbGoForwards.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoForwards.insets = new Insets(0, 0, 5, 0);
 		gbc_lbGoForwards.gridx = 3;
