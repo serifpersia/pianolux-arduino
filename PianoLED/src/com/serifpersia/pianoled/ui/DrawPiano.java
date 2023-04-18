@@ -47,7 +47,9 @@ public class DrawPiano extends JPanel {
 
 		int blackKeyWidth = getBlackKeyWidth();
 		int blackKeyHeight = getBlackKeyHeight();
-
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 
 		// white keys

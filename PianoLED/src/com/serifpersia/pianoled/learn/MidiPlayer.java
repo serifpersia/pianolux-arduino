@@ -68,7 +68,7 @@ public class MidiPlayer {
 			//clear all existing transmitters
 			sequencer.getTransmitters().forEach(Transmitter::close);
 
-			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
+			sequencer.getTransmitter().setReceiver(new MidiEventsProcessor());
 			if (midiOutDevice != null) {
 				openMidiDevice(midiOutDevice);
 				setOutputDevice(midiOutDevice);
@@ -217,7 +217,7 @@ public class MidiPlayer {
 		return !sequencer.isRunning();
 	}
 
-	class MidiLEDReceiver implements Receiver {
+	class MidiEventsProcessor implements Receiver {
 		@Override
 		public void send(MidiMessage midiMessage, long timeStamp) {
 			if (midiMessage instanceof ShortMessage message) {
