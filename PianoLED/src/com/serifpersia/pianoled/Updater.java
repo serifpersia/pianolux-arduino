@@ -33,7 +33,7 @@ public class Updater {
 
 	public String VersionTag = "v4.0";
 	String VersionFile;
-	
+
 	public String getDownloadUrl(JSONObject release, String fileName) {
 		JSONArray assets = release.getJSONArray("assets");
 		for (int i = 0; i < assets.length(); i++) {
@@ -51,7 +51,7 @@ public class Updater {
 
 	public void checkUpdates() {
 		// Show confirmation dialog to check for updates
-		int confirm = JOptionPane.showOptionDialog(null, "Do you want to check for updates?", "Update Checker",
+		int confirm = JOptionPane.showOptionDialog(null, "Do you want to check for updates?", "Update",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 		if (confirm == JOptionPane.YES_OPTION) {
@@ -79,7 +79,7 @@ public class Updater {
 
 			// Show confirmation dialog to download the latest release
 			confirm = JOptionPane.showOptionDialog(null, "A new update is available. Do you want to download it?",
-					"Update Checker", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+					"Update", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (confirm == JOptionPane.YES_OPTION) {
 				// Download and extract the latest release
@@ -142,7 +142,7 @@ public class Updater {
 			}
 		}
 	}
-	
+
 	public void checkLocalVersion() {
 
 		for (int i = 0; i < listOfFiles.length; i++) {
@@ -157,7 +157,7 @@ public class Updater {
 		}
 		System.out.println("VersionTag: " + VersionTag);
 	}
-	
+
 	public JSONObject getLatestRelease(String url) {
 		try {
 			// String authToken = ""; // replace with your PAT
@@ -181,7 +181,7 @@ public class Updater {
 			return null;
 		}
 	}
-	
+
 	public void extractZipFile(String zipFilePath, String destinationFolderPath) {
 		try {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath));

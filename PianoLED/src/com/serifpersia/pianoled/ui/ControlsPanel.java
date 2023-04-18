@@ -401,7 +401,7 @@ public class ControlsPanel extends JPanel {
 				}
 			}
 		});
-		
+
 		colorPresets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String selectedColorName = (String) colorPresets.getSelectedItem();

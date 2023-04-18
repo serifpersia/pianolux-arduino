@@ -2,7 +2,6 @@ package com.serifpersia.pianoled.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,10 +20,9 @@ public class BottomPanel extends JPanel {
 	static Updater updator = new Updater();
 
 	public BottomPanel() {
-		setBackground(new Color(21,25,28));
+		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout());
-//		setPreferredSize(new Dimension(getWidth(), 100));
-		
+
 		add(piano, BorderLayout.CENTER);
 		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
