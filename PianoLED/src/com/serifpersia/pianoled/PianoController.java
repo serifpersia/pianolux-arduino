@@ -77,25 +77,23 @@ public class PianoController {
 	}
 
 	public static void refreshMidiList() {
-	    // Get the list of available MIDI devices
-	    String[] deviceNames = getMidiDevices();
+		// Get the list of available MIDI devices
+		String[] deviceNames = getMidiDevices();
 
-	    // Find the index of the first device whose name contains "piano" or "midi"
-	    int index = -1;
-	    for (int i = 0; i < deviceNames.length; i++) {
-	        if (deviceNames[i].toLowerCase().contains("piano") || deviceNames[i].toLowerCase().contains("midi")) {
-	            index = i;
-	            break;
-	        }
-	    }
+		// Find the index of the first device whose name contains "piano" or "midi"
+		int index = -1;
+		for (int i = 0; i < deviceNames.length; i++) {
+			if (deviceNames[i].toLowerCase().contains("piano") || deviceNames[i].toLowerCase().contains("midi")) {
+				index = i;
+				break;
+			}
+		}
 
-	    // Set the corresponding item in the MidiList JComboBox object
-	    if (index >= 0) {
-	        DashboardPanel.MidiList.setSelectedIndex(index);
-	    }
+		// Set the corresponding item in the MidiList JComboBox object
+		if (index >= 0) {
+			DashboardPanel.MidiList.setSelectedIndex(index);
+		}
 	}
-
-
 
 	public static void findPortNameOnLinux(String deviceName) {
 		String[] cmd = { "sh", "-c", "dmesg | grep " + deviceName };

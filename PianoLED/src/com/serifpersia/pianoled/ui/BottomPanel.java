@@ -20,9 +20,9 @@ public class BottomPanel extends JPanel {
 	static Updater updator = new Updater();
 
 	public BottomPanel() {
-		setBackground(new Color(21,25,28));
+		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout());
-		
+
 		add(piano, BorderLayout.CENTER);
 		piano.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
