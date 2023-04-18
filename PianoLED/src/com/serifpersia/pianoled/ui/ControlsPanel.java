@@ -547,4 +547,14 @@ public class ControlsPanel extends JPanel {
 		lbPianoSize.setForeground(Color.WHITE);
 		PianoPane.add(lbPianoSize);
 	}
+	
+	public void noteOn(int channel, int pitch, int velocity)
+	{
+		pianoController.noteOn(channel, pitch, velocity);
+	}
+
+	public void noteOff(int pitch)
+	{
+		pianoController.noteOff(0, pitch, 0);
+	}
 }

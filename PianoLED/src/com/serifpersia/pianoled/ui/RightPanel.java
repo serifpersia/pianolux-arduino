@@ -14,7 +14,7 @@ public class RightPanel extends JPanel {
 		DashboardPanel dashboardPanel = new DashboardPanel();
 		LivePlayPanel livePlayPanel = new LivePlayPanel();
 		ControlsPanel controlsPanel = new ControlsPanel();
-		LearnPanel learnPanel = new LearnPanel();
+		LearnPanel learnPanel = new LearnPanel(controlsPanel);
 
 		// Add the panels objects to the RightPanel
 		add(dashboardPanel, "Dashboard");

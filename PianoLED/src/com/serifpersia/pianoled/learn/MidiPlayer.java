@@ -8,10 +8,11 @@ import java.util.LinkedList;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
@@ -64,7 +65,10 @@ public class MidiPlayer {
 			sequence = MidiSystem.getSequence(midiFile);
 			sequencer.setSequence(sequence);
 
-//			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
+			//clear all existing transmitters
+			sequencer.getTransmitters().forEach(Transmitter::close);
+
+			sequencer.getTransmitter().setReceiver(new MidiLEDReceiver());
 			if (midiOutDevice != null) {
 				openMidiDevice(midiOutDevice);
 				setOutputDevice(midiOutDevice);
@@ -173,7 +177,6 @@ public class MidiPlayer {
 			midiOutDevice.open();
 		myMidiReceiver = new OutMidiReceiver(midiOutDevice);
 		if (sequencer != null) {
-			sequencer.getTransmitters().forEach(Transmitter::close);
 			sequencer.getTransmitter().setReceiver(myMidiReceiver);
 		}
 	}
@@ -202,8 +205,39 @@ public class MidiPlayer {
 		}
 	}
 
+	public void stop() {
+		if (sequencer != null) {
+			if (sequencer.isRunning()) {
+				sequencer.stop();
+			}
+		}
+	}
+
 	public boolean isPaused() {
 		return !sequencer.isRunning();
+	}
+
+	class MidiLEDReceiver implements Receiver {
+		@Override
+		public void send(MidiMessage midiMessage, long timeStamp) {
+			if (midiMessage instanceof ShortMessage message) {
+				int pitch = message.getData1();
+				int velocity = message.getData2();
+				if (message.getCommand() == ShortMessage.NOTE_ON && message.getData2() != 0) {
+					consumer.onNoteOn(0, pitch, velocity);
+				} else if (message.getCommand() == ShortMessage.NOTE_OFF
+						|| message.getCommand() == ShortMessage.NOTE_ON && message.getData2() == 0) {
+					consumer.onNoteOff(pitch);
+				} else {
+					System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				}
+			}
+		}
+
+		@Override
+		public void close() {
+			stop();
+		}
 	}
 
 }

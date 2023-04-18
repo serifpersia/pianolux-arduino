@@ -39,8 +39,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	protected MidiPlayer midiPlayer;
 
 	JButton lbPlayMidi = new JButton("▶");
-
-	public LearnPanel() {
+	private ControlsPanel controlsPanel;
+	public LearnPanel(ControlsPanel _controlsPanel) {
+		this.controlsPanel = _controlsPanel;
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
 
@@ -302,7 +303,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	}
 
 	private void setPlaybackButtonStop() {
-		lbPlayMidi.setText("⏯");
+		lbPlayMidi.setText("▶");
 	}
 
 	private void setPlaybackButtonPlay() {
@@ -312,5 +313,15 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	@Override
 	public void onPlaybackFinished() {
 		setPlaybackButtonStop();
+	}
+
+	@Override
+	public void onNoteOn(int channel, int pitch, int velocity) {
+		controlsPanel.noteOn(channel, pitch, velocity);
+	}
+
+	@Override
+	public void onNoteOff(int pitch) {
+		controlsPanel.noteOff(pitch);
 	}
 }
