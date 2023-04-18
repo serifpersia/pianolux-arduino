@@ -33,12 +33,13 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
 @SuppressWarnings("serial")
-public class LearnPanel extends JPanel implements MidiPlayerConsumer{
+public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
-	public static JComboBox<String> MidiOutList;
+	public static JComboBox<?> MidiOutList;
 	protected MidiPlayer midiPlayer;
 
 	JButton lbPlayMidi = new JButton("⏯");
+
 	public LearnPanel() {
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
@@ -157,7 +158,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer{
 	}
 
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
-		MidiOutList = new JComboBox<String>(PianoController.getMidiOutDevices());
+		MidiOutList = new JComboBox<Object>(PianoController.getMidiOutDevices());
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.gridwidth = 4;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
@@ -193,7 +194,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer{
 				try {
 					return MidiSystem.getMidiDevice(info);
 				} catch (MidiUnavailableException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -270,7 +270,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer{
 			}
 		});
 	}
-	
+
 	private void setPlaybackButtonStop() {
 		lbPlayMidi.setText("⏯");
 	}

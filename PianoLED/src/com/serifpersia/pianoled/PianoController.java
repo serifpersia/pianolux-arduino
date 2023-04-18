@@ -28,9 +28,7 @@ public class PianoController {
 	public static String[] portNames = SerialPortList.getPortNames();
 
 	private static MidiBus myBusIn;
-	private static MidiBus myBusOut;
 	
-	public static String MidiOutName;
 	public static String midiName;
 
 	public static Color splitLeftColor = Color.RED;

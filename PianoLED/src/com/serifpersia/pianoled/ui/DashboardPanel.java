@@ -33,15 +33,15 @@ public class DashboardPanel extends JPanel {
 
 		JPanel ConnectPane = new JPanel();
 		ConnectPane.setBackground(new Color(231, 76, 60));
-		
+
 		add(ConnectPane, BorderLayout.NORTH);
-		
+
 		JLabel lbConnect = new JLabel("Connect");
 		lbConnect.setHorizontalAlignment(SwingConstants.CENTER);
 		lbConnect.setForeground(Color.WHITE);
 		lbConnect.setFont(new Font("Tahoma", Font.BOLD, 30));
 		ConnectPane.add(lbConnect);
-		
+
 		JPanel MainPane = new JPanel();
 		MainPane.setBackground(new Color(21, 25, 28));
 		add(MainPane, BorderLayout.CENTER);
@@ -72,22 +72,22 @@ public class DashboardPanel extends JPanel {
 		MidiList.setFont(new Font("Tahoma", Font.BOLD, 25));
 		MidiList.setFocusable(false);
 		MainPane.add(MidiList);
-		
-				updateButton = new JButton("Update");
-				updateButton.setHorizontalAlignment(SwingConstants.CENTER);
-				updateButton.setBackground(new Color(52, 152, 219));
-				updateButton.setForeground(Color.WHITE);
-				updateButton.setFocusable(false);
-				updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
-				MainPane.add(updateButton);
-				updateButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						updater.checkUpdates();
-					}
-				});
-				updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
-				
-						MainPane.add(updateButton);
+
+		updateButton = new JButton("Update");
+		updateButton.setHorizontalAlignment(SwingConstants.CENTER);
+		updateButton.setBackground(new Color(52, 152, 219));
+		updateButton.setForeground(Color.WHITE);
+		updateButton.setFocusable(false);
+		updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
+		MainPane.add(updateButton);
+		updateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updater.checkUpdates();
+			}
+		});
+		updateButton.setFont(new Font("Tahoma", Font.BOLD, 25));
+
+		MainPane.add(updateButton);
 
 		openButton = new JButton("Open");
 		openButton.setHorizontalAlignment(SwingConstants.CENTER);
