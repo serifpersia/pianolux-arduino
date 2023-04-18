@@ -17,9 +17,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
 @SuppressWarnings("serial")
 public class DashboardPanel extends JPanel {
@@ -27,7 +24,7 @@ public class DashboardPanel extends JPanel {
 	private Updater updater = new Updater();
 
 	PianoController pianoController = new PianoController();
-	static JComboBox<?> SerialList;
+	public static JComboBox<?> SerialList;
 	public static JComboBox<?> MidiList;
 	private JButton openButton;
 	private JButton updateButton;
@@ -214,7 +211,13 @@ public class DashboardPanel extends JPanel {
 		ButtonsPane.add(refreshButton);
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("refresh");
+				if (updater.getOs().contains("win")) {
+					PianoController.findPortNameOnWindows("Arduino");
+				} else {
+					PianoController.findPortNameOnLinux("ttyACM");
+				}
+				PianoController.refreshSerialList();
+				PianoController.refreshMidiList();
 			}
 		});
 	}

@@ -33,7 +33,7 @@ public class Updater {
 
 	public String VersionTag = "v4.0";
 	String VersionFile;
-	
+
 	public String getDownloadUrl(JSONObject release, String fileName) {
 		JSONArray assets = release.getJSONArray("assets");
 		for (int i = 0; i < assets.length(); i++) {
@@ -142,7 +142,7 @@ public class Updater {
 			}
 		}
 	}
-	
+
 	public void checkLocalVersion() {
 
 		for (int i = 0; i < listOfFiles.length; i++) {
@@ -157,7 +157,7 @@ public class Updater {
 		}
 		System.out.println("VersionTag: " + VersionTag);
 	}
-	
+
 	public JSONObject getLatestRelease(String url) {
 		try {
 			// String authToken = ""; // replace with your PAT
@@ -181,7 +181,7 @@ public class Updater {
 			return null;
 		}
 	}
-	
+
 	public void extractZipFile(String zipFilePath, String destinationFolderPath) {
 		try {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath));

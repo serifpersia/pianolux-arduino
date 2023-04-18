@@ -2,8 +2,10 @@ package com.serifpersia.pianoled;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -17,6 +19,10 @@ import jssc.SerialPortList;
 import themidibus.MidiBus;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.io.BufferedReader;
+
 import processing.core.PApplet;
 
 public class PianoController {
@@ -28,7 +34,7 @@ public class PianoController {
 	public static String[] portNames = SerialPortList.getPortNames();
 
 	private static MidiBus myBusIn;
-	
+
 	public static String midiName;
 
 	public static Color splitLeftColor = Color.RED;
@@ -37,6 +43,81 @@ public class PianoController {
 	public static Color LeftSideGColor = Color.RED;
 	public static Color MiddleSideColor = Color.GREEN;
 	public static Color RightSideGColor = Color.BLUE;
+
+	public static void findPortNameOnWindows(String deviceName) {
+		String[] cmd = { "cmd", "/c",
+				"wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table" };
+		portName = null;
+		try {
+			Process p = Runtime.getRuntime().exec(cmd);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains(deviceName)) {
+					String[] tokens = line.split("\\s+");
+					portName = tokens[tokens.length - 1].replaceAll("[()]", "");
+					System.out.println("Serial Device detected: " + line);
+					break;
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+	}
+
+	public static void refreshSerialList() {
+		// Get the index of the portName in the portNames array
+		int index = Arrays.asList(portNames).indexOf(portName);
+
+		// Select the corresponding item in the SerialList JComboBox object
+		if (index >= 0) {
+			DashboardPanel.SerialList.setSelectedIndex(index);
+		}
+	}
+
+	public static void refreshMidiList() {
+	    // Get the list of available MIDI devices
+	    String[] deviceNames = getMidiDevices();
+
+	    // Find the index of the first device whose name contains "piano" or "midi"
+	    int index = -1;
+	    for (int i = 0; i < deviceNames.length; i++) {
+	        if (deviceNames[i].toLowerCase().contains("piano") || deviceNames[i].toLowerCase().contains("midi")) {
+	            index = i;
+	            break;
+	        }
+	    }
+
+	    // Set the corresponding item in the MidiList JComboBox object
+	    if (index >= 0) {
+	        DashboardPanel.MidiList.setSelectedIndex(index);
+	    }
+	}
+
+
+
+	public static void findPortNameOnLinux(String deviceName) {
+		String[] cmd = { "sh", "-c", "dmesg | grep " + deviceName };
+		portName = null;
+		Pattern pattern = Pattern.compile(deviceName + "(\\d+)");
+		try {
+			Process p = Runtime.getRuntime().exec(cmd);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				Matcher matcher = pattern.matcher(line);
+				if (matcher.find()) {
+					portName = "/dev/" + matcher.group(0);
+					System.out.println("Device found: " + portName);
+					break;
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+	}
 
 	private static MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -47,7 +128,7 @@ public class PianoController {
 		}
 		return null;
 	}
-	
+
 	public static String[] getMidiOutDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		ArrayList<String> deviceNames = new ArrayList<String>();
@@ -72,7 +153,6 @@ public class PianoController {
 			return deviceNames.toArray(new String[deviceNames.size()]);
 		}
 	}
-	
 
 	public static String[] getMidiDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
