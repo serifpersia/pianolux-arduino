@@ -126,6 +126,8 @@ public class DashboardPanel extends JPanel {
 						}
 					}
 				}
+				JOptionPane.showMessageDialog(null, "PianoLED directory cleaned!");
+				System.exit(0);
 			}
 
 			private void deleteFolder(File folder) {
