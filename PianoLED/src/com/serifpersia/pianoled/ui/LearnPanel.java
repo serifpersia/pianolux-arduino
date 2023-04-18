@@ -38,7 +38,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	public static JComboBox<?> MidiOutList;
 	protected MidiPlayer midiPlayer;
 
-	JButton lbPlayMidi = new JButton("⏯");
+	JButton lbPlayMidi = new JButton("▶");
 
 	public LearnPanel() {
 		setBackground(new Color(21, 25, 28));
@@ -156,7 +156,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		gbc_lbMidiFileName.insets = new Insets(0, 0, 5, 0);
 		gbc_lbMidiFileName.gridx = 0;
 		gbc_lbMidiFileName.gridy = gridy;
-		midiFileName.setFont(new Font("Montserrat", Font.PLAIN, 12));
+		midiFileName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		midiFileName.setForeground(Color.WHITE);
 		controlsPane.add(midiFileName, gbc_lbMidiFileName);
 		return midiFileName;
@@ -211,7 +211,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	}
 
 	private void addPlaybackControls(JPanel controlsPane, int gridy) {
-		Font midiControlsFont = new Font("Montserrat", Font.BOLD, 16);
+		Font midiControlsFont = new Font("Symbola", Font.BOLD, 16);
 
 		JButton lbStart = new JButton("⏮");
 		GridBagConstraints gbc_lbStart = new GridBagConstraints();
