@@ -101,49 +101,58 @@ public class DashboardPanel extends JPanel {
 		cleanUpButton.setFont(new Font("Tahoma", Font.BOLD, 30));
 		ButtonsPane.add(cleanUpButton);
 		cleanUpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showOptionDialog(null, "Do you want to clean up?", "Confirmation",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-				if (result == JOptionPane.YES_OPTION) {
-					// Get the current working directory
-					String currentDir = System.getProperty("user.dir");
+		    public void actionPerformed(ActionEvent e) {
+		        int result = JOptionPane.showOptionDialog(null, "Do you want to clean up?", "Confirmation",
+		                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		        if (result == JOptionPane.YES_OPTION) {
+		            // Get the current working directory
+		            String currentDir = System.getProperty("user.dir");
 
-					// Construct file objects for data and lib folders and for any .exe files
-					File dataFolder = new File(currentDir + File.separator + "data");
-					File libFolder = new File(currentDir + File.separator + "lib");
-					File[] exeFiles = new File(currentDir).listFiles((dir, name) -> name.endsWith(".exe"));
+		            // Construct file objects for data and lib folders and for any .exe files
+		            File dataFolder = new File(currentDir + File.separator + "data");
+		            File libFolder = new File(currentDir + File.separator + "lib");
+		            File[] exeFiles = new File(currentDir).listFiles((dir, name) -> name.endsWith(".exe"));
 
-					// Try to delete the folders and files if they exist
-					if (dataFolder.exists()) {
-						deleteFolder(dataFolder);
-					}
-					if (libFolder.exists()) {
-						deleteFolder(libFolder);
-					}
-					for (File exeFile : exeFiles) {
-						if (exeFile.exists()) {
-							exeFile.delete();
-						}
-					}
-				}
-				JOptionPane.showMessageDialog(null, "PianoLED directory cleaned!");
-				System.exit(0);
-			}
+		            // Try to delete the folders and files if they exist
+		            boolean deleted = false;
+		            if (dataFolder.exists()) {
+		                deleteFolder(dataFolder);
+		                deleted = true;
+		            }
+		            if (libFolder.exists()) {
+		                deleteFolder(libFolder);
+		                deleted = true;
+		            }
+		            for (File exeFile : exeFiles) {
+		                if (exeFile.exists()) {
+		                    exeFile.delete();
+		                    deleted = true;
+		                }
+		            }
+		            if (deleted) {
+		                JOptionPane.showMessageDialog(null, "PianoLED directory cleaned!");
+		                System.exit(0);
+		            } else {
+		                JOptionPane.showMessageDialog(null, "No old files found, no need to clean!");
+		            }
+		        }
+		    }
 
-			private void deleteFolder(File folder) {
-				File[] files = folder.listFiles();
-				if (files != null) {
-					for (File file : files) {
-						if (file.isDirectory()) {
-							deleteFolder(file);
-						} else {
-							file.delete();
-						}
-					}
-				}
-				folder.delete();
-			}
+		    private void deleteFolder(File folder) {
+		        File[] files = folder.listFiles();
+		        if (files != null) {
+		            for (File file : files) {
+		                if (file.isDirectory()) {
+		                    deleteFolder(file);
+		                } else {
+		                    file.delete();
+		                }
+		            }
+		        }
+		        folder.delete();
+		    }
 		});
+
 
 		updateButton = new JButton("Update");
 		updateButton.setHorizontalAlignment(SwingConstants.CENTER);
