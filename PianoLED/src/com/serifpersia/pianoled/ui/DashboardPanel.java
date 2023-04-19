@@ -23,16 +23,17 @@ public class DashboardPanel extends JPanel {
 
 	private Updater updater = new Updater();
 
-	PianoController pianoController = new PianoController();
 	public static JComboBox<?> SerialList;
 	public static JComboBox<?> MidiList;
 	private JButton openButton;
 	private JButton updateButton;
 	private JButton cleanUpButton;
 	private JButton refreshButton;
+	PianoController pianoController;
 
-	public DashboardPanel() {
+	public DashboardPanel(PianoLED pianoLED) {
 
+		pianoController = pianoLED.getPianoController();
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
 
@@ -63,7 +64,7 @@ public class DashboardPanel extends JPanel {
 		lbSerialDevices.setFont(new Font("Tahoma", Font.BOLD, 30));
 		SerialPane.add(lbSerialDevices);
 
-		SerialList = new JComboBox<Object>(PianoController.portNames);
+		SerialList = new JComboBox<Object>(pianoController.portNames);
 		SerialList.setBackground(new Color(21, 25, 28));
 		SerialList.setForeground(Color.WHITE);
 		SerialList.setFont(new Font("Tahoma", Font.BOLD, 30));
@@ -81,7 +82,7 @@ public class DashboardPanel extends JPanel {
 		lbMidiDeviecs.setHorizontalAlignment(SwingConstants.CENTER);
 		MidiPane.add(lbMidiDeviecs);
 
-		MidiList = new JComboBox<Object>(PianoController.getMidiDevices());
+		MidiList = new JComboBox<Object>(pianoController.getMidiDevices());
 		MidiList.setBackground(new Color(21, 25, 28));
 		MidiList.setForeground(Color.WHITE);
 		MidiList.setFont(new Font("Tahoma", Font.BOLD, 30));
@@ -180,32 +181,32 @@ public class DashboardPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (openButton.getText().equals("Open")) {
 					try {
-						PianoController.portName = (String) SerialList.getSelectedItem();
-						PianoController.midiName = (String) MidiList.getSelectedItem();
+						pianoController.portName = (String) SerialList.getSelectedItem();
+						pianoController.midiName = (String) MidiList.getSelectedItem();
 
 						pianoController.openMidi();
-						PianoController.arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(openButton),
-								PianoController.portName, 115200);
-						System.out.println("Serial device opened: " + PianoController.portName);
+						pianoController.arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(openButton),
+								pianoController.portName, 115200);
+						System.out.println("Serial device opened: " + pianoController.portName);
 
 						openButton.setBackground(new Color(46, 204, 113));
 						openButton.setText("Close");
 
-						if (PianoController.arduino != null) {
-							PianoController.arduino.sendCommandBlackOut();
-							PianoController.arduino.sendCommandFadeRate(255);
+						if (pianoController.arduino != null) {
+							pianoController.arduino.sendCommandBlackOut();
+							pianoController.arduino.sendCommandFadeRate(255);
 						}
 
 					} catch (Exception OpenError) {
 					}
 				} else {
-					PianoController.closeMidi();
-					if (PianoController.arduino != null) {
-						PianoController.arduino.sendCommandBlackOut();
-						PianoController.setLedBG(false);
-						PianoController.arduino.stop();
+					pianoController.closeMidi();
+					if (pianoController.arduino != null) {
+						pianoController.arduino.sendCommandBlackOut();
+						pianoController.setLedBG(false);
+						pianoController.arduino.stop();
 					}
-					System.out.println("Serial device closed: " + PianoController.portName);
+					System.out.println("Serial device closed: " + pianoController.portName);
 					openButton.setBackground(new Color(231, 76, 60));
 					openButton.setText("Open");
 				}
@@ -223,12 +224,12 @@ public class DashboardPanel extends JPanel {
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (updater.getOs().contains("win")) {
-					PianoController.findPortNameOnWindows("Arduino");
+					pianoController.findPortNameOnWindows("Arduino");
 				} else {
-					PianoController.findPortNameOnLinux("ttyACM");
+					pianoController.findPortNameOnLinux("ttyACM");
 				}
-				PianoController.refreshSerialList();
-				PianoController.refreshMidiList();
+				pianoController.refreshSerialList();
+				pianoController.refreshMidiList();
 			}
 		});
 	}

@@ -1,9 +1,11 @@
 package com.serifpersia.pianoled.learn;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
@@ -23,7 +25,7 @@ import themidibus.MidiBus;
 
 public class MidiPlayer {
 
-	private MidiPlayerConsumer consumer;
+	private List<MidiPlayerConsumer> consumers = new ArrayList<>();
 
 	private LinkedList<Note> notes;
 
@@ -53,7 +55,7 @@ public class MidiPlayer {
 	}
 
 	public void setConsumer(MidiPlayerConsumer consumer) {
-		this.consumer = consumer;
+		this.consumers.add(consumer);
 	}
 
 	// MIDI handling
@@ -65,7 +67,7 @@ public class MidiPlayer {
 			sequence = MidiSystem.getSequence(midiFile);
 			sequencer.setSequence(sequence);
 
-			//clear all existing transmitters
+			// clear all existing transmitters
 			sequencer.getTransmitters().forEach(Transmitter::close);
 
 			sequencer.getTransmitter().setReceiver(new MidiEventsProcessor());
@@ -83,8 +85,7 @@ public class MidiPlayer {
 				@Override
 				public void meta(MetaMessage meta) {
 					if (meta.getType() == 0x2F) {
-						if (consumer != null)
-							consumer.onPlaybackFinished();
+						consumers.forEach(MidiPlayerConsumer::onPlaybackFinished);
 					}
 				}
 			});
@@ -224,10 +225,15 @@ public class MidiPlayer {
 				int pitch = message.getData1();
 				int velocity = message.getData2();
 				if (message.getCommand() == ShortMessage.NOTE_ON && message.getData2() != 0) {
-					consumer.onNoteOn(0, pitch, velocity);
+					for (MidiPlayerConsumer consumer : consumers) {
+						consumer.onNoteOn(0, pitch, velocity);
+					}
+
 				} else if (message.getCommand() == ShortMessage.NOTE_OFF
 						|| message.getCommand() == ShortMessage.NOTE_ON && message.getData2() == 0) {
-					consumer.onNoteOff(pitch);
+					for (MidiPlayerConsumer consumer : consumers) {
+						consumer.onNoteOff(pitch);
+					}
 				} else {
 					System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
 				}
@@ -238,6 +244,10 @@ public class MidiPlayer {
 		public void close() {
 			stop();
 		}
+	}
+
+	public long getCurrentTick() {
+		return sequencer.getTickPosition();
 	}
 
 }

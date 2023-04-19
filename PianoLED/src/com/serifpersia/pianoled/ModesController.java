@@ -7,6 +7,7 @@ import com.serifpersia.pianoled.ui.GetUI;
 
 public class ModesController {
 
+	PianoLED pianoLED;
 	static boolean BGColor = false;
 
 	public static boolean VelocityOn = false;
@@ -21,6 +22,10 @@ public class ModesController {
 
 	public static boolean AnimationOn = false;
 
+	public ModesController(PianoLED pianoLED) {
+		this.pianoLED = pianoLED;
+	}
+
 	private void disableAllModes() {
 		RandomOn = false;
 		VelocityOn = false;
@@ -31,8 +36,8 @@ public class ModesController {
 	}
 
 	public void modeSelect(int n) {
-		if (PianoController.arduino != null)
-			PianoController.arduino.sendCommandBlackOut();
+		if (pianoLED.getPianoController().arduino != null)
+			pianoLED.getPianoController().arduino.sendCommandBlackOut();
 
 		switch (GetUI.getModeName(n)) {
 		case "Default":

@@ -3,39 +3,34 @@ package com.serifpersia.pianoled.ui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class DrawPiano extends JPanel {
+	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.3, 6, -0.7, 8, -0.5, 10, -0.3); // starts
+																													// with
+																													// C
 
-	public static final double pianoWidthToHeightRatio = 122 / 15 * 2;
-	public static final double pianoBlackToWhiteWidhtRatio = 0.55;
-	public static final double pianoBlackToWhiteHeightRatio = 0.65;
+	public final static int NUM_KEYS = 88;
+	public final static int NUM_WHITE_KEYS = 52;
+	public final static int FIRST_KEY_PITCH_OFFSET = 21;
+	public final static int MIDDLE_C_PITCH = 60;
+	public final static double pianoWidthToHeightRatio = 122 / 15 * 2;
+	public final static double pianoBlackToWhiteWidhtRatio = 0.55;
+	public final static double pianoBlackToWhiteHeightRatio = 0.65;
 
-	private static DrawPiano piano;
+	private int[] keysPressed = new int[NUM_KEYS];
+	private int[] keysXPos = new int[NUM_KEYS];
 
-	private static int[] Keys = new int[88];
-
-	// List of white keys in a 88-key piano
-	private static int whiteKeys[] = { 0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27, 29, 31, 32, 34, 36,
-			38, 39, 41, 43, 44, 46, 48, 50, 51, 53, 55, 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79, 80, 82,
-			84, 86, 87 };
-
-	private static int[] blackKeysIdx = { 0, 2, 3, 5, 6 };
-
-	public DrawPiano() {
-		piano = this;
+	public void setPianoKey(int pitch, int on) {
+		keysPressed[pitch - FIRST_KEY_PITCH_OFFSET] = on;
+		repaint();
 	}
 
-	public static void setPianoKey(int pitch, int on) {
-		Keys[pitch - 21] = on;
-		piano.repaint();
-	}
-
-	public static void resetPianoKeys() {
-		Keys = new int[88];
+	public void resetPianoKeys() {
+		keysPressed = new int[NUM_KEYS];
 	}
 
 	@Override
@@ -47,47 +42,57 @@ public class DrawPiano extends JPanel {
 
 		int blackKeyWidth = getBlackKeyWidth();
 		int blackKeyHeight = getBlackKeyHeight();
-		
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 
-		// white keys
-		int x = getStartX();
-		for (int i = 0; i < whiteKeys.length; i++) {
-			if (Keys[whiteKeys[i]] == 1) {
-				g.setColor(ControlsPanel.selectedColor);
-			} else {
-				g.setColor(Color.WHITE);
+		int currentX = getStartX();
+
+		// Draw white keys
+		for (int i = 0; i < NUM_KEYS; i++) {
+			int pitch = i + FIRST_KEY_PITCH_OFFSET;
+
+			if (!isBlackKey(pitch)) {
+				if (keysPressed[i] == 1) {
+					g.setColor(ControlsPanel.selectedColor);
+				} else {
+					g.setColor(Color.WHITE);
+				}
+				g.fillRect(currentX, 0, whiteKeyWidth, whiteKeyHeight);
+				g.setColor(new Color(100, 100, 100));
+				g.drawRect(currentX, 0, whiteKeyWidth, whiteKeyHeight);
+				keysXPos[i] = currentX;
+				currentX += whiteKeyWidth;
+
+				if (i == MIDDLE_C_PITCH - FIRST_KEY_PITCH_OFFSET)
+					g.drawString("C", currentX - whiteKeyWidth / 2 - 3, whiteKeyHeight - 10);
 			}
-			g.fillRect(x, 0, whiteKeyWidth, whiteKeyHeight);
-			g.setColor(new Color(100, 100, 100));
-			g.drawRect(x, 0, whiteKeyWidth, whiteKeyHeight);
-
-			if (whiteKeys[i] == 60 - 21)
-				g.drawString("C", x + whiteKeyWidth / 2 - 3, whiteKeyHeight - 10);
-
-//			g.drawString(""+i, x+whiteKeyWidth/2-3, whiteKeyHeight-20);
-
-			x += whiteKeyWidth;
 		}
 
-		// black keys
-		x = getStartX();
-		for (int i = 0; i < whiteKeys.length - 1; i++) {
-			// draw black keys
-			if (Arrays.binarySearch(blackKeysIdx, i % 7) > -1) {
-				if (whiteKeys[i] + 1 < Keys.length && Keys[whiteKeys[i] + 1] == 1) {
+		// Reset currentX for drawing black keys
+		currentX = getStartX();
+
+		// Draw black keys
+		for (int i = 0; i < NUM_KEYS; i++) {
+			int pitch = i + FIRST_KEY_PITCH_OFFSET;
+
+			if (isBlackKey(pitch)) {
+				currentX += (int) (blackKeyWidth * getBlackKeyOffset(pitch));
+				if (keysPressed[i] == 1) {
 					g.setColor(ControlsPanel.selectedColor);
 				} else {
 					g.setColor(Color.BLACK);
 				}
-				g.fillRect(x + whiteKeyWidth - blackKeyWidth / 2, 0, blackKeyWidth, blackKeyHeight);
+				g.fillRect(currentX, 0, blackKeyWidth, blackKeyHeight);
 				g.setColor(new Color(100, 100, 100));
-				g.drawRect(x + whiteKeyWidth - blackKeyWidth / 2, 0, blackKeyWidth, blackKeyHeight);
-			}
+				g.draw3DRect(currentX, 0, blackKeyWidth, blackKeyHeight, true);
+				keysXPos[i] = currentX;
 
-			x += whiteKeyWidth;
+				currentX -= (int) (blackKeyWidth * getBlackKeyOffset(pitch));
+			} else {
+				currentX += whiteKeyWidth;
+			}
 		}
 
 		// Highlight Piano Size
@@ -97,7 +102,7 @@ public class DrawPiano extends JPanel {
 	}
 
 	private int getStartX() {
-		return (getWidth() - getPianoWidth()) / 2 + 10;
+		return (getWidth() - getPianoWidth()) / 2;
 	}
 
 	public int getWhiteKeyHeight() {
@@ -113,7 +118,7 @@ public class DrawPiano extends JPanel {
 	}
 
 	public int getWhiteKeyWidth() {
-		return getPianoWidth() / whiteKeys.length;
+		return getPianoWidth() / NUM_WHITE_KEYS;
 	}
 
 	public int getPianoWidth() {
@@ -122,22 +127,44 @@ public class DrawPiano extends JPanel {
 		if (w / h > pianoWidthToHeightRatio) {
 			w = (int) (h * pianoWidthToHeightRatio);
 		}
-		return w;
+		// taking into account rounding
+		return w / NUM_WHITE_KEYS * NUM_WHITE_KEYS;
 	}
 
 	void pianoKeyAction(int x, int y, boolean released) {
-		int whiteKeyWidth = getWhiteKeyWidth();
-		int whiteKeyHeight = getWhiteKeyHeight();
-		for (int i = 0; i < DrawPiano.whiteKeys.length; i++) {
-			// Check if the mouse click was inside a white key
-			if (x > getStartX() + i * whiteKeyWidth && x < getStartX()+(i + 1) * whiteKeyWidth && y >= 0 && y <= whiteKeyHeight) {
-				if (released) {
-					DrawPiano.Keys[DrawPiano.whiteKeys[i]] = 1;
-				} else {
-					DrawPiano.Keys[DrawPiano.whiteKeys[i]] = 0;
-				}
-				repaint();
+		int key = findClickedKey(x, y);
+		if (key >= 0) {
+			if (released) {
+				keysPressed[key] = 1;
+			} else {
+				keysPressed[key] = 0;
+			}
+			repaint();
+		}
+	}
+
+	private int findClickedKey(int x, int y) {
+		for (int i = 0; i < NUM_KEYS; i++) {
+			int pitch = i + FIRST_KEY_PITCH_OFFSET;
+			int keyWidth = isBlackKey(pitch) ? getBlackKeyWidth() : getWhiteKeyWidth();
+			int keyHeight = isBlackKey(pitch) ? getBlackKeyHeight() : getWhiteKeyHeight();
+
+			if (x >= keysXPos[i] && x <= keysXPos[i] + keyWidth && y >= 0 && y <= keyHeight) {
+				return i;
 			}
 		}
+		return -1; // No key found
+	}
+
+	public float getKeyXPos(int pitch) {
+		return keysXPos[pitch - FIRST_KEY_PITCH_OFFSET];
+	}
+
+	public boolean isBlackKey(int pitch) {
+		return blackKeyOffset.keySet().contains(pitch % 12);
+	}
+
+	private Double getBlackKeyOffset(int pitch) {
+		return blackKeyOffset.get(pitch % 12);
 	}
 }

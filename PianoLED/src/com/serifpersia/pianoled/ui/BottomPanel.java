@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
+import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.Updater;
 
 import javax.swing.JLabel;
@@ -15,11 +16,11 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class BottomPanel extends JPanel {
 
-	static DrawPiano piano = new DrawPiano();
+	DrawPiano piano = new DrawPiano();
 
 	static Updater updator = new Updater();
 
-	public BottomPanel() {
+	public BottomPanel(PianoLED pianoLED) {
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout());
 
@@ -44,5 +45,9 @@ public class BottomPanel extends JPanel {
 		version.setForeground(Color.WHITE);
 		add(version, BorderLayout.SOUTH);
 	}
-
+	
+	public DrawPiano getPiano()
+	{
+		return piano;
+	}
 }

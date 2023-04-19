@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
+import com.serifpersia.pianoled.PianoLED;
 
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -31,7 +32,7 @@ public class ControlsPanel extends JPanel {
 
 	private ModesController modesController;
 	private PianoController pianoController;
-
+	
 	private JComboBox<Object> LEDEffects;
 
 	public static Color selectedColor = Color.RED;
@@ -77,10 +78,10 @@ public class ControlsPanel extends JPanel {
 		return LEDEffects;
 	}
 
-	public ControlsPanel() {
+	public ControlsPanel(PianoLED pianoLED) {
 
-		modesController = new ModesController();
-		pianoController = new PianoController();
+		pianoController = pianoLED.getPianoController();
+		modesController = new ModesController(pianoLED);
 
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
@@ -228,12 +229,12 @@ public class ControlsPanel extends JPanel {
 		BgLight.addActionListener(e -> {
 			String selectedOption = (String) BgLight.getSelectedItem();
 			if (selectedOption.equals("Yes")) {
-				PianoController.bgToggle = true;
-				PianoController.setLedBG(PianoController.bgToggle);
+				pianoController.bgToggle = true;
+				pianoController.setLedBG(pianoController.bgToggle);
 				System.out.println("Yes BG");
 			} else {
-				PianoController.bgToggle = false;
-				PianoController.setLedBG(PianoController.bgToggle);
+				pianoController.bgToggle = false;
+				pianoController.setLedBG(pianoController.bgToggle);
 				System.out.println("No BG");
 			}
 		});
@@ -249,8 +250,8 @@ public class ControlsPanel extends JPanel {
 		LeftPane.add(lbSetBg);
 		lbSetBg.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				if (PianoController.bgToggle) {
-					PianoController.setBG();
+				if (pianoController.bgToggle) {
+					pianoController.setBG();
 				}
 			}
 		});
@@ -272,11 +273,11 @@ public class ControlsPanel extends JPanel {
 		FixLed.addActionListener(e -> {
 			String selectedOption = (String) FixLed.getSelectedItem();
 			if (selectedOption.equals("Yes")) {
-				PianoController.useFixedMapping = true;
-				System.out.println(PianoController.useFixedMapping);
+				pianoController.useFixedMapping = true;
+				System.out.println(pianoController.useFixedMapping);
 			} else {
-				PianoController.useFixedMapping = false;
-				System.out.println(PianoController.useFixedMapping);
+				pianoController.useFixedMapping = false;
+				System.out.println(pianoController.useFixedMapping);
 			}
 		});
 
@@ -439,8 +440,8 @@ public class ControlsPanel extends JPanel {
 		btnL.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PianoController.splitLeftColor = selectedColor;
-				PianoController.LeftSideGColor = selectedColor;
+				pianoController.splitLeftColor = selectedColor;
+				pianoController.LeftSideGColor = selectedColor;
 			}
 		});
 		btnL.setForeground(Color.WHITE);
@@ -455,7 +456,7 @@ public class ControlsPanel extends JPanel {
 		btnM.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PianoController.MiddleSideColor = selectedColor;
+				pianoController.MiddleSideColor = selectedColor;
 
 			}
 		});
@@ -471,8 +472,8 @@ public class ControlsPanel extends JPanel {
 		btnR.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PianoController.splitRightColor = selectedColor;
-				PianoController.RightSideGColor = selectedColor;
+				pianoController.splitRightColor = selectedColor;
+				pianoController.RightSideGColor = selectedColor;
 			}
 		});
 		btnR.setForeground(Color.WHITE);
@@ -485,14 +486,14 @@ public class ControlsPanel extends JPanel {
 		ReverseLed.addActionListener(e -> {
 			String selectedOption = (String) ReverseLed.getSelectedItem();
 			if (selectedOption.equals("Reverse LED Strip -Yes")) {
-				PianoController.stripReverse = true;
-				PianoController.stripReverse(PianoController.stripReverse);
+				pianoController.stripReverse = true;
+				pianoController.stripReverse(pianoController.stripReverse);
 
-				System.out.println("Yes Reverse " + PianoController.stripReverse);
+				System.out.println("Yes Reverse " + pianoController.stripReverse);
 			} else {
-				PianoController.stripReverse = false;
-				PianoController.stripReverse(PianoController.stripReverse);
-				System.out.println("No Reverse " + PianoController.stripReverse);
+				pianoController.stripReverse = false;
+				pianoController.stripReverse(pianoController.stripReverse);
+				System.out.println("No Reverse " + pianoController.stripReverse);
 			}
 		});
 
@@ -517,7 +518,7 @@ public class ControlsPanel extends JPanel {
 				GetUI.counter--;
 				GetUI.setKeyboardSize(GetUI.counter);
 				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
-				BottomPanel.piano.repaint();
+				pianoLED.getDrawPiano().repaint();
 			}
 		});
 
@@ -537,7 +538,7 @@ public class ControlsPanel extends JPanel {
 
 				GetUI.setKeyboardSize(GetUI.counter);
 				lbPianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
-				BottomPanel.piano.repaint();
+				pianoLED.getDrawPiano().repaint();
 			}
 		});
 
@@ -546,15 +547,5 @@ public class ControlsPanel extends JPanel {
 		lbPianoSize.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lbPianoSize.setForeground(Color.WHITE);
 		PianoPane.add(lbPianoSize);
-	}
-	
-	public void noteOn(int channel, int pitch, int velocity)
-	{
-		pianoController.noteOn(channel, pitch, velocity);
-	}
-
-	public void noteOff(int pitch)
-	{
-		pianoController.noteOff(0, pitch, 0);
 	}
 }

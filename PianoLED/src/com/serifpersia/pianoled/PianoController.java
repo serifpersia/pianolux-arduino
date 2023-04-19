@@ -12,7 +12,6 @@ import javax.sound.midi.MidiUnavailableException;
 
 import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
-import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.GetUI;
 
 import jssc.SerialPortList;
@@ -27,24 +26,30 @@ import processing.core.PApplet;
 
 public class PianoController {
 
-	PApplet pApplet = new PApplet();
+	private PianoLED pianoLED;
+	
+	private PApplet pApplet = new PApplet();
 
-	public static Arduino arduino;
-	public static String portName;
-	public static String[] portNames = SerialPortList.getPortNames();
+	public Arduino arduino;
+	public String portName;
+	public String[] portNames = SerialPortList.getPortNames();
 
-	private static MidiBus myBusIn;
+	private MidiBus myBusIn;
 
-	public static String midiName;
+	public String midiName;
 
-	public static Color splitLeftColor = Color.RED;
-	public static Color splitRightColor = Color.BLUE;
+	public Color splitLeftColor = Color.RED;
+	public Color splitRightColor = Color.BLUE;
 
-	public static Color LeftSideGColor = Color.RED;
-	public static Color MiddleSideColor = Color.GREEN;
-	public static Color RightSideGColor = Color.BLUE;
+	public Color LeftSideGColor = Color.RED;
+	public Color MiddleSideColor = Color.GREEN;
+	public Color RightSideGColor = Color.BLUE;
 
-	public static void findPortNameOnWindows(String deviceName) {
+	public PianoController(PianoLED pianoLED) {
+		this.pianoLED = pianoLED;
+	}
+
+	public void findPortNameOnWindows(String deviceName) {
 		String[] cmd = { "cmd", "/c",
 				"wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table" };
 		portName = null;
@@ -66,7 +71,7 @@ public class PianoController {
 		}
 	}
 
-	public static void refreshSerialList() {
+	public void refreshSerialList() {
 		// Get the index of the portName in the portNames array
 		int index = Arrays.asList(portNames).indexOf(portName);
 
@@ -76,7 +81,7 @@ public class PianoController {
 		}
 	}
 
-	public static void refreshMidiList() {
+	public void refreshMidiList() {
 		// Get the list of available MIDI devices
 		String[] deviceNames = getMidiDevices();
 
@@ -95,7 +100,7 @@ public class PianoController {
 		}
 	}
 
-	public static void findPortNameOnLinux(String deviceName) {
+	public void findPortNameOnLinux(String deviceName) {
 		String[] cmd = { "sh", "-c", "dmesg | grep " + deviceName };
 		portName = null;
 		Pattern pattern = Pattern.compile(deviceName + "(\\d+)");
@@ -117,7 +122,7 @@ public class PianoController {
 		}
 	}
 
-	private static MidiDevice.Info getDeviceInfo(String deviceName) {
+	private MidiDevice.Info getDeviceInfo(String deviceName) {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		for (MidiDevice.Info info : infos) {
 			if (info.getName().equals(deviceName)) {
@@ -127,7 +132,7 @@ public class PianoController {
 		return null;
 	}
 
-	public static String[] getMidiOutDevices() {
+	public String[] getMidiOutDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		ArrayList<String> deviceNames = new ArrayList<String>();
 		for (MidiDevice.Info info : infos) {
@@ -152,7 +157,7 @@ public class PianoController {
 		}
 	}
 
-	public static String[] getMidiDevices() {
+	public String[] getMidiDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		ArrayList<String> deviceNames = new ArrayList<String>();
 		for (MidiDevice.Info info : infos) {
@@ -192,7 +197,7 @@ public class PianoController {
 		}
 	}
 
-	public static void closeMidi() {
+	public void closeMidi() {
 		String deviceName = (String) DashboardPanel.MidiList.getSelectedItem();
 		MidiDevice device = null;
 		try {
@@ -207,9 +212,9 @@ public class PianoController {
 		}
 	}
 
-	public static boolean useFixedMapping = false;
-	public static boolean stripReverse = false; // default value
-	public static boolean bgToggle = false; // default value
+	public boolean useFixedMapping = false;
+	public boolean stripReverse = false; // default value
+	public boolean bgToggle = false; // default value
 
 	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -242,7 +247,7 @@ public class PianoController {
 					GetUI.getStripLedNum(), 1);
 		}
 
-		DrawPiano.setPianoKey(pitch, 1);
+		pianoLED.setPianoKey(pitch, 1);
 		try {
 			ByteArrayOutputStream message = null;
 
@@ -288,7 +293,7 @@ public class PianoController {
 
 					message = arduino.commandSetColor(new Color(currentColor), notePushed);
 				} else if (ModesController.SplashOn) {
-					message = arduino.commandSplash(velocity, notePushed, PianoController.getSplashColor());
+					message = arduino.commandSplash(velocity, notePushed, getSplashColor());
 
 				} else {
 					if (arduino != null)
@@ -313,7 +318,7 @@ public class PianoController {
 			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum(), 1);
 		}
-		DrawPiano.setPianoKey(pitch, 0);
+		pianoLED.setPianoKey(pitch, 0);
 		try {
 			if (!ModesController.AnimationOn) {
 				arduino.sendCommandKeyOff(notePushed);
@@ -334,7 +339,7 @@ public class PianoController {
 		}
 	}
 
-	public static Color getSplashColor() {
+	public Color getSplashColor() {
 		return new Color(ControlsPanel.selectedColor.getRGB());
 	}
 
@@ -344,11 +349,11 @@ public class PianoController {
 		}
 	}
 
-	public static void stripReverse(boolean on) {
+	public void stripReverse(boolean on) {
 		arduino.sendCommandStripDirection(on ? 1 : 0, GetUI.getStripLedNum());
 	}
 
-	public static void setLedBG(boolean on) {
+	public void setLedBG(boolean on) {
 		int BG_HUE = 100;
 		int BG_SATURATION = 0;
 		int BG_BRIGHTNESS = 20;
@@ -361,7 +366,7 @@ public class PianoController {
 		}
 	}
 
-	public static void setBG() {
+	public void setBG() {
 		int red = ControlsPanel.selectedColor.getRed();
 		int green = ControlsPanel.selectedColor.getGreen();
 		int blue = ControlsPanel.selectedColor.getBlue();
@@ -380,7 +385,7 @@ public class PianoController {
 			arduino.sendCommandAnimation(n);
 	}
 
-	public static void dispose() {
+	public void dispose() {
 		// Dispose your app here
 		try {
 			if (myBusIn != null) {

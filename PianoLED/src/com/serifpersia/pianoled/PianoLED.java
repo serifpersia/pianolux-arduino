@@ -2,17 +2,19 @@ package com.serifpersia.pianoled;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.ui.BottomPanel;
+import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.LeftPanel;
 import com.serifpersia.pianoled.ui.RightPanel;
 import com.serifpersia.pianoled.ui.TopPanel;
@@ -22,32 +24,31 @@ import java.awt.Color;
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PianoLED frame = new PianoLED();
-					frame.setSize(950, 800);
-					frame.setLocationRelativeTo(null);
-					frame.setTitle("PianoLED");
-					frame.setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
-					frame.setVisible(true);
+	private PianoController pianoController = new PianoController(this);
+	private BottomPanel bottomPanel = new BottomPanel(this);
+	private TopPanel topPanel = new TopPanel(this);
+	private RightPanel rightPanel = new RightPanel(this);
+	private LeftPanel leftPanel = new LeftPanel(rightPanel);
 
-					// Register a shutdown hook
-					Runtime.getRuntime().addShutdownHook(new Thread() {
-						public void run() {
-							// Execute the dispose method
-							PianoController.dispose();
-						}
-					});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+    public static void main(String[] args) {
+        new PianoLED();
+    }
+    
+	public PianoLED() {
+
+		setSize(950, 800);
+		setLocationRelativeTo(null);
+		setTitle("PianoLED");
+		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Application is closing. Releasing resources...");
+				pianoController.dispose();
 			}
 		});
-	}
 
-	public PianoLED() {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -82,11 +83,7 @@ public class PianoLED extends JFrame {
 			}
 		});
 
-		BottomPanel bottomPanel = new BottomPanel();
 		bottomPanel.setBackground(new Color(0, 0, 0));
-		TopPanel topPanel = new TopPanel(this);
-		RightPanel rightPanel = new RightPanel();
-		LeftPanel leftPanel = new LeftPanel(rightPanel);
 
 		getContentPane().add(leftPanel, BorderLayout.WEST);
 
@@ -110,6 +107,19 @@ public class PianoLED extends JFrame {
 				bottomPanel.revalidate();
 			}
 		});
+		
+		setVisible(true);
 	}
 
+	public PianoController getPianoController() {
+		return this.pianoController;
+	}
+
+	public DrawPiano getDrawPiano() {
+		return bottomPanel.getPiano();
+	}
+
+	public void setPianoKey(int pitch, int on) {
+		bottomPanel.getPiano().setPianoKey(pitch, on);
+	}
 }

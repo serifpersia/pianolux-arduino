@@ -1,4 +1,4 @@
-package com.serifpersia.pianoled.ui;
+package com.serifpersia.pianoled.learn;
 
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -17,8 +17,8 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoController;
-import com.serifpersia.pianoled.learn.MidiPlayer;
-import com.serifpersia.pianoled.learn.MidiPlayerConsumer;
+import com.serifpersia.pianoled.PianoLED;
+import com.serifpersia.pianoled.ui.ControlsPanel;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -39,12 +39,24 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	protected MidiPlayer midiPlayer;
 
 	JButton lbPlayMidi = new JButton("▶");
-	private ControlsPanel controlsPanel;
-	public LearnPanel(ControlsPanel _controlsPanel) {
-		this.controlsPanel = _controlsPanel;
+	private PianoLED pianoLED;
+	
+	public LearnPanel(PianoLED pianoLED) {
+		this.pianoLED = pianoLED;
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
+		addPianoRoll();
+		addSlidingControlPanel();
+	}
 
+	private void addPianoRoll() {
+//		PianoRoll pianoRoll = new PianoRoll();
+//		add(pianoRoll);
+	}
+	
+
+
+	private void addSlidingControlPanel() {
 		JPanel slideControlsPane = new JPanel();
 		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
@@ -165,7 +177,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	}
 
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
-		MidiOutList = new JComboBox<Object>(PianoController.getMidiOutDevices());
+		MidiOutList = new JComboBox<Object>(pianoLED.getPianoController().getMidiOutDevices());
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		MidiOutList.setBackground(new Color(21, 25, 28));
 		MidiOutList.setForeground(Color.WHITE);
@@ -317,11 +329,11 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
 	@Override
 	public void onNoteOn(int channel, int pitch, int velocity) {
-		controlsPanel.noteOn(channel, pitch, velocity);
+		pianoLED.getPianoController().noteOn(channel, pitch, velocity);
 	}
 
 	@Override
 	public void onNoteOff(int pitch) {
-		controlsPanel.noteOff(pitch);
+		pianoLED.getPianoController().noteOff(0, pitch, 0);
 	}
 }
