@@ -41,6 +41,20 @@ public class PianoLED extends JFrame {
 		setTitle("PianoLED");
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
 		
+		setUndecorated(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		bottomPanel.setBackground(new Color(0, 0, 0));
+
+		getContentPane().add(leftPanel, BorderLayout.WEST);
+
+		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
+		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
+		rightPanelWrapper.add(topPanel, BorderLayout.NORTH);
+		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
+		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
+		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -48,9 +62,6 @@ public class PianoLED extends JFrame {
 				pianoController.dispose();
 			}
 		});
-
-		setUndecorated(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Window dragging
 		addMouseMotionListener(new MouseMotionAdapter() {
@@ -82,17 +93,6 @@ public class PianoLED extends JFrame {
 				y = e.getYOnScreen();
 			}
 		});
-
-		bottomPanel.setBackground(new Color(0, 0, 0));
-
-		getContentPane().add(leftPanel, BorderLayout.WEST);
-
-		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
-		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
-		rightPanelWrapper.add(topPanel, BorderLayout.NORTH);
-		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
-		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
-		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
 
 		// Add a ComponentListener to the parent JPanel to detect size changes
 		rightPanelWrapper.addComponentListener(new ComponentAdapter() {
