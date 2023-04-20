@@ -61,13 +61,13 @@ public class DashboardPanel extends JPanel {
 		JLabel lbSerialDevices = new JLabel("Serial Devices");
 		lbSerialDevices.setHorizontalAlignment(SwingConstants.CENTER);
 		lbSerialDevices.setForeground(Color.WHITE);
-		lbSerialDevices.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lbSerialDevices.setFont(new Font("Tahoma", Font.BOLD, 28));
 		SerialPane.add(lbSerialDevices);
 
 		SerialList = new JComboBox<Object>(pianoController.portNames);
 		SerialList.setBackground(new Color(21, 25, 28));
 		SerialList.setForeground(Color.WHITE);
-		SerialList.setFont(new Font("Tahoma", Font.BOLD, 30));
+		SerialList.setFont(new Font("Tahoma", Font.BOLD, 28));
 		SerialList.setFocusable(false);
 		SerialPane.add(SerialList);
 
@@ -78,14 +78,14 @@ public class DashboardPanel extends JPanel {
 
 		JLabel lbMidiDeviecs = new JLabel("Midi Devices");
 		lbMidiDeviecs.setForeground(new Color(255, 255, 255));
-		lbMidiDeviecs.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lbMidiDeviecs.setFont(new Font("Tahoma", Font.BOLD, 28));
 		lbMidiDeviecs.setHorizontalAlignment(SwingConstants.CENTER);
 		MidiPane.add(lbMidiDeviecs);
 
 		MidiList = new JComboBox<Object>(pianoController.getMidiDevices());
 		MidiList.setBackground(new Color(21, 25, 28));
 		MidiList.setForeground(Color.WHITE);
-		MidiList.setFont(new Font("Tahoma", Font.BOLD, 30));
+		MidiList.setFont(new Font("Tahoma", Font.BOLD, 28));
 		MidiList.setFocusable(false);
 		MidiPane.add(MidiList);
 

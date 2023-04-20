@@ -41,7 +41,7 @@ public class BottomPanel extends JPanel {
 
 		JLabel version = new JLabel("PianoLED" + updator.VersionTag);
 		version.setBounds(5, 72, 150, 15);
-		version.setFont(new Font("Montserrat", Font.BOLD, 15));
+		version.setFont(new Font("Tahoma", Font.BOLD, 15));
 		version.setForeground(Color.WHITE);
 		add(version, BorderLayout.SOUTH);
 	}
