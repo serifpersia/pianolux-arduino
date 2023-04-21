@@ -28,16 +28,19 @@ public class MidiPlayer {
 	private List<MidiPlayerConsumer> consumers = new ArrayList<>();
 
 	private LinkedList<Note> notes;
-
+	
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
 	Sequencer sequencer;
 	Sequence sequence;
 	File midiFile;
+	private int midiNumTracks;
 
 	double ticksPerSec;
 
 	private OutMidiReceiver myMidiReceiver;
+
+	private int firstPlayingNote;
 
 	public MidiPlayer(File _midiFile, MidiDevice _midiOutDevice) {
 		midiFile = _midiFile;
@@ -119,9 +122,10 @@ public class MidiPlayer {
 		try {
 			// Load the MIDI file
 			Sequence sequence = MidiSystem.getSequence(midiFile);
-
 			// Iterate over each track in the sequence
+			int trackNum = 0;
 			for (Track track : sequence.getTracks()) {
+				int notesInTrack = 0;
 				// Iterate over each event in the track
 				for (int i = 0; i < track.size(); i++) {
 					MidiEvent event = track.get(i);
@@ -149,12 +153,16 @@ public class MidiPlayer {
 								noteEnd = (int) sequence.getTickLength();
 							}
 							// Create a new Note object and add it to the list
-							Note note = new Note(noteValue, noteVelocity, noteStart, noteEnd);
-							fileNotes.add(note);
+							fileNotes.add(new Note(noteValue, noteVelocity, noteStart, noteEnd, trackNum));
+							notesInTrack++;
 						}
 					}
 				}
+				if (notesInTrack > 0)
+					trackNum++;
 			}
+			this.midiNumTracks = trackNum;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -166,9 +174,6 @@ public class MidiPlayer {
 				return Integer.compare(n1.start, n2.start);
 			}
 		});
-
-		System.out.println("Read " + fileNotes.size() + " notes.");
-
 		return fileNotes;
 	}
 
@@ -195,6 +200,9 @@ public class MidiPlayer {
 			rewindTick = 0;
 		}
 
+		if( sec < 0 )
+			firstPlayingNote = 0;
+		
 		sequencer.setTickPosition(rewindTick);
 	}
 
@@ -250,4 +258,46 @@ public class MidiPlayer {
 		return sequencer.getTickPosition();
 	}
 
+	public double getTicksPerSecond() {
+		int ticksPerQuarterNote = sequence.getResolution();
+		double quarterNoteLengthInSec = sequencer.getTempoInMPQ()/100000;
+		return ticksPerQuarterNote * quarterNoteLengthInSec;
+	}
+
+	public LinkedList<Note> getCurrentNotes(int depthInTicks) {
+
+		long currentTick = sequencer.getTickPosition();
+		LinkedList<Note> currentNotes = new LinkedList<>();
+
+		boolean firstPlayingNoteFound = false;
+		int n = notes.size();
+		for (int noteNum = firstPlayingNote; noteNum < n; noteNum++) {
+			Note note = notes.get(noteNum);
+
+			if (myMidiReceiver.isTrackPlaying(note.trackNum)) {
+
+				// rest of notes are too early yet to display
+				if (note.isBefore(currentTick + depthInTicks))
+					break;
+
+				// note finished
+				if (note.isAfter(currentTick)) {
+					continue;
+				}
+
+				if (note.isPlayingAt(currentTick)) {
+					if (!firstPlayingNoteFound) {
+						firstPlayingNote = noteNum;
+						firstPlayingNoteFound = true;
+					}
+				}
+				currentNotes.add(note);
+			}
+		}
+		return currentNotes;
+	}
+
+	public int getNumTracks() {
+		return midiNumTracks;
+	}
 }

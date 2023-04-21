@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -35,7 +37,6 @@ public class PianoLED extends JFrame {
     }
     
 	public PianoLED() {
-
 		setSize(950, 800);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED");
