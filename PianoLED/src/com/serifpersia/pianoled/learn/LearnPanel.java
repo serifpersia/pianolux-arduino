@@ -3,6 +3,7 @@ package com.serifpersia.pianoled.learn;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -16,10 +17,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
-import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
-import com.serifpersia.pianoled.ui.ControlsPanel;
-
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -35,9 +33,12 @@ import javax.swing.JFileChooser;
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
+	private static final int REFRESH_RATE_MS = 20;
 	public static JComboBox<?> MidiOutList;
-	protected MidiPlayer midiPlayer;
-
+	private MidiPlayer midiPlayer;
+	private PianoRoll pianoRoll;
+	private JLabel midiFileName;
+	private JPanel slideControlsPane = new JPanel();
 	JButton lbPlayMidi = new JButton("▶");
 	private PianoLED pianoLED;
 	
@@ -45,19 +46,23 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		this.pianoLED = pianoLED;
 		setBackground(new Color(21, 25, 28));
 		setLayout(new BorderLayout(0, 0));
-		addPianoRoll();
+		pianoRoll = new PianoRoll(pianoLED, this);
+		add(pianoRoll);
 		addSlidingControlPanel();
+		
+		ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	pianoRoll.repaint();
+            }
+        };
+        
+        Timer timer = new Timer(REFRESH_RATE_MS, taskPerformer);
+        timer.start();
+        File midiSample = new File(getClass().getResource("/midi/clair_de_lune.mid").getFile());
+        initMidiPlayer(midiSample);
 	}
-
-	private void addPianoRoll() {
-//		PianoRoll pianoRoll = new PianoRoll();
-//		add(pianoRoll);
-	}
-	
-
 
 	private void addSlidingControlPanel() {
-		JPanel slideControlsPane = new JPanel();
 		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
@@ -124,7 +129,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
-		JLabel midiFileName = addMidiFileNameLabel(controlsPane, 1);
+		midiFileName = addMidiFileNameLabel(controlsPane, 1);
 		addLoadMidiFileControl(controlsPane, 0, midiFileName);
 		addMidiOutListControl(controlsPane, 2);
 		addPlaybackControls(controlsPane, 3);
@@ -153,14 +158,23 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 				int returnValue = fileChooser.showOpenDialog(LearnPanel.this);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
-					midiFileName.setText(selectedFile.getName());
-					String deviceName = (String) MidiOutList.getSelectedItem();
-					midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()),
-							getMidiDeviceByName(deviceName));
-					midiPlayer.setConsumer(LearnPanel.this);
+					initMidiPlayer(selectedFile);
 				}
 			}
+
 		});
+	}
+	public void initMidiPlayer(File selectedFile) {
+		String deviceName = (String) MidiOutList.getSelectedItem();
+		midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()),
+				getMidiDeviceByName(deviceName));
+		midiPlayer.setConsumer(LearnPanel.this);
+		pianoRoll.start(midiPlayer);
+		setMidiFileNameLabel(selectedFile.getName());
+	}
+	
+	private void setMidiFileNameLabel(String name) {
+		midiFileName.setText(name);
 	}
 
 	private JLabel addMidiFileNameLabel(JPanel controlsPane, int gridy) {
@@ -335,5 +349,10 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	@Override
 	public void onNoteOff(int pitch) {
 		pianoLED.getPianoController().noteOff(0, pitch, 0);
+	}
+
+	public boolean drawLines() {
+		
+		return false;
 	}
 }

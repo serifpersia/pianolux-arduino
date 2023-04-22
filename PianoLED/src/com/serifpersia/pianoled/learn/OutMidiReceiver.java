@@ -30,7 +30,7 @@ public class OutMidiReceiver implements Receiver {
 	
     @Override
     public void send(MidiMessage message, long timeStamp) {
-    	if( receiver == null)
+    	if( receiver == null )
     		return;
     	
         if (message instanceof ShortMessage) {

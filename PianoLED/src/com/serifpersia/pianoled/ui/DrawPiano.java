@@ -12,7 +12,6 @@ public class DrawPiano extends JPanel {
 	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.3, 6, -0.7, 8, -0.5, 10, -0.3); // starts
 																													// with
 																													// C
-
 	public final static int NUM_KEYS = 88;
 	public final static int NUM_WHITE_KEYS = 52;
 	public final static int FIRST_KEY_PITCH_OFFSET = 21;
@@ -166,5 +165,13 @@ public class DrawPiano extends JPanel {
 
 	private Double getBlackKeyOffset(int pitch) {
 		return blackKeyOffset.get(pitch % 12);
+	}
+
+	public float getKeyWidth(int pitch) {
+		return isBlackKey(pitch) ? getBlackKeyWidth() : getWhiteKeyWidth();
+	}
+
+	public float getKeyHeight(int pitch) {
+		return isBlackKey(pitch) ? getBlackKeyHeight() : getWhiteKeyHeight();
 	}
 }
