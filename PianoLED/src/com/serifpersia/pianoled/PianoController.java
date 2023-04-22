@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 
+import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
@@ -44,11 +47,17 @@ public class PianoController {
 	public Color LeftSideGColor = Color.RED;
 	public Color MiddleSideColor = Color.GREEN;
 	public Color RightSideGColor = Color.BLUE;
+	
+	private List<PianoMidiConsumer> consumers = new ArrayList<>();
 
 	public PianoController(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
 	}
 
+	public void addPianoMidiConsumer(PianoMidiConsumer consumer) {
+		this.consumers.add(consumer);
+	}
+	
 	public void findPortNameOnWindows(String deviceName) {
 		String[] cmd = { "cmd", "/c",
 				"wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table" };
@@ -304,6 +313,11 @@ public class PianoController {
 					arduino.sendToArduino(message);
 				}
 			}
+			
+			for (PianoMidiConsumer consumer : consumers) {
+				consumer.onPianoKeyOn(pitch, velocity);
+			}
+
 		} catch (Exception e) {
 			System.out.println("Error sending command: " + e);
 		}

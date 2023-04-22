@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiDevice;
@@ -81,7 +82,7 @@ public class MidiPlayer {
 		return notes;
 	}
 
-	public void setConsumer(MidiPlayerConsumer consumer) {
+	public void addConsumer(MidiPlayerConsumer consumer) {
 		this.consumers.add(consumer);
 	}
 
@@ -347,5 +348,14 @@ public class MidiPlayer {
 
 	public byte getBeatsPerMeasure() {
 		return beatsPerMeasure;
+	}
+
+	public void muteKey(int pitch) {
+		try {
+			ShortMessage msg = new ShortMessage(ShortMessage.NOTE_OFF, pitch, 0);
+			myMidiReceiver.send(msg, pitch);
+		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
+		}
 	}
 }

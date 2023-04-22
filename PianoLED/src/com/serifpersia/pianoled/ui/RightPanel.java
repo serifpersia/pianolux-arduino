@@ -20,6 +20,8 @@ public class RightPanel extends JPanel {
 		LivePlayPanel livePlayPanel = new LivePlayPanel();
 		ControlsPanel controlsPanel = new ControlsPanel(pianoLED);
 		LearnPanel learnPanel = new LearnPanel(pianoLED);
+		
+		pianoLED.getPianoController().addPianoMidiConsumer(learnPanel);
 
 		// Add the panels objects to the RightPanel
 		add(dashboardPanel, "Dashboard");

@@ -19,6 +19,8 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoLED;
+import com.serifpersia.pianoled.ui.DrawPiano;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -27,13 +29,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
 @SuppressWarnings("serial")
-public class LearnPanel extends JPanel implements MidiPlayerConsumer {
+public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiConsumer {
 
+	private static final int PLAYER_REWIND_SEC = 5;
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
 	private static final Color SLIDING_PANEL_BG = new Color(21, 25, 28);
 	private static final int REFRESH_RATE_MS = 20;
@@ -43,10 +47,16 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	private JLabel midiFileName;
 	private JPanel slideControlsPane = new JPanel();
 	private JButton lbPlayMidi = new JButton("▶");
-	private JCheckBox gridToggle; 
+	private JCheckBox gridToggle;
 	private PianoLED pianoLED;
 	private JCheckBox infoToggle;
-	
+	private long commandKey1Arrived;
+
+	private static final int COMMAND_MAX_SPAN_MS = 2000;
+	private static final int COMMAND_KEY1 = DrawPiano.FIRST_KEY_PITCH_OFFSET +86;
+	private Map<Integer, String> commandKeys = Map.of(COMMAND_KEY1 - 2, "Back", COMMAND_KEY1, "PlayPause",
+			COMMAND_KEY1 + 1, "Forward");
+
 	public LearnPanel(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
 		setBackground(SLIDING_PANEL_BG);
@@ -54,17 +64,17 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		pianoRoll = new PianoRoll(pianoLED, this);
 		add(pianoRoll);
 		addSlidingControlPanel();
-		
+
 		ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-            	pianoRoll.repaint();
-            }
-        };
-        
-        Timer timer = new Timer(REFRESH_RATE_MS, taskPerformer);
-        timer.start();
-        File midiSample = new File(getClass().getResource("/midi/clair_de_lune.mid").getFile());
-        initMidiPlayer(midiSample);
+			public void actionPerformed(ActionEvent evt) {
+				pianoRoll.repaint();
+			}
+		};
+
+		Timer timer = new Timer(REFRESH_RATE_MS, taskPerformer);
+		timer.start();
+		File midiSample = new File(getClass().getResource("/midi/clair_de_lune.mid").getFile());
+		initMidiPlayer(midiSample);
 	}
 
 	private void addSlidingControlPanel() {
@@ -170,15 +180,15 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
 		});
 	}
+
 	public void initMidiPlayer(File selectedFile) {
 		String deviceName = (String) MidiOutList.getSelectedItem();
-		midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()),
-				getMidiDeviceByName(deviceName));
-		midiPlayer.setConsumer(LearnPanel.this);
+		midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()), getMidiDeviceByName(deviceName));
+		midiPlayer.addConsumer(LearnPanel.this);
 		pianoRoll.start(midiPlayer);
 		setMidiFileNameLabel(selectedFile.getName());
 	}
-	
+
 	private void setMidiFileNameLabel(String name) {
 		midiFileName.setText(name);
 	}
@@ -237,15 +247,13 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		infoToggle.setForeground(Color.WHITE);
 		infoToggle.setFont(SLIDING_PANEL_FONT);
 
-		gbc.gridy = gridy+1;
+		gbc.gridy = gridy + 1;
 		controlsPane.add(infoToggle, gbc);
-		
+
 		return gridy;
 	}
 
-
-
-private void setMidiPlayerOutputDevice() {
+	private void setMidiPlayerOutputDevice() {
 		String deviceName = (String) MidiOutList.getSelectedItem();
 		System.out.println("Midi Out Device: " + deviceName);
 		try {
@@ -311,7 +319,7 @@ private void setMidiPlayerOutputDevice() {
 		lbGoBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				midiPlayer.rewind(-5);
+				midiPlayer.rewind(-PLAYER_REWIND_SEC);
 			}
 		});
 
@@ -385,17 +393,52 @@ private void setMidiPlayerOutputDevice() {
 	}
 
 	public boolean drawLines() {
-		
+
 		return false;
 	}
 
 	public boolean isShowGridSelected() {
-		
+
 		return gridToggle.isSelected();
 	}
-	
+
 	public boolean isShowInfoSelected() {
-		
+
 		return infoToggle.isSelected();
+	}
+
+	@Override
+	public void onPianoKeyOn(int pitch, int velocity) {
+		// catching commands
+		if (commandKeys.containsKey(pitch)) {
+			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
+				switch (commandKeys.get(pitch)) {
+				case "Back":
+					midiPlayer.rewind(-PLAYER_REWIND_SEC);
+					midiPlayer.muteKey(pitch);
+					break;
+				case "PlayPause":
+					midiPlayer.playPause();
+					midiPlayer.muteKey(pitch);
+					break;
+				case "Forward":
+					midiPlayer.rewind(PLAYER_REWIND_SEC);
+					midiPlayer.muteKey(pitch);
+					break;
+				default:
+					break;
+				}
+				commandKey1Arrived = 0;
+			} else if (pitch == COMMAND_KEY1) {
+				commandKey1Arrived = System.currentTimeMillis();
+			}
+		} 
+
+	}
+
+	@Override
+	public void onPianoKeyOff(int pitch) {
+		// TODO Auto-generated method stub
+
 	}
 }
