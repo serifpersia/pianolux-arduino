@@ -18,6 +18,7 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
@@ -25,10 +26,12 @@ import themidibus.MidiBus;
 
 public class MidiPlayer {
 
+	private static final int DEFAULT_BEATS_PER_MEASURE = 4;
+
 	private List<MidiPlayerConsumer> consumers = new ArrayList<>();
 
 	private LinkedList<Note> notes;
-	
+
 	MidiDevice midiOutDevice;
 	MidiBus myBus;
 	Sequencer sequencer;
@@ -42,11 +45,32 @@ public class MidiPlayer {
 
 	private int firstPlayingNote;
 
+	private ArrayList<Integer> bars;
+
+	private byte beatsPerMeasure = DEFAULT_BEATS_PER_MEASURE;
+
 	public MidiPlayer(File _midiFile, MidiDevice _midiOutDevice) {
 		midiFile = _midiFile;
 		midiOutDevice = _midiOutDevice;
 		notes = readMidi(midiFile);
 		setupSequencer(midiFile);
+		bars = calcBars();
+	}
+
+	private ArrayList<Integer> calcBars() {
+		int ticksPerQuarterNote = sequence.getResolution();
+
+		// default measure - 4/4
+		int ticksPerBar = ticksPerQuarterNote * beatsPerMeasure;
+
+		long ticks = sequence.getTickLength();
+
+		ArrayList<Integer> bars = new ArrayList<>();
+		for (int tick = ticksPerBar; tick <= ticks; tick += ticksPerBar) {
+			bars.add(tick);
+		}
+
+		return bars;
 	}
 
 	public String getFileName() {
@@ -82,7 +106,6 @@ public class MidiPlayer {
 			int ticksPerBeat = sequence.getResolution();
 			double bpm = sequencer.getTempoInBPM();
 			ticksPerSec = ticksPerBeat * bpm / 60;
-//			pianoRollTickHeight = (60.0f / ticksPerBeat) / bpm * pianoRollTickHeightMult;
 
 			sequencer.addMetaEventListener(new MetaEventListener() {
 				@Override
@@ -157,6 +180,15 @@ public class MidiPlayer {
 							notesInTrack++;
 						}
 					}
+					else if (event.getMessage() instanceof MetaMessage) {
+						MetaMessage metaMessage = (MetaMessage) event.getMessage();
+						if (metaMessage.getType() == 0x58) {
+							byte[] data = metaMessage.getData();
+							beatsPerMeasure = data[0];
+							int denominator = (int) Math.pow(2, data[1]);
+						}
+					}
+
 				}
 				if (notesInTrack > 0)
 					trackNum++;
@@ -200,9 +232,9 @@ public class MidiPlayer {
 			rewindTick = 0;
 		}
 
-		if( sec < 0 )
+		if (sec < 0)
 			firstPlayingNote = 0;
-		
+
 		sequencer.setTickPosition(rewindTick);
 	}
 
@@ -246,6 +278,25 @@ public class MidiPlayer {
 					System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
 				}
 			}
+			else if (midiMessage instanceof MetaMessage) {
+				MetaMessage metaMessage = (MetaMessage) midiMessage;
+				byte[] data = metaMessage.getData();
+				System.out.println("Meta Command " + metaMessage.getType() + ": " + data[0] + " " + data[1]);
+				if (metaMessage.getType() == 0x58) {
+					beatsPerMeasure = data[0];
+//					int denominator = (int) Math.pow(2, data[1]);
+				}
+			}
+			else if (midiMessage instanceof SysexMessage) {
+				SysexMessage sysexMessage = (SysexMessage) midiMessage;
+				byte[] data = sysexMessage.getData();
+				System.out.println("Sysex Command " + (data[0] & 0xFF) + " " + (data[1] & 0xFF));
+			}
+			else
+			{
+				byte[] msg = midiMessage.getMessage();
+				System.out.println("Unknown Command " +(msg[0] & 0xFF)+" : "+(msg[1] & 0xFF)+" "+(msg[2] & 0xFF));
+			}
 		}
 
 		@Override
@@ -260,13 +311,11 @@ public class MidiPlayer {
 
 	public double getTicksPerSecond() {
 		int ticksPerQuarterNote = sequence.getResolution();
-		double quarterNoteLengthInSec = sequencer.getTempoInMPQ()/100000;
+		double quarterNoteLengthInSec = sequencer.getTempoInMPQ() / 100000;
 		return ticksPerQuarterNote * quarterNoteLengthInSec;
 	}
 
-	public LinkedList<Note> getCurrentNotes(int depthInTicks) {
-
-		long currentTick = sequencer.getTickPosition();
+	public LinkedList<Note> getNotesInInterval(long startTick, long endTick) {
 		LinkedList<Note> currentNotes = new LinkedList<>();
 
 		boolean firstPlayingNoteFound = false;
@@ -276,16 +325,16 @@ public class MidiPlayer {
 
 			if (myMidiReceiver.isTrackPlaying(note.trackNum)) {
 
-				// rest of notes are too early yet to display
-				if (note.isBefore(currentTick + depthInTicks))
+				// rest of notes are too early to display
+				if (note.isBefore(endTick))
 					break;
 
 				// note finished
-				if (note.isAfter(currentTick)) {
+				if (note.isAfter(startTick)) {
 					continue;
 				}
 
-				if (note.isPlayingAt(currentTick)) {
+				if (note.isPlayingAt(startTick)) {
 					if (!firstPlayingNoteFound) {
 						firstPlayingNote = noteNum;
 						firstPlayingNoteFound = true;
@@ -299,5 +348,13 @@ public class MidiPlayer {
 
 	public int getNumTracks() {
 		return midiNumTracks;
+	}
+
+	public ArrayList<Integer> getBars() {
+		return bars;
+	}
+
+	public byte getBeatsPerMeasure() {
+		return beatsPerMeasure;
 	}
 }

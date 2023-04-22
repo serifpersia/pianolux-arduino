@@ -1,11 +1,9 @@
 package com.serifpersia.pianoled.learn;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
 import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.PianoLED;
@@ -22,12 +20,12 @@ public class PianoRoll extends JPanel {
 	private long currentTick;
 	private DrawPiano piano;
 	private PianoLED pianoLED;
-	private double pianoRollHeightInTicks;
+	private int pianoRollHeightInTicks;
 	private double pianoRollTickHeight;
 	private LinkedList<Note> currentNotes;
-	private boolean debug = false;
 	private boolean drawLines;
 	private LearnPanel learnPanel;
+	double ticksPerSecond = 0;
 
 	public PianoRoll(PianoLED pianoLED, LearnPanel learnPanel) {
 		this.piano = pianoLED.getDrawPiano();
@@ -37,20 +35,19 @@ public class PianoRoll extends JPanel {
 
 	public void start(MidiPlayer player) {
 		this.player = player;
+		ticksPerSecond = player.getTicksPerSecond();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		double ticksPerSecond = 0;
 		if (player != null) {
-			ticksPerSecond = player.getTicksPerSecond();
-			this.pianoRollHeightInTicks = ticksPerSecond * PIANO_ROLL_HEIGHT_IN_SEC;
-			this.currentNotes = player.getCurrentNotes((int) (pianoRollHeightInTicks));
+			this.pianoRollHeightInTicks = (int) (ticksPerSecond * PIANO_ROLL_HEIGHT_IN_SEC);
 			this.currentTick = getCurrentTick();
+			this.currentNotes = player.getNotesInInterval(this.currentTick, this.currentTick + pianoRollHeightInTicks);
+			this.pianoRollTickHeight = getHeight() / getHeightInTicks();
 		}
-		this.pianoRollTickHeight = getHeight() / getHeightInTicks();
 
 		drawPianoRoll(g);
 		if (currentNotes != null && currentNotes.size() > 0)
@@ -65,26 +62,26 @@ public class PianoRoll extends JPanel {
 	public void drawNote(Graphics g, Note note) {
 		long ticksUntilPlayed = note.start - currentTick;
 
-		int x = (int)piano.getKeyXPos(note.getPitch());
-		int w = (int)piano.getKeyWidth(note.pitch);
-		int y = (int)getTickY(ticksUntilPlayed);
-		int h = (int)((note.end - note.start) * pianoRollTickHeight);
+		int x = (int) piano.getKeyXPos(note.getPitch());
+		int w = (int) piano.getKeyWidth(note.pitch);
+		int y = (int) getTickY(ticksUntilPlayed);
+		int h = (int) ((note.end - note.start) * pianoRollTickHeight);
 
 		// Draw the note rectangle
 		if (piano.isBlackKey(note.pitch)) {
 			g.setColor(WHITE_NOTE_COLOR);
 		} else {
-			g.setColor(BLACK_NOTE_COLOR);	
+			g.setColor(BLACK_NOTE_COLOR);
 		}
-		g.fillRoundRect(x, y-h, w, h, 5, 5);
+		g.fillRoundRect(x, y - h, w, h, 5, 5);
 
 		g.setColor(Color.GRAY);
-		g.drawRoundRect(x, y-h, w, h, 5, 5);
+		g.drawRoundRect(x, y - h, w, h, 5, 5);
 
-		if (debug) {
-			drawText(g, x, y-25, ""+note.pitch);
-			drawText(g, x, y-15, ""+note.start+"("+ticksUntilPlayed+")");
-			drawText(g, x, y-5, ""+note.end);
+		if (learnPanel.isShowInfoSelected()) {
+			drawText(g, x, y - 25, "" + note.pitch);
+			drawText(g, x, y - 15, "" + note.start + "(" + ticksUntilPlayed + ")");
+			drawText(g, x, y - 5, "" + note.end);
 		}
 	}
 
@@ -96,7 +93,7 @@ public class PianoRoll extends JPanel {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		if (debug) {
+		if (learnPanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);
 			int h = getHeight();
 			int w = getWidth();
@@ -119,10 +116,32 @@ public class PianoRoll extends JPanel {
 			y += TEXT_HEIGHT;
 			drawText(g, x, y, "Tracks: " + getMidiNumTracks());
 		}
-		
-		if( learnPanel.drawLines() )
-		{
-			
+
+		if (learnPanel.isShowGridSelected()) {
+			drawGrid(g);
+		}
+	}
+
+	private void drawGrid(Graphics g) {
+		g.setColor(Color.DARK_GRAY);
+		for (int pitch = DrawPiano.FIRST_KEY_PITCH_OFFSET; pitch <= piano.getNumKeys()
+				+ DrawPiano.FIRST_KEY_PITCH_OFFSET; pitch++) {
+			if (pitch % 12 == 0) {
+				float x = piano.getKeyXPos(pitch);
+				g.drawLine((int) x, 0, (int) x, getHeight());
+			}
+		}
+
+		ArrayList<Integer> bars = player.getBars();
+		int barNum = 1;
+		for (Integer bar : bars) {
+			if( bar > this.currentTick && bar < this.currentTick+pianoRollHeightInTicks )
+			{
+				int y = (int) getTickY(bar-this.currentTick);
+				g.drawLine(0, y, getWidth(), y);
+				drawText(g, 10, y-10, ""+barNum);
+			}
+			barNum++;
 		}
 	}
 

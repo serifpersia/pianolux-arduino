@@ -15,6 +15,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.MidiDevice.Info;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoLED;
@@ -33,18 +34,22 @@ import javax.swing.JFileChooser;
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 
+	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
+	private static final Color SLIDING_PANEL_BG = new Color(21, 25, 28);
 	private static final int REFRESH_RATE_MS = 20;
 	public static JComboBox<?> MidiOutList;
 	private MidiPlayer midiPlayer;
 	private PianoRoll pianoRoll;
 	private JLabel midiFileName;
 	private JPanel slideControlsPane = new JPanel();
-	JButton lbPlayMidi = new JButton("▶");
+	private JButton lbPlayMidi = new JButton("▶");
+	private JCheckBox gridToggle; 
 	private PianoLED pianoLED;
+	private JCheckBox infoToggle;
 	
 	public LearnPanel(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
-		setBackground(new Color(21, 25, 28));
+		setBackground(SLIDING_PANEL_BG);
 		setLayout(new BorderLayout(0, 0));
 		pianoRoll = new PianoRoll(pianoLED, this);
 		add(pianoRoll);
@@ -120,7 +125,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		slideControlsPane.add(lbControls, BorderLayout.NORTH);
 
 		JPanel controlsPane = new JPanel();
-		controlsPane.setBackground(new Color(21, 25, 28));
+		controlsPane.setBackground(SLIDING_PANEL_BG);
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0, 0 };
@@ -133,6 +138,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		addLoadMidiFileControl(controlsPane, 0, midiFileName);
 		addMidiOutListControl(controlsPane, 2);
 		addPlaybackControls(controlsPane, 3);
+		addUIControls(controlsPane, 3);
 	}
 
 	private void addLoadMidiFileControl(JPanel controlsPane, int gridy, JLabel midiFileName) {
@@ -184,7 +190,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		gbc_lbMidiFileName.insets = new Insets(0, 0, 5, 0);
 		gbc_lbMidiFileName.gridx = 0;
 		gbc_lbMidiFileName.gridy = gridy;
-		midiFileName.setFont(new Font("Tahoma", Font.BOLD, 16));
+		midiFileName.setFont(SLIDING_PANEL_FONT);
 		midiFileName.setForeground(Color.WHITE);
 		controlsPane.add(midiFileName, gbc_lbMidiFileName);
 		return midiFileName;
@@ -193,7 +199,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
 		MidiOutList = new JComboBox<Object>(pianoLED.getPianoController().getMidiOutDevices());
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		MidiOutList.setBackground(new Color(21, 25, 28));
+		MidiOutList.setBackground(SLIDING_PANEL_BG);
 		MidiOutList.setForeground(Color.WHITE);
 		MidiOutList.setFocusable(false);
 		MidiOutList.setToolTipText("MIDI Output Device");
@@ -212,7 +218,34 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 		return gridy;
 	}
 
-	private void setMidiPlayerOutputDevice() {
+	private int addUIControls(JPanel controlsPane, int gridy) {
+		gridToggle = new JCheckBox("Show Grid");
+		gridToggle.setBackground(SLIDING_PANEL_BG);
+		gridToggle.setForeground(Color.WHITE);
+		gridToggle.setFont(SLIDING_PANEL_FONT);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = 4;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		gbc.gridy = gridy;
+		controlsPane.add(gridToggle, gbc);
+
+		infoToggle = new JCheckBox("Tech Info");
+		infoToggle.setBackground(SLIDING_PANEL_BG);
+		infoToggle.setForeground(Color.WHITE);
+		infoToggle.setFont(SLIDING_PANEL_FONT);
+
+		gbc.gridy = gridy+1;
+		controlsPane.add(infoToggle, gbc);
+		
+		return gridy;
+	}
+
+
+
+private void setMidiPlayerOutputDevice() {
 		String deviceName = (String) MidiOutList.getSelectedItem();
 		System.out.println("Midi Out Device: " + deviceName);
 		try {
@@ -354,5 +387,15 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer {
 	public boolean drawLines() {
 		
 		return false;
+	}
+
+	public boolean isShowGridSelected() {
+		
+		return gridToggle.isSelected();
+	}
+	
+	public boolean isShowInfoSelected() {
+		
+		return infoToggle.isSelected();
 	}
 }

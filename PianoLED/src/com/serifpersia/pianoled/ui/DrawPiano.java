@@ -174,4 +174,8 @@ public class DrawPiano extends JPanel {
 	public float getKeyHeight(int pitch) {
 		return isBlackKey(pitch) ? getBlackKeyHeight() : getWhiteKeyHeight();
 	}
+
+	public int getNumKeys() {
+		return NUM_KEYS;
+	}
 }
