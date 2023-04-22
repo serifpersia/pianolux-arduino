@@ -19,17 +19,14 @@ public class PianoRoll extends JPanel {
 	private MidiPlayer player;
 	private long currentTick;
 	private DrawPiano piano;
-	private PianoLED pianoLED;
 	private int pianoRollHeightInTicks;
 	private double pianoRollTickHeight;
 	private LinkedList<Note> currentNotes;
-	private boolean drawLines;
 	private LearnPanel learnPanel;
 	double ticksPerSecond = 0;
 
 	public PianoRoll(PianoLED pianoLED, LearnPanel learnPanel) {
 		this.piano = pianoLED.getDrawPiano();
-		this.pianoLED = pianoLED;
 		this.learnPanel = learnPanel;
 	}
 

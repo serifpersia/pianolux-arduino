@@ -132,14 +132,6 @@ public class MidiPlayer {
 		}
 	}
 
-	private void closeMidiDevice(MidiDevice outDevice) {
-		if (outDevice == null)
-			return;
-		if (outDevice.isOpen()) {
-			outDevice.close();
-		}
-	}
-
 	private LinkedList<Note> readMidi(File midiFile) {
 		LinkedList<Note> fileNotes = new LinkedList<Note>();
 		try {
@@ -185,7 +177,6 @@ public class MidiPlayer {
 						if (metaMessage.getType() == 0x58) {
 							byte[] data = metaMessage.getData();
 							beatsPerMeasure = data[0];
-							int denominator = (int) Math.pow(2, data[1]);
 						}
 					}
 
