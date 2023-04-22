@@ -411,7 +411,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	public void onPianoKeyOn(int pitch, int velocity) {
 		// catching commands
 		if (commandKeys.containsKey(pitch)) {
-			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
+//			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
 				switch (commandKeys.get(pitch)) {
 				case "Back":
 					midiPlayer.rewind(-PLAYER_REWIND_SEC);
@@ -428,10 +428,10 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 				default:
 					break;
 				}
-				commandKey1Arrived = 0;
-			} else if (pitch == COMMAND_KEY1) {
-				commandKey1Arrived = System.currentTimeMillis();
-			}
+//				commandKey1Arrived = 0;
+//			} else if (pitch == COMMAND_KEY1) {
+//				commandKey1Arrived = System.currentTimeMillis();
+//			}
 		} 
 
 	}
