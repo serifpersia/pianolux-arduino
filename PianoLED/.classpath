@@ -13,5 +13,8 @@
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/controlP5.jar"/>
 	<classpathentry kind="lib" path="lib/json-20210307.jar"/>
+	<classpathentry kind="lib" path="lib/bridj-0.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/webcam-capture-0.3.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

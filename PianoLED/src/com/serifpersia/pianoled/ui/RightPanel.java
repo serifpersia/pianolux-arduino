@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.learn.LearnPanel;
+import com.serifpersia.pianoled.liveplay.LivePlayPanel;
 
 import java.awt.CardLayout;
 
