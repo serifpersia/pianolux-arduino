@@ -1,4 +1,4 @@
-package com.serifpersia.pianoled;
+/*package com.serifpersia.pianoled;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,9 +11,7 @@ import javax.swing.JTextArea;
 
 import controlP5.ColorWheel;
 import controlP5.ControlP5;
-import controlP5.Controller;
-import controlP5.Group;
-import controlP5.ScrollableList;
+import controlP5.Controller;mport controlP5.ScrollableList;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -26,8 +24,6 @@ public class UI {
 	public static final int DEFAULT_HEIGHT = 160;
 
 	public static final int EFFECT_CONTROLS_X = 811;
-	private static final int UI_BORDERS = 5;
-	private static final int MAX_PIANO_ROLL_TRACKS = 32;
 
 	int MIN_FADE_RATE = 0;
 	int MAX_FADE_RATE = 255;
@@ -37,17 +33,27 @@ public class UI {
 	int MAX_BRIGHT = 255;
 	int DEF_BRIGHT = 127;
 
-	Color[] presetColors = { new Color(255, 255, 254), // White
-			Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, new Color(128, 0, 255), // Purple
-			Color.PINK, new Color(0, 255, 255), // Teal
+	Color[] presetColors = {
+			new Color(255, 255, 254), //White
+			Color.RED,
+			Color.GREEN, 
+			Color.BLUE, 
+			Color.YELLOW, 
+			Color.ORANGE, 
+			new Color(128, 0, 255), // Purple
+			Color.PINK, 
+			new Color(0, 255, 255), // Teal
 			new Color(128, 255, 0), // Lime
-			Color.CYAN, Color.MAGENTA, new Color(255, 128, 128), // Peach
+			Color.CYAN,
+			Color.MAGENTA,
+			new Color(255, 128, 128), // Peach
 			new Color(192, 128, 255), // Lavender
 			new Color(128, 192, 192), // Turquoise
 			new Color(255, 215, 0) // Gold
 	};
-
-	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation");
+	
+	List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split", "Animation",
+			"Piano Roll");
 	List<String> colorNames = Arrays.asList("White", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
 			"Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold");
 	List<String> splashColorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
@@ -69,8 +75,8 @@ public class UI {
 
 	JFrame newWindowFrame;
 
-	// Instruction Button
-	public void showInstructions() {
+	// Instruction Buttton
+	public void Instructions() {
 		if (newWindowFrame == null) {
 			// create a new window frame
 			newWindowFrame = new JFrame("Instructions");
@@ -120,11 +126,15 @@ public class UI {
 
 	public UIHelper buildUI() {
 
+		uiHelper.addToggle("BGColor2", " BG", 90, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
+
 		uiHelper.addSlider("Brightness", "  B", EFFECT_CONTROLS_X - 4, 65, 10, 69, MIN_BRIGHT, MAX_BRIGHT, DEF_BRIGHT,
 				Color.BLUE, Color.BLACK, Color.RED);
 
 		uiHelper.addSlider("FadeOnVal", "  F", EFFECT_CONTROLS_X - 15, 65, 10, 69, MIN_FADE_RATE, MAX_FADE_RATE,
 				DEFAULT_FADE_RATE, Color.GREEN, Color.BLACK, Color.RED);
+
+		uiHelper.addButton("CheckForUpdate", "Update", 620, 20, 45, 25);
 
 		uiHelper.addButton("setLeftSideG", "Set LG", 705, 140, 30, 15).hide();
 		uiHelper.addButton("setMiddleSideG", "Set MG", 735, 140, 30, 15).hide();
@@ -132,6 +142,8 @@ public class UI {
 
 		uiHelper.addButton("setLeftSide", "Set L", 735, 140, 30, 15).hide();
 		uiHelper.addButton("setRightSide", "Set R", 765, 140, 30, 15).hide();
+
+		uiHelper.addButton("setBG", "Set BG", 670, 26, 30, 15).hide();
 
 		uiHelper.addButton("Open", null, 725, 45, 50, 15);
 		uiHelper.addButton("Refresh", null, 775, 45, 50, 15);
@@ -147,13 +159,10 @@ public class UI {
 		int SPLASH_CONTROL_X = EFFECT_CONTROLS_X + 6;
 		int SPLASH_CONTROL_Y = 60;
 		addSplashControls(SPLASH_CONTROL_X, SPLASH_CONTROL_Y);
-		addPianoRollControls(EFFECT_CONTROLS_X + 10, 200);
+		addPianoRollControls(EFFECT_CONTROLS_X + 10, 30);
 		uiHelper.addButton("Instructions", null, 15, 15, 60, 15);
 
-		uiHelper.addButton("CheckForUpdate", "Update", 600, 20, 45, 25);
-		uiHelper.addButton("setBG", "Set BG", 650, 26, 30, 15).hide();
-		uiHelper.addToggle("BGColor", " BG", 680, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
-		uiHelper.addToggle("PianoRollToggle", "Roll", 700, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
+		uiHelper.addToggle("BGColor", " BG", 700, 25, 15, 15, Color.RED, Color.WHITE, Color.GREEN);
 		uiHelper.addToggle("stripDirection", "Reverse", 425, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN)
 				.getCaptionLabel().alignX(ControlP5.CENTER);
 		uiHelper.addToggle("Fix", "Fix LED", 390, 42, 10, 8, Color.RED, Color.WHITE, Color.GREEN).getCaptionLabel()
@@ -184,53 +193,20 @@ public class UI {
 		uiHelper.addButton("PianoRollRewind", "|<<", x, y, h, w, Color.RED, Color.BLUE, Color.GREEN).hide()
 				.getCaptionLabel().setFont(font);
 		x += w + 2;
-		uiHelper.addButton("PianoRollBackwardFragment", "-" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED,
-				Color.BLUE, Color.GREEN).hide().getCaptionLabel().setFont(font);
+		//uiHelper.addButton("PianoRollBackwardFragment", "-" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED,
+		//		Color.BLUE, Color.GREEN).hide().getCaptionLabel().setFont(font);
 		x += w + 2;
 		uiHelper.addButton("PianoRollPlayPause", ">", x, y, h, w, Color.RED, Color.BLUE, Color.GREEN).hide()
 				.getCaptionLabel().setFont(font);
 		x += w + 2;
-		uiHelper.addButton("PianoRollForwardFragment", "+" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED,
-				Color.BLUE, Color.GREEN).hide().getCaptionLabel().setFont(font);
+		//uiHelper.addButton("PianoRollForwardFragment", "+" + PianoRoll.REWIND_FRAGMENT_SEC, x, y, h, w, Color.RED,
+		//		Color.BLUE, Color.GREEN).hide().getCaptionLabel().setFont(font);
 		x = origX;
 		y += h + 5;
 		// addToggle(cp5, "PianoRollFollowKey", "Teacher Mode", x, y, 15, 15, RED,
 		// WHITE, GREEN).hide();
 
-		addPianoRollTracks(MAX_PIANO_ROLL_TRACKS);
-
 		uiHelper.getController("midiout").bringToFront();
-	}
-
-	public void addPianoRollTracks(int numTracks) {
-		int x = EFFECT_CONTROLS_X + 45;
-		int y = 310;
-		int h = 15;
-		int w = 15;
-
-		for (int i = 0; i < MAX_PIANO_ROLL_TRACKS; i++) {
-			uiHelper.addToggle("Track" + (i + 1), "", x, y, h, w, Color.RED, Color.WHITE, Color.GREEN).setState(true)
-					.hide();
-			x += 17;
-			if ((i + 1) % 5 == 0) {
-				x = EFFECT_CONTROLS_X + 45;
-				y += 17;
-			}
-		}
-	}
-
-	public void showPianoRollTracks(int numTracks) {
-		for (int i = 0; i < MAX_PIANO_ROLL_TRACKS; i++) {
-			Toggle t = uiHelper.getController(Toggle.class, "Track" + i);
-			if (t != null) {
-				if (i > numTracks) {
-					t.hide();
-				} else {
-					t.show();
-				}
-				t.setState(true);
-			}
-		}
 	}
 
 	public void addSplashControls(int x, int y) {
@@ -297,7 +273,7 @@ public class UI {
 
 	public Color getSplashColor() {
 //		int n = (int) getController(ScrollableList.class, SPLASH_COLOR_LIST).getValue();
-		return new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
+		return  new Color(getController(ColorWheel.class, COLOR_WHEEL).getRGB());
 	}
 
 	public void addAnimationControls() {
@@ -326,6 +302,7 @@ public class UI {
 		hideVelocityControls();
 		hideSplitControls();
 		hideAnimationControls();
+		hidePianoRollControls();
 	}
 
 	// BG Controls
@@ -671,17 +648,19 @@ public class UI {
 	}
 
 	int leftMinPitch = 21;
+	int leftMaxPitch;
 	int rightMaxPitch = 108;
-	int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
 
 	void pianoKeyAction(int x, int y, boolean released) {
 		for (int i = 0; i < whiteKeys.length; i++) {
 			// Check if the mouse click was inside a white key
 			if (x > i * 15 + 15 && x < (i + 1) * 15 + 15 && y > 64 && y < 134) {
+				leftMaxPitch = whiteKeyPitches[i];
 				if (released) {
 					Keys[whiteKeys[i]][0] = 0;
 				} else {
 					Keys[whiteKeys[i]][0] = 1;
+					PApplet.println("Left Max Pitch: " + leftMaxPitch);
 				}
 			}
 		}
@@ -719,10 +698,6 @@ public class UI {
 		Keys[pitch - 21][1] = on;
 	}
 
-	public void resetPianoKeys() {
-		Keys = new int[88][2];
-	}
-
 	public void setColorWheelValue(Color selectedColor) {
 		getController(ColorWheel.class, COLOR_WHEEL).setRGB(selectedColor.getRGB());
 	}
@@ -750,4 +725,4 @@ public class UI {
 	public float getControllerValue(String string) {
 		return getController("FadeOnVal").getValue();
 	}
-}
+}*/

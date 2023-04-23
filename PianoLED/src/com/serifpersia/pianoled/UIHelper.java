@@ -1,4 +1,5 @@
-package com.serifpersia.pianoled;
+/*package com.serifpersia.pianoled;
+/*
 
 import java.awt.Color;
 import java.util.List;
@@ -7,7 +8,6 @@ import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlP5;
 import controlP5.Controller;
-import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Toggle;
@@ -141,3 +141,4 @@ public class UIHelper {
 		return cp5.get(class1, name);
 	}
 }
+*/

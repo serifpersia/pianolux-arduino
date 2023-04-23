@@ -5,21 +5,16 @@ import java.io.ByteArrayOutputStream;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
-import processing.core.PApplet;
-
 public class Arduino {
-
-	private PianoLED app;
 
 	private SerialPort serialPort;
 
 	public Arduino(PianoLED pianoLED, String port, int baudrate) {
-		this.app = pianoLED;
 		serialPort = new SerialPort(port);
+
 		try {
 			serialPort.openPort();
-            serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE); 
+			serialPort.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		} catch (SerialPortException ex) {
 			System.out.println(ex);
 		}
@@ -63,16 +58,16 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandSplash(int velocity, int note, int sc) {
+	public ByteArrayOutputStream commandSplash(int velocity, int note, Color color) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_SPLASH);
 		message.write((byte) velocity);
 		message.write((byte) note);
-		message.write((byte) app.red(sc));
-		message.write((byte) app.green(sc));
-		message.write((byte) app.blue(sc));
+		message.write((byte) color.getRed());
+		message.write((byte) color.getGreen());
+		message.write((byte) color.getBlue());
 		return message;
 	}
 
@@ -158,8 +153,8 @@ public class Arduino {
 		sendToArduino(commandAnimation(animationIndex));
 	}
 
-	public void sendCommandSplash(int velocity, int note, int sc) {
-		sendToArduino(commandSplash(velocity, note, sc));
+	public void sendCommandSplash(int velocity, int note, Color color) {
+		sendToArduino(commandSplash(velocity, note, color));
 	}
 
 	public void sendCommandBlackOut() {
@@ -201,7 +196,7 @@ public class Arduino {
 			try {
 				serialPort.writeBytes(bytes);
 			} catch (SerialPortException e) {
-				PApplet.println(e);
+				System.out.println(e);
 			}
 		}
 	}
@@ -211,16 +206,16 @@ public class Arduino {
 			serialPort.closePort();
 		} catch (SerialPortException e) {
 			e.printStackTrace();
-			PApplet.print(e);
+			System.out.print(e);
 		}
 	}
 
 	public void printArray(byte[] bytes) {
-		PApplet.print("Message:");
+		System.out.print("Message:");
 		for (byte b : bytes) {
 			int unsignedValue = b & 0xFF;
-			PApplet.print(unsignedValue + " ");
+			System.out.print(unsignedValue + " ");
 		}
-		PApplet.println();
+		System.out.println();
 	}
 }

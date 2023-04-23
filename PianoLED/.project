@@ -13,6 +13,5 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>proclipsing.core.ProcessingProjectNature</nature>
 	</natures>
 </projectDescription>
