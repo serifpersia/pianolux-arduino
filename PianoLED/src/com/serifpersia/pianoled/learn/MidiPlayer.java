@@ -1,6 +1,8 @@
 package com.serifpersia.pianoled.learn;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,8 +25,6 @@ import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
-import themidibus.MidiBus;
-
 public class MidiPlayer {
 
 	private static final int DEFAULT_BEATS_PER_MEASURE = 4;
@@ -34,10 +34,8 @@ public class MidiPlayer {
 	private LinkedList<Note> notes;
 
 	MidiDevice midiOutDevice;
-	MidiBus myBus;
 	Sequencer sequencer;
 	Sequence sequence;
-	File midiFile;
 	private int midiNumTracks;
 
 	double ticksPerSec;
@@ -50,11 +48,21 @@ public class MidiPlayer {
 
 	private byte beatsPerMeasure = DEFAULT_BEATS_PER_MEASURE;
 
-	public MidiPlayer(File _midiFile, MidiDevice _midiOutDevice) {
-		midiFile = _midiFile;
+	private String midiInputStreamName;
+
+	public MidiPlayer(byte[] midiInput, String midiName, MidiDevice _midiOutDevice) {
+		midiInputStreamName = midiName;
 		midiOutDevice = _midiOutDevice;
-		notes = readMidi(midiFile);
-		setupSequencer(midiFile);
+		try {
+			try (InputStream firstStream = new ByteArrayInputStream(midiInput)) {
+				notes = readMidi(firstStream);
+			}
+			try (InputStream secondStream = new ByteArrayInputStream(midiInput)) {
+				setupSequencer(secondStream);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		bars = calcBars();
 	}
 
@@ -75,7 +83,7 @@ public class MidiPlayer {
 	}
 
 	public String getFileName() {
-		return this.midiFile.getName();
+		return this.midiInputStreamName;
 	}
 
 	public LinkedList<Note> getNotes() {
@@ -87,12 +95,12 @@ public class MidiPlayer {
 	}
 
 	// MIDI handling
-	private void setupSequencer(File midiFile) {
+	private void setupSequencer(InputStream midiInputStream) {
 		try {
 
 			sequencer = MidiSystem.getSequencer(false);
 			sequencer.open();
-			sequence = MidiSystem.getSequence(midiFile);
+			sequence = MidiSystem.getSequence(midiInputStream);
 			sequencer.setSequence(sequence);
 
 			// clear all existing transmitters
@@ -133,11 +141,11 @@ public class MidiPlayer {
 		}
 	}
 
-	private LinkedList<Note> readMidi(File midiFile) {
+	private LinkedList<Note> readMidi(InputStream midiInputStream) {
 		LinkedList<Note> fileNotes = new LinkedList<Note>();
 		try {
 			// Load the MIDI file
-			Sequence sequence = MidiSystem.getSequence(midiFile);
+			Sequence sequence = MidiSystem.getSequence(midiInputStream);
 			// Iterate over each track in the sequence
 			int trackNum = 0;
 			for (Track track : sequence.getTracks()) {
@@ -172,8 +180,7 @@ public class MidiPlayer {
 							fileNotes.add(new Note(noteValue, noteVelocity, noteStart, noteEnd, trackNum));
 							notesInTrack++;
 						}
-					}
-					else if (event.getMessage() instanceof MetaMessage) {
+					} else if (event.getMessage() instanceof MetaMessage) {
 						MetaMessage metaMessage = (MetaMessage) event.getMessage();
 						if (metaMessage.getType() == 0x58) {
 							byte[] data = metaMessage.getData();
@@ -269,8 +276,7 @@ public class MidiPlayer {
 				} else {
 					System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
 				}
-			}
-			else if (midiMessage instanceof MetaMessage) {
+			} else if (midiMessage instanceof MetaMessage) {
 				MetaMessage metaMessage = (MetaMessage) midiMessage;
 				byte[] data = metaMessage.getData();
 				System.out.println("Meta Command " + metaMessage.getType() + ": " + data[0] + " " + data[1]);
@@ -278,16 +284,14 @@ public class MidiPlayer {
 					beatsPerMeasure = data[0];
 //					int denominator = (int) Math.pow(2, data[1]);
 				}
-			}
-			else if (midiMessage instanceof SysexMessage) {
+			} else if (midiMessage instanceof SysexMessage) {
 				SysexMessage sysexMessage = (SysexMessage) midiMessage;
 				byte[] data = sysexMessage.getData();
 				System.out.println("Sysex Command " + (data[0] & 0xFF) + " " + (data[1] & 0xFF));
-			}
-			else
-			{
+			} else {
 				byte[] msg = midiMessage.getMessage();
-				System.out.println("Unknown Command " +(msg[0] & 0xFF)+" : "+(msg[1] & 0xFF)+" "+(msg[2] & 0xFF));
+				System.out.println(
+						"Unknown Command " + (msg[0] & 0xFF) + " : " + (msg[1] & 0xFF) + " " + (msg[2] & 0xFF));
 			}
 		}
 

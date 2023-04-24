@@ -16,10 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import processing.core.PApplet;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 public class Updater {
 	String owner = "serifpersia";
@@ -34,15 +32,8 @@ public class Updater {
 	public String VersionTag = "v4.0";
 	String VersionFile;
 
-	public String getDownloadUrl(JSONObject release, String fileName) {
-		JSONArray assets = release.getJSONArray("assets");
-		for (int i = 0; i < assets.length(); i++) {
-			JSONObject asset = assets.getJSONObject(i);
-			if (asset.getString("name").equals(fileName)) {
-				return asset.getString("browser_download_url");
-			}
-		}
-		return null;
+	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
+	    return latestRelease.findValue("browser_download_url").asText();
 	}
 
 	File folder = new File(appPath);
@@ -56,16 +47,16 @@ public class Updater {
 
 		if (confirm == JOptionPane.YES_OPTION) {
 			String releaseUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
-			JSONObject latestRelease = getLatestRelease(releaseUrl);
+			JsonNode latestReleaseJson = getLatestRelease(releaseUrl);
 
-			if (latestRelease == null) {
+			if (latestReleaseJson == null) {
 				JOptionPane.showMessageDialog(null, "Unable to retrieve latest release information.", "Update",
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 
 			// Compare the latest release tag with the local version tag
-			if (VersionTag != null && VersionTag.equals(latestRelease.getString("tag_name"))) {
+			if (VersionTag != null && VersionTag.equals(latestReleaseJson.findValue("tag_name").asText())) {
 				JOptionPane.showMessageDialog(null, "You already have the latest version.", "Update",
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
@@ -83,14 +74,19 @@ public class Updater {
 
 			if (confirm == JOptionPane.YES_OPTION) {
 				// Download and extract the latest release
-				String downloadUrl, fileName;
+				String downloadUrl = null, fileName;
 				if (os.contains("win")) {
 					fileName = "PianoLED-windows-amd64.zip";
-					PApplet.println("File to download: " + fileName);
+					Log.info("File to download: " + fileName);
 				} else {
 					fileName = "PianoLED-linux-amd64.zip";
 				}
-				downloadUrl = getDownloadUrl(latestRelease, fileName);
+				
+				try {
+					downloadUrl = getDownloadUrl(latestReleaseJson, fileName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 				try {
 					// Download the file with a progress bar
@@ -133,7 +129,7 @@ public class Updater {
 					in.close();
 					extractZipFile(saveDir + fileName, destinationFolderPath);
 					dialog.dispose(); // Close progress bar dialog
-					String restartMessage = "The app has been updated to " + latestRelease.getString("tag_name")
+					String restartMessage = "The app has been updated to " + latestReleaseJson.findValue("tag_name").asText()
 							+ ". Delete everything except Arudino folder & new PianoLED!";
 					JOptionPane.showMessageDialog(null, restartMessage, "Update", JOptionPane.INFORMATION_MESSAGE);
 					System.exit(0);
@@ -158,7 +154,7 @@ public class Updater {
 		System.out.println("VersionTag: " + VersionTag);
 	}
 
-	public JSONObject getLatestRelease(String url) {
+	public JsonNode getLatestRelease(String url) {
 		try {
 			// String authToken = ""; // replace with your PAT
 			URL apiLink = new URL(url);
@@ -175,7 +171,8 @@ public class Updater {
 				responseBuilder.append(new String(dataBuffer, 0, bytesRead));
 			}
 			in.close();
-			return new JSONObject(responseBuilder.toString());
+			JsonMapper jsonMapper = new JsonMapper();
+			return jsonMapper.readTree(responseBuilder.toString());
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return null;
