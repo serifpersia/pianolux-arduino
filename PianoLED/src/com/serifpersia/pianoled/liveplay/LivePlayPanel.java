@@ -23,13 +23,13 @@ import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JComboBox;
-import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class LivePlayPanel extends JPanel {
 
 	private JPanel slideControlsPane = new JPanel();
-	JComboBox<String> CameraList = new JComboBox<>();
+	private JComboBox<String> CameraList = new JComboBox<>();
+	private JComboBox<?> camResList = new JComboBox<>();
 	private JFrame cropDialog;
 
 	public LivePlayPanel() {
@@ -101,9 +101,9 @@ public class LivePlayPanel extends JPanel {
 		slideControlsPane.add(controlsPane, BorderLayout.CENTER);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 116, 80, 0, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 116, 54, 0, 0, 0 };
 		gbl_controlsPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
 		CameraList = new JComboBox<String>();
@@ -123,6 +123,21 @@ public class LivePlayPanel extends JPanel {
 			CameraList.addItem(webcam.getName());
 		}
 
+		String[] resCamList = { "160x120", "320x240", "640x480", "800x600", "1024x768", "1280x720", "1280x960",
+				"1920x1080" };
+
+		camResList = new JComboBox<Object>(resCamList);
+		camResList.setForeground(new Color(255, 255, 255));
+		camResList.setFont(new Font("Tahoma", Font.BOLD, 15));
+		camResList.setBackground(new Color(21, 25, 28));
+		camResList.setToolTipText("Webcam resolution");
+		GridBagConstraints gbc_camResList = new GridBagConstraints();
+		gbc_camResList.insets = new Insets(0, 0, 5, 0);
+		gbc_camResList.fill = GridBagConstraints.HORIZONTAL;
+		gbc_camResList.gridx = 0;
+		gbc_camResList.gridy = 2;
+		controlsPane.add(camResList, gbc_camResList);
+
 		JButton btnOpenCamera = new JButton("Open Camera");
 		btnOpenCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -132,41 +147,82 @@ public class LivePlayPanel extends JPanel {
 		btnOpenCamera.setBorderPainted(false);
 		btnOpenCamera.setToolTipText("Open Webcam");
 		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 2;
+		gbc_btnNewButton.gridy = 3;
 		controlsPane.add(btnOpenCamera, gbc_btnNewButton);
-		btnOpenCamera.addActionListener(e -> showCropDialog());
+		btnOpenCamera.addActionListener(e -> showWebcamDialog());
 
 	}
 
-	private void showCropDialog() {
-		cropDialog = new JFrame("Crop Dialog");
-		cropDialog.setUndecorated(true);
+	private void showWebcamDialog() {
 
-		// Get the selected webcam
-		String selectedCamera = (String) CameraList.getSelectedItem();
-		Webcam webcam = Webcam.getWebcamByName(selectedCamera);
+	    cropDialog = new JFrame("Webcam Settings");
+	    cropDialog.setUndecorated(true);
 
-		// Set the resolution of the webcam
-		Dimension size = new Dimension(640, 480);
-		webcam.setViewSize(size);
-		webcam.open();
+	    // Create a panel to display the webcam feed and add it to the center
+	    String selectedCamera = (String) CameraList.getSelectedItem();
+	    Webcam webcam = Webcam.getWebcamByName(selectedCamera);
+	    String selectedResolution = (String) camResList.getSelectedItem();
+	    String[] resolutionParts = selectedResolution.split("x");
+	    int width = Integer.parseInt(resolutionParts[0]);
+	    int height = Integer.parseInt(resolutionParts[1]);
+	    Dimension size = new Dimension(width, height);
+	    webcam.setViewSize(size);
+	    webcam.open();
 
-		// Create a panel to display the webcam feed
-		WebcamPanel panel = new WebcamPanel(webcam);
-		panel.setPreferredSize(size);
-		cropDialog.getContentPane().add(panel);
+	    WebcamPanel panel = new WebcamPanel(webcam);
+	    panel.setPreferredSize(size);
 
-		// Create a button to close the dialog and release the webcam
+	    cropDialog.getContentPane().add(panel, BorderLayout.CENTER);
+	    
+	    // Create a panel to display webcam settings and add it to the east
+	    WebcamSettingsPanel settingsPanel = new WebcamSettingsPanel();
+	    cropDialog.getContentPane().add(settingsPanel, BorderLayout.EAST);
+
+	    // Set the size and location of the dialog
+	    cropDialog.setSize(800, 600);
+	    cropDialog.setLocationRelativeTo(null);
+	    cropDialog.setVisible(true);
+	}
+}
+
+/*
+		// Create a panel for webcam settings and add it to the east
+		JPanel webcamSettingsPane = new JPanel(new BorderLayout());
+		JLabel webcamSettingsLabel = new JLabel("Webcam Settings");
+		webcamSettingsLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		webcamSettingsLabel.setForeground(Color.WHITE);
+		webcamSettingsLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0)); // Add some padding to the bottom
+
+		webcamSettingsPane.setBackground(Color.BLACK);
+		webcamSettingsPane.add(webcamSettingsLabel, BorderLayout.NORTH);
+
+		// Create a panel for transform controls and add it to the center of
+		// webcamSettingsPane
+		JPanel transformControlsPane = new JPanel(new GridLayout(4, 2));
+		transformControlsPane.setBackground(Color.BLACK);
+		transformControlsPane.setForeground(Color.WHITE);
+
+		String[] labelTexts = { "Left X Crop:", "Right X Crop:", "Top Y Crop:", "Bottom Y Crop:" };
+		JTextField[] textFields = { new JTextField(), new JTextField(), new JTextField(), new JTextField() };
+
+		for (int i = 0; i < labelTexts.length; i++) {
+			JLabel label = new JLabel(labelTexts[i]);
+			label.setForeground(Color.WHITE);
+			transformControlsPane.add(label);
+			transformControlsPane.add(textFields[i]);
+		}
+
+		webcamSettingsPane.add(transformControlsPane, BorderLayout.CENTER);
+
+		// Create a button to close the dialog and release the webcam, and add it to the
+		// south
 		JButton btnDone = new JButton("Done");
 		btnDone.addActionListener(e -> {
 			webcam.close();
 			cropDialog.dispose();
 		});
-		cropDialog.getContentPane().add(btnDone, BorderLayout.SOUTH);
+		webcamSettingsPane.add(btnDone, BorderLayout.SOUTH);
 
-		cropDialog.pack();
-		cropDialog.setLocationRelativeTo(null); // Center the dialog on the screen
-		cropDialog.setVisible(true);
-	}
+		cropDialog.getContentPane().add(webcamSettingsPane, BorderLayout.EAST);
+		*/
 
-}
