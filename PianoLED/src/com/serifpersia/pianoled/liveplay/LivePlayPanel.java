@@ -36,11 +36,14 @@ public class LivePlayPanel extends JPanel {
 	private JComboBox<?> camResList = new JComboBox<>();
 	private JFrame cropDialog;
 
+	private WebcamPanel webcamPanel = null;
+
 	public LivePlayPanel() {
 		setBackground(new Color(0, 0, 0));
 		setLayout(new BorderLayout(0, 0));
 
 		addSlidingControlPanel();
+
 	}
 
 	private void addSlidingControlPanel() {
@@ -105,9 +108,9 @@ public class LivePlayPanel extends JPanel {
 		slideControlsPane.add(controlsPane, BorderLayout.CENTER);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 116, 54, 0, 0, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 116, 54, 0, 0, 0, 0, 0 };
 		gbl_controlsPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
 		CameraList = new JComboBox<String>();
@@ -142,18 +145,51 @@ public class LivePlayPanel extends JPanel {
 		gbc_camResList.gridy = 2;
 		controlsPane.add(camResList, gbc_camResList);
 
-		JButton btnOpenCamera = new JButton("Open Camera");
-		btnOpenCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
+		JButton btnConfigureCamera = new JButton("Configure Camera");
+		btnConfigureCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		btnOpenCamera.setBackground(new Color(52, 152, 219));
-		btnOpenCamera.setForeground(Color.WHITE);
-		btnOpenCamera.setFocusable(false);
-		btnOpenCamera.setBorderPainted(false);
-		btnOpenCamera.setToolTipText("Open Webcam");
+		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
+		btnConfigureCamera.setBackground(new Color(52, 152, 219));
+		btnConfigureCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnConfigureCamera.setForeground(Color.WHITE);
+		btnConfigureCamera.setFocusable(false);
+		btnConfigureCamera.setBorderPainted(false);
+		btnConfigureCamera.setToolTipText("Open Webcam");
 		gbc_btnNewButton.gridx = 0;
 		gbc_btnNewButton.gridy = 3;
-		controlsPane.add(btnOpenCamera, gbc_btnNewButton);
-		btnOpenCamera.addActionListener(e -> showWebcamDialog());
+		controlsPane.add(btnConfigureCamera, gbc_btnNewButton);
+		btnConfigureCamera.addActionListener(e -> showWebcamDialog());
+
+		JButton btnopenCamera = new JButton("Open Camera");
+		btnopenCamera.setForeground(Color.WHITE);
+		btnopenCamera.setBackground(new Color(231, 76, 60));
+		btnopenCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
+		GridBagConstraints gbc_button = new GridBagConstraints();
+		gbc_button.gridx = 0;
+		gbc_button.gridy = 5;
+		controlsPane.add(btnopenCamera, gbc_button);
+		btnopenCamera.addActionListener(e -> {
+			if (btnopenCamera.getText().equals("Open Camera")) {
+				// Perform first action
+				btnopenCamera.setText("Close Camera");
+				btnopenCamera.setBackground(new Color(46, 204, 113));
+				// Add the existing WebcamPanel instance to the LivePlayPanel
+				if (webcamPanel != null) {
+					add(webcamPanel, BorderLayout.CENTER);
+				}
+			} else {
+				// Perform second action
+				btnopenCamera.setText("Open Camera");
+				btnopenCamera.setBackground(new Color(231, 76, 60));
+				// Add the existing WebcamPanel instance to the LivePlayPanel
+				if (webcamPanel != null) {
+					Webcam webcam = Webcam.getDefault();
+					webcam.close();
+					remove(webcamPanel);
+					repaint();
+				}
+			}
+		});
 
 	}
 
@@ -173,7 +209,7 @@ public class LivePlayPanel extends JPanel {
 		webcam.setViewSize(size);
 		webcam.open();
 
-		WebcamPanel panel = new WebcamPanel(webcam) {
+		webcamPanel = new WebcamPanel(webcam) {
 
 			@Override
 			protected void paintComponent(Graphics g) {
@@ -192,14 +228,18 @@ public class LivePlayPanel extends JPanel {
 				}
 
 				g2.setTransform(transform);
+				try {
+					Thread.sleep(16); // add a sleep delay of 16ms
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				g2.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
 			}
-
 		};
 
-		panel.setPreferredSize(size);
+		webcamPanel.setPreferredSize(size);
 
-		cropDialog.getContentPane().add(panel, BorderLayout.CENTER);
+		cropDialog.getContentPane().add(webcamPanel, BorderLayout.CENTER);
 
 		// Create a panel to display webcam settings and add it to the east
 		WebcamSettingsPanel settingsPanel = new WebcamSettingsPanel();

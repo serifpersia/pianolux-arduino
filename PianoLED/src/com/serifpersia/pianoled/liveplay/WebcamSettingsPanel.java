@@ -15,8 +15,6 @@ import javax.swing.JTextField;
 
 import javax.swing.SwingConstants;
 
-import com.github.sarxos.webcam.Webcam;
-
 @SuppressWarnings("serial")
 public class WebcamSettingsPanel extends JPanel {
 
@@ -107,8 +105,6 @@ public class WebcamSettingsPanel extends JPanel {
 		btnDone.setBackground(new Color(52, 152, 219));
 		ButtonsPanel.add(btnDone);
 		btnDone.addActionListener(e -> {
-			Webcam webcam = Webcam.getDefault();
-			webcam.close();
 			getTopLevelAncestor().setVisible(false);
 		});
 
