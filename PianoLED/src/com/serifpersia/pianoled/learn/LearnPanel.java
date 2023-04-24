@@ -29,6 +29,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -37,6 +41,7 @@ import javax.swing.JFileChooser;
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiConsumer {
 
+	private static final String DEFAULT_MIDI_RESOURCE = "/midi/clair_de_lune.mid";
 	private static final int PLAYER_REWIND_SEC = 5;
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
 	private static final Color SLIDING_PANEL_BG = new Color(21, 25, 28);
@@ -50,9 +55,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private JCheckBox gridToggle;
 	private PianoLED pianoLED;
 	private JCheckBox infoToggle;
-	private long commandKey1Arrived;
+//	private long commandKey1Arrived;
 
-	private static final int COMMAND_MAX_SPAN_MS = 2000;
+//	private static final int COMMAND_MAX_SPAN_MS = 2000;
 	private static final int COMMAND_KEY1 = DrawPiano.FIRST_KEY_PITCH_OFFSET +86;
 	private Map<Integer, String> commandKeys = Map.of(COMMAND_KEY1 - 2, "Back", COMMAND_KEY1, "PlayPause",
 			COMMAND_KEY1 + 1, "Forward");
@@ -73,8 +78,29 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 		Timer timer = new Timer(REFRESH_RATE_MS, taskPerformer);
 		timer.start();
-		File midiSample = new File(getClass().getResource("/midi/clair_de_lune.mid").getFile());
-		initMidiPlayer(midiSample);
+		try( InputStream midiSample = getClass().getResourceAsStream(DEFAULT_MIDI_RESOURCE)) {
+			initMidiPlayer(midiSample.readAllBytes(), DEFAULT_MIDI_RESOURCE);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void initMidiPlayer(byte[] midiInput, String midiName) {
+		String deviceName = (String) MidiOutList.getSelectedItem();
+		midiPlayer = new MidiPlayer(midiInput, midiName, getMidiDeviceByName(deviceName));
+		midiPlayer.addConsumer(LearnPanel.this);
+		pianoRoll.start(midiPlayer);
+		setMidiFileNameLabel(midiName);
+	}
+	
+	public void initMidiPlayer(File selectedFile) {
+		try(FileInputStream fileStream = new FileInputStream(selectedFile)) {
+			initMidiPlayer(fileStream.readAllBytes(), selectedFile.getName());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void addSlidingControlPanel() {
@@ -179,14 +205,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 			}
 
 		});
-	}
-
-	public void initMidiPlayer(File selectedFile) {
-		String deviceName = (String) MidiOutList.getSelectedItem();
-		midiPlayer = new MidiPlayer(new File(selectedFile.getAbsolutePath()), getMidiDeviceByName(deviceName));
-		midiPlayer.addConsumer(LearnPanel.this);
-		pianoRoll.start(midiPlayer);
-		setMidiFileNameLabel(selectedFile.getName());
 	}
 
 	private void setMidiFileNameLabel(String name) {

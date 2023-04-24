@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.serifpersia.pianoled.ui.BottomPanel;
 import com.serifpersia.pianoled.ui.DrawPiano;
@@ -30,7 +31,9 @@ public class PianoLED extends JFrame {
 	private LeftPanel leftPanel = new LeftPanel(rightPanel);
 
     public static void main(String[] args) {
+    	SwingUtilities.invokeLater(() -> {
         new PianoLED();
+    	});
     }
     
 	public PianoLED() {

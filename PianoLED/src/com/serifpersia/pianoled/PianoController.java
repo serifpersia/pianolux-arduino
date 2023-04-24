@@ -9,37 +9,29 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
-
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
+import com.serifpersia.pianoled.learn.PianoReceiver;
 import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
 
 import jssc.SerialPortList;
-import themidibus.MidiBus;
 
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.BufferedReader;
 
-import processing.core.PApplet;
-
-public class PianoController {
+public class PianoController implements PianoMidiConsumer {
 
 	private PianoLED pianoLED;
 	
-	private PApplet pApplet = new PApplet();
-
 	public Arduino arduino;
 	public String portName;
 	public String[] portNames = SerialPortList.getPortNames();
-
-	private MidiBus myBusIn;
-
-	public String midiName;
 
 	public Color splitLeftColor = Color.RED;
 	public Color splitRightColor = Color.BLUE;
@@ -49,6 +41,8 @@ public class PianoController {
 	public Color RightSideGColor = Color.BLUE;
 	
 	private List<PianoMidiConsumer> consumers = new ArrayList<>();
+
+	private PianoReceiver pianoReceiver;
 
 	public PianoController(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
@@ -92,15 +86,15 @@ public class PianoController {
 
 	public void refreshMidiList() {
 		// Get the list of available MIDI devices
-		String[] deviceNames = getMidiDevices();
+		ArrayList<Info> devices = getMidiDevices();
 
 		// Find the index of the first device whose name contains "piano" or "midi"
-		int index = -1;
-		for (int i = 0; i < deviceNames.length; i++) {
-			if (deviceNames[i].toLowerCase().contains("piano") || deviceNames[i].toLowerCase().contains("midi")) {
-				index = i;
+		int index = 0;
+		for (Info device : devices) {
+			if (device.getName().toLowerCase().contains("piano") || device.getName().toLowerCase().contains("midi")) {
 				break;
 			}
+			index++;
 		}
 
 		// Set the corresponding item in the MidiList JComboBox object
@@ -131,16 +125,6 @@ public class PianoController {
 		}
 	}
 
-	private MidiDevice.Info getDeviceInfo(String deviceName) {
-		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-		for (MidiDevice.Info info : infos) {
-			if (info.getName().equals(deviceName)) {
-				return info;
-			}
-		}
-		return null;
-	}
-
 	public String[] getMidiOutDevices() {
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		ArrayList<String> deviceNames = new ArrayList<String>();
@@ -166,15 +150,15 @@ public class PianoController {
 		}
 	}
 
-	public String[] getMidiDevices() {
-		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-		ArrayList<String> deviceNames = new ArrayList<String>();
+	public ArrayList<Info> getMidiDevices() {
+		Info[] infos = MidiSystem.getMidiDeviceInfo();
+		ArrayList<Info> deviceNames = new ArrayList<Info>();
 		for (MidiDevice.Info info : infos) {
 			MidiDevice device = null;
 			try {
 				device = MidiSystem.getMidiDevice(info);
 				if (device.getMaxTransmitters() != 0) {
-					deviceNames.add(info.getName());
+					deviceNames.add(info);
 				}
 			} catch (MidiUnavailableException ex) {
 				System.err.println("Error getting MIDI device " + info.getName() + ": " + ex.getMessage());
@@ -184,40 +168,34 @@ public class PianoController {
 				}
 			}
 		}
-		if (deviceNames.isEmpty()) {
-			return new String[] { "No MIDI input devices available" };
-		} else {
-			return deviceNames.toArray(new String[deviceNames.size()]);
-		}
+		return deviceNames;
 	}
 
 	public void openMidi() {
-		String deviceName = (String) DashboardPanel.MidiList.getSelectedItem();
+		Info deviceInfo = (Info) DashboardPanel.MidiList.getSelectedItem();
 		MidiDevice device = null;
 		try {
-			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
+			device = MidiSystem.getMidiDevice(deviceInfo);
 			device.open();
-			System.out.println("MIDI device " + deviceName + " opened successfully.");
+			pianoReceiver = new PianoReceiver();
+			pianoReceiver.addConsumer(this);
+			device.getTransmitter().setReceiver(pianoReceiver);
+			System.out.println("MIDI device " + deviceInfo + " opened successfully.");
 
-			// Create a new instance of MidiBus and assign it to myBusIn
-			myBusIn = new MidiBus(this, deviceName, 0);
 		} catch (MidiUnavailableException ex) {
-			System.err.println("Error opening MIDI device " + deviceName + ": " + ex.getMessage());
+			System.err.println("Error opening MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}
 	}
 
 	public void closeMidi() {
-		String deviceName = (String) DashboardPanel.MidiList.getSelectedItem();
+		Info deviceInfo = (Info) DashboardPanel.MidiList.getSelectedItem();
 		MidiDevice device = null;
 		try {
-			device = MidiSystem.getMidiDevice(getDeviceInfo(deviceName));
-			if (myBusIn != null) {
-				myBusIn.dispose();
-			}
+			device = MidiSystem.getMidiDevice(deviceInfo);
 			device.close();
-			System.out.println("MIDI device " + deviceName + " closed successfully.");
+			System.out.println("MIDI device " + deviceInfo + " closed successfully.");
 		} catch (MidiUnavailableException ex) {
-			System.err.println("Error closing MIDI device " + deviceName + ": " + ex.getMessage());
+			System.err.println("Error closing MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}
 	}
 
@@ -283,24 +261,24 @@ public class PianoController {
 					int step = notePushed - 1;
 					float ratio = (float) step / (float) numSteps;
 
-					int startColor = LeftSideGColor.getRGB();
-					int endColor = RightSideGColor.getRGB();
+					Color startColor = LeftSideGColor;
+					Color endColor = RightSideGColor;
 
-					int currentColor;
+					Color currentColor;
 					if (MiddleSideColor == Color.BLACK) {
-						currentColor = pApplet.lerpColor(startColor, endColor, ratio);
+						currentColor = interpolate(startColor, endColor, ratio);
 					} else {
-						int middleColor = MiddleSideColor.getRGB();
+						Color middleColor = MiddleSideColor;
 						float leftRatio = ratio * 0.5f;
 						float rightRatio = (ratio - 0.5f) * 2f;
 
-						int leftColor = pApplet.lerpColor(startColor, middleColor, leftRatio);
-						int rightColor = pApplet.lerpColor(middleColor, endColor, rightRatio);
+						Color leftColor = interpolate(startColor, middleColor, leftRatio);
+						Color rightColor = interpolate(middleColor, endColor, rightRatio);
 
-						currentColor = pApplet.lerpColor(leftColor, rightColor, ratio);
+						currentColor = interpolate(leftColor, rightColor, ratio);
 					}
 
-					message = arduino.commandSetColor(new Color(currentColor), notePushed);
+					message = arduino.commandSetColor(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, getSplashColor());
 
@@ -323,6 +301,14 @@ public class PianoController {
 		}
 	}
 
+	 public static Color interpolate(Color color1, Color color2, double ratio) {
+	        int red = (int) (color1.getRed() * (1 - ratio) + color2.getRed() * ratio);
+	        int green = (int) (color1.getGreen() * (1 - ratio) + color2.getGreen() * ratio);
+	        int blue = (int) (color1.getBlue() * (1 - ratio) + color2.getBlue() * ratio);
+	        return new Color(red, green, blue);
+	    }
+
+	
 	public void noteOff(int channel, int pitch, int velocity) {
 		int notePushed;
 		if (useFixedMapping) {
@@ -402,14 +388,6 @@ public class PianoController {
 	public void dispose() {
 		// Dispose your app here
 		try {
-			if (myBusIn != null) {
-				myBusIn.dispose();
-			}
-
-//			if (myBusOut != null) {
-//				myBusOut.dispose();
-//			}
-
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
 				arduino.sendCommandSetBG(0, 0, 0);
@@ -418,5 +396,15 @@ public class PianoController {
 		} catch (Exception e) {
 			System.out.println("Error while exiting: " + e);
 		}
+	}
+
+	@Override
+	public void onPianoKeyOn(int pitch, int velocity) {
+		noteOn(0, pitch, velocity);
+	}
+
+	@Override
+	public void onPianoKeyOff(int pitch) {
+		noteOff(0, pitch, 0);
 	}
 }

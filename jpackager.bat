@@ -1,0 +1,1 @@
+jpackage --input target/ --name PianoLED --main-jar PianoLED-3.7.1-SNAPSHOT-jar-with-dependencies.jar --main-class com.serifpersia.pianoled.PianoLED --type exe

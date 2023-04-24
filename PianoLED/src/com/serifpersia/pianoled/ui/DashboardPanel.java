@@ -7,7 +7,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice.Info;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -82,13 +85,26 @@ public class DashboardPanel extends JPanel {
 		lbMidiDeviecs.setHorizontalAlignment(SwingConstants.CENTER);
 		MidiPane.add(lbMidiDeviecs);
 
-		MidiList = new JComboBox<Object>(pianoController.getMidiDevices());
+		class MidiInfoBoxModel extends DefaultComboBoxModel<Info> {
+			public MidiInfoBoxModel(ArrayList<Info> arrayList) {
+		    	super(arrayList.toArray(new Info[0]));
+		    }
+		 
+		    @Override
+		    public Info getSelectedItem() {
+		    	return (Info) super.getSelectedItem();
+		    }
+		}
+
+
+		MidiInfoBoxModel boxModel = new MidiInfoBoxModel(pianoController.getMidiDevices());
+		MidiList = new JComboBox<Info>(boxModel);
 		MidiList.setBackground(new Color(21, 25, 28));
 		MidiList.setForeground(Color.WHITE);
 		MidiList.setFont(new Font("Tahoma", Font.BOLD, 28));
 		MidiList.setFocusable(false);
 		MidiPane.add(MidiList);
-
+		
 		JPanel ButtonsPane = new JPanel();
 		ButtonsPane.setBackground(new Color(21, 25, 28));
 		ConnectionsPane.add(ButtonsPane);
@@ -182,8 +198,6 @@ public class DashboardPanel extends JPanel {
 				if (openButton.getText().equals("Open")) {
 					try {
 						pianoController.portName = (String) SerialList.getSelectedItem();
-						pianoController.midiName = (String) MidiList.getSelectedItem();
-
 						pianoController.openMidi();
 						pianoController.arduino = new Arduino((PianoLED) SwingUtilities.getWindowAncestor(openButton),
 								pianoController.portName, 115200);
