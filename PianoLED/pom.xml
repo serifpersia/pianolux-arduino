@@ -57,6 +57,7 @@
 							<headerType>console</headerType>
 							<outfile>release/nojre/${project.artifactId}.exe</outfile>
 							<jar>target/${project.build.finalName}-jar-with-dependencies.jar</jar>
+							<icon>target/classes/icons/icon.ico</icon>
 							<errTitle>${project.artifactId} Error</errTitle>
 							<classPath>
 								<mainClass>${main.class}</mainClass>
