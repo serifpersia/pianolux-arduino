@@ -11,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSlider;
 
 import javax.swing.SwingConstants;
 
@@ -20,6 +20,11 @@ public class WebcamSettingsPanel extends JPanel {
 
 	static boolean mirrorX = false;
 	static boolean mirrorY = false;
+
+	static JSlider leftCrop_XSlider = new JSlider();
+	static JSlider rightCrop_XSlider = new JSlider();
+	static JSlider topCrop_YSlider = new JSlider();
+	static JSlider bottomCrop_YSlider = new JSlider();
 
 	public WebcamSettingsPanel() {
 
@@ -31,40 +36,63 @@ public class WebcamSettingsPanel extends JPanel {
 		add(lbPanel);
 		lbPanel.setLayout(new BorderLayout(0, 0));
 
-		JLabel webcamSettingsLabel = new JLabel("Webcam Settings");
+		JLabel webcamSettingsLabel = new JLabel("Settings");
 		webcamSettingsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lbPanel.add(webcamSettingsLabel);
 		webcamSettingsLabel.setFont(new Font("Tahoma", Font.BOLD, 30));
 		webcamSettingsLabel.setForeground(Color.WHITE);
 		webcamSettingsLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
-		JPanel transformControlsPane = new JPanel(new GridLayout(4, 2));
+		JPanel transformControlsPane = new JPanel();
 		transformControlsPane.setBackground(Color.BLACK);
 		transformControlsPane.setForeground(Color.WHITE);
 
-		String[] labelTexts = { "Left X Crop:", "Right X Crop:", "Top Y Crop:", "Bottom Y Crop:" };
-		String[] fieldNames = { "LX_Crop", "RX_Crop", "TPY_Crop", "BTY_Crop" };
-		JTextField[] textFields = { new JTextField("0"), new JTextField("0"), new JTextField("0"),
-				new JTextField("0") };
-
-		for (int i = 0; i < labelTexts.length; i++) {
-			JLabel label = new JLabel(labelTexts[i]);
-			label.setFont(new Font("Tahoma", Font.BOLD, 15));
-			label.setHorizontalAlignment(SwingConstants.CENTER);
-			label.setForeground(Color.WHITE);
-			transformControlsPane.add(label);
-
-			JTextField textField = textFields[i];
-			final String fieldName = fieldNames[i];
-			textField.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.out.println(fieldName + ": " + textField.getText());
-				}
-			});
-			transformControlsPane.add(textField);
-		}
-
 		add(transformControlsPane);
+		transformControlsPane.setLayout(new GridLayout(8, 0, 0, 0));
+
+		JLabel LeftCrop_X = new JLabel("Left Crop X");
+		LeftCrop_X.setFont(new Font("Tahoma", Font.BOLD, 15));
+		LeftCrop_X.setHorizontalAlignment(SwingConstants.LEFT);
+		LeftCrop_X.setForeground(new Color(255, 255, 255));
+		transformControlsPane.add(LeftCrop_X);
+
+		leftCrop_XSlider = new JSlider();
+		leftCrop_XSlider.setBackground(Color.BLACK);
+		leftCrop_XSlider.setValue(0); // set default value to 0
+		transformControlsPane.add(leftCrop_XSlider);
+
+		JLabel RightCrop_X = new JLabel("Right Crop X");
+		RightCrop_X.setFont(new Font("Tahoma", Font.BOLD, 15));
+		RightCrop_X.setHorizontalAlignment(SwingConstants.LEFT);
+		RightCrop_X.setForeground(new Color(255, 255, 255));
+		transformControlsPane.add(RightCrop_X);
+
+		rightCrop_XSlider = new JSlider();
+		rightCrop_XSlider.setBackground(Color.BLACK);
+		rightCrop_XSlider.setValue(0); // set default value to 0
+		transformControlsPane.add(rightCrop_XSlider);
+
+		JLabel TopCrop_Y = new JLabel("Top Crop Y");
+		TopCrop_Y.setFont(new Font("Tahoma", Font.BOLD, 15));
+		TopCrop_Y.setHorizontalAlignment(SwingConstants.LEFT);
+		TopCrop_Y.setForeground(new Color(255, 255, 255));
+		transformControlsPane.add(TopCrop_Y);
+
+		topCrop_YSlider = new JSlider();
+		topCrop_YSlider.setBackground(Color.BLACK);
+		topCrop_YSlider.setValue(0); // set default value to 0
+		transformControlsPane.add(topCrop_YSlider);
+
+		JLabel BottomCrop_Y = new JLabel("Bottom Crop Y");
+		BottomCrop_Y.setFont(new Font("Tahoma", Font.BOLD, 15));
+		BottomCrop_Y.setHorizontalAlignment(SwingConstants.LEFT);
+		BottomCrop_Y.setForeground(new Color(255, 255, 255));
+		transformControlsPane.add(BottomCrop_Y);
+
+		bottomCrop_YSlider = new JSlider();
+		bottomCrop_YSlider.setBackground(Color.BLACK);
+		bottomCrop_YSlider.setValue(0); // set default value to 0
+		transformControlsPane.add(bottomCrop_YSlider);
 
 		JPanel ButtonsPanel = new JPanel();
 		add(ButtonsPanel);
