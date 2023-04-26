@@ -28,7 +28,7 @@ import java.io.BufferedReader;
 public class PianoController implements PianoMidiConsumer {
 
 	private PianoLED pianoLED;
-	
+
 	public Arduino arduino;
 	public String portName;
 	public String[] portNames = SerialPortList.getPortNames();
@@ -36,10 +36,10 @@ public class PianoController implements PianoMidiConsumer {
 	public Color splitLeftColor = Color.RED;
 	public Color splitRightColor = Color.BLUE;
 
-	public Color LeftSideGColor = Color.RED;
+	public Color LeftSideColor = Color.RED;
 	public Color MiddleSideColor = Color.GREEN;
-	public Color RightSideGColor = Color.BLUE;
-	
+	public Color RightSideColor = Color.BLUE;
+
 	private List<PianoMidiConsumer> consumers = new ArrayList<>();
 
 	private PianoReceiver pianoReceiver;
@@ -51,7 +51,7 @@ public class PianoController implements PianoMidiConsumer {
 	public void addPianoMidiConsumer(PianoMidiConsumer consumer) {
 		this.consumers.add(consumer);
 	}
-	
+
 	public void findPortNameOnWindows(String deviceName) {
 		String[] cmd = { "cmd", "/c",
 				"wmic path Win32_PnPEntity where \"Caption like '%(COM%)'\" get Caption /format:table" };
@@ -261,22 +261,23 @@ public class PianoController implements PianoMidiConsumer {
 					int step = notePushed - 1;
 					float ratio = (float) step / (float) numSteps;
 
-					Color startColor = LeftSideGColor;
-					Color endColor = RightSideGColor;
-
+					Color startColor = LeftSideColor;
+					Color endColor = RightSideColor;
 					Color currentColor;
-					if (MiddleSideColor == Color.BLACK) {
-						currentColor = interpolate(startColor, endColor, ratio);
-					} else {
-						Color middleColor = MiddleSideColor;
-						float leftRatio = ratio * 0.5f;
-						float rightRatio = (ratio - 0.5f) * 2f;
 
-						Color leftColor = interpolate(startColor, middleColor, leftRatio);
-						Color rightColor = interpolate(middleColor, endColor, rightRatio);
-
-						currentColor = interpolate(leftColor, rightColor, ratio);
+					if (!MiddleSideColor.equals(Color.BLACK)) {
+						if (step < numSteps / 2) {
+							endColor = MiddleSideColor;
+							ratio = 1.33f * ratio;
+						} else {
+							startColor = MiddleSideColor;
+							ratio = 2 * (ratio - 0.5f);
+						}
 					}
+					int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * ratio);
+					int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * ratio);
+					int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * ratio);
+					currentColor = new Color(red, green, blue);
 
 					message = arduino.commandSetColor(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {
@@ -291,7 +292,7 @@ public class PianoController implements PianoMidiConsumer {
 					arduino.sendToArduino(message);
 				}
 			}
-			
+
 			for (PianoMidiConsumer consumer : consumers) {
 				consumer.onPianoKeyOn(pitch, velocity);
 			}
@@ -301,14 +302,6 @@ public class PianoController implements PianoMidiConsumer {
 		}
 	}
 
-	 public static Color interpolate(Color color1, Color color2, double ratio) {
-	        int red = (int) (color1.getRed() * (1 - ratio) + color2.getRed() * ratio);
-	        int green = (int) (color1.getGreen() * (1 - ratio) + color2.getGreen() * ratio);
-	        int blue = (int) (color1.getBlue() * (1 - ratio) + color2.getBlue() * ratio);
-	        return new Color(red, green, blue);
-	    }
-
-	
 	public void noteOff(int channel, int pitch, int velocity) {
 		int notePushed;
 		if (useFixedMapping) {

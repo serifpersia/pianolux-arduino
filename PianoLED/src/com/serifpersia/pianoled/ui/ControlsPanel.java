@@ -441,7 +441,7 @@ public class ControlsPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				pianoController.splitLeftColor = selectedColor;
-				pianoController.LeftSideGColor = selectedColor;
+				pianoController.LeftSideColor = selectedColor;
 			}
 		});
 		btnL.setForeground(Color.WHITE);
@@ -473,7 +473,7 @@ public class ControlsPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				pianoController.splitRightColor = selectedColor;
-				pianoController.RightSideGColor = selectedColor;
+				pianoController.RightSideColor = selectedColor;
 			}
 		});
 		btnR.setForeground(Color.WHITE);
