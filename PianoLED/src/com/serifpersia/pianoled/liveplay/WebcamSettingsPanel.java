@@ -49,7 +49,7 @@ public class WebcamSettingsPanel extends JPanel {
 		add(ButtonsPanel);
 		ButtonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
-		affFlipButtons(ButtonsPanel);
+		addFlipButtons(ButtonsPanel);
 
 		addDoneButton(ButtonsPanel);
 
@@ -139,7 +139,7 @@ public class WebcamSettingsPanel extends JPanel {
 		});
 	}
 
-	private void affFlipButtons(JPanel ButtonsPanel) {
+	private void addFlipButtons(JPanel ButtonsPanel) {
 		JPanel topButtonsPane = new JPanel();
 		topButtonsPane.setBackground(new Color(0, 0, 0));
 		ButtonsPanel.add(topButtonsPane);
