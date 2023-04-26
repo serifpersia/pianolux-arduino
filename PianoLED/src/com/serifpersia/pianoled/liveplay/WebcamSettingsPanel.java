@@ -43,6 +43,19 @@ public class WebcamSettingsPanel extends JPanel {
 		webcamSettingsLabel.setForeground(Color.WHITE);
 		webcamSettingsLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
+		addCropButtons();
+
+		JPanel ButtonsPanel = new JPanel();
+		add(ButtonsPanel);
+		ButtonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		affFlipButtons(ButtonsPanel);
+
+		addDoneButton(ButtonsPanel);
+
+	}
+
+	private void addCropButtons() {
 		JPanel transformControlsPane = new JPanel();
 		transformControlsPane.setBackground(Color.BLACK);
 		transformControlsPane.setForeground(Color.WHITE);
@@ -93,15 +106,45 @@ public class WebcamSettingsPanel extends JPanel {
 		bottomCrop_YSlider.setBackground(Color.BLACK);
 		bottomCrop_YSlider.setValue(0); // set default value to 0
 		transformControlsPane.add(bottomCrop_YSlider);
+	}
+	
+	public static int getLeftCrop()
+	{
+		return leftCrop_XSlider.getValue();
+	}
 
-		JPanel ButtonsPanel = new JPanel();
-		add(ButtonsPanel);
-		ButtonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
+	public static int getRightCrop()
+	{
+		return rightCrop_XSlider.getValue();
+	}
 
+	public static int getTopCrop()
+	{
+		return topCrop_YSlider.getValue();
+	}
+
+	public static int getBottomCrop()
+	{
+		return bottomCrop_YSlider.getValue();
+	}
+
+	private void addDoneButton(JPanel ButtonsPanel) {
+		JButton btnDone = new JButton("Done");
+		btnDone.setForeground(Color.WHITE);
+		btnDone.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnDone.setBackground(new Color(52, 152, 219));
+		ButtonsPanel.add(btnDone);
+		btnDone.addActionListener(e -> {
+			getTopLevelAncestor().setVisible(false);
+		});
+	}
+
+	private void affFlipButtons(JPanel ButtonsPanel) {
 		JPanel topButtonsPane = new JPanel();
 		topButtonsPane.setBackground(new Color(0, 0, 0));
 		ButtonsPanel.add(topButtonsPane);
 		topButtonsPane.setLayout(new GridLayout(0, 2, 0, 0));
+
 
 		JButton btnFlip_X = new JButton("Flip X");
 		btnFlip_X.setBackground(new Color(231, 76, 60));
@@ -126,15 +169,5 @@ public class WebcamSettingsPanel extends JPanel {
 				mirrorY = !mirrorY; // toggle the value of mirrorX
 			}
 		});
-
-		JButton btnDone = new JButton("Done");
-		btnDone.setForeground(Color.WHITE);
-		btnDone.setFont(new Font("Tahoma", Font.BOLD, 20));
-		btnDone.setBackground(new Color(52, 152, 219));
-		ButtonsPanel.add(btnDone);
-		btnDone.addActionListener(e -> {
-			getTopLevelAncestor().setVisible(false);
-		});
-
 	}
 }
