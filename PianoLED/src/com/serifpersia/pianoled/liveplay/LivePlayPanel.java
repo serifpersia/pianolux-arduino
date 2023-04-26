@@ -20,6 +20,8 @@ import javax.swing.SwingConstants;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
+import com.serifpersia.pianoled.PianoLED;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JComboBox;
@@ -37,8 +39,10 @@ public class LivePlayPanel extends JPanel {
 	private JFrame cropDialog;
 
 	private WebcamPanel webcamPanel = null;
+	private PianoLED pianoLED;
 
-	public LivePlayPanel() {
+	public LivePlayPanel(PianoLED pianoLED) {
+		this.pianoLED = pianoLED;
 		setBackground(new Color(0, 0, 0));
 		setLayout(new BorderLayout(0, 0));
 
@@ -47,6 +51,42 @@ public class LivePlayPanel extends JPanel {
 	}
 
 	private void addSlidingControlPanel() {
+		addSlidingPanel();
+
+		addWebcamPanel();
+
+		addControls();
+	}
+
+	private void addControls() {
+		JPanel controlsPane = new JPanel();
+		controlsPane.setBackground(new Color(21, 25, 28));
+		slideControlsPane.add(controlsPane, BorderLayout.CENTER);
+		GridBagLayout gbl_controlsPane = new GridBagLayout();
+		gbl_controlsPane.columnWidths = new int[] { 0, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 116, 54, 0, 0, 0, 0, 0 };
+		gbl_controlsPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		controlsPane.setLayout(gbl_controlsPane);
+
+		addListOfCameras(controlsPane);
+
+		addListOfResolutions(controlsPane);
+
+		addConfigureCameraButton(controlsPane);
+
+		addOpenCameraButton(controlsPane);
+	}
+
+	private void addWebcamPanel() {
+		JLabel lbCamControls = new JLabel("Webcam");
+		lbCamControls.setHorizontalAlignment(SwingConstants.CENTER);
+		lbCamControls.setForeground(Color.WHITE);
+		lbCamControls.setFont(new Font("Tahoma", Font.BOLD, 40));
+		slideControlsPane.add(lbCamControls, BorderLayout.NORTH);
+	}
+
+	private void addSlidingPanel() {
 		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
@@ -96,23 +136,26 @@ public class LivePlayPanel extends JPanel {
 				}
 			}
 		});
+	}
 
-		JLabel lbCamControls = new JLabel("Webcam");
-		lbCamControls.setHorizontalAlignment(SwingConstants.CENTER);
-		lbCamControls.setForeground(Color.WHITE);
-		lbCamControls.setFont(new Font("Tahoma", Font.BOLD, 40));
-		slideControlsPane.add(lbCamControls, BorderLayout.NORTH);
+	private void addListOfResolutions(JPanel controlsPane) {
+		String[] resCamList = { "160x120", "320x240", "640x480", "800x600", "1024x768", "1280x720", "1280x960",
+				"1920x1080" };
 
-		JPanel controlsPane = new JPanel();
-		controlsPane.setBackground(new Color(21, 25, 28));
-		slideControlsPane.add(controlsPane, BorderLayout.CENTER);
-		GridBagLayout gbl_controlsPane = new GridBagLayout();
-		gbl_controlsPane.columnWidths = new int[] { 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 116, 54, 0, 0, 0, 0, 0 };
-		gbl_controlsPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		controlsPane.setLayout(gbl_controlsPane);
+		camResList = new JComboBox<Object>(resCamList);
+		camResList.setForeground(new Color(255, 255, 255));
+		camResList.setFont(new Font("Tahoma", Font.BOLD, 15));
+		camResList.setBackground(new Color(21, 25, 28));
+		camResList.setToolTipText("Webcam resolution");
+		GridBagConstraints gbc_camResList = new GridBagConstraints();
+		gbc_camResList.insets = new Insets(0, 0, 5, 0);
+		gbc_camResList.fill = GridBagConstraints.HORIZONTAL;
+		gbc_camResList.gridx = 0;
+		gbc_camResList.gridy = 2;
+		controlsPane.add(camResList, gbc_camResList);
+	}
 
+	private void addListOfCameras(JPanel controlsPane) {
 		CameraList = new JComboBox<String>();
 		CameraList.setForeground(new Color(255, 255, 255));
 		CameraList.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -129,22 +172,9 @@ public class LivePlayPanel extends JPanel {
 		for (Webcam webcam : Webcam.getWebcams()) {
 			CameraList.addItem(webcam.getName());
 		}
+	}
 
-		String[] resCamList = { "160x120", "320x240", "640x480", "800x600", "1024x768", "1280x720", "1280x960",
-				"1920x1080" };
-
-		camResList = new JComboBox<Object>(resCamList);
-		camResList.setForeground(new Color(255, 255, 255));
-		camResList.setFont(new Font("Tahoma", Font.BOLD, 15));
-		camResList.setBackground(new Color(21, 25, 28));
-		camResList.setToolTipText("Webcam resolution");
-		GridBagConstraints gbc_camResList = new GridBagConstraints();
-		gbc_camResList.insets = new Insets(0, 0, 5, 0);
-		gbc_camResList.fill = GridBagConstraints.HORIZONTAL;
-		gbc_camResList.gridx = 0;
-		gbc_camResList.gridy = 2;
-		controlsPane.add(camResList, gbc_camResList);
-
+	private void addConfigureCameraButton(JPanel controlsPane) {
 		JButton btnConfigureCamera = new JButton("Configure Camera");
 		btnConfigureCamera.setFont(new Font("Tahoma", Font.BOLD, 15));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -159,7 +189,9 @@ public class LivePlayPanel extends JPanel {
 		gbc_btnNewButton.gridy = 3;
 		controlsPane.add(btnConfigureCamera, gbc_btnNewButton);
 		btnConfigureCamera.addActionListener(e -> showWebcamDialog());
+	}
 
+	private void addOpenCameraButton(JPanel controlsPane) {
 		JButton btnopenCamera = new JButton("Open Camera");
 		btnopenCamera.setForeground(Color.WHITE);
 		btnopenCamera.setBackground(new Color(231, 76, 60));
@@ -190,7 +222,6 @@ public class LivePlayPanel extends JPanel {
 				}
 			}
 		});
-
 	}
 
 	private void showWebcamDialog() {
@@ -213,7 +244,6 @@ public class LivePlayPanel extends JPanel {
 
 			@Override
 			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
 				Graphics2D g2 = (Graphics2D) g;
 				AffineTransform transform = new AffineTransform();
 
@@ -228,12 +258,24 @@ public class LivePlayPanel extends JPanel {
 				}
 
 				g2.setTransform(transform);
+				
+				int cropLeft = getWidth()*WebcamSettingsPanel.getLeftCrop()/100;
+			    int cropRight = getWidth()*WebcamSettingsPanel.getRightCrop()/100;
+			    int cropTop = getHeight()*WebcamSettingsPanel.getTopCrop()/100;
+			    int cropBottom = getHeight()*WebcamSettingsPanel.getBottomCrop()/100;
+			    
+				g2.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
+				g2.setBackground(Color.BLACK);
+				g2.clearRect(0, 0, getWidth(), cropTop);
+				g2.clearRect(0, 0, cropLeft, getHeight());
+				g2.clearRect(getWidth()-cropRight, 0, getWidth(), getHeight());
+				g2.clearRect(0, getHeight()-cropBottom, getWidth(), getHeight());
+			    
 				try {
 					Thread.sleep(16); // add a sleep delay of 16ms
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				g2.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
 			}
 		};
 
