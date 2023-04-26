@@ -9,7 +9,7 @@ public class GetUI {
 
 	private static int leftMinPitch = 21;
 	private static int rightMaxPitch = 108;
-	private static int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
+	public static int leftMaxPitch = leftMinPitch + (rightMaxPitch - leftMinPitch) / 2;
 
 	public static int getLeftMinPitch() {
 		return leftMinPitch;

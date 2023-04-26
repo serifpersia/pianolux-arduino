@@ -29,7 +29,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	public String VersionTag = "v4.0";
+	public String VersionTag = "v4.0.0";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -144,10 +144,10 @@ public class Updater {
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				String fileName = listOfFiles[i].getName();
-				if (fileName.matches(".*v\\d+\\.\\d+.*")) {
-					VersionTag = fileName.replaceAll(".*(v\\d+\\.\\d+).*", "$1");
-					versionFile = listOfFiles[i];
-					break;
+				if (fileName.matches(".*v\\d+\\.\\d+\\.\\d+.*")) {
+				    VersionTag = fileName.replaceAll(".*(v\\d+\\.\\d+\\.\\d+).*", "$1");
+				    versionFile = listOfFiles[i];
+				    break;
 				}
 			}
 		}

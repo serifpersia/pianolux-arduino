@@ -149,6 +149,7 @@ public class DrawPiano extends JPanel {
 			int keyHeight = isBlackKey(pitch) ? getBlackKeyHeight() : getWhiteKeyHeight();
 
 			if (x >= keysXPos[i] && x <= keysXPos[i] + keyWidth && y >= 0 && y <= keyHeight) {
+				GetUI.leftMaxPitch = pitch;
 				return i;
 			}
 		}
