@@ -19,7 +19,7 @@ Here is how you should connect the LED strip and Arduino.
 
 ## Mounting the LED strip
 For 88 keys piano aling the 3rd led with first black key
-![image](https://user-images.githubusercontent.com/62844718/235167560-149caf5c-452d-4bd5-a13f-cd605a944735.png)
+![image](https://user-images.githubusercontent.com/62844718/235168165-9b97120a-66ed-44f5-a7fb-11cc164cf945.png)
 
 
 ## Instructions for Windows OS
