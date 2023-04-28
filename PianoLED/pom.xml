@@ -56,19 +56,24 @@
 						<configuration>
 							<headerType>gui</headerType>
 							<outfile>release/nojre/${project.artifactId}.exe</outfile>
-							<jar>target/${project.build.finalName}-jar-with-dependencies.jar</jar>
+							<jar>
+								target/${project.build.finalName}-jar-with-dependencies.jar</jar>
 							<icon>target/classes/icons/icon.ico</icon>
 							<errTitle>${project.artifactId} Error</errTitle>
 							<classPath>
 								<mainClass>${main.class}</mainClass>
 							</classPath>
 							<jre>
-								<minVersion>1.8.0</minVersion>
+								<minVersion>17</minVersion>
+								<path>${java.home}</path>
+								<bundledJre64Bit>false</bundledJre64Bit>
+								<bundledJreAsFallback>true</bundledJreAsFallback>
 							</jre>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
