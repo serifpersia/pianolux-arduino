@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -58,7 +59,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 //	private long commandKey1Arrived;
 
 //	private static final int COMMAND_MAX_SPAN_MS = 2000;
-	private static final int COMMAND_KEY1 = DrawPiano.FIRST_KEY_PITCH_OFFSET +86;
+	private static final int COMMAND_KEY1 = DrawPiano.FIRST_KEY_PITCH_OFFSET + 86;
 	private Map<Integer, String> commandKeys = Map.of(COMMAND_KEY1 - 2, "Back", COMMAND_KEY1, "PlayPause",
 			COMMAND_KEY1 + 1, "Forward");
 
@@ -78,7 +79,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 		Timer timer = new Timer(REFRESH_RATE_MS, taskPerformer);
 		timer.start();
-		try( InputStream midiSample = getClass().getResourceAsStream(DEFAULT_MIDI_RESOURCE)) {
+		try (InputStream midiSample = getClass().getResourceAsStream(DEFAULT_MIDI_RESOURCE)) {
 			initMidiPlayer(midiSample.readAllBytes(), DEFAULT_MIDI_RESOURCE);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,9 +93,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		pianoRoll.start(midiPlayer);
 		setMidiFileNameLabel(midiName);
 	}
-	
+
 	public void initMidiPlayer(File selectedFile) {
-		try(FileInputStream fileStream = new FileInputStream(selectedFile)) {
+		try (FileInputStream fileStream = new FileInputStream(selectedFile)) {
 			initMidiPlayer(fileStream.readAllBytes(), selectedFile.getName());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -195,6 +196,8 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setDialogTitle("Load MIDI");
+				fileChooser.setFileFilter(new FileNameExtensionFilter("MIDI files", "mid", "midi"));
 
 				// Show the file chooser dialog and check the user's choice
 				int returnValue = fileChooser.showOpenDialog(LearnPanel.this);
@@ -203,7 +206,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 					initMidiPlayer(selectedFile);
 				}
 			}
-
 		});
 	}
 
@@ -430,27 +432,27 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		// catching commands
 		if (commandKeys.containsKey(pitch)) {
 //			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
-				switch (commandKeys.get(pitch)) {
-				case "Back":
-					midiPlayer.rewind(-PLAYER_REWIND_SEC);
-					midiPlayer.muteKey(pitch);
-					break;
-				case "PlayPause":
-					midiPlayer.playPause();
-					midiPlayer.muteKey(pitch);
-					break;
-				case "Forward":
-					midiPlayer.rewind(PLAYER_REWIND_SEC);
-					midiPlayer.muteKey(pitch);
-					break;
-				default:
-					break;
-				}
+			switch (commandKeys.get(pitch)) {
+			case "Back":
+				midiPlayer.rewind(-PLAYER_REWIND_SEC);
+				midiPlayer.muteKey(pitch);
+				break;
+			case "PlayPause":
+				midiPlayer.playPause();
+				midiPlayer.muteKey(pitch);
+				break;
+			case "Forward":
+				midiPlayer.rewind(PLAYER_REWIND_SEC);
+				midiPlayer.muteKey(pitch);
+				break;
+			default:
+				break;
+			}
 //				commandKey1Arrived = 0;
 //			} else if (pitch == COMMAND_KEY1) {
 //				commandKey1Arrived = System.currentTimeMillis();
 //			}
-		} 
+		}
 
 	}
 
