@@ -33,6 +33,5 @@ Follow this guide if you can't run both PianoLED app and your VST or other progr
 - To run the app:
   - Download and extract the Linux zip file.
   - Change directory to the extracted directory.
-  - Run the app by double-clicking on the PianoLED file, execute, or simply run it with the command `./PianoLED` in the terminal.
-  - To be able to auto-select devices on startup, run the PianoLED script using sudo.
+  - Run the app by double-clicking on the PianoLED file, execute, or simply run it with the command `sudo ./PianoLED` in the terminal.
 
