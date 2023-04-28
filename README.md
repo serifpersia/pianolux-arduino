@@ -17,6 +17,11 @@ Here is how you should connect the LED strip and Arduino.
 
 ![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
+## Mounting the LED strip
+For 88 keys piano aling the 3rd led with first black key
+![image](https://user-images.githubusercontent.com/62844718/235167560-149caf5c-452d-4bd5-a13f-cd605a944735.png)
+
+
 ## Instructions for Windows OS
 To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino. 
 
