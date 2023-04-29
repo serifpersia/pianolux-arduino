@@ -36,7 +36,7 @@ public class LivePlayPanel extends JPanel {
 	private JPanel slideControlsPane = new JPanel();
 	private JComboBox<String> CameraList = new JComboBox<>();
 	private JComboBox<?> camResList = new JComboBox<>();
-	private JFrame cropDialog;
+	private JFrame webcamDialog;
 
 	private WebcamPanel webcamPanel = null;
 	private PianoLED pianoLED;
@@ -226,8 +226,8 @@ public class LivePlayPanel extends JPanel {
 
 	private void showWebcamDialog() {
 
-		cropDialog = new JFrame("Webcam Settings");
-		cropDialog.setUndecorated(true);
+		webcamDialog = new JFrame("Webcam Settings");
+		webcamDialog.setUndecorated(true);
 
 		// Create a panel to display the webcam feed and add it to the center
 		String selectedCamera = (String) CameraList.getSelectedItem();
@@ -258,19 +258,18 @@ public class LivePlayPanel extends JPanel {
 				}
 
 				g2.setTransform(transform);
-				
-				int cropLeft = getWidth()*WebcamSettingsPanel.getLeftCrop()/100;
-			    int cropRight = getWidth()*WebcamSettingsPanel.getRightCrop()/100;
-			    int cropTop = getHeight()*WebcamSettingsPanel.getTopCrop()/100;
-			    int cropBottom = getHeight()*WebcamSettingsPanel.getBottomCrop()/100;
-			    
+
+				int cropLeft = getWidth() * WebcamSettingsPanel.getLeftCrop() / 100;
+				int cropRight = getWidth() * WebcamSettingsPanel.getRightCrop() / 100;
+				int cropTop = getHeight() * WebcamSettingsPanel.getTopCrop() / 100;
+				int cropBottom = getHeight() * WebcamSettingsPanel.getBottomCrop() / 100;
+
 				g2.drawImage(getImage(), 0, 0, getWidth(), getHeight(), null);
 				g2.setBackground(Color.BLACK);
 				g2.clearRect(0, 0, getWidth(), cropTop);
 				g2.clearRect(0, 0, cropLeft, getHeight());
-				g2.clearRect(getWidth()-cropRight, 0, getWidth(), getHeight());
-				g2.clearRect(0, getHeight()-cropBottom, getWidth(), getHeight());
-			    
+				g2.clearRect(getWidth() - cropRight, 0, getWidth(), getHeight());
+				g2.clearRect(0, getHeight() - cropBottom, getWidth(), getHeight());
 				try {
 					Thread.sleep(16); // add a sleep delay of 16ms
 				} catch (InterruptedException e) {
@@ -281,15 +280,15 @@ public class LivePlayPanel extends JPanel {
 
 		webcamPanel.setPreferredSize(size);
 
-		cropDialog.getContentPane().add(webcamPanel, BorderLayout.CENTER);
+		webcamDialog.getContentPane().add(webcamPanel, BorderLayout.CENTER);
 
 		// Create a panel to display webcam settings and add it to the east
 		WebcamSettingsPanel settingsPanel = new WebcamSettingsPanel();
-		cropDialog.getContentPane().add(settingsPanel, BorderLayout.EAST);
+		webcamDialog.getContentPane().add(settingsPanel, BorderLayout.EAST);
 
 		// Set the size and location of the dialog
-		cropDialog.setSize(900, 600);
-		cropDialog.setLocationRelativeTo(null);
-		cropDialog.setVisible(true);
+		webcamDialog.setSize(900, 600);
+		webcamDialog.setLocationRelativeTo(null);
+		webcamDialog.setVisible(true);
 	}
 }

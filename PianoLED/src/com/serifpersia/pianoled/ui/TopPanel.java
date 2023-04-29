@@ -5,29 +5,58 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 import com.serifpersia.pianoled.Updater;
+import javax.swing.JButton;
 
 @SuppressWarnings("serial")
 public class TopPanel extends JPanel {
+
+	private JFrame AboutPianoLEDDialog;
+
+	private ImageIcon pianoLEDIcon;
 
 	static Updater updator = new Updater();
 
 	public static boolean isMaximized = false;
 
+	private long lastClickTime = 0;
+
 	public TopPanel(JFrame parentFrame) {
 		setBackground(new Color(21, 25, 28));
 		setPreferredSize(new Dimension(getWidth(), 40)); // Set the height to 50 pixels
 		setLayout(new BorderLayout(0, 0));
+
+		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/AppIcon.png")).getImage()
+				.getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+
+		// Window max/windowed based on double click
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				long clickTime = System.currentTimeMillis();
+				if (clickTime - lastClickTime <= 300 && isMaximized) {
+
+					parentFrame.setExtendedState(JFrame.NORMAL);
+					isMaximized = false; // Update the flag
+				} else if (clickTime - lastClickTime <= 300 && !isMaximized) {
+
+					parentFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+					isMaximized = true;
+				}
+				lastClickTime = clickTime;
+			}
+		});
 
 		// Window dragging
 		addMouseMotionListener(new MouseMotionAdapter() {
@@ -62,8 +91,18 @@ public class TopPanel extends JPanel {
 			}
 		});
 
-		JPanel buttonsPanel = new JPanel(); // Create a panel to hold the buttons
-		buttonsPanel.setOpaque(false); // Make the panel transparent
+		JPanel iconPanel = new JPanel();
+		add(iconPanel, BorderLayout.WEST);
+		iconPanel.setLayout(new BorderLayout(0, 0));
+
+		JButton btnPianoLED = new JButton("");
+		btnPianoLED.setIcon(pianoLEDIcon);
+		btnPianoLED.setBackground(new Color(21, 25, 28));
+		btnPianoLED.setFocusable(false);
+		btnPianoLED.setBorderPainted(false);
+		btnPianoLED.setPreferredSize(new Dimension(100, 0)); // Set preferred size
+		iconPanel.add(btnPianoLED);
+		btnPianoLED.addActionListener(e -> showAboutPianoLEDDialog());
 
 		JLabel version = new JLabel("PianoLED" + updator.VersionTag);
 		version.setHorizontalAlignment(SwingConstants.LEFT);
@@ -71,6 +110,9 @@ public class TopPanel extends JPanel {
 		version.setFont(new Font("Tahoma", Font.BOLD, 20));
 		version.setForeground(Color.WHITE);
 		add(version);
+
+		JPanel buttonsPanel = new JPanel(); // Create a panel to hold the buttons
+		buttonsPanel.setOpaque(false); // Make the panel transparent
 
 		JLabel minimize = new JLabel("-");
 		minimize.setHorizontalAlignment(SwingConstants.LEFT);
@@ -119,6 +161,22 @@ public class TopPanel extends JPanel {
 		});
 
 		add(buttonsPanel, BorderLayout.EAST); // Add the buttonsPanel to the EAST position
+
+	}
+
+	private void showAboutPianoLEDDialog() {
+
+		AboutPianoLEDDialog = new JFrame("AboutPianoLED");
+		AboutPianoLEDDialog.setUndecorated(true);
+		
+
+		AboutPianoLED aboutPanel = new AboutPianoLED();
+
+		AboutPianoLEDDialog.add(aboutPanel);
+
+		AboutPianoLEDDialog.setSize(300, 400);
+		AboutPianoLEDDialog.setLocationRelativeTo(null);
+		AboutPianoLEDDialog.setVisible(true);
 	}
 
 }
