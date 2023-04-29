@@ -40,6 +40,40 @@ public class PianoController implements PianoMidiConsumer {
 	public Color MiddleSideColor = Color.GREEN;
 	public Color RightSideColor = Color.BLUE;
 
+	public static double pow(double x, double y) {
+		if (y == 0) {
+			return 1;
+		}
+		if (y == 1) {
+			return x;
+		}
+		if (y == -1) {
+			return 1 / x;
+		}
+		if (y % 2 == 0) {
+			double half = pow(x, y / 2);
+			return half * half;
+		} else {
+			double half = pow(x, (y - 1) / 2);
+			return half * half * x;
+		}
+	}
+
+	// Helper method to get the red value from an RGB integer
+	private int getRed(int rgb) {
+		return (rgb >> 16) & 0xFF;
+	}
+
+	// Helper method to get the green value from an RGB integer
+	private int getGreen(int rgb) {
+		return (rgb >> 8) & 0xFF;
+	}
+
+	// Helper method to get the blue value from an RGB integer
+	private int getBlue(int rgb) {
+		return rgb & 0xFF;
+	}
+
 	private List<PianoMidiConsumer> consumers = new ArrayList<>();
 
 	private PianoReceiver pianoReceiver;
@@ -262,22 +296,40 @@ public class PianoController implements PianoMidiConsumer {
 					float ratio = (float) step / (float) numSteps;
 
 					Color startColor = LeftSideColor;
+					Color middleColor = MiddleSideColor;
 					Color endColor = RightSideColor;
-					Color currentColor;
 
-					if (!MiddleSideColor.equals(Color.BLACK)) {
-						if (step < numSteps / 2) {
-							endColor = MiddleSideColor;
-							ratio = 1.33f * ratio;
-						} else {
-							startColor = MiddleSideColor;
-							ratio = 2 * (ratio - 0.5f);
-						}
+					Color currentColor;
+					if (middleColor.getRGB() == 0 || middleColor.equals(Color.BLACK)) {
+						// If MiddleSideColor is black or null, ignore it and transition between
+						// LeftSideColor
+						// and RightSideColor only
+						int rgbStart = startColor.getRGB();
+						int rgbEnd = endColor.getRGB();
+						int red = (int) (getRed(rgbStart) + (getRed(rgbEnd) - getRed(rgbStart)) * ratio);
+						int green = (int) (getGreen(rgbStart) + (getGreen(rgbEnd) - getGreen(rgbStart)) * ratio);
+						int blue = (int) (getBlue(rgbStart) + (getBlue(rgbEnd) - getBlue(rgbStart)) * ratio);
+						currentColor = new Color(red, green, blue);
+					} else if (step <= numSteps / 2) {
+						float ratio1 = (float) (step * 2) / (float) numSteps;
+						float exponent = 2.0f; // change this value to adjust the curve shape
+						double t = pow(ratio1, exponent);
+						int red = (int) (startColor.getRed() + (middleColor.getRed() - startColor.getRed()) * t);
+						int green = (int) (startColor.getGreen()
+								+ (middleColor.getGreen() - startColor.getGreen()) * t);
+						int blue = (int) (startColor.getBlue() + (middleColor.getBlue() - startColor.getBlue()) * t);
+						currentColor = new Color(red, green, blue);
+					} else if (step > numSteps / 2 && step < numSteps) {
+						float ratio2 = (float) ((step - numSteps / 2) * 2) / (float) numSteps;
+						float exponent = 2.0f; // change this value to adjust the curve shape
+						double t = pow(ratio2, exponent);
+						int red = (int) (middleColor.getRed() + (endColor.getRed() - middleColor.getRed()) * t);
+						int green = (int) (middleColor.getGreen() + (endColor.getGreen() - middleColor.getGreen()) * t);
+						int blue = (int) (middleColor.getBlue() + (endColor.getBlue() - middleColor.getBlue()) * t);
+						currentColor = new Color(red, green, blue);
+					} else {
+						currentColor = RightSideColor;
 					}
-					int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * ratio);
-					int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * ratio);
-					int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * ratio);
-					currentColor = new Color(red, green, blue);
 
 					message = arduino.commandSetColor(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {

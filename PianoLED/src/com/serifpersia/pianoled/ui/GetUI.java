@@ -42,7 +42,7 @@ public class GetUI {
 		return lastNoteSelected;
 	}
 
-	static int getNumPianoKeys() {
+	public static int getNumPianoKeys() {
 		return lastNoteSelected - firstNoteSelected + 1;
 	}
 

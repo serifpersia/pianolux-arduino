@@ -109,12 +109,13 @@ public class ControlsPanel extends JPanel {
 		JLabel lbLEDEffect = new JLabel("LED Effect");
 		lbLEDEffect.setHorizontalAlignment(SwingConstants.LEFT);
 		lbLEDEffect.setForeground(Color.WHITE);
-		lbLEDEffect.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lbLEDEffect.setFont(new Font("Tahoma", Font.BOLD, 30));
 		LeftPane.add(lbLEDEffect);
 
 		JComboBox<?> LEDEffects = new JComboBox<Object>(modeEffectsNames.toArray(new String[0]));
+		LEDEffects.setForeground(new Color(255, 255, 255));
 		LEDEffects.setFont(new Font("Tahoma", Font.BOLD, 25));
-		LEDEffects.setBackground(new Color(255, 255, 255));
+		LEDEffects.setBackground(new Color(21, 25, 28));
 		LeftPane.add(LEDEffects);
 		LEDEffects.addActionListener(e -> {
 			int selectedIndex = LEDEffects.getSelectedIndex();
@@ -122,15 +123,17 @@ public class ControlsPanel extends JPanel {
 		});
 
 		JLabel lbAnimation = new JLabel("Animation");
+		lbAnimation.setBackground(new Color(21, 25, 28));
 		lbAnimation.setHorizontalAlignment(SwingConstants.LEFT);
-		lbAnimation.setForeground(Color.WHITE);
-		lbAnimation.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lbAnimation.setForeground(new Color(255, 255, 255));
+		lbAnimation.setFont(new Font("Tahoma", Font.BOLD, 30));
 
 		LeftPane.add(lbAnimation);
 
 		JComboBox<?> Animations = new JComboBox<Object>(animationNames.toArray(new String[0]));
+		Animations.setForeground(new Color(255, 255, 255));
 		Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
-		Animations.setBackground(new Color(255, 255, 255));
+		Animations.setBackground(new Color(21, 25, 28));
 		Animations.setBounds(10, 171, 200, 25);
 		LeftPane.add(Animations);
 		Animations.addActionListener(e -> {
@@ -140,13 +143,13 @@ public class ControlsPanel extends JPanel {
 				pianoController.animationlist(selectedIndex);
 			}
 		});
-
-		JLabel lbBrightness = new JLabel("Brightness");
-		lbBrightness.setBounds(10, 203, 200, 30);
-		lbBrightness.setHorizontalAlignment(SwingConstants.LEFT);
-		lbBrightness.setForeground(Color.WHITE);
-		lbBrightness.setFont(new Font("Montserrat", Font.BOLD, 30));
-		LeftPane.add(lbBrightness);
+		
+				JLabel lbBrightness = new JLabel("Brightness");
+				lbBrightness.setBounds(10, 203, 200, 30);
+				lbBrightness.setHorizontalAlignment(SwingConstants.LEFT);
+				lbBrightness.setForeground(Color.WHITE);
+				lbBrightness.setFont(new Font("Tahoma", Font.BOLD, 30));
+				LeftPane.add(lbBrightness);
 
 		sliderBrightness = new JSlider();
 		sliderBrightness.setBackground(new Color(21, 25, 28));
@@ -169,7 +172,7 @@ public class ControlsPanel extends JPanel {
 		lbFade.setBounds(10, 280, 200, 30);
 		lbFade.setHorizontalAlignment(SwingConstants.LEFT);
 		lbFade.setForeground(Color.WHITE);
-		lbFade.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbFade.setFont(new Font("Tahoma", Font.BOLD, 30));
 		LeftPane.add(lbFade);
 
 		sliderFade = new JSlider();
@@ -193,7 +196,7 @@ public class ControlsPanel extends JPanel {
 		lbSplashLength.setBounds(10, 357, 226, 30);
 		lbSplashLength.setHorizontalAlignment(SwingConstants.LEFT);
 		lbSplashLength.setForeground(Color.WHITE);
-		lbSplashLength.setFont(new Font("Montserrat", Font.BOLD, 30));
+		lbSplashLength.setFont(new Font("Tahoma", Font.BOLD, 30));
 		LeftPane.add(lbSplashLength);
 
 		sliderMaxSplashLengthVal = new JSlider();
@@ -213,17 +216,18 @@ public class ControlsPanel extends JPanel {
 			}
 		});
 
-		JLabel lbBgLight = new JLabel("Background Light");
-		lbBgLight.setHorizontalAlignment(SwingConstants.LEFT);
-		lbBgLight.setForeground(Color.WHITE);
-		lbBgLight.setFont(new Font("Montserrat", Font.BOLD, 30));
-		lbBgLight.setBounds(10, 434, 290, 35);
-		LeftPane.add(lbBgLight);
-
 		String[] BgOptions = { "No", "Yes", };
+		
+				JLabel lbBgLight = new JLabel("Background Light");
+				lbBgLight.setHorizontalAlignment(SwingConstants.LEFT);
+				lbBgLight.setForeground(Color.WHITE);
+				lbBgLight.setFont(new Font("Tahoma", Font.BOLD, 30));
+				lbBgLight.setBounds(10, 434, 290, 35);
+				LeftPane.add(lbBgLight);
 		JComboBox<Object> BgLight = new JComboBox<Object>(BgOptions);
+		BgLight.setForeground(new Color(255, 255, 255));
 		BgLight.setFont(new Font("Tahoma", Font.BOLD, 25));
-		BgLight.setBackground(new Color(255, 255, 255));
+		BgLight.setBackground(new Color(21, 25, 28));
 		BgLight.setBounds(10, 480, 200, 25);
 		LeftPane.add(BgLight);
 		BgLight.addActionListener(e -> {
@@ -265,9 +269,9 @@ public class ControlsPanel extends JPanel {
 
 		String[] fixLedOptions = { "No", "Yes", };
 		JComboBox<?> FixLed = new JComboBox<Object>(fixLedOptions);
-		FixLed.setForeground(new Color(0, 0, 0));
+		FixLed.setForeground(new Color(255, 255, 255));
 		FixLed.setFont(new Font("Tahoma", Font.BOLD, 25));
-		FixLed.setBackground(new Color(255, 255, 255));
+		FixLed.setBackground(new Color(21, 25, 28));
 		FixLed.setBounds(10, 600, 200, 25);
 		LeftPane.add(FixLed);
 		FixLed.addActionListener(e -> {
@@ -289,7 +293,7 @@ public class ControlsPanel extends JPanel {
 		JLabel lbColors = new JLabel("Colors");
 		lbColors.setHorizontalAlignment(SwingConstants.CENTER);
 		lbColors.setForeground(Color.WHITE);
-		lbColors.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lbColors.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lbColors.setBounds(555, 171, 240, 30);
 		RightPane.add(lbColors);
 

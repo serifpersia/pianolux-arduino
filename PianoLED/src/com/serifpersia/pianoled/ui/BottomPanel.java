@@ -2,23 +2,17 @@ package com.serifpersia.pianoled.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.PianoLED;
-import com.serifpersia.pianoled.Updater;
-
-import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class BottomPanel extends JPanel {
 
 	DrawPiano piano = new DrawPiano();
-
-	static Updater updator = new Updater();
 
 	public BottomPanel(PianoLED pianoLED) {
 		setBackground(new Color(21, 25, 28));
@@ -38,16 +32,9 @@ public class BottomPanel extends JPanel {
 				piano.pianoKeyAction(e.getX(), e.getY(), false);
 			}
 		});
-
-		JLabel version = new JLabel("PianoLED" + updator.VersionTag);
-		version.setBounds(5, 72, 150, 15);
-		version.setFont(new Font("Tahoma", Font.BOLD, 15));
-		version.setForeground(Color.WHITE);
-		add(version, BorderLayout.SOUTH);
 	}
-	
-	public DrawPiano getPiano()
-	{
+
+	public DrawPiano getPiano() {
 		return piano;
 	}
 }

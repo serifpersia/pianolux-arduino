@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
@@ -30,18 +28,18 @@ public class PianoLED extends JFrame {
 	private RightPanel rightPanel = new RightPanel(this);
 	private LeftPanel leftPanel = new LeftPanel(rightPanel);
 
-    public static void main(String[] args) {
-    	SwingUtilities.invokeLater(() -> {
-        new PianoLED();
-    	});
-    }
-    
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			new PianoLED();
+		});
+	}
+
 	public PianoLED() {
 		setSize(950, 800);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED");
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
-		
+
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -52,7 +50,7 @@ public class PianoLED extends JFrame {
 
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
 		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
-		
+
 		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
 		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
 		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
@@ -62,37 +60,6 @@ public class PianoLED extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				System.out.println("Application is closing. Releasing resources...");
 				pianoController.dispose();
-			}
-		});
-
-		// Window dragging
-		addMouseMotionListener(new MouseMotionAdapter() {
-			int x, y;
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				// Get the new mouse position
-				int newX = e.getXOnScreen();
-				int newY = e.getYOnScreen();
-
-				// Calculate the distance the mouse has moved
-				int deltaX = newX - x;
-				int deltaY = newY - y;
-
-				// Move the window by the same distance
-				if (!TopPanel.isMaximized) {
-					setLocation(getX() + deltaX, getY() + deltaY);
-				}
-				// Update the stored mouse position
-				x = newX;
-				y = newY;
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				// Store the initial mouse position
-				x = e.getXOnScreen();
-				y = e.getYOnScreen();
 			}
 		});
 
@@ -109,7 +76,7 @@ public class PianoLED extends JFrame {
 				bottomPanel.revalidate();
 			}
 		});
-		
+
 		setVisible(true);
 	}
 
