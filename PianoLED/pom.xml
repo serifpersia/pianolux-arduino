@@ -45,7 +45,7 @@
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.4.1</version>
 				<executions>
 					<execution>
 						<id>l4j-clui</id>
@@ -59,16 +59,11 @@
 							<jar>
 								target/${project.build.finalName}-jar-with-dependencies.jar</jar>
 							<icon>target/classes/icons/icon.ico</icon>
-							<errTitle>${project.artifactId} Error</errTitle>
-							<classPath>
-								<mainClass>${main.class}</mainClass>
-							</classPath>
 							<jre>
-								<minVersion>17</minVersion>
-								<path>${java.home}</path>
-								<bundledJre64Bit>false</bundledJre64Bit>
-								<bundledJreAsFallback>true</bundledJreAsFallback>
+								<minVersion>17.0.7</minVersion>
+								<path>C:\Program Files\Eclipse\Adoptium\jre-17.0.7.7-hotspot</path>
 							</jre>
+							<downloadUrl>https://adoptium.net/temurin/releases/?version=17</downloadUrl>
 						</configuration>
 					</execution>
 				</executions>
