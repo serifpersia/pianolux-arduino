@@ -1,6 +1,6 @@
 # PianoLED V4
 
-![image](https://user-images.githubusercontent.com/62844718/234608908-e98a4594-59cd-4b58-804d-13177a0c4584.png)
+![image](https://user-images.githubusercontent.com/62844718/235353852-4f918480-45af-4cbf-ac62-86a69501ccf6.png)
 
 
 
