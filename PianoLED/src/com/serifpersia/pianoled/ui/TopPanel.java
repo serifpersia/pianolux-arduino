@@ -166,16 +166,15 @@ public class TopPanel extends JPanel {
 
 	private void showAboutPianoLEDDialog() {
 
-		AboutPianoLEDDialog = new JFrame("AboutPianoLED");
-		AboutPianoLEDDialog.setUndecorated(true);
-		
-
 		AboutPianoLED aboutPanel = new AboutPianoLED();
 
-		AboutPianoLEDDialog.add(aboutPanel);
-
-		AboutPianoLEDDialog.setSize(300, 400);
-		AboutPianoLEDDialog.setLocationRelativeTo(null);
+		if (AboutPianoLEDDialog == null) { // Check if the frame has already been created
+			AboutPianoLEDDialog = new JFrame("AboutPianoLED");
+			AboutPianoLEDDialog.setUndecorated(true);
+			AboutPianoLEDDialog.add(aboutPanel);
+			AboutPianoLEDDialog.setSize(300, 400);
+			AboutPianoLEDDialog.setLocationRelativeTo(null);
+		}
 		AboutPianoLEDDialog.setVisible(true);
 	}
 
