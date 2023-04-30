@@ -25,7 +25,8 @@ For 88 keys piano aling the 3rd led with first black key
 ## Instructions for Windows OS
 To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino. 
 
-1.Run Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
+1.Run included Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
+
 2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. 
 4. With Upload Complete prompt, you are ready to use the PianoLED app.
 
