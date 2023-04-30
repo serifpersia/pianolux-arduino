@@ -37,5 +37,5 @@ Follow this guide if you can't run both PianoLED app and your VST or other progr
   - For Arch, use the command: `sudo pacman -S jre17-openjdk`
 - To run the app:
   - Download and extract the Linux zip file.
-  -Open Terminal, cd to extracted PianoLED directory and run  `sudo -java PianoLEDv4.0.0.jar` command.
+  -Open Terminal, cd to extracted PianoLED directory and run  `sudo java -jar PianoLEDv4.0.0.jar` command.
 
