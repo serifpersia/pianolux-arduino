@@ -25,9 +25,8 @@ For 88 keys piano aling the 3rd led with first black key
 ## Instructions for Windows OS
 To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino. 
 
-1. Download the latest Java OpenJRE version from https://adoptium.net/temurin/releases/.
-2. Select your OS, 64bit, JRE, and the latest version (the app currently needs at least version 17).
-3. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. 
+1.Run Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
+2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. 
 4. With Upload Complete prompt, you are ready to use the PianoLED app.
 
 Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
@@ -37,6 +36,5 @@ Follow this guide if you can't run both PianoLED app and your VST or other progr
   - For Arch, use the command: `sudo pacman -S jre17-openjdk`
 - To run the app:
   - Download and extract the Linux zip file.
-  - Change directory to the extracted directory.
-  - Run the app by double-clicking on the PianoLED file, execute, or simply run it with the command `sudo ./PianoLED` in the terminal.
+  -Open Terminal, cd to extracted PianoLED directory and run  `sudo -java PianoLEDv4.0.0.jar` command.
 
