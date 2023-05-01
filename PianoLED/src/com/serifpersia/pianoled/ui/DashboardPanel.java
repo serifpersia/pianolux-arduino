@@ -117,7 +117,7 @@ public class DashboardPanel extends JPanel {
 		lbBranch.setFont(new Font("Tahoma", Font.BOLD, 30));
 		BranchPane.add(lbBranch);
 
-		String[] branch = { "Stable", "Beta" };
+		String[] branch = { "stable", "beta" };
 
 		BranchList = new JComboBox<Object>(branch);
 		BranchList.setBackground(new Color(21, 25, 28));
@@ -202,12 +202,7 @@ public class DashboardPanel extends JPanel {
 		ButtonsPane.add(updateButton);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String selectedBranch = (String) BranchList.getSelectedItem();
-				if (selectedBranch.equals("Beta")) {
-					System.out.println("Downloading Beta");
-				} else {
-					updater.checkUpdates();
-				}
+				updater.checkUpdates();
 			}
 		});
 
