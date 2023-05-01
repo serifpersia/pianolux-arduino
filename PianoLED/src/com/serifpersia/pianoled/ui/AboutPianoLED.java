@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
 
 @SuppressWarnings("serial")
