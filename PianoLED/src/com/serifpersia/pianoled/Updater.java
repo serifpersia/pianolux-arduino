@@ -32,7 +32,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	public String VersionTag = "v4.0.0";
+	public String VersionTag = "v4.0.1";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -202,7 +202,15 @@ public class Updater {
 						fileNode.asText());
 				URL url = new URL(fileUrl);
 				String[] parts = fileNode.asText().split("/");
-				String fileName = parts[parts.length - 1];
+				fileName = parts[parts.length - 1];
+
+				String osName = System.getProperty("os.name").toLowerCase();
+				String downloadFileName = osName.contains("win") ? "PianoLED-windows-beta.zip"
+						: "PianoLED-linux-beta.zip";
+
+				if (!fileName.equals(downloadFileName)) {
+					continue;
+				}
 
 				URLConnection conn = url.openConnection();
 				conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
@@ -227,7 +235,7 @@ public class Updater {
 					@Override
 					protected Void doInBackground() throws Exception {
 						BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-						FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+						FileOutputStream fileOutputStream = new FileOutputStream(downloadFileName);
 
 						byte[] dataBuffer = new byte[1024];
 						int bytesRead;
@@ -253,12 +261,13 @@ public class Updater {
 
 					@Override
 					protected void done() {
+						extractZipFile(saveDir + fileName, destinationFolderPath);
 						dialog.dispose();
 						JOptionPane.showMessageDialog(null, "Update completed successfully.", "Update",
 								JOptionPane.INFORMATION_MESSAGE);
 						System.exit(0);
 					}
-				}; // <-- add semicolon here
+				};
 				worker.execute();
 			}
 		} catch (Exception e) {
