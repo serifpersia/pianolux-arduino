@@ -437,6 +437,8 @@ public class ControlsPanel extends JPanel {
 		String[] reverseOptions = { "Reverse LED Strip - No", "Reverse LED Strip -Yes", };
 		JComboBox<Object> ReverseLed = new JComboBox<Object>(reverseOptions);
 		ReverseLed.setFont(new Font("Tahoma", Font.BOLD, 14));
+		ReverseLed.setBackground(new Color(21,25,28));
+		ReverseLed.setForeground(Color.WHITE);
 		ReverseLed.setBounds(206, 155, 196, 25);
 		colorPicker.add(ReverseLed);
 
