@@ -38,3 +38,4 @@ public class BottomPanel extends JPanel {
 		return piano;
 	}
 }
+}
