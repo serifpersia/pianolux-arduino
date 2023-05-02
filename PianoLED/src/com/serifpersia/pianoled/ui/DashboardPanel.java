@@ -202,7 +202,7 @@ public class DashboardPanel extends JPanel {
 		ButtonsPane.add(updateButton);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updater.checkUpdates();
+				updater.getUpdate();
 			}
 		});
 
