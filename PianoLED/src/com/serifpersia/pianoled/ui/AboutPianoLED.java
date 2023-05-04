@@ -4,22 +4,27 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
 import java.awt.Image;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+
+import com.serifpersia.pianoled.Updater;
+
 import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 
 @SuppressWarnings("serial")
 public class AboutPianoLED extends JPanel {
 
+	static Updater updator = new Updater();
 	private ImageIcon pianoLEDIcon;
 
 	public AboutPianoLED() {
@@ -80,7 +85,7 @@ public class AboutPianoLED extends JPanel {
 		gbc_lbPianoLED.gridy = 2;
 		add(lbPianoLED, gbc_lbPianoLED);
 
-		JLabel lbPianoLEDVersion = new JLabel("Version " + TopPanel.updator.VersionTag);
+		JLabel lbPianoLEDVersion = new JLabel("Version " + updator.VersionTag);
 		lbPianoLEDVersion.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lbPianoLEDVersion.setForeground(new Color(255, 255, 255));
 		GridBagConstraints gbc_lbPianoLEDVersion = new GridBagConstraints();
@@ -97,5 +102,25 @@ public class AboutPianoLED extends JPanel {
 		gbc_lbCopyright.gridy = 4;
 		add(lbCopyright, gbc_lbCopyright);
 
+		exitX.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				getTopLevelAncestor().setVisible(false);
+			}
+		});
+
+		// Add key listener to panel
+		this.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// Check if the pressed key is ESC
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					// Set the visibility of the panel to false
+					getTopLevelAncestor().setVisible(false);
+				}
+			}
+		});
+		// Set focusable to true to receive key events
+		this.setFocusable(true);
 	}
 }

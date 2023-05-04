@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
@@ -15,7 +17,6 @@ import com.serifpersia.pianoled.ui.BottomPanel;
 import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.LeftPanel;
 import com.serifpersia.pianoled.ui.RightPanel;
-import com.serifpersia.pianoled.ui.TopPanel;
 
 import java.awt.Color;
 
@@ -24,9 +25,10 @@ public class PianoLED extends JFrame {
 
 	private PianoController pianoController = new PianoController(this);
 	private BottomPanel bottomPanel = new BottomPanel(this);
-	private TopPanel topPanel = new TopPanel(this);
 	private RightPanel rightPanel = new RightPanel(this);
 	private LeftPanel leftPanel = new LeftPanel(rightPanel);
+
+	static Updater updator = new Updater();
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
@@ -35,17 +37,29 @@ public class PianoLED extends JFrame {
 	}
 
 	public PianoLED() {
-		setSize(950, 800);
+		setSize(950, 680);
 		setLocationRelativeTo(null);
-		setTitle("PianoLED");
+		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
 
-		setUndecorated(true);
+		// setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Add key listener to panel
+		this.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// Check if the pressed key is ESC
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					// Set the visibility of the panel to false
+					System.exit(0);
+				}
+			}
+		});
 
 		bottomPanel.setBackground(new Color(21, 25, 28));
 
-		getContentPane().add(topPanel, BorderLayout.NORTH);
+		// qgetContentPane().add(topPanel, BorderLayout.NORTH);
 		getContentPane().add(leftPanel, BorderLayout.WEST);
 
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
@@ -91,4 +105,5 @@ public class PianoLED extends JFrame {
 	public void setPianoKey(int pitch, int on) {
 		bottomPanel.getPiano().setPianoKey(pitch, on);
 	}
+
 }

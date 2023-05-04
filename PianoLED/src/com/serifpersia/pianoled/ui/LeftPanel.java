@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -23,12 +24,16 @@ public class LeftPanel extends JPanel {
 	private ImageIcon dashboardIcon;
 	// private ImageIcon dashboardDarkIcon;
 
+	private ImageIcon pianoLEDIcon;
+	private JFrame AboutPianoLEDDialog;
+
 	public LeftPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
 
 		setPreferredSize(new Dimension(100, getHeight()));
-		setLayout(new GridLayout(4, 1));
-
+		setLayout(new GridLayout(5, 1));
+		JButton AboutButton = new JButton("");
+		dashboardButton = createButton("", "Dashboard");
 		JButton livePlayButton = createButton("LivePlay", "LivePlay");
 		JButton controlsButton = createButton("Controls", "Controls");
 		JButton learnButton = createButton("Learn", "Learn");
@@ -38,13 +43,24 @@ public class LeftPanel extends JPanel {
 		// dashboardDarkIcon = new ImageIcon(new
 		// ImageIcon(getClass().getResource("/icons/home_dark.png")).getImage()
 		// .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-		dashboardButton = createButton("", "Dashboard");
+
 		dashboardButton.setIcon(dashboardIcon);
+
+		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/AppIcon.png")).getImage()
+				.getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+
+		AboutButton.setIcon(pianoLEDIcon);
+
+		AboutButton.setBackground(Color.BLACK);
+		AboutButton.setFocusable(false);
+		AboutButton.setBorderPainted(false);
+		AboutButton.addActionListener(e -> showAboutPianoLEDDialog());
 
 		add(dashboardButton);
 		add(controlsButton);
 		add(livePlayButton);
 		add(learnButton);
+		add(AboutButton);
 
 	}
 
@@ -54,8 +70,6 @@ public class LeftPanel extends JPanel {
 		button.setBackground(Color.BLACK);
 		button.setForeground(Color.WHITE);
 		button.setFocusable(false);
-		button.setBorderPainted(false);
-		button.setOpaque(true);
 		button.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
@@ -95,6 +109,20 @@ public class LeftPanel extends JPanel {
 		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
 		return button;
+	}
+
+	private void showAboutPianoLEDDialog() {
+
+		AboutPianoLED aboutPanel = new AboutPianoLED();
+
+		if (AboutPianoLEDDialog == null) { // Check if the frame has already been created
+			AboutPianoLEDDialog = new JFrame("AboutPianoLED");
+			AboutPianoLEDDialog.setUndecorated(true);
+			AboutPianoLEDDialog.add(aboutPanel);
+			AboutPianoLEDDialog.setSize(300, 400);
+			AboutPianoLEDDialog.setLocationRelativeTo(null);
+		}
+		AboutPianoLEDDialog.setVisible(true);
 	}
 
 }

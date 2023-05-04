@@ -33,7 +33,7 @@ public class DashboardPanel extends JPanel {
 	private JButton openButton;
 	private JButton updateButton;
 	private JButton cleanUpButton;
-	private JButton refreshButton;
+	private JButton autoSelectButton;
 	PianoController pianoController;
 
 	public DashboardPanel(PianoLED pianoLED) {
@@ -248,16 +248,16 @@ public class DashboardPanel extends JPanel {
 			}
 		});
 
-		refreshButton = new JButton("Refresh");
-		refreshButton.setHorizontalAlignment(SwingConstants.CENTER);
-		refreshButton.setForeground(Color.WHITE);
-		refreshButton.setFont(new Font("Tahoma", Font.BOLD, 30));
-		refreshButton.setFocusable(false);
-		refreshButton.setBorderPainted(false);
-		refreshButton.setBackground(new Color(39, 60, 117));
-		ButtonsPane.add(refreshButton);
+		autoSelectButton = new JButton("Auto Select");
+		autoSelectButton.setHorizontalAlignment(SwingConstants.CENTER);
+		autoSelectButton.setForeground(Color.WHITE);
+		autoSelectButton.setFont(new Font("Tahoma", Font.BOLD, 30));
+		autoSelectButton.setFocusable(false);
+		autoSelectButton.setBorderPainted(false);
+		autoSelectButton.setBackground(new Color(39, 60, 117));
+		ButtonsPane.add(autoSelectButton);
 
-		refreshButton.addActionListener(new ActionListener() {
+		autoSelectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (updater.getOs().contains("win")) {
 					pianoController.findPortNameOnWindows("Arduino");
