@@ -12,9 +12,9 @@ import com.serifpersia.pianoled.ui.DrawPiano;
 @SuppressWarnings("serial")
 public class PianoRoll extends JPanel {
 
-	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 3;
-	private static final Color WHITE_NOTE_COLOR = new Color(145, 225, 66);
-	private static final Color BLACK_NOTE_COLOR = new Color(122, 164, 212);
+	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 1;
+	private static final Color WHITE_NOTE_COLOR = new Color(122, 164, 212);
+	private static final Color BLACK_NOTE_COLOR = new Color(145, 225, 66);
 	private static final int TEXT_HEIGHT = 15;
 	private MidiPlayer player;
 	private long currentTick;
@@ -73,7 +73,7 @@ public class PianoRoll extends JPanel {
 		g.fillRoundRect(x, y - h, w, h, 5, 5);
 
 		g.setColor(Color.GRAY);
-		g.drawRoundRect(x, y - h, w, h, 5, 5);
+		// g.drawRoundRect(x, y - h, w, h, 5, 5);
 
 		if (learnPanel.isShowInfoSelected()) {
 			drawText(g, x, y - 25, "" + note.pitch);
@@ -132,11 +132,10 @@ public class PianoRoll extends JPanel {
 		ArrayList<Integer> bars = player.getBars();
 		int barNum = 1;
 		for (Integer bar : bars) {
-			if( bar > this.currentTick && bar < this.currentTick+pianoRollHeightInTicks )
-			{
-				int y = (int) getTickY(bar-this.currentTick);
+			if (bar > this.currentTick && bar < this.currentTick + pianoRollHeightInTicks) {
+				int y = (int) getTickY(bar - this.currentTick);
 				g.drawLine(0, y, getWidth(), y);
-				drawText(g, 10, y-10, ""+barNum);
+				drawText(g, 10, y - 10, "" + barNum);
 			}
 			barNum++;
 		}

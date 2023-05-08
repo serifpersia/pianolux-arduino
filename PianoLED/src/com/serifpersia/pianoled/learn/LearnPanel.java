@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.ui.DrawPiano;
+import com.serifpersia.pianoled.ui.LeftPanel;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -45,7 +46,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private static final String DEFAULT_MIDI_RESOURCE = "/midi/clair_de_lune.mid";
 	private static final int PLAYER_REWIND_SEC = 5;
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
-	private static final Color SLIDING_PANEL_BG = new Color(21, 25, 28);
+	private static final Color SLIDING_PANEL_BG = Color.BLACK;
 	private static final int REFRESH_RATE_MS = 20;
 	public static JComboBox<?> MidiOutList;
 	private MidiPlayer midiPlayer;
@@ -115,7 +116,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 			public void mouseMoved(MouseEvent e) {
 				int x = e.getX();
 				int width = getWidth();
-				if (width - x <= 150) {
+				if (width - x <= 205) {
 					// Mouse is near the right border of LearnPanel
 					slideControlsPane.setVisible(true);
 				} else {
@@ -165,10 +166,10 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		controlsPane.setBackground(SLIDING_PANEL_BG);
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
-		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 209, 0, 0, 209, 209, 0 };
-		gbl_controlsPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 143, 0, -195, 69, 94, 36, 0 };
+		gbl_controlsPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0 };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
 		midiFileName = addMidiFileNameLabel(controlsPane, 1);
@@ -176,9 +177,17 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		addMidiOutListControl(controlsPane, 2);
 		addPlaybackControls(controlsPane, 3);
 		addUIControls(controlsPane, 3);
+
 	}
 
 	private void addLoadMidiFileControl(JPanel controlsPane, int gridy, JLabel midiFileName) {
+	}
+
+	private void setMidiFileNameLabel(String name) {
+		midiFileName.setText(name);
+	}
+
+	private JLabel addMidiFileNameLabel(JPanel controlsPane, int gridy) {
 		JButton lbLoadMidi = new JButton("Load Midi File");
 		GridBagConstraints gbc_lbLoadMidi = new GridBagConstraints();
 		lbLoadMidi.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -188,9 +197,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbLoadMidi.setBorderPainted(false);
 		lbLoadMidi.setToolTipText("Load MIDI File");
 		gbc_lbLoadMidi.gridwidth = 4;
-		gbc_lbLoadMidi.insets = new Insets(0, 0, 0, 0);
+		gbc_lbLoadMidi.insets = new Insets(0, 0, 5, 0);
 		gbc_lbLoadMidi.gridx = 0;
-		gbc_lbLoadMidi.gridy = gridy;
+		gbc_lbLoadMidi.gridy = 1;
 		controlsPane.add(lbLoadMidi, gbc_lbLoadMidi);
 		lbLoadMidi.addActionListener(new ActionListener() {
 			@Override
@@ -207,19 +216,12 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 				}
 			}
 		});
-	}
-
-	private void setMidiFileNameLabel(String name) {
-		midiFileName.setText(name);
-	}
-
-	private JLabel addMidiFileNameLabel(JPanel controlsPane, int gridy) {
 		JLabel midiFileName = new JLabel("");
 		GridBagConstraints gbc_lbMidiFileName = new GridBagConstraints();
 		gbc_lbMidiFileName.gridwidth = 4;
 		gbc_lbMidiFileName.insets = new Insets(0, 0, 5, 0);
 		gbc_lbMidiFileName.gridx = 0;
-		gbc_lbMidiFileName.gridy = gridy;
+		gbc_lbMidiFileName.gridy = 2;
 		midiFileName.setFont(SLIDING_PANEL_FONT);
 		midiFileName.setForeground(Color.WHITE);
 		controlsPane.add(midiFileName, gbc_lbMidiFileName);
@@ -237,7 +239,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.gridx = 0;
-		gbc_comboBox.gridy = gridy;
+		gbc_comboBox.gridy = 3;
 		controlsPane.add(MidiOutList, gbc_comboBox);
 		MidiOutList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -256,20 +258,23 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 4;
-		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.insets = new Insets(5, 5, 5, 0);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
-		gbc.gridy = gridy;
+		gbc.gridy = 4;
 		controlsPane.add(gridToggle, gbc);
 
 		infoToggle = new JCheckBox("Tech Info");
+		GridBagConstraints gbc_InfoToggle = new GridBagConstraints();
 		infoToggle.setBackground(SLIDING_PANEL_BG);
 		infoToggle.setForeground(Color.WHITE);
 		infoToggle.setFont(SLIDING_PANEL_FONT);
-
+		gbc_InfoToggle.insets = new Insets(0, 0, 0, 5);
+		gbc_InfoToggle.gridwidth = 2;
+		gbc_InfoToggle.gridx = 0;
+		gbc_InfoToggle.gridy = 5;
+		controlsPane.add(infoToggle, gbc_InfoToggle);
 		gbc.gridy = gridy + 1;
-		controlsPane.add(infoToggle, gbc);
-
 		return gridy;
 	}
 
@@ -313,7 +318,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gbc_lbStart.anchor = GridBagConstraints.NORTH;
 		gbc_lbStart.insets = new Insets(0, 0, 5, 5);
 		gbc_lbStart.gridx = 0;
-		gbc_lbStart.gridy = gridy;
+		gbc_lbStart.gridy = 4;
 		lbStart.setFont(midiControlsFont);
 		controlsPane.add(lbStart, gbc_lbStart);
 		lbStart.addActionListener(new ActionListener() {
@@ -333,7 +338,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gbc_lbGoBack.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoBack.insets = new Insets(0, 0, 5, 5);
 		gbc_lbGoBack.gridx = 1;
-		gbc_lbGoBack.gridy = gridy;
+		gbc_lbGoBack.gridy = 4;
 		lbGoBack.setFont(midiControlsFont);
 		controlsPane.add(lbGoBack, gbc_lbGoBack);
 		lbGoBack.addActionListener(new ActionListener() {
@@ -352,7 +357,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gbc_lbPlayMidi.anchor = GridBagConstraints.NORTH;
 		gbc_lbPlayMidi.insets = new Insets(0, 0, 5, 5);
 		gbc_lbPlayMidi.gridx = 2;
-		gbc_lbPlayMidi.gridy = gridy;
+		gbc_lbPlayMidi.gridy = 4;
 		lbPlayMidi.setFont(midiControlsFont);
 		controlsPane.add(lbPlayMidi, gbc_lbPlayMidi);
 		lbPlayMidi.addActionListener(new ActionListener() {
@@ -378,7 +383,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gbc_lbGoForwards.anchor = GridBagConstraints.NORTH;
 		gbc_lbGoForwards.insets = new Insets(0, 0, 5, 0);
 		gbc_lbGoForwards.gridx = 3;
-		gbc_lbGoForwards.gridy = gridy;
+		gbc_lbGoForwards.gridy = 4;
 		lbGoForwards.setFont(midiControlsFont);
 		controlsPane.add(lbGoForwards, gbc_lbGoForwards);
 		lbGoForwards.addActionListener(new ActionListener() {
@@ -430,7 +435,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	@Override
 	public void onPianoKeyOn(int pitch, int velocity) {
 		// catching commands
-		if (commandKeys.containsKey(pitch)) {
+		if (commandKeys.containsKey(pitch) && LeftPanel.learnOn) {
 //			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
 			switch (commandKeys.get(pitch)) {
 			case "Back":

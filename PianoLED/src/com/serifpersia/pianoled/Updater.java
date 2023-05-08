@@ -355,15 +355,10 @@ public class Updater {
 			zipInputStream.closeEntry();
 			zipInputStream.close();
 
-			System.out.println("Zip file extracted to: " + destinationFolderPath);
-
 			// Delete the zip file
 			File zipFile = new File(zipFilePath);
-			if (zipFile.delete()) {
-				System.out.println("Zip file deleted successfully");
-			} else {
-				System.err.println("Failed to delete zip file");
-			}
+			zipFile.delete();
+
 		} catch (IOException e) {
 			System.err.println("Error extracting zip file: " + e.getMessage());
 		}

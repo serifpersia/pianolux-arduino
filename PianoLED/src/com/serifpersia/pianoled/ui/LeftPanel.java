@@ -21,11 +21,15 @@ public class LeftPanel extends JPanel {
 
 	private RightPanel rightPanel;
 	private JButton dashboardButton;
+
+	private JButton learnButton;
 	private ImageIcon dashboardIcon;
 	// private ImageIcon dashboardDarkIcon;
 
 	private ImageIcon pianoLEDIcon;
 	private JFrame AboutPianoLEDDialog;
+
+	public static boolean learnOn = false;
 
 	public LeftPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
@@ -36,7 +40,7 @@ public class LeftPanel extends JPanel {
 		dashboardButton = createButton("", "Dashboard");
 		JButton livePlayButton = createButton("LivePlay", "LivePlay");
 		JButton controlsButton = createButton("Controls", "Controls");
-		JButton learnButton = createButton("Learn", "Learn");
+		learnButton = createButton("Learn", "Learn");
 
 		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
 				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
@@ -101,6 +105,13 @@ public class LeftPanel extends JPanel {
 					dashboardButton.setIcon(dashboardIcon);
 				} else {
 					dashboardButton.setIcon(dashboardIcon);
+				}
+
+				if (button == learnButton) {
+					System.out.println("in learn mode");
+					learnOn = true;
+				} else {
+					learnOn = false;
 				}
 			}
 

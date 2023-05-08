@@ -18,8 +18,6 @@ import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.LeftPanel;
 import com.serifpersia.pianoled.ui.RightPanel;
 
-import java.awt.Color;
-
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
 
@@ -37,7 +35,7 @@ public class PianoLED extends JFrame {
 	}
 
 	public PianoLED() {
-		setSize(950, 680);
+		setSize(1024, 650);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
@@ -56,8 +54,6 @@ public class PianoLED extends JFrame {
 				}
 			}
 		});
-
-		bottomPanel.setBackground(new Color(21, 25, 28));
 
 		// qgetContentPane().add(topPanel, BorderLayout.NORTH);
 		getContentPane().add(leftPanel, BorderLayout.WEST);
@@ -83,7 +79,7 @@ public class PianoLED extends JFrame {
 			public void componentResized(ComponentEvent e) {
 				// Calculate the new preferred size based on the parent's size
 				Dimension parentSize = rightPanelWrapper.getSize();
-				double newHeight = parentSize.height * 0.12;
+				double newHeight = parentSize.height * 0.16;
 
 				// Update the child JPanel's preferred size and revalidate the layout
 				bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));

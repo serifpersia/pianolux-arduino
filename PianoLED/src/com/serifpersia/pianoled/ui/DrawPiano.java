@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class DrawPiano extends JPanel {
-	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.3, 6, -0.7, 8, -0.5, 10, -0.3); // starts
+	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.5, 6, -0.5, 8, -0.5, 10, -0.5); // starts
 																													// with
 																													// C
 	public final static int NUM_KEYS = 88;
@@ -17,7 +17,7 @@ public class DrawPiano extends JPanel {
 	public final static int FIRST_KEY_PITCH_OFFSET = 21;
 	public final static int MIDDLE_C_PITCH = 60;
 	public final static double pianoWidthToHeightRatio = 122 / 15 * 2;
-	public final static double pianoBlackToWhiteWidhtRatio = 0.55;
+	public final static double pianoBlackToWhiteWidhtRatio = 0.5;
 	public final static double pianoBlackToWhiteHeightRatio = 0.65;
 
 	private int[] keysPressed = new int[NUM_KEYS];

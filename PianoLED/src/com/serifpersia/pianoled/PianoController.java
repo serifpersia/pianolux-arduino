@@ -33,12 +33,12 @@ public class PianoController implements PianoMidiConsumer {
 	public String portName;
 	public String[] portNames = SerialPortList.getPortNames();
 
-	public Color splitLeftColor = Color.RED;
-	public Color splitRightColor = Color.BLUE;
+	public static Color splitLeftColor = Color.RED;
+	public static Color splitRightColor = Color.BLUE;
 
-	public Color LeftSideColor = Color.RED;
-	public Color MiddleSideColor = Color.GREEN;
-	public Color RightSideColor = Color.BLUE;
+	public static Color LeftSideColor = Color.RED;
+	public static Color MiddleSideColor = Color.GREEN;
+	public static Color RightSideColor = Color.BLUE;
 
 	public static double pow(double x, double y) {
 		if (y == 0) {
@@ -98,7 +98,6 @@ public class PianoController implements PianoMidiConsumer {
 				if (line.contains(deviceName)) {
 					String[] tokens = line.split("\\s+");
 					portName = tokens[tokens.length - 1].replaceAll("[()]", "");
-					System.out.println("Serial Device detected: " + line);
 					break;
 				}
 			}
@@ -149,7 +148,6 @@ public class PianoController implements PianoMidiConsumer {
 				Matcher matcher = pattern.matcher(line);
 				if (matcher.find()) {
 					portName = "/dev/" + matcher.group(0);
-					System.out.println("Device found: " + portName);
 					break;
 				}
 			}
@@ -280,14 +278,9 @@ public class PianoController implements PianoMidiConsumer {
 				} else if (ModesController.VelocityOn) {
 					message = arduino.commandVelocity(velocity, notePushed, ControlsPanel.selectedColor);
 				} else if (ModesController.SplitOn) {
-					System.out.println("Left Side Color: " + pitch + " " + GetUI.getLeftMinPitch() + " "
-							+ GetUI.getLeftMaxPitch());
 					if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
-						System.out.println("Left Side Color: " + pitch + " " + GetUI.getLeftMinPitch() + " "
-								+ GetUI.getLeftMaxPitch());
 						message = arduino.commandSetColor(splitLeftColor, notePushed);
 					} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
-						System.out.println("Right Side Color");
 						message = arduino.commandSetColor(splitRightColor, notePushed);
 					}
 				} else if (ModesController.GradientOn) {

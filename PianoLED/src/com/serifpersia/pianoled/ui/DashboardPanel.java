@@ -39,7 +39,7 @@ public class DashboardPanel extends JPanel {
 	public DashboardPanel(PianoLED pianoLED) {
 
 		pianoController = pianoLED.getPianoController();
-		setBackground(new Color(21, 25, 28));
+		setBackground(Color.BLACK);
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel ConnectPane = new JPanel();
@@ -59,7 +59,7 @@ public class DashboardPanel extends JPanel {
 		ConnectionsPane.setLayout(new GridLayout(4, 1, 0, 0));
 
 		JPanel SerialPane = new JPanel();
-		SerialPane.setBackground(new Color(21, 25, 28));
+		SerialPane.setBackground(Color.BLACK);
 		ConnectionsPane.add(SerialPane);
 		SerialPane.setLayout(new GridLayout(1, 0, 0, 0));
 
@@ -70,14 +70,14 @@ public class DashboardPanel extends JPanel {
 		SerialPane.add(lbSerialDevices);
 
 		SerialList = new JComboBox<Object>(pianoController.portNames);
-		SerialList.setBackground(new Color(21, 25, 28));
+		SerialList.setBackground(Color.BLACK);
 		SerialList.setForeground(Color.WHITE);
 		SerialList.setFont(new Font("Tahoma", Font.BOLD, 30));
 		SerialList.setFocusable(false);
 		SerialPane.add(SerialList);
 
 		JPanel MidiPane = new JPanel();
-		MidiPane.setBackground(new Color(21, 25, 28));
+		MidiPane.setBackground(Color.BLACK);
 		ConnectionsPane.add(MidiPane);
 		MidiPane.setLayout(new GridLayout(1, 0, 0, 0));
 
@@ -100,14 +100,14 @@ public class DashboardPanel extends JPanel {
 
 		MidiInfoBoxModel boxModel = new MidiInfoBoxModel(pianoController.getMidiDevices());
 		MidiList = new JComboBox<Info>(boxModel);
-		MidiList.setBackground(new Color(21, 25, 28));
+		MidiList.setBackground(Color.BLACK);
 		MidiList.setForeground(Color.WHITE);
 		MidiList.setFont(new Font("Tahoma", Font.BOLD, 30));
 		MidiList.setFocusable(false);
 		MidiPane.add(MidiList);
 
 		JPanel BranchPane = new JPanel();
-		BranchPane.setBackground(new Color(21, 25, 28));
+		BranchPane.setBackground(Color.BLACK);
 		ConnectionsPane.add(BranchPane);
 		BranchPane.setLayout(new GridLayout(1, 2, 0, 0));
 
@@ -120,7 +120,7 @@ public class DashboardPanel extends JPanel {
 		String[] branch = { "stable", "beta" };
 
 		BranchList = new JComboBox<Object>(branch);
-		BranchList.setBackground(new Color(21, 25, 28));
+		BranchList.setBackground(Color.BLACK);
 		BranchList.setForeground(Color.WHITE);
 		BranchList.setFont(new Font("Tahoma", Font.BOLD, 30));
 		BranchList.setFocusable(false);
@@ -128,7 +128,7 @@ public class DashboardPanel extends JPanel {
 		BranchPane.add(BranchList);
 
 		JPanel ButtonsPane = new JPanel();
-		ButtonsPane.setBackground(new Color(21, 25, 28));
+		ButtonsPane.setBackground(Color.BLACK);
 		ConnectionsPane.add(ButtonsPane);
 		ButtonsPane.setLayout(new GridLayout(1, 1, 0, 0));
 

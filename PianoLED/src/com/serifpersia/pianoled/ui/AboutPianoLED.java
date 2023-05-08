@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -29,7 +30,7 @@ public class AboutPianoLED extends JPanel {
 
 	public AboutPianoLED() {
 
-		setBackground(new Color(21, 25, 28));
+		setBackground(Color.BLACK);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 300, 0 };
 		gridBagLayout.rowHeights = new int[] { 200, 36, 81, 33, 71, 0 };
@@ -41,7 +42,7 @@ public class AboutPianoLED extends JPanel {
 				.getScaledInstance(150, 150, Image.SCALE_SMOOTH));
 
 		JPanel buttonPane = new JPanel();
-		buttonPane.setBackground(new Color(21, 25, 28));
+		buttonPane.setBackground(Color.BLACK);
 		GridBagConstraints gbc_buttonPane = new GridBagConstraints();
 		gbc_buttonPane.insets = new Insets(0, 0, 5, 0);
 		gbc_buttonPane.fill = GridBagConstraints.BOTH;
@@ -52,7 +53,7 @@ public class AboutPianoLED extends JPanel {
 
 		JLabel exitX = new JLabel("X");
 		exitX.setHorizontalAlignment(SwingConstants.RIGHT);
-		exitX.setBackground(new Color(21, 25, 28));
+		exitX.setBackground(Color.BLACK);
 		exitX.setForeground(new Color(255, 255, 255));
 		exitX.setFont(new Font("Tahoma", Font.BOLD, 25));
 		exitX.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Add an empty border on the right side
@@ -70,7 +71,7 @@ public class AboutPianoLED extends JPanel {
 		gbc_button.gridx = 0;
 		gbc_button.gridy = 1;
 		btnPianoLED.setIcon(pianoLEDIcon);
-		btnPianoLED.setBackground(new Color(21, 25, 28));
+		btnPianoLED.setBackground(Color.BLACK);
 		btnPianoLED.setFocusable(false);
 		btnPianoLED.setBorderPainted(false);
 		add(btnPianoLED, gbc_button);
@@ -105,7 +106,7 @@ public class AboutPianoLED extends JPanel {
 		exitX.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getTopLevelAncestor().setVisible(false);
+				((Window) getRootPane().getParent()).dispose();
 			}
 		});
 
@@ -116,7 +117,7 @@ public class AboutPianoLED extends JPanel {
 				// Check if the pressed key is ESC
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					// Set the visibility of the panel to false
-					getTopLevelAncestor().setVisible(false);
+					((Window) getRootPane().getParent()).dispose();
 				}
 			}
 		});

@@ -77,6 +77,5 @@ public class ModesController {
 			AnimationOn = true;
 			break;
 		}
-		System.out.println("Selected mode: " + GetUI.getModeName(n));
 	}
 }
