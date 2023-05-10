@@ -7,7 +7,7 @@ import jssc.SerialPortException;
 
 public class Arduino {
 
-	private SerialPort serialPort;
+	SerialPort serialPort;
 
 	public Arduino(PianoLED pianoLED, String port, int baudrate) {
 		serialPort = new SerialPort(port);
@@ -202,11 +202,13 @@ public class Arduino {
 	}
 
 	public void stop() {
-		try {
-			serialPort.closePort();
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-			System.out.print(e);
+		if (serialPort != null && serialPort.isOpened()) {
+			try {
+				serialPort.closePort();
+			} catch (SerialPortException e) {
+				e.printStackTrace();
+				System.out.print(e);
+			}
 		}
 	}
 

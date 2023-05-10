@@ -101,8 +101,8 @@ public class GetUI {
 		ControlsPanel.defaultBrighntessVal = brightness;
 		ControlsPanel.defaultFadeVal = fade;
 
-		ControlsPanel.sliderBrightness.setValue(ControlsPanel.defaultBrighntessVal);
-		ControlsPanel.sliderFade.setValue(ControlsPanel.defaultFadeVal);
+		ControlsPanel.sld_Brightness.setValue(ControlsPanel.defaultBrighntessVal);
+		ControlsPanel.sld_Fade.setValue(ControlsPanel.defaultFadeVal);
 	}
 
 	public static void setSplashDefaults(int brightness, int fade, int maxSplashLength) {
@@ -111,9 +111,9 @@ public class GetUI {
 		ControlsPanel.defaultFadeVal = fade;
 		ControlsPanel.defaultMaxSplashLengthVal = maxSplashLength;
 
-		ControlsPanel.sliderBrightness.setValue(ControlsPanel.defaultBrighntessVal);
-		ControlsPanel.sliderFade.setValue(ControlsPanel.defaultFadeVal);
-		ControlsPanel.sliderMaxSplashLengthVal.setValue(ControlsPanel.defaultMaxSplashLengthVal);
+		ControlsPanel.sld_Brightness.setValue(ControlsPanel.defaultBrighntessVal);
+		ControlsPanel.sld_Fade.setValue(ControlsPanel.defaultFadeVal);
+		ControlsPanel.sld_SplashMaxLenght.setValue(ControlsPanel.defaultMaxSplashLengthVal);
 
 	}
 }

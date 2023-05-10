@@ -112,8 +112,8 @@ public class ColorPickerPanel extends JPanel {
 	private void updateSelcetedColor() {
 		colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
 		ControlsPanel.selectedColor = colorPickerColor;
-		ControlsPanel.txtR.setText(Integer.toString(colorPickerColor.getRed()));
-		ControlsPanel.txtG.setText(Integer.toString(colorPickerColor.getGreen()));
-		ControlsPanel.txtB.setText(Integer.toString(colorPickerColor.getBlue()));
+		ControlsPanel.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
+		ControlsPanel.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
+		ControlsPanel.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
 	}
 }

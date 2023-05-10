@@ -18,6 +18,7 @@ import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
 
+import jssc.SerialPortException;
 import jssc.SerialPortList;
 
 import java.util.Random;
@@ -113,26 +114,26 @@ public class PianoController implements PianoMidiConsumer {
 
 		// Select the corresponding item in the SerialList JComboBox object
 		if (index >= 0) {
-			DashboardPanel.SerialList.setSelectedIndex(index);
+			DashboardPanel.cbSerialDevices.setSelectedIndex(index);
 		}
 	}
 
 	public void refreshMidiList() {
-		// Get the list of available MIDI devices
-		ArrayList<Info> devices = getMidiDevices();
+		ArrayList<MidiDevice.Info> deviceNames = getMidiDevices();
+		int selectedIndex = -1;
 
-		// Find the index of the first device whose name contains "piano" or "midi"
-		int index = 0;
-		for (Info device : devices) {
-			if (device.getName().toLowerCase().contains("piano") || device.getName().toLowerCase().contains("midi")) {
+		// Look for the first device that contains "midi" or "piano" in its name
+		for (int i = 0; i < deviceNames.size(); i++) {
+			String name = deviceNames.get(i).getName().toLowerCase();
+			if (name.contains("midi") || name.contains("piano")) {
+				selectedIndex = i;
 				break;
 			}
-			index++;
 		}
 
-		// Set the corresponding item in the MidiList JComboBox object
-		if (index >= 0) {
-			DashboardPanel.MidiList.setSelectedIndex(index);
+		// Select the corresponding item in the MidiList JComboBox object
+		if (selectedIndex >= 0) {
+			DashboardPanel.cbMidiDevices.setSelectedIndex(selectedIndex);
 		}
 	}
 
@@ -203,8 +204,24 @@ public class PianoController implements PianoMidiConsumer {
 		return deviceNames;
 	}
 
+	public void openSerial() {
+		arduino = new Arduino(null, portName, 115200); // set the baudrate to match your arduino code
+		if (arduino != null) {
+			arduino.sendCommandBlackOut();
+			arduino.sendCommandFadeRate(255);
+		}
+	}
+
+	public void closeSerial() {
+		try {
+			arduino.serialPort.closePort();
+		} catch (SerialPortException ex) {
+			System.out.println(ex);
+		}
+	}
+
 	public void openMidi() {
-		Info deviceInfo = (Info) DashboardPanel.MidiList.getSelectedItem();
+		Info deviceInfo = (Info) DashboardPanel.cbMidiDevices.getSelectedItem();
 		MidiDevice device = null;
 		try {
 			device = MidiSystem.getMidiDevice(deviceInfo);
@@ -212,20 +229,17 @@ public class PianoController implements PianoMidiConsumer {
 			pianoReceiver = new PianoReceiver();
 			pianoReceiver.addConsumer(this);
 			device.getTransmitter().setReceiver(pianoReceiver);
-			System.out.println("MIDI device " + deviceInfo + " opened successfully.");
-
 		} catch (MidiUnavailableException ex) {
 			System.err.println("Error opening MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}
 	}
 
 	public void closeMidi() {
-		Info deviceInfo = (Info) DashboardPanel.MidiList.getSelectedItem();
+		Info deviceInfo = (Info) DashboardPanel.cbMidiDevices.getSelectedItem();
 		MidiDevice device = null;
 		try {
 			device = MidiSystem.getMidiDevice(deviceInfo);
 			device.close();
-			System.out.println("MIDI device " + deviceInfo + " closed successfully.");
 		} catch (MidiUnavailableException ex) {
 			System.err.println("Error closing MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}

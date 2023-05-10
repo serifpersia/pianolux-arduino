@@ -17,6 +17,7 @@ import com.serifpersia.pianoled.ui.BottomPanel;
 import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.LeftPanel;
 import com.serifpersia.pianoled.ui.RightPanel;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
@@ -29,13 +30,22 @@ public class PianoLED extends JFrame {
 	static Updater updator = new Updater();
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 		SwingUtilities.invokeLater(() -> {
 			new PianoLED();
 		});
 	}
 
 	public PianoLED() {
-		setSize(1024, 650);
+		init();
+	}
+
+	private void init() {
+		setSize(950, 650);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());

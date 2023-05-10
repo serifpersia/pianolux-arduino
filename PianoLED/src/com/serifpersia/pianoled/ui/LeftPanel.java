@@ -70,14 +70,15 @@ public class LeftPanel extends JPanel {
 
 	private JButton createButton(String text, String cardName) {
 		JButton button = new JButton(text);
-		button.setFont(new Font("Montserrat", Font.BOLD, 14));
+		button.setFont(new Font("Tahoma", Font.BOLD, 18));
 		button.setBackground(Color.BLACK);
 		button.setForeground(Color.WHITE);
 		button.setFocusable(false);
+		button.setBorderPainted(false);
 		button.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(200, 63, 73));
+				button.setBackground(new Color(231, 76, 60));
 				button.setForeground(Color.WHITE);
 			}
 
@@ -89,7 +90,7 @@ public class LeftPanel extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				button.setBackground(new Color(200, 63, 73));
+				button.setBackground(new Color(231, 76, 60));
 				button.setForeground(Color.WHITE);
 				button.setSelected(true);
 				CardLayout cardLayout = (CardLayout) rightPanel.getLayout();

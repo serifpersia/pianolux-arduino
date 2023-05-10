@@ -32,7 +32,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	public String VersionTag = "v4.0.4";
+	public String VersionTag = "v4.0.5";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -44,7 +44,7 @@ public class Updater {
 	File versionFile = null;
 
 	public void getUpdate() {
-		String branchName = (String) DashboardPanel.BranchList.getSelectedItem();
+		String branchName = (String) DashboardPanel.cbBranch.getSelectedItem();
 		if (branchName.equals("stable")) {
 
 			int choice = JOptionPane.showConfirmDialog(null, "Do you want to update?", "Update",
