@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
-
+import com.serifpersia.pianoled.Profile;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.GridLayout;
@@ -52,24 +52,30 @@ public class ControlsPanel extends JPanel {
 	private JButton btn_LeftSide;
 	private JButton btn_MiddleSide;
 	private JButton btn_RightSide;
-	private JRadioButton rdbtn_BG_Off;
-	private JRadioButton rdbtn_BG_On;
-	private JRadioButton rdbtn_FixLED_Off;
-	private JRadioButton rdbtn_FixLED_On;
-	private JRadioButton rdbtn_Reverse_Off;
-	private JRadioButton rdbtn_Reverse_On;
+	public static JRadioButton rdbtn_BG_Off;
+	public static JRadioButton rdbtn_BG_On;
+	public static JRadioButton rdbtn_FixLED_Off;
+	public static JRadioButton rdbtn_FixLED_On;
+	public static JRadioButton rdbtn_Reverse_Off;
+	public static JRadioButton rdbtn_Reverse_On;
 
-	private JComboBox<?> cb_ColorPresets;
+	public static JComboBox<?> cb_LED_Mode;
+	public static JComboBox<?> cb_LED_Animations;
+	public static JComboBox<?> cb_ColorPresets;
 
-	static JSlider sld_Brightness;
-	static JSlider sld_Fade;
-	static JSlider sld_SplashMaxLenght;
+	public static JSlider sld_Brightness;
+	public static JSlider sld_Fade;
+	public static JSlider sld_SplashMaxLenght;
 
 	private JLabel lbl_PianoSize;
 
-	static JTextField txt_R;
-	static JTextField txt_G;
-	static JTextField txt_B;
+	public static JTextField txt_R;
+	public static JTextField txt_G;
+	public static JTextField txt_B;
+
+	public static ButtonGroup bgGroup;
+	public static ButtonGroup fixLEDGroup;
+	public static ButtonGroup reverseLEDGroup;
 
 	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
@@ -137,10 +143,10 @@ public class ControlsPanel extends JPanel {
 		btn_Save = new JButton("Save");
 		btn_Save.setFont(new Font("Tahoma", Font.BOLD, 25));
 
-		JComboBox<?> cb_LED_Modes = new JComboBox<Object>(modeEffectsNames.toArray(new String[0]));
-		cb_LED_Modes.setFont(new Font("Tahoma", Font.BOLD, 25));
-		cb_LED_Modes.addActionListener(e -> {
-			int selectedIndex = cb_LED_Modes.getSelectedIndex();
+		cb_LED_Mode = new JComboBox<Object>(modeEffectsNames.toArray(new String[0]));
+		cb_LED_Mode.setFont(new Font("Tahoma", Font.BOLD, 25));
+		cb_LED_Mode.addActionListener(e -> {
+			int selectedIndex = cb_LED_Mode.getSelectedIndex();
 			modesController.modeSelect(selectedIndex);
 		});
 
@@ -148,7 +154,7 @@ public class ControlsPanel extends JPanel {
 		lbl_Animation.setForeground(Color.WHITE);
 		lbl_Animation.setFont(new Font("Tahoma", Font.BOLD, 25));
 
-		JComboBox<?> cb_LED_Animations = new JComboBox<Object>(animationNames.toArray(new String[0]));
+		cb_LED_Animations = new JComboBox<Object>(animationNames.toArray(new String[0]));
 		cb_LED_Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_LED_Animations.addActionListener(e -> {
 			if (ModesController.AnimationOn) {
@@ -235,17 +241,17 @@ public class ControlsPanel extends JPanel {
 		btn_LeftArrow = createButton("<");
 		btn_RightArrow = createButton(">");
 		// Group the radio buttons together
-		ButtonGroup bgGroup = new ButtonGroup();
+		bgGroup = new ButtonGroup();
 		bgGroup.add(rdbtn_BG_Off);
 		bgGroup.add(rdbtn_BG_On);
 
 		// Group the radio buttons together
-		ButtonGroup fixLEDGroup = new ButtonGroup();
+		fixLEDGroup = new ButtonGroup();
 		fixLEDGroup.add(rdbtn_FixLED_Off);
 		fixLEDGroup.add(rdbtn_FixLED_On);
 
 		// Group the radio buttons together
-		ButtonGroup reverseLEDGroup = new ButtonGroup();
+		reverseLEDGroup = new ButtonGroup();
 		reverseLEDGroup.add(rdbtn_Reverse_Off);
 		reverseLEDGroup.add(rdbtn_Reverse_On);
 
@@ -265,7 +271,7 @@ public class ControlsPanel extends JPanel {
 										.addComponent(btn_Load, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(btn_Save, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
-								.addComponent(cb_LED_Modes, 0, 219, Short.MAX_VALUE))
+								.addComponent(cb_LED_Mode, 0, 219, Short.MAX_VALUE))
 						.addGap(2))
 						.addGroup(gl_pnl_Left.createSequentialGroup().addGroup(gl_pnl_Left
 								.createParallelGroup(Alignment.LEADING)
@@ -335,7 +341,7 @@ public class ControlsPanel extends JPanel {
 				.addGroup(gl_pnl_Left.createParallelGroup(Alignment.BASELINE)
 						.addGroup(gl_pnl_Left.createSequentialGroup().addGap(8).addComponent(lbl_LEDMode,
 								GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
-						.addGroup(gl_pnl_Left.createSequentialGroup().addGap(1).addComponent(cb_LED_Modes,
+						.addGroup(gl_pnl_Left.createSequentialGroup().addGap(1).addComponent(cb_LED_Mode,
 								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 				.addPreferredGap(ComponentPlacement.RELATED)
 				.addGroup(gl_pnl_Left.createParallelGroup(Alignment.BASELINE)
@@ -658,10 +664,10 @@ public class ControlsPanel extends JPanel {
 					PianoController.splitRightColor = selectedColor;
 					break;
 				case "btn_Load":
-					// TODO: Add logic for btn_Load click event
+					Profile.loadProfile(pianoLED);
 					break;
 				case "btn_Save":
-					// TODO: Add logic for btn_Save click event
+					Profile.saveProfile(pianoLED);
 					break;
 				case "btn_LeftArrow":
 

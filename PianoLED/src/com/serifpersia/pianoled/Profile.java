@@ -1,0 +1,218 @@
+package com.serifpersia.pianoled;
+
+import java.io.BufferedWriter;
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Enumeration;
+
+import javax.swing.JRadioButton;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.serifpersia.pianoled.ui.ColorPickerPanel;
+import com.serifpersia.pianoled.ui.ControlsPanel;
+
+public class Profile {
+
+	public Profile() {
+
+	}
+
+	public static String saveFields() {
+		int r = Integer.parseInt(ControlsPanel.txt_R.getText());
+		int g = Integer.parseInt(ControlsPanel.txt_G.getText());
+		int b = Integer.parseInt(ControlsPanel.txt_B.getText());
+		return String.format("%d,%d,%d", r, g, b);
+	}
+
+	public static String saveRadioButtonState(ButtonGroup bgGroup) {
+		JRadioButton selectedRadioButton = null;
+		Enumeration<AbstractButton> btnEnum = bgGroup.getElements();
+		while (btnEnum.hasMoreElements()) {
+			AbstractButton button = btnEnum.nextElement();
+			if (button.isSelected() && button instanceof JRadioButton) {
+				selectedRadioButton = (JRadioButton) button;
+				break;
+			}
+		}
+		String selectedBgButton = selectedRadioButton != null ? selectedRadioButton.getText() : "";
+		return selectedBgButton;
+	}
+
+	public static String saveGradients() {
+		return "leftSide=" + PianoController.LeftSideColor.getRed() + "," + PianoController.LeftSideColor.getGreen()
+				+ "," + PianoController.LeftSideColor.getBlue() + ";middleSide="
+				+ PianoController.MiddleSideColor.getRed() + "," + PianoController.MiddleSideColor.getGreen() + ","
+				+ PianoController.MiddleSideColor.getBlue() + ";rightSide=" + PianoController.RightSideColor.getRed()
+				+ "," + PianoController.RightSideColor.getGreen() + "," + PianoController.RightSideColor.getBlue();
+	}
+
+	private static int saveColorPreset() {
+		int selectedColorIndex = (int) ControlsPanel.cb_ColorPresets.getSelectedIndex();
+		return selectedColorIndex;
+	}
+
+	private static String saveSliders() {
+		int brightnessSliderVal = ControlsPanel.sld_Brightness.getValue();
+		int fadeSliderVal = ControlsPanel.sld_Fade.getValue();
+		int splashMaxLenghtVal = ControlsPanel.sld_SplashMaxLenght.getValue();
+
+		return brightnessSliderVal + "," + fadeSliderVal + "," + splashMaxLenghtVal;
+	}
+
+	private static int savedLEDMode() {
+		int selectedLEDModeIndex = (int) ControlsPanel.cb_LED_Mode.getSelectedIndex();
+		return selectedLEDModeIndex;
+	}
+
+	public static int saveAnimation() {
+		int selectedIndexAnimation = (int) ControlsPanel.cb_LED_Animations.getSelectedIndex();
+		return selectedIndexAnimation;
+	}
+
+	public static void loadProfile(PianoLED pianoLED) {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("LED Profile", "led");
+		fileChooser.setFileFilter(filter);
+		int returnValue = fileChooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.startsWith("ColorPreset = ")) {
+						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
+						ControlsPanel.cb_ColorPresets.setSelectedIndex(index);
+					} else if (line.startsWith("Slider = ")) {
+						String[] sliderValues = line.substring(line.indexOf("=") + 1).trim().split(",");
+						if (sliderValues.length == 3) {
+							int brightness = Integer.parseInt(sliderValues[0]);
+							int fade = Integer.parseInt(sliderValues[1]);
+							int splashlenght = Integer.parseInt(sliderValues[2]);
+							// Set the slider values to the read values
+							ControlsPanel.sld_Brightness.setValue(brightness);
+							ControlsPanel.sld_Fade.setValue(fade);
+							ControlsPanel.sld_SplashMaxLenght.setValue(splashlenght);
+
+						}
+					} else if (line.startsWith("LED Mode = ")) {
+						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
+						ControlsPanel.cb_LED_Mode.setSelectedIndex(index);
+					} else if (line.startsWith("Animation = ")) {
+						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
+						ControlsPanel.cb_LED_Animations.setSelectedIndex(index);
+					} else if (line.startsWith("Gradient = ")) {
+						String[] gradientValues = line.substring(line.indexOf("=") + 1).trim().split(";");
+						if (gradientValues.length == 3) {
+							String[] leftSideValues = gradientValues[0].substring(9).split(",");
+							int leftSideRed = Integer.parseInt(leftSideValues[0]);
+							int leftSideGreen = Integer.parseInt(leftSideValues[1]);
+							int leftSideBlue = Integer.parseInt(leftSideValues[2]);
+							PianoController.LeftSideColor = new Color(leftSideRed, leftSideGreen, leftSideBlue);
+
+							String[] middleSideValues = gradientValues[1].substring(11).split(",");
+							int middleSideRed = Integer.parseInt(middleSideValues[0]);
+							int middleSideGreen = Integer.parseInt(middleSideValues[1]);
+							int middleSideBlue = Integer.parseInt(middleSideValues[2]);
+							PianoController.MiddleSideColor = new Color(middleSideRed, middleSideGreen, middleSideBlue);
+
+							String[] rightSideValues = gradientValues[2].substring(10).split(",");
+							int rightSideRed = Integer.parseInt(rightSideValues[0]);
+							int rightSideGreen = Integer.parseInt(rightSideValues[1]);
+							int rightSideBlue = Integer.parseInt(rightSideValues[2]);
+							PianoController.RightSideColor = new Color(rightSideRed, rightSideGreen, rightSideBlue);
+						}
+					} else if (line.startsWith("Background Light = ")) {
+						String state = line.substring(line.indexOf("=") + 1).trim();
+						Enumeration<AbstractButton> buttons = ControlsPanel.bgGroup.getElements();
+						while (buttons.hasMoreElements()) {
+							AbstractButton button = buttons.nextElement();
+							if (button instanceof JRadioButton && button.getText().equals(state)) {
+								button.doClick();
+								break;
+							}
+						}
+					} else if (line.startsWith("Fixed LED = ")) {
+						String state = line.substring(line.indexOf("=") + 1).trim();
+						Enumeration<AbstractButton> buttons = ControlsPanel.fixLEDGroup.getElements();
+						while (buttons.hasMoreElements()) {
+							AbstractButton button = buttons.nextElement();
+							if (button instanceof JRadioButton && button.getText().equals(state)) {
+								button.doClick();
+								break;
+							}
+						}
+					} else if (line.startsWith("Reverse LED = ")) {
+						String state = line.substring(line.indexOf("=") + 1).trim();
+						Enumeration<AbstractButton> buttons = ControlsPanel.reverseLEDGroup.getElements();
+						while (buttons.hasMoreElements()) {
+							AbstractButton button = buttons.nextElement();
+							if (button instanceof JRadioButton && button.getText().equals(state)) {
+								button.doClick();
+								break;
+							}
+						}
+					} else if (line.startsWith("Custom Color = ")) {
+						String[] rgb = line.substring(line.indexOf("=") + 1).trim().split(",");
+						int r = Integer.parseInt(rgb[0]);
+						int g = Integer.parseInt(rgb[1]);
+						int b = Integer.parseInt(rgb[2]);
+						ControlsPanel.txt_R.setText(Integer.toString(r));
+						ControlsPanel.txt_G.setText(Integer.toString(g));
+						ControlsPanel.txt_B.setText(Integer.toString(b));
+						ColorPickerPanel colorPicker = new ColorPickerPanel();
+						colorPicker.repaint();
+					}
+
+				}
+
+			} catch (IOException error) {
+				error.printStackTrace();
+			}
+		}
+	}
+
+	public static void saveProfile(PianoLED pianoLED) {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("LED Profile", "led");
+		fileChooser.setFileFilter(filter);
+		int returnValue = fileChooser.showSaveDialog(pianoLED);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fileChooser.getSelectedFile();
+			String filePath = fileToSave.getAbsolutePath();
+			if (!filePath.endsWith(".led")) {
+				filePath += ".led";
+				fileToSave = new File(filePath);
+			}
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+				writer.write("LED Mode = " + savedLEDMode());
+				writer.newLine();
+				writer.write("Animation = " + saveAnimation());
+				writer.newLine();
+				writer.write("ColorPreset = " + saveColorPreset());
+				writer.newLine();
+				writer.write("Slider = " + saveSliders());
+				writer.newLine();
+				writer.write("Gradient = " + saveGradients());
+				writer.newLine();
+				writer.write("Background Light = " + saveRadioButtonState(ControlsPanel.bgGroup));
+				writer.newLine();
+				writer.write("Fixed LED = " + saveRadioButtonState(ControlsPanel.fixLEDGroup));
+				writer.newLine();
+				writer.write("Reverse LED = " + saveRadioButtonState(ControlsPanel.reverseLEDGroup));
+				writer.newLine();
+				writer.write("Custom Color = " + saveFields());
+				writer.newLine();
+			} catch (IOException error) {
+				error.printStackTrace();
+			}
+		}
+	}
+
+}

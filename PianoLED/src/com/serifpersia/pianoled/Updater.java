@@ -57,7 +57,7 @@ public class Updater {
 		}
 	}
 
-	public void checkForUpdates() {
+	private void checkForUpdates() {
 		String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
 		try {
 			// Use Jackson JSON parser to parse the JSON response
@@ -88,7 +88,7 @@ public class Updater {
 		}
 	}
 
-	public void downloadAndInstallUpdate() {
+	private void downloadAndInstallUpdate() {
 		String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
 
 		try {
@@ -181,7 +181,7 @@ public class Updater {
 
 	}
 
-	public void downloadFilesFromBranch(String owner, String repo, String branchName) {
+	private void downloadFilesFromBranch(String owner, String repo, String branchName) {
 		try {
 			String branchUrl = String.format("https://api.github.com/repos/%s/%s/branches/%s", owner, repo, branchName);
 			JsonNode branchJson = getLatestRelease(branchUrl);
@@ -282,22 +282,7 @@ public class Updater {
 		}
 	}
 
-	public void checkLocalVersion() {
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				String fileName = listOfFiles[i].getName();
-				if (fileName.matches(".*v\\d+\\.\\d+\\.\\d+.*")) {
-					VersionTag = fileName.replaceAll(".*(v\\d+\\.\\d+\\.\\d+).*", "$1");
-					versionFile = listOfFiles[i];
-					break;
-				}
-			}
-		}
-		System.out.println("VersionTag: " + VersionTag);
-	}
-
-	public JsonNode getLatestRelease(String url) {
+	private JsonNode getLatestRelease(String url) {
 		try {
 			// String authToken = ""; // replace with your PAT
 			URL apiLink = new URL(url);
@@ -322,7 +307,7 @@ public class Updater {
 		}
 	}
 
-	public void extractZipFile(String zipFilePath, String destinationFolderPath) {
+	private void extractZipFile(String zipFilePath, String destinationFolderPath) {
 		try {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath));
 			ZipEntry zipEntry = zipInputStream.getNextEntry();

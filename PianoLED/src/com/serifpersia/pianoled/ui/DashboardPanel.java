@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import javax.sound.midi.MidiDevice.Info;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
