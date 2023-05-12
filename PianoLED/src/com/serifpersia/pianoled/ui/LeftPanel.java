@@ -36,6 +36,7 @@ public class LeftPanel extends JPanel {
 
 		setPreferredSize(new Dimension(100, getHeight()));
 		setLayout(new GridLayout(5, 1));
+		setBackground(getBackground());
 		JButton AboutButton = new JButton("");
 		dashboardButton = createButton("", "Dashboard");
 		JButton livePlayButton = createButton("LivePlay", "LivePlay");

@@ -81,7 +81,7 @@ public class Profile {
 		JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("LED Profile", "led");
 		fileChooser.setFileFilter(filter);
-		int returnValue = fileChooser.showOpenDialog(null);
+		int returnValue = fileChooser.showOpenDialog(pianoLED);
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
 			try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
