@@ -97,7 +97,7 @@ public class GetUI {
 		System.out.println("Selected last note: " + lastNoteSelected);
 	}
 
-	public static void setDefaults(int brightness, int fade) {
+	public static void setAnimationsDefaults(int brightness, int fade) {
 		ControlsPanel.defaultBrighntessVal = brightness;
 		ControlsPanel.defaultFadeVal = fade;
 
@@ -105,15 +105,4 @@ public class GetUI {
 		ControlsPanel.sld_Fade.setValue(ControlsPanel.defaultFadeVal);
 	}
 
-	public static void setSplashDefaults(int brightness, int fade, int maxSplashLength) {
-		ControlsPanel.defaultBrighntessVal = brightness;
-		ControlsPanel.defaultFadeVal = fade;
-		ControlsPanel.defaultFadeVal = fade;
-		ControlsPanel.defaultMaxSplashLengthVal = maxSplashLength;
-
-		ControlsPanel.sld_Brightness.setValue(ControlsPanel.defaultBrighntessVal);
-		ControlsPanel.sld_Fade.setValue(ControlsPanel.defaultFadeVal);
-		ControlsPanel.sld_SplashMaxLenght.setValue(ControlsPanel.defaultMaxSplashLengthVal);
-
-	}
 }

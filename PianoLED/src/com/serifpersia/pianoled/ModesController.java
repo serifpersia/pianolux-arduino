@@ -39,6 +39,7 @@ public class ModesController {
 		switch (GetUI.getModeName(n)) {
 		case "Default":
 			disableAllModes();
+			GetUI.setAnimationsDefaults(255, 255);
 			break;
 		case "Splash":
 			disableAllModes();
@@ -63,6 +64,7 @@ public class ModesController {
 		case "Animation":
 			disableAllModes();
 			AnimationOn = true;
+			GetUI.setAnimationsDefaults(255, 0);
 			break;
 		}
 	}

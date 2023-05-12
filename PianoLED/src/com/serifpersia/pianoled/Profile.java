@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 
 import javax.swing.JRadioButton;
@@ -169,7 +170,6 @@ public class Profile {
 						ColorPickerPanel colorPicker = new ColorPickerPanel();
 						colorPicker.repaint();
 					}
-
 				}
 
 			} catch (IOException error) {
@@ -191,6 +191,40 @@ public class Profile {
 				fileToSave = new File(filePath);
 			}
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+				writer.write("Profile Name: " + fileToSave.getName());
+				writer.newLine();
+				writer.newLine();
+				writer.write("Date/Time: " + LocalDateTime.now().toString());
+				writer.newLine();
+				writer.newLine();
+				writer.write("//PianoLED Profile Config File");
+				writer.newLine();
+				writer.newLine();
+				writer.write(
+						"//LED Mode: Default - 0, Splash - 1, Random - 2, Gradient - 3, Velocity - 4, Split - 5, Animation - 6");
+				writer.newLine();
+				writer.newLine();
+				writer.write(
+						"//Animation: RainbowColors - 0, RainbowStripeColor - 1, OceanColors - 2, CloudColors - 3, LavaColors - 4, ForestColors - 5, PartyColors - 6");
+				writer.newLine();
+				writer.newLine();
+				writer.write(
+						"//ColorPreset: Full Spectrum(Black) - 0, White - 1, Red - 2, Green - 3, Blue - 4, Yellow - 5, Orange - 6, Purple - 7, Pink - 8, Teal - 9, Lime - 10, Cyan - 11, Magenta - 12, Peach - 13, Lavender - 14, Turquoise - 15, Gold - 16, Custom - 17");
+				writer.newLine();
+				writer.newLine();
+				writer.write("//Slider: brightness(0-255), fade(0-255),splashlenght(4-16)");
+				writer.newLine();
+				writer.newLine();
+				writer.write(
+						"//Gradient: leftSide(red amount - (0-255), green amount (0-255), blue amount (0-255); middleSide(red amount - (0-255), green amount (0-255), blue amount (0-255); rightSide(red amount - (0-255), green amount (0-255), blue amount (0-255)");
+				writer.newLine();
+				writer.newLine();
+				writer.write("//Background Light,Fixed LED,Reverse LED = On or Off");
+				writer.newLine();
+				writer.newLine();
+				writer.write("//Custom Color: red amount(0-255), green amount(0-255),blue amount(0-255)");
+				writer.newLine();
+				writer.newLine();
 				writer.write("LED Mode = " + savedLEDMode());
 				writer.newLine();
 				writer.write("Animation = " + saveAnimation());
