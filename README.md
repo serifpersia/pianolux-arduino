@@ -1,6 +1,6 @@
 # PianoLED V4
 
-![image](https://media.discordapp.net/attachments/1077207076167753739/1102891346496340060/image.png)
+[![image](https://media.discordapp.net/attachments/1077207076167753739/1102891346496340060/image.png)](https://cdn.discordapp.com/attachments/1077207076167753739/1106561485330731078/image.png)
 
 
 
