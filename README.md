@@ -1,6 +1,6 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/c1b8166f-e2bb-4aba-8b93-7246488a52db)
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/8810a3de-8ffe-4e11-be59-3d90632db734)
 
 
 This app is a simple Java based GUI that controls a WS2812B LED strip using an Arduino. The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient.
