@@ -205,6 +205,7 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	public void openSerial() {
+		String portName = DashboardPanel.cbSerialDevices.getSelectedItem().toString();
 		arduino = new Arduino(null, portName, 115200); // set the baudrate to match your arduino code
 		if (arduino != null) {
 			arduino.sendCommandBlackOut();
