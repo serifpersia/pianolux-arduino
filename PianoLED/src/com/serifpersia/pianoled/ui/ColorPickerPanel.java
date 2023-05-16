@@ -26,6 +26,7 @@ public class ColorPickerPanel extends JPanel {
 	private Rectangle2D colorPanel;
 	private Rectangle2D huePanel;
 	private BufferedImage colorPanelImage;
+	private BufferedImage huePanelImage;
 
 	public ColorPickerPanel() {
 		setBackground(BACKGROUND_COLOR);
@@ -56,11 +57,18 @@ public class ColorPickerPanel extends JPanel {
 
 		// draw hue panel
 		huePanel = new Rectangle2D.Float(width - HUE_PANEL_WIDTH, 0, HUE_PANEL_WIDTH, height);
-		for (int i = 0; i < height; i++) {
-			float hue = i / (float) height; // increment hue from 0 to 1
-			g2d.setColor(Color.getHSBColor(hue, 1.0f, 1.0f));
-			g2d.fillRect((int) huePanel.getX(), i, (int) huePanel.getWidth(), 1);
+		huePanelImage = new BufferedImage((int) huePanel.getWidth(), (int) huePanel.getHeight(),
+				BufferedImage.TYPE_INT_ARGB);
+
+		// Draw the hue panel
+		for (int x = 0; x < huePanelImage.getWidth(); x++) {
+			for (int y = 0; y < huePanel.getHeight(); y++) {
+				float hue = y / (float) huePanelImage.getHeight(); // increment hue from 0 to 1
+				Color color = Color.getHSBColor(hue, 1.0f, 1.0f);
+				huePanelImage.setRGB(x, y, color.getRGB());
+			}
 		}
+		g2d.drawImage(huePanelImage, (int) huePanel.getX(), (int) huePanel.getY(), null);
 
 		// draw hue indicator
 		g2d.setColor(Color.WHITE);
@@ -83,14 +91,18 @@ public class ColorPickerPanel extends JPanel {
 		g2d.drawImage(colorPanelImage, (int) colorPanel.getX(), (int) colorPanel.getY(), null);
 
 		// draw color panel indicator
-		g2d.setColor(Color.WHITE);
+		if (saturation <= 0.5f && brightness >= 0.5f) {
+			g2d.setColor(Color.BLACK);
+		} else {
+			g2d.setColor(Color.WHITE);
+		}
+
 		// add lines here
 		int cx = (int) (saturation * colorPanel.getWidth());
 		int cy = (int) ((1 - brightness) * colorPanel.getHeight());
 		g2d.drawOval(cx - 10, cy - 10, 20, 20);
 
 		g2d.dispose();
-
 	}
 
 	private void updateHue(MouseEvent e) {
