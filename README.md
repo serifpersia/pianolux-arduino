@@ -1,6 +1,6 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/c1b8166f-e2bb-4aba-8b93-7246488a52db)
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/8810a3de-8ffe-4e11-be59-3d90632db734)
 
 
 This app is a simple Java based GUI that controls a WS2812B LED strip using an Arduino. The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient.
@@ -26,7 +26,11 @@ To use the app, you need to install the latest Java OpenJRE version and use the 
 
 1.Run included Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
 
-2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. 
+2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. If you use Arduino IDE 1 or you didnt install AVR Boards drivers you won't be able to use the Refresh button, manual selection of arduino com port will work tho. To install drivers make sure you have Arduino IDE 2 and do ctrl+shift+B and click on second icon and click install button. For the other IDE look on google how to load drivers from ARDUINODE folder  Device Manager
+
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd)
+
+
 4. With Upload Complete prompt, you are ready to use the PianoLED app.
 
 Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
