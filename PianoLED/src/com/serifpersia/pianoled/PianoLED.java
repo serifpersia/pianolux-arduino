@@ -45,7 +45,7 @@ public class PianoLED extends JFrame {
 	}
 
 	private void init() {
-		setSize(950, 650);
+		setSize(950, 700);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());

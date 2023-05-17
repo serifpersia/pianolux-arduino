@@ -1,10 +1,8 @@
 package com.serifpersia.pianoled.ui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -13,32 +11,46 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ColorPickerPanel extends JPanel {
 
-	private static final Color BACKGROUND_COLOR = new Color(21, 25, 28);
-	private static final int HUE_PANEL_WIDTH = 35;
-	private static final int COLOR_PANEL_SPACING = 15; // set the size of the gap
-
+	private static final int OVAL_SIZE = 35;
+	private static final int ARC_THICKNESS = 35;
+	private static final int SPACING = 1;
+	private static final double PANEL_WIDTH_FACTOR = 1.85;
+	private static final double PANEL_HEIGHT_FACTOR = 1.85;
+	private static final int INDICATOR_SIZE = 12;
 	static Color colorPickerColor = Color.WHITE;
+	private int ovalAngle = 0; // Current angle of the oval
 
 	private float hue = 0f;
 	private float saturation = 1f;
 	private float brightness = 1f;
 
 	private Rectangle2D colorPanel;
-	private Rectangle2D huePanel;
 	private BufferedImage colorPanelImage;
-	private BufferedImage huePanelImage;
 
 	public ColorPickerPanel() {
-		setBackground(BACKGROUND_COLOR);
+		setBackground(Color.BLACK);
 		setLayout(null);
+		setDoubleBuffered(true); // Enable double buffering
 
-		addMouseMotionListener(new MouseMotionAdapter() {
+		addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if (huePanel.contains(e.getPoint())) {
-					updateHue(e);
-				} else if (colorPanel.contains(e.getPoint())) {
+				int centerX = getWidth() / 2;
+				int centerY = getHeight() / 2;
+
+				if (colorPanel.contains(e.getPoint())) {
 					updateSaturationAndBrightness(e);
+					repaint();
+				} else {
+					double dx = e.getX() - centerX;
+					double dy = e.getY() - centerY;
+					double angle = Math.toDegrees(Math.atan2(dy, dx));
+					if (angle < 0) {
+						angle += 360;
+					}
+					ovalAngle = (int) angle;
+
+					updateHue();
 				}
 				updateSelcetedColor();
 				repaint();
@@ -50,36 +62,56 @@ public class ColorPickerPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		int width = getWidth();
-		int height = getHeight();
-
 		Graphics2D g2d = (Graphics2D) g;
 
-		// draw hue panel
-		huePanel = new Rectangle2D.Float(width - HUE_PANEL_WIDTH, 0, HUE_PANEL_WIDTH, height);
-		huePanelImage = new BufferedImage((int) huePanel.getWidth(), (int) huePanel.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
+		int centerX = getWidth() / 2;
+		int centerY = getHeight() / 2;
+		int spacing = SPACING;
+		int arcThickness = ARC_THICKNESS;
+		int arcSize = Math.min(centerX, centerY) * 2 - arcThickness;
+		int arcX = centerX - arcSize / 2;
+		int arcY = centerY - arcSize / 2;
+		int circleSize = arcSize - 2 * spacing;
 
-		// Draw the hue panel
-		for (int x = 0; x < huePanelImage.getWidth(); x++) {
-			for (int y = 0; y < huePanel.getHeight(); y++) {
-				float hue = y / (float) huePanelImage.getHeight(); // increment hue from 0 to 1
-				Color color = Color.getHSBColor(hue, 1.0f, 1.0f);
-				huePanelImage.setRGB(x, y, color.getRGB());
-			}
+		// Create a new BufferedImage for the arcs
+		BufferedImage arcsImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2dArcs = arcsImage.createGraphics();
+
+		for (int angle = 0; angle < 360; angle++) {
+			float hue = angle / 360.0f;
+			g2dArcs.setColor(Color.getHSBColor(hue, 1.0f, 1.0f));
+			int startAngle = -angle;
+			g2dArcs.setStroke(new BasicStroke(arcThickness));
+			g2dArcs.drawArc(arcX + spacing, arcY + spacing, circleSize, circleSize, startAngle, 1);
 		}
-		g2d.drawImage(huePanelImage, (int) huePanel.getX(), (int) huePanel.getY(), null);
 
-		// draw hue indicator
+		g2dArcs.dispose();
+
+		// Draw the arcs onto the main BufferedImage
+		g2d.drawImage(arcsImage, 0, 0, null);
+
+		// Draw the hue indicator
 		g2d.setColor(Color.WHITE);
-		int hy = (int) (hue * huePanel.getHeight());
-		int hx = (int) huePanel.getX();
-		g2d.fillRect(hx, hy, HUE_PANEL_WIDTH, 5);
+		g2d.setStroke(new BasicStroke(0));
+		int ovalRadius = (int) (circleSize / 2 - spacing - OVAL_SIZE / 2 * -0.05f);
+		int ovalX = centerX + (int) (ovalRadius * Math.cos(Math.toRadians(ovalAngle)));
+		int ovalY = centerY + (int) (ovalRadius * Math.sin(Math.toRadians(ovalAngle)));
+
+		g2d.drawOval(ovalX - OVAL_SIZE / 2, ovalY - OVAL_SIZE / 2, OVAL_SIZE, OVAL_SIZE);
 
 		// Draw the color panel
-		colorPanel = new Rectangle2D.Float(0, 0, width - HUE_PANEL_WIDTH - COLOR_PANEL_SPACING, height);
-		colorPanelImage = new BufferedImage((int) colorPanel.getWidth(), (int) colorPanel.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
+		int panelWidth = (int) (circleSize / PANEL_WIDTH_FACTOR);
+		int panelHeight = (int) (circleSize / PANEL_HEIGHT_FACTOR);
+		int panelX = centerX - panelWidth / 2;
+		int panelY = centerY - panelHeight / 2;
+
+		colorPanel = new Rectangle2D.Float(panelX, panelY, panelWidth, panelHeight);
+
+		if (colorPanelImage == null || colorPanelImage.getWidth() != panelWidth
+				|| colorPanelImage.getHeight() != panelHeight) {
+			colorPanelImage = new BufferedImage(panelWidth, panelHeight, BufferedImage.TYPE_INT_ARGB);
+		}
+
 		for (int x = 0; x < colorPanelImage.getWidth(); x++) {
 			for (int y = 0; y < colorPanelImage.getHeight(); y++) {
 				float saturation = (float) x / (float) colorPanelImage.getWidth();
@@ -90,35 +122,25 @@ public class ColorPickerPanel extends JPanel {
 		}
 		g2d.drawImage(colorPanelImage, (int) colorPanel.getX(), (int) colorPanel.getY(), null);
 
-		// draw color panel indicator
-		if (saturation <= 0.5f && brightness >= 0.5f) {
-			g2d.setColor(Color.BLACK);
-		} else {
-			g2d.setColor(Color.WHITE);
-		}
-
-		// add lines here
-		int cx = (int) (saturation * colorPanel.getWidth());
-		int cy = (int) ((1 - brightness) * colorPanel.getHeight());
-		g2d.drawOval(cx - 10, cy - 10, 20, 20);
+		// Draw the color panel indicator
+		g2d.setColor(Color.WHITE);
+		int cx = (int) colorPanel.getX() + (int) (saturation * panelWidth);
+		int cy = (int) colorPanel.getY() + (int) ((1 - brightness) * panelHeight);
+		g2d.drawOval(cx - INDICATOR_SIZE, cy - INDICATOR_SIZE, INDICATOR_SIZE * 2, INDICATOR_SIZE * 2);
 
 		g2d.dispose();
 	}
 
-	private void updateHue(MouseEvent e) {
-		hue = e.getY() / (float) huePanel.getHeight();
+	private void updateHue() {
+		hue = (float) ovalAngle / 360.0f;
+		// System.out.println("Hue: " + hue);
 	}
 
 	private void updateSaturationAndBrightness(MouseEvent e) {
-		saturation = (float) (e.getX() / (float) colorPanel.getWidth());
-		brightness = 1 - (float) (e.getY() / (float) colorPanel.getHeight());
-	}
-
-	public void setCustomColor(float hue, float saturation, float brightness) {
-		this.hue = hue;
-		this.saturation = saturation;
-		this.brightness = brightness;
-		ControlsPanel.selectedColor = Color.getHSBColor(hue, saturation, brightness);
+		double x = e.getX() - colorPanel.getX();
+		double y = e.getY() - colorPanel.getY();
+		saturation = (float) (x / colorPanel.getWidth());
+		brightness = 1.0f - (float) (y / colorPanel.getHeight());
 	}
 
 	private void updateSelcetedColor() {
@@ -127,5 +149,12 @@ public class ColorPickerPanel extends JPanel {
 		ControlsPanel.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
 		ControlsPanel.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
 		ControlsPanel.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
+	}
+
+	public void setCustomColor(float hue, float saturation, float brightness) {
+		this.hue = hue;
+		this.saturation = saturation;
+		this.brightness = brightness;
+		ControlsPanel.selectedColor = Color.getHSBColor(hue, saturation, brightness);
 	}
 }
