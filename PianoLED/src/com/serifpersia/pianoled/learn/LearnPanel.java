@@ -47,7 +47,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private static final int PLAYER_REWIND_SEC = 5;
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
 	private static final Color SLIDING_PANEL_BG = Color.BLACK;
-	private static final int REFRESH_RATE_MS = 20;
+	private static final int REFRESH_RATE_MS = 16;
 	public static JComboBox<?> MidiOutList;
 	private MidiPlayer midiPlayer;
 	private PianoRoll pianoRoll;
@@ -167,7 +167,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 143, 0, -195, 69, 94, 36, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 143, 0, -14, 30, 94, 36, 0 };
 		gbl_controlsPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0 };
 		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
@@ -230,9 +230,10 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
 		MidiOutList = new JComboBox<Object>(pianoLED.getPianoController().getMidiOutDevices());
+		MidiOutList.setFont(new Font("Tahoma", Font.BOLD, 11));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		MidiOutList.setBackground(SLIDING_PANEL_BG);
-		MidiOutList.setForeground(Color.WHITE);
+		MidiOutList.setBackground(new Color(255, 255, 255));
+		MidiOutList.setForeground(new Color(0, 0, 0));
 		MidiOutList.setFocusable(false);
 		MidiOutList.setToolTipText("MIDI Output Device");
 		gbc_comboBox.gridwidth = 4;

@@ -17,7 +17,7 @@ public class RightPanel extends JPanel {
 		// UI
 		// Create an object of DashboardPanel
 		DashboardPanel dashboardPanel = new DashboardPanel(pianoLED);
-		LivePlayPanel livePlayPanel = new LivePlayPanel();
+		LivePlayPanel livePlayPanel = new LivePlayPanel(pianoLED);
 		ControlsPanel controlsPanel = new ControlsPanel(pianoLED);
 		LearnPanel learnPanel = new LearnPanel(pianoLED);
 

@@ -65,7 +65,6 @@ public class PianoLED extends JFrame {
 			}
 		});
 
-		// qgetContentPane().add(topPanel, BorderLayout.NORTH);
 		getContentPane().add(leftPanel, BorderLayout.WEST);
 
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel

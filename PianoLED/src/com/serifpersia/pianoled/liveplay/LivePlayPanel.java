@@ -18,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
+import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.ui.BottomPanel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -28,7 +29,6 @@ import javax.swing.JSlider;
 @SuppressWarnings("serial")
 public class LivePlayPanel extends JPanel {
 
-	private JPanel CenterPane;
 	private JPanel slideControlsPane = new JPanel();
 	private JPanel controlsPane;
 
@@ -50,16 +50,11 @@ public class LivePlayPanel extends JPanel {
 	private WebcamPanel webcamPanel;
 	private Webcam webcam;
 
-	public LivePlayPanel() {
+	public LivePlayPanel(PianoLED pianoLED) {
 		setBackground(new Color(0, 0, 0));
 		setLayout(new BorderLayout(0, 0));
 
-		CenterPane = new JPanel();
-		CenterPane.setLayout(new BorderLayout(0, 0));
-		CenterPane.setBackground(Color.BLACK);
-		add(CenterPane, BorderLayout.CENTER);
 		addSlidingControlPanel();
-
 	}
 
 	private void addSlidingControlPanel() {
@@ -132,9 +127,9 @@ public class LivePlayPanel extends JPanel {
 
 		CameraList = new JComboBox<String>();
 		GridBagConstraints gbc_CameraList = new GridBagConstraints();
-		CameraList.setForeground(new Color(255, 255, 255));
+		CameraList.setForeground(new Color(0, 0, 0));
 		CameraList.setFont(new Font("Tahoma", Font.BOLD, 15));
-		CameraList.setBackground(Color.BLACK);
+		CameraList.setBackground(new Color(255, 255, 255));
 		CameraList.setToolTipText("Webcam device");
 		gbc_CameraList.gridwidth = 2;
 		gbc_CameraList.insets = new Insets(0, 0, 5, 0);
@@ -153,9 +148,9 @@ public class LivePlayPanel extends JPanel {
 		{
 			camResList = new JComboBox<Object>(resCamList);
 			GridBagConstraints gbc_resCamList = new GridBagConstraints();
-			camResList.setForeground(new Color(255, 255, 255));
+			camResList.setForeground(new Color(0, 0, 0));
 			camResList.setFont(new Font("Tahoma", Font.BOLD, 15));
-			camResList.setBackground(Color.BLACK);
+			camResList.setBackground(new Color(255, 255, 255));
 			camResList.setToolTipText("Webcam resolution");
 			gbc_resCamList.gridwidth = 2;
 			gbc_resCamList.insets = new Insets(0, 0, 5, 0);
@@ -194,8 +189,6 @@ public class LivePlayPanel extends JPanel {
 				btnOpenCamera.setText("Open Camera");
 				btnOpenCamera.setBackground(new Color(231, 76, 60));
 			}
-
-			CenterPane.repaint();
 		});
 
 		btnFlip_X = new JButton("Flip X");
@@ -348,37 +341,24 @@ public class LivePlayPanel extends JPanel {
 
 				g2.setTransform(transform);
 
-				Dimension imageSize = webcam.getViewSize();
-				int cropLeft = imageSize.width * getLeftCrop() / 200;
-				int cropRight = imageSize.width * getRightCrop() / 200;
-				int cropTop = imageSize.height * getTopCrop() / 200;
-				int cropBottom = imageSize.height * getBottomCrop() / 200;
+				BufferedImage image = getImage();
+				if (image != null) {
+					// Calculate the crop dimensions
+					int cropLeft = (int) (image.getWidth() * (leftCrop_XSlider.getValue() / 200.0));
+					int cropRight = (int) (image.getWidth() * (rightCrop_XSlider.getValue() / 200.0));
+					int cropTop = (int) (image.getHeight() * (topCrop_YSlider.getValue() / 200.0));
+					int cropBottom = (int) (image.getHeight() * (bottomCrop_YSlider.getValue() / 200.0));
 
-				BufferedImage image = webcam.getImage();
-				int width = image.getWidth();
-				int height = image.getHeight();
-				int croppedWidth = width - cropLeft - cropRight;
-				int croppedHeight = height - cropTop - cropBottom;
-				if (croppedWidth <= 0 || croppedHeight <= 0) {
-					// The cropped region is invalid, do not draw anything
-					return;
+					// Calculate the cropped image dimensions
+					int cropWidth = image.getWidth() - cropLeft - cropRight;
+					int cropHeight = image.getHeight() - cropTop - cropBottom;
+
+					// Crop the image
+					BufferedImage croppedImage = image.getSubimage(cropLeft, cropTop, cropWidth, cropHeight);
+
+					// Draw the cropped image to the panel
+					g.drawImage(croppedImage, 0, 0, getWidth(), getHeight(), null);
 				}
-
-				double zoomX = (double) getWidth() / croppedWidth;
-				double zoomY = (double) getHeight() / croppedHeight;
-
-				// create a new transform that scales and translates the cropped region to fill
-				// the panel
-				AffineTransform zoomTransform = new AffineTransform();
-				zoomTransform.translate(-cropLeft, -cropTop);
-				zoomTransform.scale(zoomX, zoomY);
-
-				// apply the zoom transform to the graphics object
-				g2.setTransform(zoomTransform);
-
-				// draw the cropped image using the zoom transform
-				BufferedImage croppedImage = image.getSubimage(cropLeft, cropTop, croppedWidth, croppedHeight);
-				g2.drawImage(croppedImage, 0, 0, null);
 			}
 		};
 
@@ -394,19 +374,4 @@ public class LivePlayPanel extends JPanel {
 		BottomPanel.webcamPane.revalidate();
 	}
 
-	private int getLeftCrop() {
-		return leftCrop_XSlider.getValue();
-	}
-
-	private int getRightCrop() {
-		return rightCrop_XSlider.getValue();
-	}
-
-	private int getTopCrop() {
-		return topCrop_YSlider.getValue();
-	}
-
-	private int getBottomCrop() {
-		return bottomCrop_YSlider.getValue();
-	}
 }
