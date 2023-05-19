@@ -33,7 +33,6 @@ public class LivePlayPanel extends JPanel {
 	private JPanel controlsPane;
 
 	private JComboBox<String> CameraList = new JComboBox<>();
-	private JComboBox<?> camResList = new JComboBox<>();
 
 	private JButton btnOpenCamera;
 	private JButton btnFlip_Y;
@@ -71,13 +70,12 @@ public class LivePlayPanel extends JPanel {
 		slideControlsPane.add(controlsPane, BorderLayout.CENTER);
 		GridBagLayout gbl_controlsPane = new GridBagLayout();
 		gbl_controlsPane.columnWidths = new int[] { 26, 13, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 142, 0, 35, 0, -9, 15, 0, 19, 12, 0 };
+		gbl_controlsPane.rowHeights = new int[] { 14, 8, -10, 10, -8, 12, 0, -6, 0 };
 		gbl_controlsPane.columnWeights = new double[] { 1.0, 1.0, Double.MIN_VALUE };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		controlsPane.setLayout(gbl_controlsPane);
 
 		addListOfCameras();
-		addListOfResolutions();
 		addWebcamControls();
 	}
 
@@ -143,24 +141,6 @@ public class LivePlayPanel extends JPanel {
 		}
 	}
 
-	private void addListOfResolutions() {
-		String[] resCamList = { "320x240", "640x480", "800x600", "1024x768", "1280x720", "1280x960", "1920x1080" };
-		{
-			camResList = new JComboBox<Object>(resCamList);
-			GridBagConstraints gbc_resCamList = new GridBagConstraints();
-			camResList.setForeground(new Color(0, 0, 0));
-			camResList.setFont(new Font("Tahoma", Font.BOLD, 15));
-			camResList.setBackground(new Color(255, 255, 255));
-			camResList.setToolTipText("Webcam resolution");
-			gbc_resCamList.gridwidth = 2;
-			gbc_resCamList.insets = new Insets(0, 0, 5, 0);
-			gbc_resCamList.fill = GridBagConstraints.HORIZONTAL;
-			gbc_resCamList.gridx = 0;
-			gbc_resCamList.gridy = 2;
-			controlsPane.add(camResList, gbc_resCamList);
-		}
-	}
-
 	private void addWebcamControls() {
 
 		btnOpenCamera = new JButton("Open Camera");
@@ -175,7 +155,7 @@ public class LivePlayPanel extends JPanel {
 		gbc_btnOpenCamera.gridwidth = 2;
 		gbc_btnOpenCamera.insets = new Insets(0, 0, 5, 0);
 		gbc_btnOpenCamera.gridx = 0;
-		gbc_btnOpenCamera.gridy = 3;
+		gbc_btnOpenCamera.gridy = 2;
 		controlsPane.add(btnOpenCamera, gbc_btnOpenCamera);
 		btnOpenCamera.addActionListener(e -> {
 			if (btnOpenCamera.getText().equals("Open Camera")) {
@@ -201,7 +181,7 @@ public class LivePlayPanel extends JPanel {
 		btnFlip_X.setToolTipText("Flip Webcam X");
 		gbc_btnFlip_X.insets = new Insets(0, 0, 5, 5);
 		gbc_btnFlip_X.gridx = 0;
-		gbc_btnFlip_X.gridy = 4;
+		gbc_btnFlip_X.gridy = 3;
 		controlsPane.add(btnFlip_X, gbc_btnFlip_X);
 		btnFlip_X.addActionListener(e -> {
 			if (btnFlip_X.getText().equals("Flip X")) {
@@ -225,7 +205,7 @@ public class LivePlayPanel extends JPanel {
 		btnFlip_Y.setToolTipText("Flip Webcam Y");
 		gbc_btnFlip_Y.insets = new Insets(0, 0, 5, 0);
 		gbc_btnFlip_Y.gridx = 1;
-		gbc_btnFlip_Y.gridy = 4;
+		gbc_btnFlip_Y.gridy = 3;
 		controlsPane.add(btnFlip_Y, gbc_btnFlip_Y);
 		btnFlip_Y.addActionListener(e -> {
 			if (btnFlip_Y.getText().equals("Flip Y")) {
@@ -247,7 +227,7 @@ public class LivePlayPanel extends JPanel {
 		gbc_leftCrop_XSlider.gridwidth = 2;
 		gbc_leftCrop_XSlider.insets = new Insets(0, 0, 5, 0);
 		gbc_leftCrop_XSlider.gridx = 0;
-		gbc_leftCrop_XSlider.gridy = 5;
+		gbc_leftCrop_XSlider.gridy = 4;
 		controlsPane.add(leftCrop_XSlider, gbc_leftCrop_XSlider);
 		leftCrop_XSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -265,7 +245,7 @@ public class LivePlayPanel extends JPanel {
 		gbc_RightCrop_XSlider.gridwidth = 2;
 		gbc_RightCrop_XSlider.insets = new Insets(0, 0, 5, 0);
 		gbc_RightCrop_XSlider.gridx = 0;
-		gbc_RightCrop_XSlider.gridy = 6;
+		gbc_RightCrop_XSlider.gridy = 5;
 		controlsPane.add(rightCrop_XSlider, gbc_RightCrop_XSlider);
 		rightCrop_XSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -283,7 +263,7 @@ public class LivePlayPanel extends JPanel {
 		gbc_topCrop_YSlider.gridwidth = 2;
 		gbc_topCrop_YSlider.insets = new Insets(0, 0, 5, 0);
 		gbc_topCrop_YSlider.gridx = 0;
-		gbc_topCrop_YSlider.gridy = 7;
+		gbc_topCrop_YSlider.gridy = 6;
 		controlsPane.add(topCrop_YSlider, gbc_topCrop_YSlider);
 		topCrop_YSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -300,7 +280,7 @@ public class LivePlayPanel extends JPanel {
 		bottomCrop_YSlider.setValue(0);
 		gbc_bottomCrop_YSlider.gridwidth = 2;
 		gbc_bottomCrop_YSlider.gridx = 0;
-		gbc_bottomCrop_YSlider.gridy = 8;
+		gbc_bottomCrop_YSlider.gridy = 7;
 		controlsPane.add(bottomCrop_YSlider, gbc_bottomCrop_YSlider);
 		bottomCrop_YSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -315,12 +295,9 @@ public class LivePlayPanel extends JPanel {
 		// Create a panel to display the webcam feed and add it to the center
 		String selectedCamera = (String) CameraList.getSelectedItem();
 		webcam = Webcam.getWebcamByName(selectedCamera);
-		String selectedResolution = (String) camResList.getSelectedItem();
-		String[] resolutionParts = selectedResolution.split("x");
-		int width = Integer.parseInt(resolutionParts[0]);
-		int height = Integer.parseInt(resolutionParts[1]);
-		Dimension size = new Dimension(width, height);
-		webcam.setViewSize(size);
+		Dimension[] resolutions = webcam.getViewSizes();
+		Dimension maxSize = resolutions[resolutions.length - 1]; // Get the highest resolution available
+		webcam.setViewSize(maxSize);
 		webcam.open();
 
 		webcamPanel = new WebcamPanel(webcam) {
@@ -344,10 +321,10 @@ public class LivePlayPanel extends JPanel {
 				BufferedImage image = getImage();
 				if (image != null) {
 					// Calculate the crop dimensions
-					int cropLeft = (int) (image.getWidth() * (leftCrop_XSlider.getValue() / 200.0));
-					int cropRight = (int) (image.getWidth() * (rightCrop_XSlider.getValue() / 200.0));
-					int cropTop = (int) (image.getHeight() * (topCrop_YSlider.getValue() / 200.0));
-					int cropBottom = (int) (image.getHeight() * (bottomCrop_YSlider.getValue() / 200.0));
+					int cropLeft = (int) (image.getWidth() * (leftCrop_XSlider.getValue() / 125.0));
+					int cropRight = (int) (image.getWidth() * (rightCrop_XSlider.getValue() / 125.0));
+					int cropTop = (int) (image.getHeight() * (topCrop_YSlider.getValue() / 125.0));
+					int cropBottom = (int) (image.getHeight() * (bottomCrop_YSlider.getValue() / 125.0));
 
 					// Calculate the cropped image dimensions
 					int cropWidth = image.getWidth() - cropLeft - cropRight;
