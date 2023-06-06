@@ -46,26 +46,6 @@ public class PianoLED extends JFrame {
 	public PianoLED() {
 		init();
 		showLeftPanel();
-		exitAppHotkey();
-	}
-
-	private void exitAppHotkey() {
-		// Set focus on the component
-		this.requestFocusInWindow(); // or this.requestFocus()
-
-		// Add key listener to panel
-		this.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// Check if the pressed key is ESC
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					// Set the visibility of the panel to false
-					System.out.println("Application is closing. Releasing resources...");
-					pianoController.dispose();
-					System.exit(0);
-				}
-			}
-		});
 	}
 
 	private void init() {
