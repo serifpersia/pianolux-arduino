@@ -119,14 +119,18 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 				if (width - x <= 205) {
 					// Mouse is near the right border of LearnPanel
 					slideControlsPane.setVisible(true);
+				} else if (x <= 100) {
+					pianoLED.leftPanel.setVisible(true);
 				} else {
 					// Mouse is not near the right border of LearnPanel
 					slideControlsPane.setVisible(false);
+					pianoLED.leftPanel.setVisible(false);
 				}
 			}
 		});
 
 		slideControlsPane.addMouseMotionListener(new MouseMotionAdapter() {
+
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				int x = e.getX();

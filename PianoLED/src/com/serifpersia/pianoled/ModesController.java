@@ -39,32 +39,37 @@ public class ModesController {
 		switch (GetUI.getModeName(n)) {
 		case "Default":
 			disableAllModes();
-			GetUI.setAnimationsDefaults(255, 255);
+			GetUI.setDefaults(8, 255, 255);
 			break;
 		case "Splash":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 120);
 			SplashOn = true;
 			break;
 		case "Random":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 255);
 			RandomOn = true;
 			break;
 		case "Gradient":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 255);
 			GradientOn = true;
 			break;
 		case "Velocity":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 255);
 			VelocityOn = true;
 			break;
 		case "Split":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 255);
 			SplitOn = true;
 			break;
 		case "Animation":
 			disableAllModes();
+			GetUI.setDefaults(8, 255, 0);
 			AnimationOn = true;
-			GetUI.setAnimationsDefaults(255, 0);
 			break;
 		}
 	}

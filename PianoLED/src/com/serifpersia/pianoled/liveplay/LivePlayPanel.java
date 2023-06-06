@@ -53,11 +53,11 @@ public class LivePlayPanel extends JPanel {
 		setBackground(new Color(0, 0, 0));
 		setLayout(new BorderLayout(0, 0));
 
-		addSlidingControlPanel();
+		addSlidingControlPanel(pianoLED);
 	}
 
-	private void addSlidingControlPanel() {
-		addSlidingPanel();
+	private void addSlidingControlPanel(PianoLED pianoLED) {
+		addSlidingPanel(pianoLED);
 
 		addWebcamPanel();
 
@@ -87,7 +87,7 @@ public class LivePlayPanel extends JPanel {
 		slideControlsPane.add(lbCamControls, BorderLayout.NORTH);
 	}
 
-	private void addSlidingPanel() {
+	private void addSlidingPanel(PianoLED pianoLED) {
 		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
@@ -99,11 +99,12 @@ public class LivePlayPanel extends JPanel {
 				int x = e.getX();
 				int width = getWidth();
 				if (width - x <= 205) {
-					// Mouse is near the right border of LearnPanel
 					slideControlsPane.setVisible(true);
+				} else if (x <= 100) {
+					pianoLED.leftPanel.setVisible(true);
 				} else {
-					// Mouse is not near the right border of LearnPanel
 					slideControlsPane.setVisible(false);
+					pianoLED.leftPanel.setVisible(false);
 				}
 			}
 		});

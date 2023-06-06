@@ -59,6 +59,7 @@ public class DashboardPanel extends JPanel {
 		JPanel pnlDashboard = new JPanel();
 		pnlDashboard.setBackground(new Color(231, 76, 60));
 		add(pnlDashboard, BorderLayout.NORTH);
+		pnlDashboard.setLayout(new BorderLayout(0, 0));
 
 		JLabel lblDashboard = new JLabel("Dashboard");
 		lblDashboard.setBackground(new Color(0, 0, 0));
@@ -66,6 +67,13 @@ public class DashboardPanel extends JPanel {
 		lblDashboard.setForeground(Color.WHITE);
 		lblDashboard.setFont(new Font("Tahoma", Font.BOLD, 40));
 		pnlDashboard.add(lblDashboard);
+		
+		JLabel lblDashboard_1 = new JLabel("<");
+		lblDashboard_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDashboard_1.setForeground(Color.WHITE);
+		lblDashboard_1.setFont(new Font("Tahoma", Font.BOLD, 40));
+		lblDashboard_1.setBackground(Color.BLACK);
+		pnlDashboard.add(lblDashboard_1, BorderLayout.WEST);
 
 		JPanel pnlButtons = new JPanel();
 		pnlButtons.setBackground(new Color(0, 0, 0));
