@@ -54,7 +54,7 @@ public class DrawPiano extends JPanel {
 
 			if (!isBlackKey(pitch)) {
 				if (keysPressed[i] == 1) {
-					g.setColor(ControlsPanel.selectedColor);
+					g.setColor(GetUI.selectedColor);
 				} else {
 					g.setColor(Color.WHITE);
 				}
@@ -79,7 +79,7 @@ public class DrawPiano extends JPanel {
 			if (isBlackKey(pitch)) {
 				currentX += (int) (blackKeyWidth * getBlackKeyOffset(pitch));
 				if (keysPressed[i] == 1) {
-					g.setColor(ControlsPanel.selectedColor);
+					g.setColor(GetUI.selectedColor);
 				} else {
 					g.setColor(Color.BLACK);
 				}

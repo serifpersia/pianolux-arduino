@@ -47,11 +47,11 @@ public class Profile {
 	}
 
 	public static String saveGradients() {
-		return "leftSide=" + PianoController.LeftSideColor.getRed() + "," + PianoController.LeftSideColor.getGreen()
-				+ "," + PianoController.LeftSideColor.getBlue() + ";middleSide="
-				+ PianoController.MiddleSideColor.getRed() + "," + PianoController.MiddleSideColor.getGreen() + ","
-				+ PianoController.MiddleSideColor.getBlue() + ";rightSide=" + PianoController.RightSideColor.getRed()
-				+ "," + PianoController.RightSideColor.getGreen() + "," + PianoController.RightSideColor.getBlue();
+		return "leftSide=" + PianoController.side1.getRed() + "," + PianoController.side1.getGreen() + ","
+				+ PianoController.side1.getBlue() + ";middleSide=" + PianoController.side2.getRed() + ","
+				+ PianoController.side2.getGreen() + "," + PianoController.side2.getBlue() + ";rightSide="
+				+ PianoController.side3.getRed() + "," + PianoController.side3.getGreen() + ","
+				+ PianoController.side3.getBlue();
 	}
 
 	private static int saveColorPreset() {
@@ -115,19 +115,19 @@ public class Profile {
 							int leftSideRed = Integer.parseInt(leftSideValues[0]);
 							int leftSideGreen = Integer.parseInt(leftSideValues[1]);
 							int leftSideBlue = Integer.parseInt(leftSideValues[2]);
-							PianoController.LeftSideColor = new Color(leftSideRed, leftSideGreen, leftSideBlue);
+							PianoController.side1 = new Color(leftSideRed, leftSideGreen, leftSideBlue);
 
 							String[] middleSideValues = gradientValues[1].substring(11).split(",");
 							int middleSideRed = Integer.parseInt(middleSideValues[0]);
 							int middleSideGreen = Integer.parseInt(middleSideValues[1]);
 							int middleSideBlue = Integer.parseInt(middleSideValues[2]);
-							PianoController.MiddleSideColor = new Color(middleSideRed, middleSideGreen, middleSideBlue);
+							PianoController.side2 = new Color(middleSideRed, middleSideGreen, middleSideBlue);
 
 							String[] rightSideValues = gradientValues[2].substring(10).split(",");
 							int rightSideRed = Integer.parseInt(rightSideValues[0]);
 							int rightSideGreen = Integer.parseInt(rightSideValues[1]);
 							int rightSideBlue = Integer.parseInt(rightSideValues[2]);
-							PianoController.RightSideColor = new Color(rightSideRed, rightSideGreen, rightSideBlue);
+							PianoController.side3 = new Color(rightSideRed, rightSideGreen, rightSideBlue);
 						}
 					} else if (line.startsWith("Background Light = ")) {
 						String state = line.substring(line.indexOf("=") + 1).trim();

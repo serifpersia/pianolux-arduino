@@ -6,9 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -43,14 +40,12 @@ public class ControlsPanel extends JPanel {
 	static int defaultFadeVal = 255;
 	static int defaultMaxSplashLengthVal = 8;
 
-	public static Color selectedColor = Color.RED;
-	private Color customColor = Color.BLACK;
-
 	private JButton btn_Load;
 	private JButton btn_Save;
 	private JButton btn_LeftArrow;
 	private JButton btn_RightArrow;
 	private JButton btnSet_BG;
+
 	public static JRadioButton rdbtn_BG_Off;
 	public static JRadioButton rdbtn_BG_On;
 	public static JRadioButton rdbtn_FixLED_Off;
@@ -61,6 +56,8 @@ public class ControlsPanel extends JPanel {
 	public static JComboBox<?> cb_LED_Mode;
 	public static JComboBox<?> cb_LED_Animations;
 	public static JComboBox<?> cb_ColorPresets;
+
+	public static JComboBox<?> cb_GradientSideList;
 
 	public static JSlider sld_Brightness;
 	public static JSlider sld_Fade;
@@ -75,27 +72,76 @@ public class ControlsPanel extends JPanel {
 	public static ButtonGroup bgGroup;
 	public static ButtonGroup fixLEDGroup;
 	public static ButtonGroup reverseLEDGroup;
-
-	Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
-			new Color(255, 35, 0), // Orange
-			new Color(128, 0, 255), // Purple
-			new Color(255, 35, 35), // Pink
-			new Color(0, 255, 255), // Teal
-			new Color(128, 255, 0), // Lime
-			Color.CYAN, Color.MAGENTA, new Color(255, 25, 25), // Peach
-			new Color(160, 128, 255), // Lavender
-			new Color(128, 192, 192), // Turquoise
-			new Color(255, 80, 0), // Gold
-			customColor };
-
-	List<String> modeEffectsNames = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
-			"Animation");
-
-	static List<String> colorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
-			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Custom");
-
-	List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors", "CloudColors",
-			"LavaColors", "ForestColors", "PartyColors");
+	private JLabel lb_Gradienet2_SetSide1;
+	private JButton btn_Gradienet2_SetSide1;
+	private JLabel lb_Gradienet2_SetSide2;
+	private JButton btn_Gradienet2_SetSide2;
+	private JLabel lb_Gradienet3_SetSide1;
+	private JButton btn_Gradient3_SetSide1;
+	private JLabel lb_Gradienet3_SetSide2;
+	private JButton btn_Gradient3_SetSide2;
+	private JLabel lb_Gradienet3_SetSide3;
+	private JButton btn_Gradient3_SetSide3;
+	private JLabel lb_Gradient4_SetSide1;
+	private JButton btn_Gradient4_SetSide1;
+	private JLabel lb_Gradient4_SetSide2;
+	private JButton btn_Gradient4_SetSide2;
+	private JLabel lb_Gradient4_SetSide3;
+	private JButton btn_Gradient4_SetSide3;
+	private JLabel lb_Gradient4_SetSide4;
+	private JButton btn_Gradient4_SetSide4;
+	private JLabel lb_Gradient5_SetSide1;
+	private JButton btn_Gradient5_SetSide1;
+	private JLabel lb_Gradient5_SetSide2;
+	private JButton btn_Gradient5_SetSide2;
+	private JLabel lb_Gradient5_SetSide3;
+	private JButton btn_Gradient5_SetSide3;
+	private JLabel lb_Gradient5_SetSide4;
+	private JButton btn_Gradient5_SetSide4;
+	private JLabel lb_Gradient5_SetSide5;
+	private JButton btn_Gradient5_SetSide5;
+	private JLabel lb_Gradient6_SetSide1;
+	private JButton btn_Gradient6_SetSide1;
+	private JLabel lb_Gradient6_SetSide2;
+	private JButton btn_Gradient6_SetSide2;
+	private JLabel lb_Gradient6_SetSide3;
+	private JButton btn_Gradient6_SetSide3;
+	private JLabel lb_Gradient6_SetSide4;
+	private JButton btn_Gradient6_SetSide4;
+	private JLabel lb_Gradient6_SetSide5;
+	private JButton btn_Gradient6_SetSide5;
+	private JLabel lb_Gradient6_SetSide6;
+	private JButton btn_Gradient6_SetSide6;
+	private JButton btn_Gradient7_SetSide7;
+	private JLabel lb_Gradient7_SetSide7;
+	private JButton btn_Gradient7_SetSide6;
+	private JLabel lb_Gradient7_SetSide6;
+	private JButton btn_Gradient7_SetSide5;
+	private JLabel lb_Gradient7_SetSide5;
+	private JButton btn_Gradient7_SetSide4;
+	private JLabel lb_Gradient7_SetSide4;
+	private JButton btn_Gradient7_SetSide3;
+	private JLabel lb_Gradient7_SetSide3;
+	private JButton btn_Gradient7_SetSide2;
+	private JLabel lb_Gradient7_SetSide2;
+	private JButton btn_Gradient7_SetSide1;
+	private JLabel lb_Gradient7_SetSide1;
+	private JLabel lb_Gradient8_SetSide1;
+	private JButton btn_Gradient8_SetSide1;
+	private JLabel lb_Gradient8_SetSide2;
+	private JButton btn_Gradient8_SetSide2;
+	private JLabel lb_Gradient8_SetSide3;
+	private JButton btn_Gradient8_SetSide3;
+	private JLabel lb_Gradient8_SetSide4;
+	private JButton btn_Gradient8_SetSide4;
+	private JLabel lb_Gradient8_SetSide5;
+	private JButton btn_Gradient8_SetSide5;
+	private JLabel lb_Gradient8_SetSide6;
+	private JButton btn_Gradient8_SetSide6;
+	private JLabel lb_Gradient8_SetSide7;
+	private JButton btn_Gradient8_SetSide7;
+	private JLabel lb_Gradient8_SetSide8;
+	private JButton btn_Gradient8_SetSide8;
 
 	public ControlsPanel(PianoLED pianoLED) {
 		pianoController = pianoLED.getPianoController();
@@ -224,7 +270,7 @@ public class ControlsPanel extends JPanel {
 		pnl_RightControls.add(pnl_LEDModes);
 		pnl_LEDModes.setLayout(new GridLayout(1, 0, 0, 0));
 
-		cb_LED_Mode = new JComboBox<Object>(modeEffectsNames.toArray(new String[0]));
+		cb_LED_Mode = new JComboBox<Object>(GetUI.modeEffectsNames.toArray(new String[0]));
 		cb_LED_Mode.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_LED_Mode.addActionListener(e -> {
 			int selectedIndex = cb_LED_Mode.getSelectedIndex();
@@ -237,7 +283,7 @@ public class ControlsPanel extends JPanel {
 		pnl_RightControls.add(pnl_Animations);
 		pnl_Animations.setLayout(new GridLayout(1, 0, 0, 0));
 
-		cb_LED_Animations = new JComboBox<Object>(animationNames.toArray(new String[0]));
+		cb_LED_Animations = new JComboBox<Object>(GetUI.animationNames.toArray(new String[0]));
 		cb_LED_Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_LED_Animations.addActionListener(e -> {
 			if (ModesController.AnimationOn) {
@@ -421,17 +467,13 @@ public class ControlsPanel extends JPanel {
 		tabbedPane.addTab("Gradient Controls", null, pnl_GradientControls, null);
 		pnl_GradientControls.setLayout(new BorderLayout(0, 0));
 
-		JComboBox<String> cb_GradientSideList = new JComboBox<>();
+		cb_GradientSideList = new JComboBox<Object>(GetUI.gradientSides.toArray(new String[0]));
 		cb_GradientSideList.setFont(new Font("Tahoma", Font.BOLD, 25));
 		pnl_GradientControls.add(cb_GradientSideList, BorderLayout.NORTH);
-
-		cb_GradientSideList.addItem("2 Side Gradient");
-		cb_GradientSideList.addItem("3 Side Gradient");
-		cb_GradientSideList.addItem("4 Side Gradient");
-		cb_GradientSideList.addItem("5 Side Gradient");
-		cb_GradientSideList.addItem("6 Side Gradient");
-		cb_GradientSideList.addItem("7 Side Gradient");
-		cb_GradientSideList.addItem("8 Side Gradient");
+		cb_GradientSideList.addActionListener(e -> {
+			int selectedIndex = cb_GradientSideList.getSelectedIndex();
+			modesController.gradientSideSelect(selectedIndex);
+		});
 
 		JPanel GradientCard = new JPanel();
 		GradientCard.setBackground(new Color(255, 0, 0));
@@ -455,391 +497,391 @@ public class ControlsPanel extends JPanel {
 		GradientCard.add(gradient2Side, "2 Side Gradient");
 		gradient2Side.setLayout(new GridLayout(2, 0, 0, 0));
 
-		JLabel lblNewLabel_3_1 = new JLabel("Side 1 ");
-		lblNewLabel_3_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(lblNewLabel_3_1);
+		lb_Gradienet2_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradienet2_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradienet2_SetSide1.setForeground(Color.WHITE);
+		lb_Gradienet2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(lb_Gradienet2_SetSide1);
 
-		JButton btn_SetSide1 = new JButton("Set");
-		btn_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(btn_SetSide1);
+		btn_Gradienet2_SetSide1 = new JButton("Set");
+		btn_Gradienet2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(btn_Gradienet2_SetSide1);
 
-		JLabel lblNewLabel_3 = new JLabel("Side 2");
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setForeground(Color.WHITE);
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(lblNewLabel_3);
+		lb_Gradienet2_SetSide2 = new JLabel("Side 2");
+		lb_Gradienet2_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradienet2_SetSide2.setForeground(Color.WHITE);
+		lb_Gradienet2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(lb_Gradienet2_SetSide2);
 
-		JButton btn_SetSide1_1 = new JButton("Set");
-		btn_SetSide1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(btn_SetSide1_1);
+		btn_Gradienet2_SetSide2 = new JButton("Set");
+		btn_Gradienet2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(btn_Gradienet2_SetSide2);
 
 		JPanel gradient3Side = new JPanel();
 		gradient3Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient3Side, "3 Side Gradient");
 		gradient3Side.setLayout(new GridLayout(3, 0, 0, 0));
 
-		JLabel lblNewLabel_3_1_1 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lblNewLabel_3_1_1);
+		lb_Gradienet3_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradienet3_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradienet3_SetSide1.setForeground(Color.WHITE);
+		lb_Gradienet3_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradienet3_SetSide1);
 
-		JButton btn_SetSide1_2 = new JButton("Set");
-		btn_SetSide1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(btn_SetSide1_2);
+		btn_Gradient3_SetSide1 = new JButton("Set");
+		btn_Gradient3_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(btn_Gradient3_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_1 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lblNewLabel_3_1_1_1);
+		lb_Gradienet3_SetSide2 = new JLabel("Side 2");
+		lb_Gradienet3_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradienet3_SetSide2.setForeground(Color.WHITE);
+		lb_Gradienet3_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradienet3_SetSide2);
 
-		JButton btn_SetSide1_2_1 = new JButton("Set");
-		btn_SetSide1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(btn_SetSide1_2_1);
+		btn_Gradient3_SetSide2 = new JButton("Set");
+		btn_Gradient3_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(btn_Gradient3_SetSide2);
 
-		JLabel lblNewLabel_3_2 = new JLabel("Side 3");
-		lblNewLabel_3_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_2.setForeground(Color.WHITE);
-		lblNewLabel_3_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lblNewLabel_3_2);
+		lb_Gradienet3_SetSide3 = new JLabel("Side 3");
+		lb_Gradienet3_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradienet3_SetSide3.setForeground(Color.WHITE);
+		lb_Gradienet3_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradienet3_SetSide3);
 
-		JButton btn_SetSide1_1_1 = new JButton("Set");
-		btn_SetSide1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(btn_SetSide1_1_1);
+		btn_Gradient3_SetSide3 = new JButton("Set");
+		btn_Gradient3_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(btn_Gradient3_SetSide3);
 
 		JPanel gradient4Side = new JPanel();
 		gradient4Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient4Side, "4 Side Gradient");
 		gradient4Side.setLayout(new GridLayout(4, 2, 0, 0));
 
-		JLabel lblNewLabel_3_1_1_2 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(lblNewLabel_3_1_1_2);
+		lb_Gradient4_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient4_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient4_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient4_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(lb_Gradient4_SetSide1);
 
-		JButton btn_SetSide1_2_2 = new JButton("Set");
-		btn_SetSide1_2_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(btn_SetSide1_2_2);
+		btn_Gradient4_SetSide1 = new JButton("Set");
+		btn_Gradient4_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(btn_Gradient4_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_2_1 = new JLabel("Side 2");
-		lblNewLabel_3_1_1_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(lblNewLabel_3_1_1_2_1);
+		lb_Gradient4_SetSide2 = new JLabel("Side 2");
+		lb_Gradient4_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient4_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient4_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(lb_Gradient4_SetSide2);
 
-		JButton btn_SetSide1_2_2_1 = new JButton("Set");
-		btn_SetSide1_2_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(btn_SetSide1_2_2_1);
+		btn_Gradient4_SetSide2 = new JButton("Set");
+		btn_Gradient4_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(btn_Gradient4_SetSide2);
 
-		JLabel lblNewLabel_3_1_1_2_2 = new JLabel("Side 3");
-		lblNewLabel_3_1_1_2_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_2.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(lblNewLabel_3_1_1_2_2);
+		lb_Gradient4_SetSide3 = new JLabel("Side 3");
+		lb_Gradient4_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient4_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient4_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(lb_Gradient4_SetSide3);
 
-		JButton btn_SetSide1_2_2_2 = new JButton("Set");
-		btn_SetSide1_2_2_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(btn_SetSide1_2_2_2);
+		btn_Gradient4_SetSide3 = new JButton("Set");
+		btn_Gradient4_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(btn_Gradient4_SetSide3);
 
-		JLabel lblNewLabel_3_1_1_2_3 = new JLabel("Side 4");
-		lblNewLabel_3_1_1_2_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(lblNewLabel_3_1_1_2_3);
+		lb_Gradient4_SetSide4 = new JLabel("Side 4");
+		lb_Gradient4_SetSide4.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient4_SetSide4.setForeground(Color.WHITE);
+		lb_Gradient4_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(lb_Gradient4_SetSide4);
 
-		JButton btn_SetSide1_2_2_3 = new JButton("Set");
-		btn_SetSide1_2_2_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient4Side.add(btn_SetSide1_2_2_3);
+		btn_Gradient4_SetSide4 = new JButton("Set");
+		btn_Gradient4_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient4Side.add(btn_Gradient4_SetSide4);
 
 		JPanel gradient5Side = new JPanel();
 		gradient5Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient5Side, "5 Side Gradient");
 		gradient5Side.setLayout(new GridLayout(5, 0, 0, 0));
 
-		JLabel lblNewLabel_3_1_1_2_4 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_2_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_4.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_4.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(lblNewLabel_3_1_1_2_4);
+		lb_Gradient5_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient5_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient5_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient5_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(lb_Gradient5_SetSide1);
 
-		JButton btn_SetSide1_2_2_4 = new JButton("Set");
-		btn_SetSide1_2_2_4.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(btn_SetSide1_2_2_4);
+		btn_Gradient5_SetSide1 = new JButton("Set");
+		btn_Gradient5_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(btn_Gradient5_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_2_1_1 = new JLabel("Side 2");
-		lblNewLabel_3_1_1_2_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(lblNewLabel_3_1_1_2_1_1);
+		lb_Gradient5_SetSide2 = new JLabel("Side 2");
+		lb_Gradient5_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient5_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient5_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(lb_Gradient5_SetSide2);
 
-		JButton btn_SetSide1_2_2_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(btn_SetSide1_2_2_1_1);
+		btn_Gradient5_SetSide2 = new JButton("Set");
+		btn_Gradient5_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(btn_Gradient5_SetSide2);
 
-		JLabel lblNewLabel_3_1_1_2_2_1 = new JLabel("Side 3");
-		lblNewLabel_3_1_1_2_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_2_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(lblNewLabel_3_1_1_2_2_1);
+		lb_Gradient5_SetSide3 = new JLabel("Side 3");
+		lb_Gradient5_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient5_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient5_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(lb_Gradient5_SetSide3);
 
-		JButton btn_SetSide1_2_2_2_1 = new JButton("Set");
-		btn_SetSide1_2_2_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(btn_SetSide1_2_2_2_1);
+		btn_Gradient5_SetSide3 = new JButton("Set");
+		btn_Gradient5_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(btn_Gradient5_SetSide3);
 
-		JLabel lblNewLabel_3_1_1_2_3_1 = new JLabel("Side 4");
-		lblNewLabel_3_1_1_2_3_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(lblNewLabel_3_1_1_2_3_1);
+		lb_Gradient5_SetSide4 = new JLabel("Side 4");
+		lb_Gradient5_SetSide4.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient5_SetSide4.setForeground(Color.WHITE);
+		lb_Gradient5_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(lb_Gradient5_SetSide4);
 
-		JButton btn_SetSide1_2_2_3_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(btn_SetSide1_2_2_3_1);
+		btn_Gradient5_SetSide4 = new JButton("Set");
+		btn_Gradient5_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(btn_Gradient5_SetSide4);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1 = new JLabel("Side 5");
-		lblNewLabel_3_1_1_2_3_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(lblNewLabel_3_1_1_2_3_1_1);
+		lb_Gradient5_SetSide5 = new JLabel("Side 5");
+		lb_Gradient5_SetSide5.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient5_SetSide5.setForeground(Color.WHITE);
+		lb_Gradient5_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(lb_Gradient5_SetSide5);
 
-		JButton btn_SetSide1_2_2_3_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient5Side.add(btn_SetSide1_2_2_3_1_1);
+		btn_Gradient5_SetSide5 = new JButton("Set");
+		btn_Gradient5_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient5Side.add(btn_Gradient5_SetSide5);
 
 		JPanel gradient6Side = new JPanel();
 		gradient6Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient6Side, "6 Side Gradient");
 		gradient6Side.setLayout(new GridLayout(6, 0, 0, 0));
 
-		JLabel lblNewLabel_3_1_1_3 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_3.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_1_1_3);
+		lb_Gradient6_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient6_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide1);
 
-		JButton btn_SetSide1_2_3 = new JButton("Set");
-		btn_SetSide1_2_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_2_3);
+		btn_Gradient6_SetSide1 = new JButton("Set");
+		btn_Gradient6_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_4 = new JLabel("Side 2");
-		lblNewLabel_3_1_1_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_4.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_4.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_1_1_4);
+		lb_Gradient6_SetSide2 = new JLabel("Side 2");
+		lb_Gradient6_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide2);
 
-		JButton btn_SetSide1_2_4 = new JButton("Set");
-		btn_SetSide1_2_4.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_2_4);
+		btn_Gradient6_SetSide2 = new JButton("Set");
+		btn_Gradient6_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide2);
 
-		JLabel lblNewLabel_3_1_1_1_2 = new JLabel("Side 3");
-		lblNewLabel_3_1_1_1_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_1_2.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_1_1_1_2);
+		lb_Gradient6_SetSide3 = new JLabel("Side 3");
+		lb_Gradient6_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide3);
 
-		JButton btn_SetSide1_2_1_2 = new JButton("Set");
-		btn_SetSide1_2_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_2_1_2);
+		btn_Gradient6_SetSide3 = new JButton("Set");
+		btn_Gradient6_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide3);
 
-		JLabel lblNewLabel_3_2_2 = new JLabel("Side 4");
-		lblNewLabel_3_2_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_2_2.setForeground(Color.WHITE);
-		lblNewLabel_3_2_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_2_2);
+		lb_Gradient6_SetSide4 = new JLabel("Side 4");
+		lb_Gradient6_SetSide4.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide4.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide4);
 
-		JButton btn_SetSide1_1_1_2 = new JButton("Set");
-		btn_SetSide1_1_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_1_1_2);
+		btn_Gradient6_SetSide4 = new JButton("Set");
+		btn_Gradient6_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide4);
 
-		JLabel lblNewLabel_3_1_1_1_1 = new JLabel("Side 5");
-		lblNewLabel_3_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_1_1_1_1);
+		lb_Gradient6_SetSide5 = new JLabel("Side 5");
+		lb_Gradient6_SetSide5.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide5.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide5);
 
-		JButton btn_SetSide1_2_1_1 = new JButton("Set");
-		btn_SetSide1_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_2_1_1);
+		btn_Gradient6_SetSide5 = new JButton("Set");
+		btn_Gradient6_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide5);
 
-		JLabel lblNewLabel_3_2_1 = new JLabel("Side 6");
-		lblNewLabel_3_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_2_1.setForeground(Color.WHITE);
-		lblNewLabel_3_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(lblNewLabel_3_2_1);
+		lb_Gradient6_SetSide6 = new JLabel("Side 6");
+		lb_Gradient6_SetSide6.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient6_SetSide6.setForeground(Color.WHITE);
+		lb_Gradient6_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(lb_Gradient6_SetSide6);
 
-		JButton btn_SetSide1_1_1_1 = new JButton("Set");
-		btn_SetSide1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient6Side.add(btn_SetSide1_1_1_1);
+		btn_Gradient6_SetSide6 = new JButton("Set");
+		btn_Gradient6_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient6Side.add(btn_Gradient6_SetSide6);
 
 		JPanel gradient7Side = new JPanel();
 		gradient7Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient7Side, "7 Side Gradient");
 		gradient7Side.setLayout(new GridLayout(7, 0, 0, 0));
 
-		JLabel lblNewLabel_3_1_1_2_4_1 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_2_4_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_4_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_4_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_4_1);
+		lb_Gradient7_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient7_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide1);
 
-		JButton btn_SetSide1_2_2_4_1 = new JButton("Set");
-		btn_SetSide1_2_2_4_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_4_1);
+		btn_Gradient7_SetSide1 = new JButton("Set");
+		btn_Gradient7_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_2_1_1_1 = new JLabel("Side 2");
-		lblNewLabel_3_1_1_2_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_1_1_1);
+		lb_Gradient7_SetSide2 = new JLabel("Side 2");
+		lb_Gradient7_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide2);
 
-		JButton btn_SetSide1_2_2_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_1_1_1);
+		btn_Gradient7_SetSide2 = new JButton("Set");
+		btn_Gradient7_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide2);
 
-		JLabel lblNewLabel_3_1_1_2_2_1_1 = new JLabel("Side 3");
-		lblNewLabel_3_1_1_2_2_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_2_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_2_1_1);
+		lb_Gradient7_SetSide3 = new JLabel("Side 3");
+		lb_Gradient7_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide3);
 
-		JButton btn_SetSide1_2_2_2_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_2_1_1);
+		btn_Gradient7_SetSide3 = new JButton("Set");
+		btn_Gradient7_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide3);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_2 = new JLabel("Side 4");
-		lblNewLabel_3_1_1_2_3_1_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_2.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_3_1_2);
+		lb_Gradient7_SetSide4 = new JLabel("Side 4");
+		lb_Gradient7_SetSide4.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide4.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide4);
 
-		JButton btn_SetSide1_2_2_3_1_2 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_3_1_2);
+		btn_Gradient7_SetSide4 = new JButton("Set");
+		btn_Gradient7_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide4);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1 = new JLabel("Side 5");
-		lblNewLabel_3_1_1_2_3_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_3_1_1_1);
+		lb_Gradient7_SetSide5 = new JLabel("Side 5");
+		lb_Gradient7_SetSide5.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide5.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide5);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_3_1_1_1_1);
+		btn_Gradient7_SetSide5 = new JButton("Set");
+		btn_Gradient7_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide5);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_1 = new JLabel("Side 6");
-		lblNewLabel_3_1_1_2_3_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_3_1_1_1_1);
+		lb_Gradient7_SetSide6 = new JLabel("Side 6");
+		lb_Gradient7_SetSide6.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide6.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide6);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_2 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_3_1_1_1_2);
+		btn_Gradient7_SetSide6 = new JButton("Set");
+		btn_Gradient7_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide6);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_2 = new JLabel("Side 7");
-		lblNewLabel_3_1_1_2_3_1_1_1_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_2.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(lblNewLabel_3_1_1_2_3_1_1_1_2);
+		lb_Gradient7_SetSide7 = new JLabel("Side 7");
+		lb_Gradient7_SetSide7.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient7_SetSide7.setForeground(Color.WHITE);
+		lb_Gradient7_SetSide7.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(lb_Gradient7_SetSide7);
 
-		JButton btn_SetSide1_2_2_3_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient7Side.add(btn_SetSide1_2_2_3_1_1_1);
+		btn_Gradient7_SetSide7 = new JButton("Set");
+		btn_Gradient7_SetSide7.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient7Side.add(btn_Gradient7_SetSide7);
 
 		JPanel gradient8Side = new JPanel();
 		gradient8Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient8Side, "8 Side Gradient");
 		gradient8Side.setLayout(new GridLayout(8, 1, 0, 0));
 
-		JLabel lblNewLabel_3_1_1_2_4_1_1 = new JLabel("Side 1 ");
-		lblNewLabel_3_1_1_2_4_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_4_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_4_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_4_1_1);
+		lb_Gradient8_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient8_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide1);
 
-		JButton btn_SetSide1_2_2_4_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_4_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_4_1_1);
+		btn_Gradient8_SetSide1 = new JButton("Set");
+		btn_Gradient8_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide1);
 
-		JLabel lblNewLabel_3_1_1_2_1_1_1_1 = new JLabel("Side 2");
-		lblNewLabel_3_1_1_2_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_1_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_1_1_1_1);
+		lb_Gradient8_SetSide2 = new JLabel("Side 2");
+		lb_Gradient8_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide2);
 
-		JButton btn_SetSide1_2_2_1_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_1_1_1_1);
+		btn_Gradient8_SetSide2 = new JButton("Set");
+		btn_Gradient8_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide2);
 
-		JLabel lblNewLabel_3_1_1_2_2_1_1_1 = new JLabel("Side 3");
-		lblNewLabel_3_1_1_2_2_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_2_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_2_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_2_1_1_1);
+		lb_Gradient8_SetSide3 = new JLabel("Side 3");
+		lb_Gradient8_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide3);
 
-		JButton btn_SetSide1_2_2_2_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_2_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_2_1_1_1);
+		btn_Gradient8_SetSide3 = new JButton("Set");
+		btn_Gradient8_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide3);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_2_1 = new JLabel("Side 4");
-		lblNewLabel_3_1_1_2_3_1_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_2_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_3_1_2_1);
+		lb_Gradient8_SetSide4 = new JLabel("Side 4");
+		lb_Gradient8_SetSide4.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide4.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide4);
 
-		JButton btn_SetSide1_2_2_3_1_2_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_3_1_2_1);
+		btn_Gradient8_SetSide4 = new JButton("Set");
+		btn_Gradient8_SetSide4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide4);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_3 = new JLabel("Side 5");
-		lblNewLabel_3_1_1_2_3_1_1_1_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_3.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_3_1_1_1_3);
+		lb_Gradient8_SetSide5 = new JLabel("Side 5");
+		lb_Gradient8_SetSide5.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide5.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide5);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_1_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_3_1_1_1_1_1);
+		btn_Gradient8_SetSide5 = new JButton("Set");
+		btn_Gradient8_SetSide5.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide5);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_1_1 = new JLabel("Side 6");
-		lblNewLabel_3_1_1_2_3_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_3_1_1_1_1_1);
+		lb_Gradient8_SetSide6 = new JLabel("Side 6");
+		lb_Gradient8_SetSide6.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide6.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide6);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_2_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_3_1_1_1_2_1);
+		btn_Gradient8_SetSide6 = new JButton("Set");
+		btn_Gradient8_SetSide6.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide6);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_2_1_1 = new JLabel("Side 7");
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_3_1_1_1_2_1_1);
+		lb_Gradient8_SetSide7 = new JLabel("Side 7");
+		lb_Gradient8_SetSide7.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide7.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide7.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide7);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_3_1 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_3_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_3_1_1_1_3_1);
+		btn_Gradient8_SetSide7 = new JButton("Set");
+		btn_Gradient8_SetSide7.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide7);
 
-		JLabel lblNewLabel_3_1_1_2_3_1_1_1_2_1 = new JLabel("Side 8");
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1_1_2_3_1_1_1_2_1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(lblNewLabel_3_1_1_2_3_1_1_1_2_1);
+		lb_Gradient8_SetSide8 = new JLabel("Side 8");
+		lb_Gradient8_SetSide8.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient8_SetSide8.setForeground(Color.WHITE);
+		lb_Gradient8_SetSide8.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(lb_Gradient8_SetSide8);
 
-		JButton btn_SetSide1_2_2_3_1_1_1_3 = new JButton("Set");
-		btn_SetSide1_2_2_3_1_1_1_3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient8Side.add(btn_SetSide1_2_2_3_1_1_1_3);
+		btn_Gradient8_SetSide8 = new JButton("Set");
+		btn_Gradient8_SetSide8.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient8Side.add(btn_Gradient8_SetSide8);
 
 		JPanel pnl_SplitControls = new JPanel();
 		pnl_SplitControls.setBackground(new Color(0, 0, 0));
 		tabbedPane.addTab("Split Controls", null, pnl_SplitControls, null);
 
-		cb_LED_Animations = new JComboBox<Object>(animationNames.toArray(new String[0]));
+		cb_LED_Animations = new JComboBox<Object>(GetUI.animationNames.toArray(new String[0]));
 		cb_LED_Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_LED_Animations.addActionListener(e -> {
 			if (ModesController.AnimationOn) {
@@ -881,18 +923,18 @@ public class ControlsPanel extends JPanel {
 		lbl_Profile_1.setForeground(Color.WHITE);
 		lbl_Profile_1.setFont(new Font("Tahoma", Font.BOLD, 25));
 
-		cb_ColorPresets = new JComboBox<Object>(colorNames.toArray(new String[0]));
+		cb_ColorPresets = new JComboBox<Object>(GetUI.colorNames.toArray(new String[0]));
 		cb_ColorPresets.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_ColorPresets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String selectedColorName = (String) cb_ColorPresets.getSelectedItem();
-				int index = colorNames.indexOf(selectedColorName);
+				int index = GetUI.colorNames.indexOf(selectedColorName);
 				if (index >= 1) {
-					selectedColor = presetColors[index - 1];
+					GetUI.selectedColor = GetUI.presetColors[index - 1];
 					updateColorSelected();
 				}
 				if (index == 0) {
-					selectedColor = Color.BLACK;
+					GetUI.selectedColor = Color.BLACK;
 				}
 			}
 		});
@@ -1018,7 +1060,7 @@ public class ControlsPanel extends JPanel {
 	}
 
 	private void updateColorPreset() {
-		cb_ColorPresets.setSelectedIndex(colorNames.size() - 1);
+		cb_ColorPresets.setSelectedIndex(GetUI.colorNames.size() - 1);
 	}
 
 	private void updateColorSelected() {
@@ -1026,16 +1068,17 @@ public class ControlsPanel extends JPanel {
 		int g = parseInt(txt_G);
 		int b = parseInt(txt_B);
 
-		setTextFieldValue(txt_R, selectedColor.getRed());
-		setTextFieldValue(txt_G, selectedColor.getGreen());
-		setTextFieldValue(txt_B, selectedColor.getBlue());
+		setTextFieldValue(txt_R, GetUI.selectedColor.getRed());
+		setTextFieldValue(txt_G, GetUI.selectedColor.getGreen());
+		setTextFieldValue(txt_B, GetUI.selectedColor.getBlue());
 
-		customColor = new Color(r, g, b);
+		GetUI.customColor = new Color(r, g, b);
 
-		float[] hsb = Color.RGBtoHSB(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(), null);
+		float[] hsb = Color.RGBtoHSB(GetUI.selectedColor.getRed(), GetUI.selectedColor.getGreen(),
+				GetUI.selectedColor.getBlue(), null);
 		colorPicker.setCustomColor(hsb[0], hsb[1], hsb[2]);
 		colorPicker.repaint();
-		presetColors[presetColors.length - 1] = customColor;
+		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
 	}
 
 	private int parseInt(JTextField textField) {
@@ -1096,17 +1139,6 @@ public class ControlsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
-				case "btn_LeftSide":
-					PianoController.LeftSideColor = selectedColor;
-					PianoController.splitLeftColor = selectedColor;
-					break;
-				case "btn_MiddleSide":
-					PianoController.MiddleSideColor = selectedColor;
-					break;
-				case "btn_RightSide":
-					PianoController.RightSideColor = selectedColor;
-					PianoController.splitRightColor = selectedColor;
-					break;
 				case "btn_Load":
 					Profile.loadProfile(pianoLED);
 					break;
@@ -1138,6 +1170,153 @@ public class ControlsPanel extends JPanel {
 						pianoController.setBG();
 					}
 					break;
+
+				case "btn_Gradienet2_SetSide1":
+					lb_Gradienet2_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet2_SetSide2":
+					lb_Gradienet2_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradienet3_SetSide1":
+					lb_Gradienet3_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet3_SetSide2":
+					lb_Gradienet3_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet3_SetSide3":
+					lb_Gradienet3_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradienet4_SetSide1":
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet4_SetSide2":
+					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet4_SetSide3":
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+				case "btn_Gradienet4_SetSide4":
+					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
+					PianoController.side4 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradient5_SetSide1":
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient5_SetSide2":
+					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient5_SetSide3":
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient5_SetSide4":
+					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
+					PianoController.side4 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient5_SetSide5":
+					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
+					PianoController.side5 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradient6_SetSide1":
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient6_SetSide2":
+					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient6_SetSide3":
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient6_SetSide4":
+					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
+					PianoController.side4 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient6_SetSide5":
+					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
+					PianoController.side5 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient6_SetSide6":
+					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
+					PianoController.side6 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradient7_SetSide1":
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide2":
+					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide3":
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide4":
+					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
+					PianoController.side4 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide5":
+					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
+					PianoController.side5 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide6":
+					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
+					PianoController.side6 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient7_SetSide7":
+					lb_Gradient7_SetSide7.setForeground(GetUI.selectedColor);
+					PianoController.side7 = GetUI.selectedColor;
+					break;
+
+				case "btn_Gradient8_SetSide1":
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+					PianoController.side1 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide2":
+					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
+					PianoController.side2 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide3":
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+					PianoController.side3 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide4":
+					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+					PianoController.side4 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide5":
+					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
+					PianoController.side5 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide6":
+					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
+					PianoController.side6 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide7":
+					lb_Gradient8_SetSide7.setForeground(GetUI.selectedColor);
+					PianoController.side7 = GetUI.selectedColor;
+					break;
+				case "btn_Gradient8_SetSide8":
+					lb_Gradient8_SetSide8.setForeground(GetUI.selectedColor);
+					PianoController.side8 = GetUI.selectedColor;
+					break;
 				default:
 					break;
 				}
@@ -1150,12 +1329,95 @@ public class ControlsPanel extends JPanel {
 		btn_RightArrow.addActionListener(buttonListener);
 		btnSet_BG.addActionListener(buttonListener);
 
+		btn_Gradienet2_SetSide1.addActionListener(buttonListener);
+		btn_Gradienet2_SetSide2.addActionListener(buttonListener);
+
+		btn_Gradient3_SetSide1.addActionListener(buttonListener);
+		btn_Gradient3_SetSide2.addActionListener(buttonListener);
+		btn_Gradient3_SetSide3.addActionListener(buttonListener);
+
+		btn_Gradient4_SetSide1.addActionListener(buttonListener);
+		btn_Gradient4_SetSide2.addActionListener(buttonListener);
+		btn_Gradient4_SetSide3.addActionListener(buttonListener);
+		btn_Gradient4_SetSide4.addActionListener(buttonListener);
+
+		btn_Gradient5_SetSide1.addActionListener(buttonListener);
+		btn_Gradient5_SetSide2.addActionListener(buttonListener);
+		btn_Gradient5_SetSide3.addActionListener(buttonListener);
+		btn_Gradient5_SetSide4.addActionListener(buttonListener);
+		btn_Gradient5_SetSide5.addActionListener(buttonListener);
+
+		btn_Gradient6_SetSide1.addActionListener(buttonListener);
+		btn_Gradient6_SetSide2.addActionListener(buttonListener);
+		btn_Gradient6_SetSide3.addActionListener(buttonListener);
+		btn_Gradient6_SetSide4.addActionListener(buttonListener);
+		btn_Gradient6_SetSide5.addActionListener(buttonListener);
+		btn_Gradient6_SetSide6.addActionListener(buttonListener);
+
+		btn_Gradient7_SetSide1.addActionListener(buttonListener);
+		btn_Gradient7_SetSide2.addActionListener(buttonListener);
+		btn_Gradient7_SetSide3.addActionListener(buttonListener);
+		btn_Gradient7_SetSide4.addActionListener(buttonListener);
+		btn_Gradient7_SetSide5.addActionListener(buttonListener);
+		btn_Gradient7_SetSide6.addActionListener(buttonListener);
+		btn_Gradient7_SetSide7.addActionListener(buttonListener);
+
+		btn_Gradient8_SetSide1.addActionListener(buttonListener);
+		btn_Gradient8_SetSide2.addActionListener(buttonListener);
+		btn_Gradient8_SetSide3.addActionListener(buttonListener);
+		btn_Gradient8_SetSide4.addActionListener(buttonListener);
+		btn_Gradient8_SetSide5.addActionListener(buttonListener);
+		btn_Gradient8_SetSide6.addActionListener(buttonListener);
+		btn_Gradient8_SetSide7.addActionListener(buttonListener);
+		btn_Gradient8_SetSide8.addActionListener(buttonListener);
+
 		btn_Load.setActionCommand("btn_Load");
 		btn_Save.setActionCommand("btn_Save");
 		btn_LeftArrow.setActionCommand("btn_LeftArrow");
 		btn_RightArrow.setActionCommand("btn_RightArrow");
 		btnSet_BG.setActionCommand("btnSet_BG");
 
+		btn_Gradienet2_SetSide1.setActionCommand("btn_Gradienet2_SetSide1");
+		btn_Gradienet2_SetSide2.setActionCommand("btn_Gradienet2_SetSide2");
+
+		btn_Gradient3_SetSide1.setActionCommand("btn_Gradienet3_SetSide1");
+		btn_Gradient3_SetSide2.setActionCommand("btn_Gradienet3_SetSide2");
+		btn_Gradient3_SetSide3.setActionCommand("btn_Gradienet3_SetSide3");
+
+		btn_Gradient4_SetSide1.setActionCommand("btn_Gradienet4_SetSide1");
+		btn_Gradient4_SetSide2.setActionCommand("btn_Gradienet4_SetSide2");
+		btn_Gradient4_SetSide3.setActionCommand("btn_Gradienet4_SetSide3");
+		btn_Gradient4_SetSide4.setActionCommand("btn_Gradienet4_SetSide4");
+
+		btn_Gradient5_SetSide1.setActionCommand("btn_Gradient5_SetSide1");
+		btn_Gradient5_SetSide2.setActionCommand("btn_Gradient5_SetSide2");
+		btn_Gradient5_SetSide3.setActionCommand("btn_Gradient5_SetSide3");
+		btn_Gradient5_SetSide4.setActionCommand("btn_Gradient5_SetSide4");
+		btn_Gradient5_SetSide5.setActionCommand("btn_Gradient5_SetSide5");
+
+		btn_Gradient6_SetSide1.setActionCommand("btn_Gradient6_SetSide1");
+		btn_Gradient6_SetSide2.setActionCommand("btn_Gradient6_SetSide2");
+		btn_Gradient6_SetSide3.setActionCommand("btn_Gradient6_SetSide3");
+		btn_Gradient6_SetSide4.setActionCommand("btn_Gradient6_SetSide4");
+		btn_Gradient6_SetSide5.setActionCommand("btn_Gradient6_SetSide5");
+		btn_Gradient6_SetSide6.setActionCommand("btn_Gradient6_SetSide6");
+
+		btn_Gradient7_SetSide1.setActionCommand("btn_Gradient7_SetSide1");
+		btn_Gradient7_SetSide2.setActionCommand("btn_Gradient7_SetSide2");
+		btn_Gradient7_SetSide3.setActionCommand("btn_Gradient7_SetSide3");
+		btn_Gradient7_SetSide4.setActionCommand("btn_Gradient7_SetSide4");
+		btn_Gradient7_SetSide5.setActionCommand("btn_Gradient7_SetSide5");
+		btn_Gradient7_SetSide6.setActionCommand("btn_Gradient7_SetSide6");
+		btn_Gradient7_SetSide7.setActionCommand("btn_Gradient7_SetSide7");
+
+		btn_Gradient8_SetSide1.setActionCommand("btn_Gradient8_SetSide1");
+		btn_Gradient8_SetSide2.setActionCommand("btn_Gradient8_SetSide2");
+		btn_Gradient8_SetSide3.setActionCommand("btn_Gradient8_SetSide3");
+		btn_Gradient8_SetSide4.setActionCommand("btn_Gradient8_SetSide4");
+		btn_Gradient8_SetSide5.setActionCommand("btn_Gradient8_SetSide5");
+		btn_Gradient8_SetSide6.setActionCommand("btn_Gradient8_SetSide6");
+		btn_Gradient8_SetSide7.setActionCommand("btn_Gradient8_SetSide7");
+		btn_Gradient8_SetSide8.setActionCommand("btn_Gradient8_SetSide8");
 	}
 
 	private void sliderActions() {

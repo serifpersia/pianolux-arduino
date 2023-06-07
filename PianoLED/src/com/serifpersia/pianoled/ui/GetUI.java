@@ -1,5 +1,6 @@
 package com.serifpersia.pianoled.ui;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,11 +28,43 @@ public class GetUI {
 	private static int firstNoteSelected = 21;
 	private static int lastNoteSelected = 108;
 
-	private static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
-			"Animation", "Piano Roll");
+	static List<String> modeEffectsNames = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
+			"Animation");
+
+	static List<String> colorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
+			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Custom");
+
+	static List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors",
+			"CloudColors", "LavaColors", "ForestColors", "PartyColors");
+
+	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
+			"Animation");
+
+	static List<String> gradientSides = Arrays.asList("2 Side Gradient", "3 Side Gradient", "4 Side Gradient",
+			"5 Side Gradient", "6 Side Gradient", "7 Side Gradient", "8 Side Gradient");
+
+	public static Color selectedColor = Color.RED;
+
+	static Color customColor = Color.BLACK;
+
+	static Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+			new Color(255, 35, 0), // Orange
+			new Color(128, 0, 255), // Purple
+			new Color(255, 35, 35), // Pink
+			new Color(0, 255, 255), // Teal
+			new Color(128, 255, 0), // Lime
+			Color.CYAN, Color.MAGENTA, new Color(255, 25, 25), // Peach
+			new Color(160, 128, 255), // Lavender
+			new Color(128, 192, 192), // Turquoise
+			new Color(255, 80, 0), // Gold
+			customColor };
 
 	public static String getModeName(int n) {
 		return modes.get(n);
+	}
+
+	public static String getGradientName(int n) {
+		return gradientSides.get(n);
 	}
 
 	public static int getFirstNoteSelected() {
