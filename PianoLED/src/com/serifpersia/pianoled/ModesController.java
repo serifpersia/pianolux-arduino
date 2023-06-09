@@ -19,7 +19,7 @@ public class ModesController {
 
 	public static boolean AnimationOn = false;
 
-	public static boolean Gradient2Side = false;
+	public static boolean Gradient2Side = true;
 
 	public static boolean Gradient3Side = false;
 
@@ -136,4 +136,25 @@ public class ModesController {
 			break;
 		}
 	}
+
+	public static int getGradientSideCount() {
+		if (Gradient2Side) {
+			return 1;
+		} else if (Gradient3Side) {
+			return 2;
+		} else if (Gradient4Side) {
+			return 3;
+		} else if (Gradient5Side) {
+			return 4;
+		} else if (Gradient6Side) {
+			return 5;
+		} else if (Gradient7Side) {
+			return 6;
+		} else if (Gradient8Side) {
+			return 7;
+		} else {
+			return -1; // No gradient side count selected
+		}
+	}
+
 }

@@ -39,45 +39,15 @@ public class PianoController implements PianoMidiConsumer {
 	public static Color side1 = Color.RED;
 	public static Color side2 = Color.GREEN;
 	public static Color side3 = Color.BLUE;
-	public static Color side4 = Color.PINK;
-
-	public static Color side5 = Color.CYAN;
-	public static Color side6 = Color.RED;
-	public static Color side7 = Color.BLUE;
+	public static Color side4 = Color.RED;
+	public static Color side5 = Color.GREEN;
+	public static Color side6 = Color.BLUE;
+	public static Color side7 = Color.RED;
 	public static Color side8 = Color.GREEN;
 
-	public static double pow(double x, double y) {
-		if (y == 0) {
-			return 1;
-		}
-		if (y == 1) {
-			return x;
-		}
-		if (y == -1) {
-			return 1 / x;
-		}
-		if (y % 2 == 0) {
-			double half = pow(x, y / 2);
-			return half * half;
-		} else {
-			double half = pow(x, (y - 1) / 2);
-			return half * half * x;
-		}
-	}
-
-	// Helper method to get the red value from an RGB integer
-	private int getRed(int rgb) {
-		return (rgb >> 16) & 0xFF;
-	}
-
-	// Helper method to get the green value from an RGB integer
-	private int getGreen(int rgb) {
-		return (rgb >> 8) & 0xFF;
-	}
-
-	// Helper method to get the blue value from an RGB integer
-	private int getBlue(int rgb) {
-		return rgb & 0xFF;
+	// Helper method to interpolate a color component value
+	private int interpolateColorComponent(int start, int end, double progress) {
+		return (int) (start * (1 - progress) + end * progress);
 	}
 
 	private List<PianoMidiConsumer> consumers = new ArrayList<>();
@@ -303,339 +273,69 @@ public class PianoController implements PianoMidiConsumer {
 					} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
 						message = arduino.commandSetColor(splitRightColor, notePushed);
 					}
-				} else if (ModesController.GradientOn) {
-					int numSteps = GetUI.getStripLedNum() - 1;
-					int step = notePushed - 1;
-
+				}
+				if (ModesController.GradientOn) {
+					int numSteps = GetUI.getStripLedNum();
+					int step = notePushed;
 					Color currentColor = null;
-					Color side1Color = side1;
-					Color side2Color = side2;
-					Color side3Color = side3;
-					Color side4Color = side4;
-					Color side5Color = side5;
-					Color side6Color = side6;
-					Color side7Color = side7;
-					Color side8Color = side8;
 
-					if (ModesController.Gradient2Side) {
-						// Gradient for 2 sides
-						double progress = (double) step / numSteps;
+					int sideCount = ModesController.getGradientSideCount();
+					int segmentSize = numSteps / sideCount;
+					int segmentIndex = step / segmentSize;
+					double progress = (double) (step % segmentSize) / segmentSize;
 
-						int r = (int) (getRed(side1Color.getRGB()) * (1 - progress)
-								+ getRed(side2Color.getRGB()) * progress);
-						int g = (int) (getGreen(side1Color.getRGB()) * (1 - progress)
-								+ getGreen(side2Color.getRGB()) * progress);
-						int b = (int) (getBlue(side1Color.getRGB()) * (1 - progress)
-								+ getBlue(side2Color.getRGB()) * progress);
+					int r, g, b;
 
+					switch (segmentIndex) {
+					case 0:
+						r = interpolateColorComponent(side1.getRed(), side2.getRed(), progress);
+						g = interpolateColorComponent(side1.getGreen(), side2.getGreen(), progress);
+						b = interpolateColorComponent(side1.getBlue(), side2.getBlue(), progress);
 						currentColor = new Color(r, g, b);
-					} else if (ModesController.Gradient3Side) {
-						// Gradient for 3 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 0.5) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 2))
-									+ getRed(side2Color.getRGB()) * (progress * 2));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 2))
-									+ getGreen(side2Color.getRGB()) * (progress * 2));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 2))
-									+ getBlue(side2Color.getRGB()) * (progress * 2));
-						} else {
-							progress = (progress - 0.5) * 2;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						}
-
+						break;
+					case 1:
+						r = interpolateColorComponent(side2.getRed(), side3.getRed(), progress);
+						g = interpolateColorComponent(side2.getGreen(), side3.getGreen(), progress);
+						b = interpolateColorComponent(side2.getBlue(), side3.getBlue(), progress);
 						currentColor = new Color(r, g, b);
-					} else if (ModesController.Gradient4Side) {
-						// Gradient for 4 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 0.25) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 4))
-									+ getRed(side2Color.getRGB()) * (progress * 4));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 4))
-									+ getGreen(side2Color.getRGB()) * (progress * 4));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 4))
-									+ getBlue(side2Color.getRGB()) * (progress * 4));
-						} else if (progress < 0.5) {
-							progress = (progress - 0.25) * 4;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						} else if (progress < 0.75) {
-							progress = (progress - 0.5) * 4;
-							r = (int) (getRed(side3Color.getRGB()) * (1 - progress)
-									+ getRed(side4Color.getRGB()) * progress);
-							g = (int) (getGreen(side3Color.getRGB()) * (1 - progress)
-									+ getGreen(side4Color.getRGB()) * progress);
-							b = (int) (getBlue(side3Color.getRGB()) * (1 - progress)
-									+ getBlue(side4Color.getRGB()) * progress);
-						} else {
-							progress = (progress - 0.75) * 4;
-							r = (int) (getRed(side4Color.getRGB()) * (1 - progress)
-									+ getRed(side1Color.getRGB()) * progress);
-							g = (int) (getGreen(side4Color.getRGB()) * (1 - progress)
-									+ getGreen(side1Color.getRGB()) * progress);
-							b = (int) (getBlue(side4Color.getRGB()) * (1 - progress)
-									+ getBlue(side1Color.getRGB()) * progress);
-						}
-
+						break;
+					case 2:
+						r = interpolateColorComponent(side3.getRed(), side4.getRed(), progress);
+						g = interpolateColorComponent(side3.getGreen(), side4.getGreen(), progress);
+						b = interpolateColorComponent(side3.getBlue(), side4.getBlue(), progress);
 						currentColor = new Color(r, g, b);
-					} else if (ModesController.Gradient5Side) {
-						// Gradient for 5 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 0.2) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 5))
-									+ getRed(side2Color.getRGB()) * (progress * 5));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 5))
-									+ getGreen(side2Color.getRGB()) * (progress * 5));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 5))
-									+ getBlue(side2Color.getRGB()) * (progress * 5));
-						} else if (progress < 0.4) {
-							progress = (progress - 0.2) * 5;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						} else if (progress < 0.6) {
-							progress = (progress - 0.4) * 5;
-							r = (int) (getRed(side3Color.getRGB()) * (1 - progress)
-									+ getRed(side4Color.getRGB()) * progress);
-							g = (int) (getGreen(side3Color.getRGB()) * (1 - progress)
-									+ getGreen(side4Color.getRGB()) * progress);
-							b = (int) (getBlue(side3Color.getRGB()) * (1 - progress)
-									+ getBlue(side4Color.getRGB()) * progress);
-						} else if (progress < 0.8) {
-							progress = (progress - 0.6) * 5;
-							r = (int) (getRed(side4Color.getRGB()) * (1 - progress)
-									+ getRed(side5Color.getRGB()) * progress);
-							g = (int) (getGreen(side4Color.getRGB()) * (1 - progress)
-									+ getGreen(side5Color.getRGB()) * progress);
-							b = (int) (getBlue(side4Color.getRGB()) * (1 - progress)
-									+ getBlue(side5Color.getRGB()) * progress);
-						} else {
-							progress = (progress - 0.8) * 5;
-							r = (int) (getRed(side5Color.getRGB()) * (1 - progress)
-									+ getRed(side1Color.getRGB()) * progress);
-							g = (int) (getGreen(side5Color.getRGB()) * (1 - progress)
-									+ getGreen(side1Color.getRGB()) * progress);
-							b = (int) (getBlue(side5Color.getRGB()) * (1 - progress)
-									+ getBlue(side1Color.getRGB()) * progress);
-						}
-
+						break;
+					case 3:
+						r = interpolateColorComponent(side4.getRed(), side5.getRed(), progress);
+						g = interpolateColorComponent(side4.getGreen(), side5.getGreen(), progress);
+						b = interpolateColorComponent(side4.getBlue(), side5.getBlue(), progress);
 						currentColor = new Color(r, g, b);
-					} else if (ModesController.Gradient6Side) {
-						// Gradient for 6 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 1.0 / 6.0) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 6))
-									+ getRed(side2Color.getRGB()) * (progress * 6));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 6))
-									+ getGreen(side2Color.getRGB()) * (progress * 6));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 6))
-									+ getBlue(side2Color.getRGB()) * (progress * 6));
-						} else if (progress < 2.0 / 6.0) {
-							progress = (progress - 1.0 / 6.0) * 6;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						} else if (progress < 3.0 / 6.0) {
-							progress = (progress - 2.0 / 6.0) * 6;
-							r = (int) (getRed(side3Color.getRGB()) * (1 - progress)
-									+ getRed(side4Color.getRGB()) * progress);
-							g = (int) (getGreen(side3Color.getRGB()) * (1 - progress)
-									+ getGreen(side4Color.getRGB()) * progress);
-							b = (int) (getBlue(side3Color.getRGB()) * (1 - progress)
-									+ getBlue(side4Color.getRGB()) * progress);
-						} else if (progress < 4.0 / 6.0) {
-							progress = (progress - 3.0 / 6.0) * 6;
-							r = (int) (getRed(side4Color.getRGB()) * (1 - progress)
-									+ getRed(side5Color.getRGB()) * progress);
-							g = (int) (getGreen(side4Color.getRGB()) * (1 - progress)
-									+ getGreen(side5Color.getRGB()) * progress);
-							b = (int) (getBlue(side4Color.getRGB()) * (1 - progress)
-									+ getBlue(side5Color.getRGB()) * progress);
-						} else if (progress < 5.0 / 6.0) {
-							progress = (progress - 4.0 / 6.0) * 6;
-							r = (int) (getRed(side5Color.getRGB()) * (1 - progress)
-									+ getRed(side6Color.getRGB()) * progress);
-							g = (int) (getGreen(side5Color.getRGB()) * (1 - progress)
-									+ getGreen(side6Color.getRGB()) * progress);
-							b = (int) (getBlue(side5Color.getRGB()) * (1 - progress)
-									+ getBlue(side6Color.getRGB()) * progress);
-						} else {
-							progress = (progress - 5.0 / 6.0) * 6;
-							r = (int) (getRed(side6Color.getRGB()) * (1 - progress)
-									+ getRed(side1Color.getRGB()) * progress);
-							g = (int) (getGreen(side6Color.getRGB()) * (1 - progress)
-									+ getGreen(side1Color.getRGB()) * progress);
-							b = (int) (getBlue(side6Color.getRGB()) * (1 - progress)
-									+ getBlue(side1Color.getRGB()) * progress);
-						}
-
+						break;
+					case 4:
+						r = interpolateColorComponent(side5.getRed(), side6.getRed(), progress);
+						g = interpolateColorComponent(side5.getGreen(), side6.getGreen(), progress);
+						b = interpolateColorComponent(side5.getBlue(), side6.getBlue(), progress);
 						currentColor = new Color(r, g, b);
+						break;
+					case 5:
+						r = interpolateColorComponent(side6.getRed(), side7.getRed(), progress);
+						g = interpolateColorComponent(side6.getGreen(), side7.getGreen(), progress);
+						b = interpolateColorComponent(side6.getBlue(), side7.getBlue(), progress);
+						currentColor = new Color(r, g, b);
+						break;
+					case 6:
+						r = interpolateColorComponent(side7.getRed(), side8.getRed(), progress);
+						g = interpolateColorComponent(side7.getGreen(), side8.getGreen(), progress);
+						b = interpolateColorComponent(side7.getBlue(), side8.getBlue(), progress);
+						currentColor = new Color(r, g, b);
+						break;
+					case 7:
+						r = interpolateColorComponent(side8.getRed(), side1.getRed(), progress);
+						g = interpolateColorComponent(side8.getGreen(), side1.getGreen(), progress);
+						b = interpolateColorComponent(side8.getBlue(), side1.getBlue(), progress);
+						currentColor = new Color(r, g, b);
+						break;
 					}
-
-					else if (ModesController.Gradient7Side) {
-						// Gradient for 7 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 1.0 / 7.0) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 7))
-									+ getRed(side2Color.getRGB()) * (progress * 7));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 7))
-									+ getGreen(side2Color.getRGB()) * (progress * 7));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 7))
-									+ getBlue(side2Color.getRGB()) * (progress * 7));
-						} else if (progress < 2.0 / 7.0) {
-							progress = (progress - 1.0 / 7.0) * 7;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						} else if (progress < 3.0 / 7.0) {
-							progress = (progress - 2.0 / 7.0) * 7;
-							r = (int) (getRed(side3Color.getRGB()) * (1 - progress)
-									+ getRed(side4Color.getRGB()) * progress);
-							g = (int) (getGreen(side3Color.getRGB()) * (1 - progress)
-									+ getGreen(side4Color.getRGB()) * progress);
-							b = (int) (getBlue(side3Color.getRGB()) * (1 - progress)
-									+ getBlue(side4Color.getRGB()) * progress);
-						} else if (progress < 4.0 / 7.0) {
-							progress = (progress - 3.0 / 7.0) * 7;
-							r = (int) (getRed(side4Color.getRGB()) * (1 - progress)
-									+ getRed(side5Color.getRGB()) * progress);
-							g = (int) (getGreen(side4Color.getRGB()) * (1 - progress)
-									+ getGreen(side5Color.getRGB()) * progress);
-							b = (int) (getBlue(side4Color.getRGB()) * (1 - progress)
-									+ getBlue(side5Color.getRGB()) * progress);
-						} else if (progress < 5.0 / 7.0) {
-							progress = (progress - 4.0 / 7.0) * 7;
-							r = (int) (getRed(side5Color.getRGB()) * (1 - progress)
-									+ getRed(side6Color.getRGB()) * progress);
-							g = (int) (getGreen(side5Color.getRGB()) * (1 - progress)
-									+ getGreen(side6Color.getRGB()) * progress);
-							b = (int) (getBlue(side5Color.getRGB()) * (1 - progress)
-									+ getBlue(side6Color.getRGB()) * progress);
-						} else if (progress < 6.0 / 7.0) {
-							progress = (progress - 5.0 / 7.0) * 7;
-							r = (int) (getRed(side6Color.getRGB()) * (1 - progress)
-									+ getRed(side7Color.getRGB()) * progress);
-							g = (int) (getGreen(side6Color.getRGB()) * (1 - progress)
-									+ getGreen(side7Color.getRGB()) * progress);
-							b = (int) (getBlue(side6Color.getRGB()) * (1 - progress)
-									+ getBlue(side7Color.getRGB()) * progress);
-						} else {
-							progress = (progress - 6.0 / 7.0) * 7;
-							r = (int) (getRed(side7Color.getRGB()) * (1 - progress)
-									+ getRed(side1Color.getRGB()) * progress);
-							g = (int) (getGreen(side7Color.getRGB()) * (1 - progress)
-									+ getGreen(side1Color.getRGB()) * progress);
-							b = (int) (getBlue(side7Color.getRGB()) * (1 - progress)
-									+ getBlue(side1Color.getRGB()) * progress);
-						}
-
-						currentColor = new Color(r, g, b);
-					}
-
-					else if (ModesController.Gradient8Side) {
-						// Gradient for 8 sides
-						double progress = (double) step / numSteps;
-
-						int r, g, b;
-						if (progress < 1.0 / 8.0) {
-							r = (int) (getRed(side1Color.getRGB()) * (1 - (progress * 8))
-									+ getRed(side2Color.getRGB()) * (progress * 8));
-							g = (int) (getGreen(side1Color.getRGB()) * (1 - (progress * 8))
-									+ getGreen(side2Color.getRGB()) * (progress * 8));
-							b = (int) (getBlue(side1Color.getRGB()) * (1 - (progress * 8))
-									+ getBlue(side2Color.getRGB()) * (progress * 8));
-						} else if (progress < 2.0 / 8.0) {
-							progress = (progress - 1.0 / 8.0) * 8;
-							r = (int) (getRed(side2Color.getRGB()) * (1 - progress)
-									+ getRed(side3Color.getRGB()) * progress);
-							g = (int) (getGreen(side2Color.getRGB()) * (1 - progress)
-									+ getGreen(side3Color.getRGB()) * progress);
-							b = (int) (getBlue(side2Color.getRGB()) * (1 - progress)
-									+ getBlue(side3Color.getRGB()) * progress);
-						} else if (progress < 3.0 / 8.0) {
-							progress = (progress - 2.0 / 8.0) * 8;
-							r = (int) (getRed(side3Color.getRGB()) * (1 - progress)
-									+ getRed(side4Color.getRGB()) * progress);
-							g = (int) (getGreen(side3Color.getRGB()) * (1 - progress)
-									+ getGreen(side4Color.getRGB()) * progress);
-							b = (int) (getBlue(side3Color.getRGB()) * (1 - progress)
-									+ getBlue(side4Color.getRGB()) * progress);
-						} else if (progress < 4.0 / 8.0) {
-							progress = (progress - 3.0 / 8.0) * 8;
-							r = (int) (getRed(side4Color.getRGB()) * (1 - progress)
-									+ getRed(side5Color.getRGB()) * progress);
-							g = (int) (getGreen(side4Color.getRGB()) * (1 - progress)
-									+ getGreen(side5Color.getRGB()) * progress);
-							b = (int) (getBlue(side4Color.getRGB()) * (1 - progress)
-									+ getBlue(side5Color.getRGB()) * progress);
-						} else if (progress < 5.0 / 8.0) {
-							progress = (progress - 4.0 / 8.0) * 8;
-							r = (int) (getRed(side5Color.getRGB()) * (1 - progress)
-									+ getRed(side6Color.getRGB()) * progress);
-							g = (int) (getGreen(side5Color.getRGB()) * (1 - progress)
-									+ getGreen(side6Color.getRGB()) * progress);
-							b = (int) (getBlue(side5Color.getRGB()) * (1 - progress)
-									+ getBlue(side6Color.getRGB()) * progress);
-						} else if (progress < 6.0 / 8.0) {
-							progress = (progress - 5.0 / 8.0) * 8;
-							r = (int) (getRed(side6Color.getRGB()) * (1 - progress)
-									+ getRed(side7Color.getRGB()) * progress);
-							g = (int) (getGreen(side6Color.getRGB()) * (1 - progress)
-									+ getGreen(side7Color.getRGB()) * progress);
-							b = (int) (getBlue(side6Color.getRGB()) * (1 - progress)
-									+ getBlue(side7Color.getRGB()) * progress);
-						} else if (progress < 7.0 / 8.0) {
-							progress = (progress - 6.0 / 8.0) * 8;
-							r = (int) (getRed(side7Color.getRGB()) * (1 - progress)
-									+ getRed(side8Color.getRGB()) * progress);
-							g = (int) (getGreen(side7Color.getRGB()) * (1 - progress)
-									+ getGreen(side8Color.getRGB()) * progress);
-							b = (int) (getBlue(side7Color.getRGB()) * (1 - progress)
-									+ getBlue(side8Color.getRGB()) * progress);
-						} else {
-							progress = (progress - 7.0 / 8.0) * 8;
-							r = (int) (getRed(side8Color.getRGB()) * (1 - progress)
-									+ getRed(side1Color.getRGB()) * progress);
-							g = (int) (getGreen(side8Color.getRGB()) * (1 - progress)
-									+ getGreen(side1Color.getRGB()) * progress);
-							b = (int) (getBlue(side8Color.getRGB()) * (1 - progress)
-									+ getBlue(side1Color.getRGB()) * progress);
-						}
-
-						currentColor = new Color(r, g, b);
-					} else {
-						// Handle the case when no gradient mode is selected
-						currentColor = GetUI.selectedColor; // Set a default color
-					}
-
 					message = arduino.commandSetColor(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, getSplashColor());

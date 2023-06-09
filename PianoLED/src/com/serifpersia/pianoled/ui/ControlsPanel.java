@@ -72,15 +72,15 @@ public class ControlsPanel extends JPanel {
 	public static ButtonGroup bgGroup;
 	public static ButtonGroup fixLEDGroup;
 	public static ButtonGroup reverseLEDGroup;
-	private JLabel lb_Gradienet2_SetSide1;
-	private JButton btn_Gradienet2_SetSide1;
-	private JLabel lb_Gradienet2_SetSide2;
-	private JButton btn_Gradienet2_SetSide2;
-	private JLabel lb_Gradienet3_SetSide1;
+	private JLabel lb_Gradient2_SetSide1;
+	private JButton btn_Gradient2_SetSide1;
+	private JLabel lb_Gradient2_SetSide2;
+	private JButton btn_Gradient2_SetSide2;
+	private JLabel lb_Gradient3_SetSide1;
 	private JButton btn_Gradient3_SetSide1;
-	private JLabel lb_Gradienet3_SetSide2;
+	private JLabel lb_Gradient3_SetSide2;
 	private JButton btn_Gradient3_SetSide2;
-	private JLabel lb_Gradienet3_SetSide3;
+	private JLabel lb_Gradient3_SetSide3;
 	private JButton btn_Gradient3_SetSide3;
 	private JLabel lb_Gradient4_SetSide1;
 	private JButton btn_Gradient4_SetSide1;
@@ -497,56 +497,56 @@ public class ControlsPanel extends JPanel {
 		GradientCard.add(gradient2Side, "2 Side Gradient");
 		gradient2Side.setLayout(new GridLayout(2, 0, 0, 0));
 
-		lb_Gradienet2_SetSide1 = new JLabel("Side 1 ");
-		lb_Gradienet2_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Gradienet2_SetSide1.setForeground(Color.WHITE);
-		lb_Gradienet2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(lb_Gradienet2_SetSide1);
+		lb_Gradient2_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient2_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient2_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(lb_Gradient2_SetSide1);
 
-		btn_Gradienet2_SetSide1 = new JButton("Set");
-		btn_Gradienet2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(btn_Gradienet2_SetSide1);
+		btn_Gradient2_SetSide1 = new JButton("Set");
+		btn_Gradient2_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(btn_Gradient2_SetSide1);
 
-		lb_Gradienet2_SetSide2 = new JLabel("Side 2");
-		lb_Gradienet2_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Gradienet2_SetSide2.setForeground(Color.WHITE);
-		lb_Gradienet2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(lb_Gradienet2_SetSide2);
+		lb_Gradient2_SetSide2 = new JLabel("Side 2");
+		lb_Gradient2_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient2_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(lb_Gradient2_SetSide2);
 
-		btn_Gradienet2_SetSide2 = new JButton("Set");
-		btn_Gradienet2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient2Side.add(btn_Gradienet2_SetSide2);
+		btn_Gradient2_SetSide2 = new JButton("Set");
+		btn_Gradient2_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient2Side.add(btn_Gradient2_SetSide2);
 
 		JPanel gradient3Side = new JPanel();
 		gradient3Side.setBackground(Color.BLACK);
 		GradientCard.add(gradient3Side, "3 Side Gradient");
 		gradient3Side.setLayout(new GridLayout(3, 0, 0, 0));
 
-		lb_Gradienet3_SetSide1 = new JLabel("Side 1 ");
-		lb_Gradienet3_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Gradienet3_SetSide1.setForeground(Color.WHITE);
-		lb_Gradienet3_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lb_Gradienet3_SetSide1);
+		lb_Gradient3_SetSide1 = new JLabel("Side 1 ");
+		lb_Gradient3_SetSide1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient3_SetSide1.setForeground(Color.WHITE);
+		lb_Gradient3_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradient3_SetSide1);
 
 		btn_Gradient3_SetSide1 = new JButton("Set");
 		btn_Gradient3_SetSide1.setFont(new Font("Tahoma", Font.BOLD, 25));
 		gradient3Side.add(btn_Gradient3_SetSide1);
 
-		lb_Gradienet3_SetSide2 = new JLabel("Side 2");
-		lb_Gradienet3_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Gradienet3_SetSide2.setForeground(Color.WHITE);
-		lb_Gradienet3_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lb_Gradienet3_SetSide2);
+		lb_Gradient3_SetSide2 = new JLabel("Side 2");
+		lb_Gradient3_SetSide2.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient3_SetSide2.setForeground(Color.WHITE);
+		lb_Gradient3_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradient3_SetSide2);
 
 		btn_Gradient3_SetSide2 = new JButton("Set");
 		btn_Gradient3_SetSide2.setFont(new Font("Tahoma", Font.BOLD, 25));
 		gradient3Side.add(btn_Gradient3_SetSide2);
 
-		lb_Gradienet3_SetSide3 = new JLabel("Side 3");
-		lb_Gradienet3_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Gradienet3_SetSide3.setForeground(Color.WHITE);
-		lb_Gradienet3_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
-		gradient3Side.add(lb_Gradienet3_SetSide3);
+		lb_Gradient3_SetSide3 = new JLabel("Side 3");
+		lb_Gradient3_SetSide3.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient3_SetSide3.setForeground(Color.WHITE);
+		lb_Gradient3_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		gradient3Side.add(lb_Gradient3_SetSide3);
 
 		btn_Gradient3_SetSide3 = new JButton("Set");
 		btn_Gradient3_SetSide3.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -1172,67 +1172,162 @@ public class ControlsPanel extends JPanel {
 					break;
 
 				case "btn_Gradienet2_SetSide1":
-					lb_Gradienet2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet2_SetSide2":
-					lb_Gradienet2_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
+
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradienet3_SetSide1":
-					lb_Gradienet3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet3_SetSide2":
-					lb_Gradienet3_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
+
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet3_SetSide3":
-					lb_Gradienet3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradienet4_SetSide1":
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
 					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet4_SetSide2":
+					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
 					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
+
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet4_SetSide3":
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
 					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 				case "btn_Gradienet4_SetSide4":
 					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+
 					PianoController.side4 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradient5_SetSide1":
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
 					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient5_SetSide2":
+					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
 					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
+
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient5_SetSide3":
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
 					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient5_SetSide4":
+					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
 					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+
 					PianoController.side4 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient5_SetSide5":
 					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
+
 					PianoController.side5 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradient6_SetSide1":
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
 					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient6_SetSide2":
@@ -1240,24 +1335,48 @@ public class ControlsPanel extends JPanel {
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient6_SetSide3":
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
 					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient6_SetSide4":
+					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
 					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+
 					PianoController.side4 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient6_SetSide5":
+					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
 					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
+
 					PianoController.side5 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient6_SetSide6":
 					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
+
 					PianoController.side6 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradient7_SetSide1":
+					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
 					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide2":
@@ -1265,28 +1384,49 @@ public class ControlsPanel extends JPanel {
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide3":
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
 					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide4":
+					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
 					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+
 					PianoController.side4 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide5":
+					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
 					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
+
 					PianoController.side5 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide6":
+					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
 					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
+
 					PianoController.side6 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient7_SetSide7":
 					lb_Gradient7_SetSide7.setForeground(GetUI.selectedColor);
+					lb_Gradient8_SetSide7.setForeground(GetUI.selectedColor);
+
 					PianoController.side7 = GetUI.selectedColor;
 					break;
 
 				case "btn_Gradient8_SetSide1":
 					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
+
 					PianoController.side1 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide2":
@@ -1294,23 +1434,43 @@ public class ControlsPanel extends JPanel {
 					PianoController.side2 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide3":
+					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
 					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
+
 					PianoController.side3 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide4":
+					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
 					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
+
 					PianoController.side4 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide5":
+					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
 					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
+
 					PianoController.side5 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide6":
+					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
+					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
 					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
+
 					PianoController.side6 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide7":
+					lb_Gradient7_SetSide7.setForeground(GetUI.selectedColor);
 					lb_Gradient8_SetSide7.setForeground(GetUI.selectedColor);
+
 					PianoController.side7 = GetUI.selectedColor;
 					break;
 				case "btn_Gradient8_SetSide8":
@@ -1329,8 +1489,8 @@ public class ControlsPanel extends JPanel {
 		btn_RightArrow.addActionListener(buttonListener);
 		btnSet_BG.addActionListener(buttonListener);
 
-		btn_Gradienet2_SetSide1.addActionListener(buttonListener);
-		btn_Gradienet2_SetSide2.addActionListener(buttonListener);
+		btn_Gradient2_SetSide1.addActionListener(buttonListener);
+		btn_Gradient2_SetSide2.addActionListener(buttonListener);
 
 		btn_Gradient3_SetSide1.addActionListener(buttonListener);
 		btn_Gradient3_SetSide2.addActionListener(buttonListener);
@@ -1377,8 +1537,8 @@ public class ControlsPanel extends JPanel {
 		btn_RightArrow.setActionCommand("btn_RightArrow");
 		btnSet_BG.setActionCommand("btnSet_BG");
 
-		btn_Gradienet2_SetSide1.setActionCommand("btn_Gradienet2_SetSide1");
-		btn_Gradienet2_SetSide2.setActionCommand("btn_Gradienet2_SetSide2");
+		btn_Gradient2_SetSide1.setActionCommand("btn_Gradienet2_SetSide1");
+		btn_Gradient2_SetSide2.setActionCommand("btn_Gradienet2_SetSide2");
 
 		btn_Gradient3_SetSide1.setActionCommand("btn_Gradienet3_SetSide1");
 		btn_Gradient3_SetSide2.setActionCommand("btn_Gradienet3_SetSide2");

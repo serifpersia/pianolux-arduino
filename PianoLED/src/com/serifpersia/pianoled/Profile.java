@@ -47,11 +47,79 @@ public class Profile {
 	}
 
 	public static String saveGradients() {
-		return "leftSide=" + PianoController.side1.getRed() + "," + PianoController.side1.getGreen() + ","
-				+ PianoController.side1.getBlue() + ";middleSide=" + PianoController.side2.getRed() + ","
-				+ PianoController.side2.getGreen() + "," + PianoController.side2.getBlue() + ";rightSide="
-				+ PianoController.side3.getRed() + "," + PianoController.side3.getGreen() + ","
-				+ PianoController.side3.getBlue();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i <= 8; i++) {
+			sb.append("side").append(i).append("=").append(getColorString(getSideColor(i))).append(";");
+		}
+		return sb.toString();
+	}
+
+	private static Color getSideColor(int sideNumber) {
+		switch (sideNumber) {
+		case 1:
+			return PianoController.side1;
+		case 2:
+			return PianoController.side2;
+		case 3:
+			return PianoController.side3;
+		// Add cases for the remaining sides (4 to 8)
+		case 4:
+			return PianoController.side4;
+		case 5:
+			return PianoController.side5;
+		case 6:
+			return PianoController.side6;
+		case 7:
+			return PianoController.side7;
+		case 8:
+			return PianoController.side8;
+		default:
+			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
+		}
+	}
+
+	private static String getColorString(Color color) {
+		return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+	}
+
+	private static void setColorFromValue(String value, int sideNumber) {
+		String[] colorValues = value.substring(value.indexOf("=") + 1).split(",");
+		int red = Integer.parseInt(colorValues[0]);
+		int green = Integer.parseInt(colorValues[1]);
+		int blue = Integer.parseInt(colorValues[2]);
+		setColorForSide(new Color(red, green, blue), sideNumber);
+	}
+
+	private static void setColorForSide(Color color, int sideNumber) {
+		switch (sideNumber) {
+		case 1:
+			PianoController.side1 = color;
+			break;
+		case 2:
+			PianoController.side2 = color;
+			break;
+		case 3:
+			PianoController.side3 = color;
+			break;
+		// Add cases for the remaining sides (4 to 8)
+		case 4:
+			PianoController.side4 = color;
+			break;
+		case 5:
+			PianoController.side5 = color;
+			break;
+		case 6:
+			PianoController.side6 = color;
+			break;
+		case 7:
+			PianoController.side7 = color;
+			break;
+		case 8:
+			PianoController.side8 = color;
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
+		}
 	}
 
 	private static int saveColorPreset() {
@@ -108,27 +176,15 @@ public class Profile {
 					} else if (line.startsWith("Animation = ")) {
 						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
 						ControlsPanel.cb_LED_Animations.setSelectedIndex(index);
-					} else if (line.startsWith("Gradient = ")) {
+					} // Assuming this code is inside a method or a block
+					else if (line.startsWith("Gradient = ")) {
 						String[] gradientValues = line.substring(line.indexOf("=") + 1).trim().split(";");
-						if (gradientValues.length == 3) {
-							String[] leftSideValues = gradientValues[0].substring(9).split(",");
-							int leftSideRed = Integer.parseInt(leftSideValues[0]);
-							int leftSideGreen = Integer.parseInt(leftSideValues[1]);
-							int leftSideBlue = Integer.parseInt(leftSideValues[2]);
-							PianoController.side1 = new Color(leftSideRed, leftSideGreen, leftSideBlue);
-
-							String[] middleSideValues = gradientValues[1].substring(11).split(",");
-							int middleSideRed = Integer.parseInt(middleSideValues[0]);
-							int middleSideGreen = Integer.parseInt(middleSideValues[1]);
-							int middleSideBlue = Integer.parseInt(middleSideValues[2]);
-							PianoController.side2 = new Color(middleSideRed, middleSideGreen, middleSideBlue);
-
-							String[] rightSideValues = gradientValues[2].substring(10).split(",");
-							int rightSideRed = Integer.parseInt(rightSideValues[0]);
-							int rightSideGreen = Integer.parseInt(rightSideValues[1]);
-							int rightSideBlue = Integer.parseInt(rightSideValues[2]);
-							PianoController.side3 = new Color(rightSideRed, rightSideGreen, rightSideBlue);
+						if (gradientValues.length == 8) {
+							for (int i = 0; i < gradientValues.length; i++) {
+								setColorFromValue(gradientValues[i], i + 1);
+							}
 						}
+
 					} else if (line.startsWith("Background Light = ")) {
 						String state = line.substring(line.indexOf("=") + 1).trim();
 						Enumeration<AbstractButton> buttons = ControlsPanel.bgGroup.getElements();
@@ -176,6 +232,7 @@ public class Profile {
 				error.printStackTrace();
 			}
 		}
+
 	}
 
 	public static void saveProfile(PianoLED pianoLED) {
