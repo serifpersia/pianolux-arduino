@@ -877,10 +877,6 @@ public class ControlsPanel extends JPanel {
 		btn_Gradient8_SetSide8.setFont(new Font("Tahoma", Font.BOLD, 25));
 		gradient8Side.add(btn_Gradient8_SetSide8);
 
-		JPanel pnl_SplitControls = new JPanel();
-		pnl_SplitControls.setBackground(new Color(0, 0, 0));
-		tabbedPane.addTab("Split Controls", null, pnl_SplitControls, null);
-
 		cb_LED_Animations = new JComboBox<Object>(GetUI.animationNames.toArray(new String[0]));
 		cb_LED_Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
 		cb_LED_Animations.addActionListener(e -> {
