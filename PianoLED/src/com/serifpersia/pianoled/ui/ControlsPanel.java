@@ -2,6 +2,7 @@ package com.serifpersia.pianoled.ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -143,10 +144,27 @@ public class ControlsPanel extends JPanel {
 	private JLabel lb_Gradient8_SetSide8;
 	private JButton btn_Gradient8_SetSide8;
 
+	private int divisionCount = 2; // Specify the number of divisions
+	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
+	private static JPanel pnl_GradientPreview;
+
+	private void initializeColors() {
+
+		colors[0] = PianoController.side1;
+		colors[1] = PianoController.side2;
+		colors[2] = PianoController.side3;
+		colors[3] = PianoController.side4;
+		colors[4] = PianoController.side5;
+		colors[5] = PianoController.side6;
+		colors[6] = PianoController.side7;
+		colors[7] = PianoController.side8;
+	}
+
 	public ControlsPanel(PianoLED pianoLED) {
 		pianoController = pianoLED.getPianoController();
 		modesController = new ModesController(pianoLED);
 		init(pianoLED);
+		initializeColors();
 	}
 
 	private void init(PianoLED pianoLED) {
@@ -288,6 +306,7 @@ public class ControlsPanel extends JPanel {
 		cb_LED_Animations.addActionListener(e -> {
 			if (ModesController.AnimationOn) {
 				int selectedIndex = cb_LED_Animations.getSelectedIndex();
+				System.out.println(selectedIndex);
 				pianoController.animationlist(selectedIndex);
 			}
 		});
@@ -472,6 +491,9 @@ public class ControlsPanel extends JPanel {
 		pnl_GradientControls.add(cb_GradientSideList, BorderLayout.NORTH);
 		cb_GradientSideList.addActionListener(e -> {
 			int selectedIndex = cb_GradientSideList.getSelectedIndex();
+			int divisionValue = selectedIndex + 2;
+			divisionCount = divisionValue;
+			pnl_GradientPreview.repaint();
 			modesController.gradientSideSelect(selectedIndex);
 		});
 
@@ -877,15 +899,6 @@ public class ControlsPanel extends JPanel {
 		btn_Gradient8_SetSide8.setFont(new Font("Tahoma", Font.BOLD, 25));
 		gradient8Side.add(btn_Gradient8_SetSide8);
 
-		cb_LED_Animations = new JComboBox<Object>(GetUI.animationNames.toArray(new String[0]));
-		cb_LED_Animations.setFont(new Font("Tahoma", Font.BOLD, 25));
-		cb_LED_Animations.addActionListener(e -> {
-			if (ModesController.AnimationOn) {
-				int selectedIndex = cb_LED_Animations.getSelectedIndex();
-				pianoController.animationlist(selectedIndex);
-			}
-		});
-
 		// Group the radio buttons together
 		bgGroup = new ButtonGroup();
 		bgGroup.add(rdbtn_BG_Off);
@@ -1011,6 +1024,57 @@ public class ControlsPanel extends JPanel {
 		pnl_TextFields.add(txt_B);
 
 		pnl_Center.setLayout(gl_pnl_Center);
+
+		pnl_GradientPreview = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+
+				int width = getWidth(); // Use the full width of the panel
+				int height = getHeight(); // Take the full height of the panel
+
+				for (int i = 0; i < divisionCount; i++) { // Iterate over all parts of the gradient
+					int x1 = i * width / divisionCount; // Calculate the starting x-coordinate of the current part
+					int x2 = (i + 1) * width / divisionCount; // Calculate the ending x-coordinate of the current part
+
+					Color color1 = colors[i % colors.length]; // Get the color of the current part
+
+					if (i < divisionCount - 1) {
+						Color color2 = colors[(i + 1) % colors.length]; // Get the color of the next part
+
+						// Calculate the number of steps for color interpolation based on the full width
+						int numSteps = x2 - x1;
+
+						for (int j = 0; j < numSteps; j++) {
+							// Calculate the ratio of completion for color interpolation
+							float ratio = (float) j / (float) numSteps;
+
+							// Interpolate the colors based on the ratio
+							float[] hsbColor1 = Color.RGBtoHSB(color1.getRed(), color1.getGreen(), color1.getBlue(),
+									null);
+							float[] hsbColor2 = Color.RGBtoHSB(color2.getRed(), color2.getGreen(), color2.getBlue(),
+									null);
+
+							float hue = hsbColor1[0] * (1 - ratio) + hsbColor2[0] * ratio;
+							float saturation = hsbColor1[1] * (1 - ratio) + hsbColor2[1] * ratio;
+							float brightness = hsbColor1[2] * (1 - ratio) + hsbColor2[2] * ratio;
+
+							Color interpolatedColor = Color.getHSBColor(hue, saturation, brightness);
+
+							g.setColor(interpolatedColor);
+							g.fillRect(x1 + j, 0, 1, height);
+						}
+					} else {
+						// Paint the last part without interpolation
+						g.setColor(color1);
+						g.fillRect(x1, 0, width - x1, height);
+					}
+				}
+			}
+		};
+		pnl_GradientPreview.setBackground(new Color(0, 0, 0));
+
+		add(pnl_GradientPreview, BorderLayout.SOUTH);
 
 		// Set a titled border with the title text
 		// TitledBorder titledBorder = BorderFactory.createTitledBorder("Slider Title");
@@ -1168,310 +1232,219 @@ public class ControlsPanel extends JPanel {
 					break;
 
 				case "btn_Gradienet2_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradienet2_SetSide2":
-					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
 
-					PianoController.side2 = GetUI.selectedColor;
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradienet3_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
-					break;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 				case "btn_Gradienet3_SetSide2":
-					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
 
-					PianoController.side2 = GetUI.selectedColor;
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradienet3_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 
-					PianoController.side3 = GetUI.selectedColor;
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradienet4_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradienet4_SetSide2":
-					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
 
-					PianoController.side2 = GetUI.selectedColor;
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradienet4_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 
-					PianoController.side3 = GetUI.selectedColor;
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradienet4_SetSide4":
-					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
 
-					PianoController.side4 = GetUI.selectedColor;
+					colors[3] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradient5_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient5_SetSide2":
-					lb_Gradient2_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
 
-					PianoController.side2 = GetUI.selectedColor;
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient5_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 
-					PianoController.side3 = GetUI.selectedColor;
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient5_SetSide4":
-					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
 
-					PianoController.side4 = GetUI.selectedColor;
+					colors[3] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient5_SetSide5":
-					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
 
-					PianoController.side5 = GetUI.selectedColor;
+					colors[4] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradient6_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient6_SetSide2":
-					lb_Gradient6_SetSide2.setForeground(GetUI.selectedColor);
-					PianoController.side2 = GetUI.selectedColor;
+
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient6_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
-					PianoController.side3 = GetUI.selectedColor;
+
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient6_SetSide4":
-					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
 
-					PianoController.side4 = GetUI.selectedColor;
+					colors[3] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient6_SetSide5":
-					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
 
-					PianoController.side5 = GetUI.selectedColor;
+					colors[4] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient6_SetSide6":
-					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
 
-					PianoController.side6 = GetUI.selectedColor;
+					colors[5] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradient7_SetSide1":
-					lb_Gradient2_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient3_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide1.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide2":
-					lb_Gradient7_SetSide2.setForeground(GetUI.selectedColor);
-					PianoController.side2 = GetUI.selectedColor;
+
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 
-					PianoController.side3 = GetUI.selectedColor;
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide4":
-					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
 
-					PianoController.side4 = GetUI.selectedColor;
+					colors[3] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide5":
-					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
 
-					PianoController.side5 = GetUI.selectedColor;
+					colors[4] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide6":
-					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
 
-					PianoController.side6 = GetUI.selectedColor;
+					colors[5] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient7_SetSide7":
-					lb_Gradient7_SetSide7.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide7.setForeground(GetUI.selectedColor);
 
-					PianoController.side7 = GetUI.selectedColor;
+					colors[6] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 
 				case "btn_Gradient8_SetSide1":
-					lb_Gradient8_SetSide1.setForeground(GetUI.selectedColor);
 
-					PianoController.side1 = GetUI.selectedColor;
+					colors[0] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide2":
-					lb_Gradient8_SetSide2.setForeground(GetUI.selectedColor);
-					PianoController.side2 = GetUI.selectedColor;
+
+					colors[1] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide3":
-					lb_Gradient3_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient4_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide3.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide3.setForeground(GetUI.selectedColor);
 
-					PianoController.side3 = GetUI.selectedColor;
+					colors[2] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide4":
-					lb_Gradient4_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient5_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide4.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide4.setForeground(GetUI.selectedColor);
 
-					PianoController.side4 = GetUI.selectedColor;
+					colors[3] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide5":
-					lb_Gradient5_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient6_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide5.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide5.setForeground(GetUI.selectedColor);
 
-					PianoController.side5 = GetUI.selectedColor;
+					colors[4] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide6":
-					lb_Gradient6_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient7_SetSide6.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide6.setForeground(GetUI.selectedColor);
 
-					PianoController.side6 = GetUI.selectedColor;
+					colors[5] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide7":
-					lb_Gradient7_SetSide7.setForeground(GetUI.selectedColor);
-					lb_Gradient8_SetSide7.setForeground(GetUI.selectedColor);
 
-					PianoController.side7 = GetUI.selectedColor;
+					colors[6] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				case "btn_Gradient8_SetSide8":
-					lb_Gradient8_SetSide8.setForeground(GetUI.selectedColor);
-					PianoController.side8 = GetUI.selectedColor;
+
+					colors[7] = GetUI.selectedColor;
+					pnl_GradientPreview.repaint();
+
 					break;
 				default:
 					break;

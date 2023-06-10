@@ -57,22 +57,22 @@ public class Profile {
 	private static Color getSideColor(int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			return PianoController.side1;
+			return ControlsPanel.colors[0];
 		case 2:
-			return PianoController.side2;
+			return ControlsPanel.colors[1];
 		case 3:
-			return PianoController.side3;
+			return ControlsPanel.colors[2];
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			return PianoController.side4;
+			return ControlsPanel.colors[3];
 		case 5:
-			return PianoController.side5;
+			return ControlsPanel.colors[4];
 		case 6:
-			return PianoController.side6;
+			return ControlsPanel.colors[5];
 		case 7:
-			return PianoController.side7;
+			return ControlsPanel.colors[6];
 		case 8:
-			return PianoController.side8;
+			return ControlsPanel.colors[7];
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
 		}

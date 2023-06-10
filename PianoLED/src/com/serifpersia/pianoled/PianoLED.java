@@ -43,6 +43,8 @@ public class PianoLED extends JFrame {
 	public PianoLED() {
 		init();
 		showLeftPanel();
+		Updater updater = new Updater();
+		updater.getUpdate();
 	}
 
 	private void init() {
