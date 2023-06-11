@@ -93,29 +93,29 @@ public class Profile {
 	private static void setColorForSide(Color color, int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			PianoController.side1 = color;
+			ControlsPanel.colors[0] = color;
 			break;
 		case 2:
-			PianoController.side2 = color;
+			ControlsPanel.colors[1] = color;
 			break;
 		case 3:
-			PianoController.side3 = color;
+			ControlsPanel.colors[2] = color;
 			break;
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			PianoController.side4 = color;
+			ControlsPanel.colors[3] = color;
 			break;
 		case 5:
-			PianoController.side5 = color;
+			ControlsPanel.colors[4] = color;
 			break;
 		case 6:
-			PianoController.side6 = color;
+			ControlsPanel.colors[5] = color;
 			break;
 		case 7:
-			PianoController.side7 = color;
+			ControlsPanel.colors[6] = color;
 			break;
 		case 8:
-			PianoController.side8 = color;
+			ControlsPanel.colors[7] = color;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);

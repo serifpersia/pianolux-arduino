@@ -14,6 +14,7 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.learn.PianoReceiver;
+import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
 
@@ -35,15 +36,6 @@ public class PianoController implements PianoMidiConsumer {
 
 	public static Color splitLeftColor = Color.RED;
 	public static Color splitRightColor = Color.BLUE;
-
-	public static Color side1 = Color.RED;
-	public static Color side2 = Color.GREEN;
-	public static Color side3 = Color.BLUE;
-	public static Color side4 = Color.RED;
-	public static Color side5 = Color.GREEN;
-	public static Color side6 = Color.BLUE;
-	public static Color side7 = Color.RED;
-	public static Color side8 = Color.GREEN;
 
 	// Helper method to interpolate a color component value
 	private int interpolateColorComponent(int start, int end, double progress) {
@@ -273,69 +265,95 @@ public class PianoController implements PianoMidiConsumer {
 					} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
 						message = arduino.commandSetColor(splitRightColor, notePushed);
 					}
-				}
-				if (ModesController.GradientOn) {
+				} else if (ModesController.GradientOn) {
 					int numSteps = GetUI.getStripLedNum();
 					int step = notePushed;
+
 					Color currentColor = null;
 
 					int sideCount = ModesController.getGradientSideCount();
 					int segmentSize = numSteps / sideCount;
 					int segmentIndex = step / segmentSize;
+
 					double progress = (double) (step % segmentSize) / segmentSize;
 
 					int r, g, b;
 
 					switch (segmentIndex) {
 					case 0:
-						r = interpolateColorComponent(side1.getRed(), side2.getRed(), progress);
-						g = interpolateColorComponent(side1.getGreen(), side2.getGreen(), progress);
-						b = interpolateColorComponent(side1.getBlue(), side2.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[0].getRed(),
+								ControlsPanel.colors[1].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[0].getGreen(),
+								ControlsPanel.colors[1].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[0].getBlue(),
+								ControlsPanel.colors[1].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 1:
-						r = interpolateColorComponent(side2.getRed(), side3.getRed(), progress);
-						g = interpolateColorComponent(side2.getGreen(), side3.getGreen(), progress);
-						b = interpolateColorComponent(side2.getBlue(), side3.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[1].getRed(),
+								ControlsPanel.colors[2].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[1].getGreen(),
+								ControlsPanel.colors[2].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[1].getBlue(),
+								ControlsPanel.colors[2].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 2:
-						r = interpolateColorComponent(side3.getRed(), side4.getRed(), progress);
-						g = interpolateColorComponent(side3.getGreen(), side4.getGreen(), progress);
-						b = interpolateColorComponent(side3.getBlue(), side4.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[2].getRed(),
+								ControlsPanel.colors[3].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[2].getGreen(),
+								ControlsPanel.colors[3].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[2].getBlue(),
+								ControlsPanel.colors[3].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 3:
-						r = interpolateColorComponent(side4.getRed(), side5.getRed(), progress);
-						g = interpolateColorComponent(side4.getGreen(), side5.getGreen(), progress);
-						b = interpolateColorComponent(side4.getBlue(), side5.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[3].getRed(),
+								ControlsPanel.colors[4].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[3].getGreen(),
+								ControlsPanel.colors[4].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[3].getBlue(),
+								ControlsPanel.colors[4].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 4:
-						r = interpolateColorComponent(side5.getRed(), side6.getRed(), progress);
-						g = interpolateColorComponent(side5.getGreen(), side6.getGreen(), progress);
-						b = interpolateColorComponent(side5.getBlue(), side6.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[4].getRed(),
+								ControlsPanel.colors[5].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[4].getGreen(),
+								ControlsPanel.colors[5].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[4].getBlue(),
+								ControlsPanel.colors[5].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 5:
-						r = interpolateColorComponent(side6.getRed(), side7.getRed(), progress);
-						g = interpolateColorComponent(side6.getGreen(), side7.getGreen(), progress);
-						b = interpolateColorComponent(side6.getBlue(), side7.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[5].getRed(),
+								ControlsPanel.colors[6].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[5].getGreen(),
+								ControlsPanel.colors[6].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[5].getBlue(),
+								ControlsPanel.colors[6].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 6:
-						r = interpolateColorComponent(side7.getRed(), side8.getRed(), progress);
-						g = interpolateColorComponent(side7.getGreen(), side8.getGreen(), progress);
-						b = interpolateColorComponent(side7.getBlue(), side8.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[6].getRed(),
+								ControlsPanel.colors[7].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[6].getGreen(),
+								ControlsPanel.colors[7].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[6].getBlue(),
+								ControlsPanel.colors[7].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 7:
-						r = interpolateColorComponent(side8.getRed(), side1.getRed(), progress);
-						g = interpolateColorComponent(side8.getGreen(), side1.getGreen(), progress);
-						b = interpolateColorComponent(side8.getBlue(), side1.getBlue(), progress);
+						r = interpolateColorComponent(ControlsPanel.colors[7].getRed(),
+								ControlsPanel.colors[0].getRed(), progress);
+						g = interpolateColorComponent(ControlsPanel.colors[7].getGreen(),
+								ControlsPanel.colors[0].getGreen(), progress);
+						b = interpolateColorComponent(ControlsPanel.colors[7].getBlue(),
+								ControlsPanel.colors[0].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					}
+
 					message = arduino.commandSetColor(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, getSplashColor());

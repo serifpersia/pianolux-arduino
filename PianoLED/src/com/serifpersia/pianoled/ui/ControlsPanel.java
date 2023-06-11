@@ -146,18 +146,18 @@ public class ControlsPanel extends JPanel {
 
 	private int divisionCount = 2; // Specify the number of divisions
 	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
-	private static JPanel pnl_GradientPreview;
+	private JPanel pnl_GradientPreview;
 
 	private void initializeColors() {
 
-		colors[0] = PianoController.side1;
-		colors[1] = PianoController.side2;
-		colors[2] = PianoController.side3;
-		colors[3] = PianoController.side4;
-		colors[4] = PianoController.side5;
-		colors[5] = PianoController.side6;
-		colors[6] = PianoController.side7;
-		colors[7] = PianoController.side8;
+		colors[0] = Color.RED;
+		colors[1] = Color.GREEN;
+		colors[2] = Color.BLUE;
+		colors[3] = Color.RED;
+		colors[4] = Color.GREEN;
+		colors[5] = Color.BLUE;
+		colors[6] = Color.RED;
+		colors[7] = Color.GREEN;
 	}
 
 	public ControlsPanel(PianoLED pianoLED) {
@@ -1033,43 +1033,33 @@ public class ControlsPanel extends JPanel {
 				int width = getWidth(); // Use the full width of the panel
 				int height = getHeight(); // Take the full height of the panel
 
-				for (int i = 0; i < divisionCount; i++) { // Iterate over all parts of the gradient
+				int colorCount = Math.min(divisionCount, colors.length); // Determine the number of colors to use
+
+				for (int i = 0; i < colorCount; i++) { // Iterate over the colors
 					int x1 = i * width / divisionCount; // Calculate the starting x-coordinate of the current part
 					int x2 = (i + 1) * width / divisionCount; // Calculate the ending x-coordinate of the current part
 
-					Color color1 = colors[i % colors.length]; // Get the color of the current part
+					Color color = colors[i % colors.length]; // Get the color of the current part
 
-					if (i < divisionCount - 1) {
-						Color color2 = colors[(i + 1) % colors.length]; // Get the color of the next part
+					g.setColor(color);
+					g.fillRect(x1, 0, x2 - x1, height);
 
-						// Calculate the number of steps for color interpolation based on the full width
-						int numSteps = x2 - x1;
+					if (i < colorCount - 1) { // Apply gradient between divisions
+						Color colorLeft = colors[i];
+						Color colorRight = colors[i + 1];
 
-						for (int j = 0; j < numSteps; j++) {
-							// Calculate the ratio of completion for color interpolation
-							float ratio = (float) j / (float) numSteps;
-
-							// Interpolate the colors based on the ratio
-							float[] hsbColor1 = Color.RGBtoHSB(color1.getRed(), color1.getGreen(), color1.getBlue(),
-									null);
-							float[] hsbColor2 = Color.RGBtoHSB(color2.getRed(), color2.getGreen(), color2.getBlue(),
-									null);
-
-							float hue = hsbColor1[0] * (1 - ratio) + hsbColor2[0] * ratio;
-							float saturation = hsbColor1[1] * (1 - ratio) + hsbColor2[1] * ratio;
-							float brightness = hsbColor1[2] * (1 - ratio) + hsbColor2[2] * ratio;
-
-							Color interpolatedColor = Color.getHSBColor(hue, saturation, brightness);
+						for (int x = x1; x < x2; x++) { // Iterate over the pixels within the division
+							float ratio = (float) (x - x1) / (float) (x2 - x1); // Calculate the ratio of the current
+																				// pixel within the division
+							Color interpolatedColor = interpolateColor(colorLeft, colorRight, ratio); // Interpolate the
+																										// color
 
 							g.setColor(interpolatedColor);
-							g.fillRect(x1 + j, 0, 1, height);
+							g.drawLine(x, 0, x, height); // Draw a vertical line with the interpolated color
 						}
-					} else {
-						// Paint the last part without interpolation
-						g.setColor(color1);
-						g.fillRect(x1, 0, width - x1, height);
 					}
 				}
+
 			}
 		};
 		pnl_GradientPreview.setBackground(new Color(0, 0, 0));
@@ -1575,4 +1565,16 @@ public class ControlsPanel extends JPanel {
 		sld_SplashMaxLenght.addChangeListener(sliderChangeListener);
 
 	}
+
+	private Color interpolateColor(Color color1, Color color2, float ratio) {
+		float[] hsbColor1 = Color.RGBtoHSB(color1.getRed(), color1.getGreen(), color1.getBlue(), null);
+		float[] hsbColor2 = Color.RGBtoHSB(color2.getRed(), color2.getGreen(), color2.getBlue(), null);
+
+		float hue = hsbColor1[0] * (1 - ratio) + hsbColor2[0] * ratio;
+		float saturation = hsbColor1[1] * (1 - ratio) + hsbColor2[1] * ratio;
+		float brightness = hsbColor1[2] * (1 - ratio) + hsbColor2[2] * ratio;
+
+		return Color.getHSBColor(hue, saturation, brightness);
+	}
+
 }
