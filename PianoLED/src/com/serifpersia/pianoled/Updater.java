@@ -32,7 +32,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	public String VersionTag = "v4.1.0";
+	public String VersionTag = "v4.1.1";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
