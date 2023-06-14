@@ -15,6 +15,13 @@ Here is how you should connect the LED strip and Arduino.
 
 ![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
+## More Brightness? Use of External Power
+For simplest setup you can use minimum 3A 5V capable USB charger, cut a spare usb cable and connect positive and negative to led strip's red and white whire red being positive and white being negative, usually usb cables red is positive and black negative rest are data wires.
+
+Here is how you connect external power
+![externa power](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24)
+
+
 ## Mounting the LED strip
 For 88 keys piano aling the 3rd led with first black key
 
