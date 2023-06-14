@@ -25,7 +25,7 @@ To use the app, you need to install the latest Java OpenJRE version and use the 
 
 1.Run included Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
 
-2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. If you use Arduino IDE 1 or you didnt install AVR Boards drivers you won't be able to use the Refresh button, manual selection of arduino com port will work tho. To install drivers make sure you have Arduino IDE 2 and do ctrl+shift+B and click on second icon and click install button. For the other IDE look on google how to load drivers from ARDUINODE folder  Device Manager
+2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. If you use Arduino IDE 1 or you didnt install AVR Boards drivers you won't be able to use the Refresh button, manual selection of arduino com port will work tho. To install drivers make sure you have Arduino IDE 2 and do ctrl+shift+B and click on second icon and click install button. For the other IDE look on google how to load drivers from ARDUINO IDE folder  Device Manager
 
 ![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd)
 
