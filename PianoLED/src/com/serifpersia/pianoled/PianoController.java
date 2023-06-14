@@ -36,6 +36,7 @@ public class PianoController implements PianoMidiConsumer {
 
 	public static Color splitLeftColor = Color.RED;
 	public static Color splitRightColor = Color.BLUE;
+	public static int BG_BRIGHTNESS = 10;
 
 	// Helper method to interpolate a color component value
 	private int interpolateColorComponent(int start, int end, double progress) {
@@ -424,7 +425,6 @@ public class PianoController implements PianoMidiConsumer {
 	public void setLedBG(boolean on) {
 		int BG_HUE = 100;
 		int BG_SATURATION = 0;
-		int BG_BRIGHTNESS = 20;
 
 		if (on) {
 			if (arduino != null)
@@ -442,7 +442,7 @@ public class PianoController implements PianoMidiConsumer {
 		float[] hsbValues = Color.RGBtoHSB(red, green, blue, null);
 		int hue = (int) (hsbValues[0] * 255);
 		int saturation = (int) (hsbValues[1] * 255);
-		int brightness = 30;
+		int brightness = BG_BRIGHTNESS;
 
 		if (arduino != null)
 			arduino.sendCommandSetBG(hue, saturation, brightness);

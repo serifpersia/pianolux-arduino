@@ -8,7 +8,8 @@
 
 #define MAX_NUM_LEDS 176  // how many leds do you want to control
 #define DATA_PIN 5    // your LED strip data pin
-#define MAX_POWER_MILLIAMPS 450
+#define MAX_POWER_MILLIAMPS 450 //define current limit if use 5V pin from PC usb dont touch this,
+                                //for external power type the current example 3000 for 3A (3 Amps) 
 
 int NUM_LEDS=176;  // how many leds do you want to control
 

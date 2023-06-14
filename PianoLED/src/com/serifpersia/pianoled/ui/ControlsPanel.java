@@ -38,7 +38,7 @@ public class ControlsPanel extends JPanel {
 	private ColorPickerPanel colorPicker = new ColorPickerPanel();
 
 	static int defaultBrighntessVal = 255;
-	static int defaultFadeVal = 255;
+	static int defaultFadeVal = 0;
 	static int defaultMaxSplashLengthVal = 8;
 
 	private JButton btn_Load;
@@ -147,6 +147,7 @@ public class ControlsPanel extends JPanel {
 	private int divisionCount = 2; // Specify the number of divisions
 	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
 	private JPanel pnl_GradientPreview;
+	private JSlider bg_slider;
 
 	private void initializeColors() {
 
@@ -213,7 +214,7 @@ public class ControlsPanel extends JPanel {
 		JPanel pnl_LeftLabels = new JPanel();
 		pnl_LeftLabels.setBackground(new Color(0, 0, 0));
 		pnl_Controls.add(pnl_LeftLabels);
-		pnl_LeftLabels.setLayout(new GridLayout(10, 0, 0, 0));
+		pnl_LeftLabels.setLayout(new GridLayout(11, 0, 0, 0));
 
 		JLabel lblNewLabel_1_1 = new JLabel("Profile:");
 		lblNewLabel_1_1.setForeground(Color.WHITE);
@@ -250,6 +251,11 @@ public class ControlsPanel extends JPanel {
 		lblNewLabel_1_7.setFont(new Font("Tahoma", Font.BOLD, 25));
 		pnl_LeftLabels.add(lblNewLabel_1_7);
 
+		JLabel lblNewLabel_1 = new JLabel("BG Brightness");
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		pnl_LeftLabels.add(lblNewLabel_1);
+
 		JLabel lblNewLabel_1_8 = new JLabel("Fix LEDs:");
 		lblNewLabel_1_8.setForeground(Color.WHITE);
 		lblNewLabel_1_8.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -268,7 +274,7 @@ public class ControlsPanel extends JPanel {
 		JPanel pnl_RightControls = new JPanel();
 		pnl_RightControls.setBackground(new Color(0, 0, 0));
 		pnl_Controls.add(pnl_RightControls);
-		pnl_RightControls.setLayout(new GridLayout(10, 0, 0, 0));
+		pnl_RightControls.setLayout(new GridLayout(11, 0, 0, 0));
 
 		JPanel pnl_ProfileButtons = new JPanel();
 		pnl_ProfileButtons.setBackground(Color.BLACK);
@@ -344,6 +350,17 @@ public class ControlsPanel extends JPanel {
 		pnl_RightControls.add(panel_1_6);
 		panel_1_6.setLayout(new GridLayout(1, 0, 0, 0));
 
+		bg_slider = new JSlider(10, 100);
+		bg_slider.setBackground(Color.BLACK);
+		bg_slider.setForeground(Color.WHITE);
+		bg_slider.setSnapToTicks(true);
+		bg_slider.setMajorTickSpacing(10);
+		bg_slider.setPaintTicks(true);
+		bg_slider.setPaintLabels(true);
+		bg_slider.setValue(10);
+
+		bg_slider.setLabelTable(bg_slider.createStandardLabels(10));
+		pnl_RightControls.add(bg_slider);
 		rdbtn_BG_On = new JRadioButton("On");
 		rdbtn_BG_On.setHorizontalAlignment(SwingConstants.CENTER);
 		rdbtn_BG_On.setBackground(new Color(0, 0, 0));
@@ -1549,7 +1566,7 @@ public class ControlsPanel extends JPanel {
 					sld_Brightness.setToolTipText(Integer.toString(BrightnessVal));
 					pianoController.BrightnessRate(BrightnessVal);
 				} else if (source == sld_Fade) {
-					int FadeVal = sld_Fade.getValue();
+					int FadeVal = 255 - sld_Fade.getValue();
 					sld_Fade.setToolTipText(Integer.toString(FadeVal));
 					pianoController.FadeRate(FadeVal);
 				} else if (source == sld_SplashMaxLenght) {
@@ -1557,12 +1574,23 @@ public class ControlsPanel extends JPanel {
 					sld_SplashMaxLenght.setToolTipText(Integer.toString(SplashLength));
 					pianoController.SplashLengthRate(SplashLength);
 				}
+
+				else if (source == bg_slider) {
+					int bgValue = bg_slider.getValue();
+					bg_slider.setToolTipText(Integer.toString(bgValue));
+					System.out.println("Slider Value: " + bgValue);
+					PianoController.BG_BRIGHTNESS = bgValue;
+					System.out.println("BG Light Value: " + PianoController.BG_BRIGHTNESS);
+					if (pianoController.bgToggle)
+						pianoController.setBG();
+				}
 			}
 		};
 
 		sld_Brightness.addChangeListener(sliderChangeListener);
 		sld_Fade.addChangeListener(sliderChangeListener);
 		sld_SplashMaxLenght.addChangeListener(sliderChangeListener);
+		bg_slider.addChangeListener(sliderChangeListener);
 
 	}
 
