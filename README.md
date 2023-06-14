@@ -16,7 +16,7 @@ Here is how you should connect the LED strip and Arduino.
 ![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
 ## More Brightness? Use of External Power
-For simplest setup you can use minimum 3A 5V capable USB charger, cut a spare usb cable and connect positive and negative to led strip's red and white whire red being positive and white being negative, usually usb cables red is positive and black negative rest are data wires.
+For simplest setup you can use minimum 3A 5V capable USB charger, cut a spare usb cable and connect positive and negative to led strip's red and white wire red being positive and white being negative, usually usb cables red is positive and black negative rest are data wires.
 You also have to change the current limit to power supply current rating in mA, 1Amp is 1000mA so 3A is 3000mA
 
 ![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/648d5af4-b8b6-4892-b512-6710904e2728)
