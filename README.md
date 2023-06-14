@@ -21,8 +21,8 @@ You also have to change the current limit to power supply current rating in mA, 
 
 ![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/648d5af4-b8b6-4892-b512-6710904e2728)
 
-
 Here is how you connect external power
+
 ![externa power](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24)
 
 
