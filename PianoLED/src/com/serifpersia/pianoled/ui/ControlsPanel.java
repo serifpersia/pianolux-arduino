@@ -1145,7 +1145,6 @@ public class ControlsPanel extends JPanel {
 				GetUI.selectedColor.getBlue(), null);
 		colorPicker.setCustomColor(hsb[0], hsb[1], hsb[2]);
 		colorPicker.repaint();
-		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
 	}
 
 	private int parseInt(JTextField textField) {

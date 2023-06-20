@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -18,6 +20,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.serifpersia.pianoled.ui.DashboardPanel;
@@ -32,7 +35,8 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	public String VersionTag = "v4.1.2";
+	private boolean debugJSONOff = false;
+	public String VersionTag = "v4.1.3";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -42,6 +46,42 @@ public class Updater {
 	File folder = new File(appPath);
 	File[] listOfFiles = folder.listFiles();
 	File versionFile = null;
+
+	public void getVersion() {
+		String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);
+		if (!debugJSONOff) {
+			try {
+				// Use Jackson JSON parser to parse the JSON response
+				URL url = new URL(apiUrl);
+				JsonMapper mapper = new JsonMapper();
+				JsonNode rootNode = mapper.readTree(url);
+
+				String latestReleaseTag = rootNode.path("tag_name").asText();
+
+				String labelText = "<html>Current Version: " + VersionTag + "<br/>Latest Version: " + latestReleaseTag
+						+ "</html>";
+				DashboardPanel.lb_Version.setText(labelText);
+
+				System.out.println(latestReleaseTag);
+			} catch (JsonProcessingException e) {
+				JOptionPane.showMessageDialog(null, "Error occurred while parsing JSON response.", "Version",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (SocketTimeoutException e) {
+				JOptionPane.showMessageDialog(null, "Connection to GitHub API timed out.", "Version",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				JOptionPane.showMessageDialog(null, "No network connection available to get latest Version.", "Version",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Error occurred while checking the latest version.", "Version",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void getUpdate() {
 		String branchName = (String) DashboardPanel.cbBranch.getSelectedItem();

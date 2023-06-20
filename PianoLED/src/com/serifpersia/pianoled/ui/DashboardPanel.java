@@ -38,6 +38,7 @@ public class DashboardPanel extends JPanel {
 	private JButton btnOpen;
 	private JButton btnRefresh;
 	private PianoController pianoController;
+	public static JLabel lb_Version;
 
 	public DashboardPanel(PianoLED pianoLED) {
 		setLayout(new BorderLayout(0, 0));
@@ -67,7 +68,7 @@ public class DashboardPanel extends JPanel {
 		lblDashboard.setForeground(Color.WHITE);
 		lblDashboard.setFont(new Font("Tahoma", Font.BOLD, 40));
 		pnlDashboard.add(lblDashboard);
-		
+
 		JLabel lblDashboard_1 = new JLabel("<");
 		lblDashboard_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDashboard_1.setForeground(Color.WHITE);
@@ -101,6 +102,12 @@ public class DashboardPanel extends JPanel {
 		JPanel pnlLeftSpace = new JPanel();
 		pnlLeftSpace.setBackground(new Color(0, 0, 0));
 		pnlMain.add(pnlLeftSpace);
+		pnlLeftSpace.setLayout(new BorderLayout(0, 0));
+
+		lb_Version = new JLabel("Current Version:");
+		lb_Version.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lb_Version.setForeground(Color.WHITE);
+		pnlLeftSpace.add(lb_Version, BorderLayout.SOUTH);
 
 		JPanel pnlLeftSide = new JPanel();
 		pnlLeftSide.setBackground(new Color(0, 0, 0));

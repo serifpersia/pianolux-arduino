@@ -6,14 +6,14 @@
 #define NO_HARDWARE_PIN_SUPPORT
 #define FASTLED_RMT_MAX_CHANNELS 1
 
-#define MAX_NUM_LEDS 176  // how many leds do you want to control
-#define DATA_PIN 5    // your LED strip data pin
-#define MAX_POWER_MILLIAMPS 450 //define current limit if use 5V pin from PC usb dont touch this,
-                                //for external power type the current example 3000 for 3A (3 Amps) 
+#define MAX_NUM_LEDS 176         // how many leds do you want to control
+#define DATA_PIN 5               // your LED strip data pin
+#define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
+                                 //for external power type the current example 3000 for 3A (3 Amps)
 
-int NUM_LEDS=176;  // how many leds do you want to control
+int NUM_LEDS = 176;  // how many leds do you want to control
 
-int STRIP_DIRECTION = 0; //0 - left-to-right
+int STRIP_DIRECTION = 0;  //0 - left-to-right
 const int MAX_VELOCITY = 128;
 
 const int COMMAND_BYTE1 = 111;
@@ -102,7 +102,7 @@ void setup() {
   Serial.begin(115200);
   Serial.setTimeout(10);
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering
-  // FastLED.addLeds<NEOPIXEL, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  //FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2852, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
@@ -123,13 +123,13 @@ FadingRunEffect* effects[MAX_EFFECTS];
 int numEffects = 0;
 
 // Add a new effect
-int addEffect(FadingRunEffect* effect) {
+void addEffect(FadingRunEffect* effect) {
   if (numEffects < MAX_EFFECTS) {
     effects[numEffects] = effect;
     numEffects++;
   }
-  return;
 }
+
 
 // Remove an effect
 void removeEffect(FadingRunEffect* effect) {
@@ -351,9 +351,8 @@ void loop() {
   }
   FastLED.show();
 }
-int ledNum(int i)
-{
-  return STRIP_DIRECTION == 0 ? i : (NUM_LEDS-1) - i;
+int ledNum(int i) {
+  return STRIP_DIRECTION == 0 ? i : (NUM_LEDS - 1) - i;
 }
 
 
