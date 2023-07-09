@@ -36,6 +36,7 @@ public class Arduino {
 	final static byte COMMAND_SET_BG = (byte) 247;
 	final static byte COMMAND_VELOCITY = (byte) 246;
 	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
+	final static byte COMMAND_SET_GUIDE = (byte) 244;
 
 	public ByteArrayOutputStream commandSetColor(Color c, int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -149,6 +150,27 @@ public class Arduino {
 		return message;
 	}
 
+	public ByteArrayOutputStream commandSetGuide(int currentArray, int hue, int saturation, int brightness,
+			int scaleKeyIndex, int[] scalePattern) {
+		ByteArrayOutputStream message = new ByteArrayOutputStream();
+		message.write((byte) COMMAND_BYTE1);
+		message.write((byte) COMMAND_BYTE2);
+		message.write((byte) COMMAND_SET_GUIDE);
+
+		message.write((byte) currentArray);
+		message.write((byte) hue);
+		message.write((byte) saturation);
+		message.write((byte) brightness);
+		message.write((byte) scaleKeyIndex);
+
+
+		for (int i = 0; i < scalePattern.length; i++) {
+			message.write((byte) scalePattern[i]);
+		}
+
+		return message;
+	}
+
 	public void sendCommandAnimation(int animationIndex) {
 		sendToArduino(commandAnimation(animationIndex));
 	}
@@ -187,6 +209,11 @@ public class Arduino {
 
 	public void sendCommandStripDirection(int direction, int numLeds) {
 		sendToArduino(commandStripDirection(direction, numLeds));
+	}
+
+	public void sendCommandSetGuide(int currentArray, int hue, int saturation, int brightness, int scaleKeyIndex,
+			int[] scalePattern) {
+		sendToArduino(commandSetGuide(currentArray, hue, saturation, brightness, scaleKeyIndex, scalePattern));
 	}
 
 	public void sendToArduino(ByteArrayOutputStream msg) {

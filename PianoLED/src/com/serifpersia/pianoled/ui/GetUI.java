@@ -28,9 +28,6 @@ public class GetUI {
 	private static int firstNoteSelected = 21;
 	private static int lastNoteSelected = 108;
 
-	static List<String> modeEffectsNames = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
-			"Animation");
-
 	static List<String> colorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
 			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Custom");
 
@@ -58,6 +55,10 @@ public class GetUI {
 			new Color(128, 192, 192), // Turquoise
 			new Color(255, 80, 0), // Gold
 			customColor };
+
+	static List<String> scaleKeyNames = Arrays.asList("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
+
+	static List<String> scaleNames = Arrays.asList("Major", "Minor");
 
 	public static String getModeName(int n) {
 		return modes.get(n);
@@ -131,13 +132,13 @@ public class GetUI {
 	}
 
 	public static void setDefaults(int splashLenght, int brightness, int fade) {
-		ControlsPanel.defaultMaxSplashLengthVal = splashLenght;
-		ControlsPanel.defaultBrighntessVal = brightness;
-		ControlsPanel.defaultFadeVal = fade;
+		pnl_Controls.defaultMaxSplashLengthVal = splashLenght;
+		pnl_Controls.defaultBrighntessVal = brightness;
+		pnl_Controls.defaultFadeVal = fade;
 
-		ControlsPanel.sld_SplashMaxLenght.setValue(splashLenght);
-		ControlsPanel.sld_Brightness.setValue(ControlsPanel.defaultBrighntessVal);
-		ControlsPanel.sld_Fade.setValue(ControlsPanel.defaultFadeVal);
+		pnl_Controls.sld_SplashMaxLenght.setValue(splashLenght);
+		pnl_Controls.sld_Brightness.setValue(pnl_Controls.defaultBrighntessVal);
+		pnl_Controls.sld_Fade.setValue(pnl_Controls.defaultFadeVal);
 	}
 
 }

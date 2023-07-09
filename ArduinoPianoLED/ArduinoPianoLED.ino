@@ -1,3 +1,4 @@
+
 //PianoLED
 
 #include <FastLED.h>
@@ -31,6 +32,7 @@ const int COMMAND_SPLASH_MAX_LENGTH = 248;
 const int COMMAND_SET_BG = 247;
 const int COMMAND_VELOCITY = 246;
 const int COMMAND_STRIP_DIRECTION = 245;
+const int COMMAND_SET_GUIDE = 244;
 
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -45,6 +47,7 @@ int splashMaxLength = 8;
 
 boolean bgOn = false;
 CRGB bgColor = CRGB::Black;
+CRGB guideColor = CRGB::Black;
 
 
 unsigned long currentTime = 0;
@@ -54,6 +57,18 @@ unsigned long previousFadeTime = 0;
 unsigned long interval = 20;      // general refresh in milliseconds
 unsigned long fadeInterval = 20;  // general fade interval in milliseconds
 int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
+
+
+const int OCTAVE_LEDS = 22;           // Number of LEDs in one octave
+const int OCTAVE_COUNT = 8;           // Number of octaves
+const int LED_SKIP = 2;               // Number of LEDs to skip before starting the next octave pattern
+const int LED_OFFSET_4TH_OCTAVE = 1;  // Offset for the fourth octave
+const int LED_OFFSET_5TH_OCTAVE = 1;  // Offset for the fifth octave
+const int LED_OFFSET_6TH_OCTAVE = 1;  // Offset for the sixth octave
+const int LED_OFFSET_7TH_OCTAVE = 2;  // Offset for the seventh octave
+const int LED_OFFSET_8TH_OCTAVE = 2;  // Offset for the eighth octave
+int scalePattern[7];
+int scaleKeyIndex;
 
 
 //Animation select variables
@@ -145,11 +160,6 @@ void removeEffect(FadingRunEffect* effect) {
   }
 }
 void setBG(CRGB colorToSet) {
-  // if (colorToSet == CRGB(0)) {
-  //  fadeInterval = 20;
-  // } else {
-  //   fadeInterval = 100;
-  // }
 
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = colorToSet;
@@ -157,6 +167,56 @@ void setBG(CRGB colorToSet) {
   bgColor = colorToSet;
   FastLED.show();
 }
+
+
+
+
+void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[]) {
+  for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
+    int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
+
+    // Apply offsets for specific octaves
+    if (octave == 3) {
+      octaveOffset -= LED_OFFSET_4TH_OCTAVE;
+    } else if (octave == 4) {
+      octaveOffset -= LED_OFFSET_5TH_OCTAVE;
+    } else if (octave == 5) {
+      octaveOffset -= LED_OFFSET_6TH_OCTAVE;
+    } else if (octave == 6) {
+      octaveOffset -= LED_OFFSET_7TH_OCTAVE;
+    } else if (octave == 7) {
+      octaveOffset -= LED_OFFSET_8TH_OCTAVE;
+    }
+
+    for (int i = 0; i < 7; i++) {
+      int ledIndex = octaveOffset + scalePattern[i] + startingIndex;
+
+      // Display only the first LED for the eighth octave
+      if (octave == 7 && i > 0) {
+        break;
+      }
+
+      if (ledIndex < NUM_LEDS) {
+        if (i == 0) {
+          // Set root note  brightness
+          leds[ledIndex] = guideColor / 2;
+        } else {
+          // Set non-root intervals  brightness
+          CRGB dimColor = guideColor;
+          dimColor.r /= 10;
+          dimColor.g /= 10;
+          dimColor.b /= 10;
+          leds[ledIndex] = dimColor;
+        }
+      }
+    }
+  }
+
+  guideColor = guideColorToSet;
+  FastLED.show();
+}
+
+
 
 boolean debug = false;
 void debugLightOn(int n) {
@@ -313,6 +373,27 @@ void loop() {
           NUM_LEDS = buffer[++bufIdx];
           break;
         }
+
+      case COMMAND_SET_GUIDE:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(12);
+
+          int h = (int)buffer[++bufIdx];
+          int s = (int)buffer[++bufIdx];
+          int b = (int)buffer[++bufIdx];
+          scaleKeyIndex = (int)buffer[++bufIdx];
+
+          // Receive the 7 numbers and populate the scalePattern array
+          for (int i = 0; i < 7; i++) {
+            scalePattern[i] = (int)buffer[++bufIdx];
+          }
+          setGuide(CHSV(h, s, b), scaleKeyIndex, scalePattern);
+          break;
+        }
+
+
       default:
         {
           break;

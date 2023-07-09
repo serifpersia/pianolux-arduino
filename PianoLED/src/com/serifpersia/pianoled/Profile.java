@@ -8,16 +8,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
-
-import javax.swing.JRadioButton;
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
+import javax.swing.JToggleButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.serifpersia.pianoled.ui.ColorPickerPanel;
-import com.serifpersia.pianoled.ui.ControlsPanel;
+import com.serifpersia.pianoled.ui.pnl_Colors;
+import com.serifpersia.pianoled.ui.pnl_Controls;
+import com.serifpersia.pianoled.ui.pnl_Gradient;
 
 public class Profile {
 
@@ -26,24 +24,18 @@ public class Profile {
 	}
 
 	public static String saveFields() {
-		int r = Integer.parseInt(ControlsPanel.txt_R.getText());
-		int g = Integer.parseInt(ControlsPanel.txt_G.getText());
-		int b = Integer.parseInt(ControlsPanel.txt_B.getText());
+		int r = Integer.parseInt(pnl_Colors.txt_R.getText());
+		int g = Integer.parseInt(pnl_Colors.txt_G.getText());
+		int b = Integer.parseInt(pnl_Colors.txt_B.getText());
 		return String.format("%d,%d,%d", r, g, b);
 	}
 
-	public static String saveRadioButtonState(ButtonGroup bgGroup) {
-		JRadioButton selectedRadioButton = null;
-		Enumeration<AbstractButton> btnEnum = bgGroup.getElements();
-		while (btnEnum.hasMoreElements()) {
-			AbstractButton button = btnEnum.nextElement();
-			if (button.isSelected() && button instanceof JRadioButton) {
-				selectedRadioButton = (JRadioButton) button;
-				break;
-			}
+	public static String saveToggleButtonState(JToggleButton bgToggle) {
+		if (bgToggle.isSelected()) {
+			return "ON";
+		} else {
+			return "OFF";
 		}
-		String selectedBgButton = selectedRadioButton != null ? selectedRadioButton.getText() : "";
-		return selectedBgButton;
 	}
 
 	public static String saveGradients() {
@@ -57,22 +49,22 @@ public class Profile {
 	private static Color getSideColor(int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			return ControlsPanel.colors[0];
+			return pnl_Gradient.colors[0];
 		case 2:
-			return ControlsPanel.colors[1];
+			return pnl_Gradient.colors[1];
 		case 3:
-			return ControlsPanel.colors[2];
+			return pnl_Gradient.colors[2];
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			return ControlsPanel.colors[3];
+			return pnl_Gradient.colors[3];
 		case 5:
-			return ControlsPanel.colors[4];
+			return pnl_Gradient.colors[4];
 		case 6:
-			return ControlsPanel.colors[5];
+			return pnl_Gradient.colors[5];
 		case 7:
-			return ControlsPanel.colors[6];
+			return pnl_Gradient.colors[6];
 		case 8:
-			return ControlsPanel.colors[7];
+			return pnl_Gradient.colors[7];
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
 		}
@@ -93,29 +85,29 @@ public class Profile {
 	private static void setColorForSide(Color color, int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			ControlsPanel.colors[0] = color;
+			pnl_Gradient.colors[0] = color;
 			break;
 		case 2:
-			ControlsPanel.colors[1] = color;
+			pnl_Gradient.colors[1] = color;
 			break;
 		case 3:
-			ControlsPanel.colors[2] = color;
+			pnl_Gradient.colors[2] = color;
 			break;
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			ControlsPanel.colors[3] = color;
+			pnl_Gradient.colors[3] = color;
 			break;
 		case 5:
-			ControlsPanel.colors[4] = color;
+			pnl_Gradient.colors[4] = color;
 			break;
 		case 6:
-			ControlsPanel.colors[5] = color;
+			pnl_Gradient.colors[5] = color;
 			break;
 		case 7:
-			ControlsPanel.colors[6] = color;
+			pnl_Gradient.colors[6] = color;
 			break;
 		case 8:
-			ControlsPanel.colors[7] = color;
+			pnl_Gradient.colors[7] = color;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
@@ -123,25 +115,25 @@ public class Profile {
 	}
 
 	private static int saveColorPreset() {
-		int selectedColorIndex = (int) ControlsPanel.cb_ColorPresets.getSelectedIndex();
+		int selectedColorIndex = (int) pnl_Colors.cb_ColorPresets.getSelectedIndex();
 		return selectedColorIndex;
 	}
 
 	private static String saveSliders() {
-		int brightnessSliderVal = ControlsPanel.sld_Brightness.getValue();
-		int fadeSliderVal = ControlsPanel.sld_Fade.getValue();
-		int splashMaxLenghtVal = ControlsPanel.sld_SplashMaxLenght.getValue();
+		int brightnessSliderVal = pnl_Controls.sld_Brightness.getValue();
+		int fadeSliderVal = pnl_Controls.sld_Fade.getValue();
+		int splashMaxLenghtVal = pnl_Controls.sld_SplashMaxLenght.getValue();
 
 		return brightnessSliderVal + "," + fadeSliderVal + "," + splashMaxLenghtVal;
 	}
 
 	private static int savedLEDMode() {
-		int selectedLEDModeIndex = (int) ControlsPanel.cb_LED_Mode.getSelectedIndex();
+		int selectedLEDModeIndex = (int) pnl_Controls.cb_LED_Mode.getSelectedIndex();
 		return selectedLEDModeIndex;
 	}
 
 	public static int saveAnimation() {
-		int selectedIndexAnimation = (int) ControlsPanel.cb_LED_Animations.getSelectedIndex();
+		int selectedIndexAnimation = (int) pnl_Controls.cb_LED_Animations.getSelectedIndex();
 		return selectedIndexAnimation;
 	}
 
@@ -157,7 +149,7 @@ public class Profile {
 				while ((line = reader.readLine()) != null) {
 					if (line.startsWith("ColorPreset = ")) {
 						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
-						ControlsPanel.cb_ColorPresets.setSelectedIndex(index);
+						pnl_Colors.cb_ColorPresets.setSelectedIndex(index);
 					} else if (line.startsWith("Slider = ")) {
 						String[] sliderValues = line.substring(line.indexOf("=") + 1).trim().split(",");
 						if (sliderValues.length == 3) {
@@ -165,17 +157,17 @@ public class Profile {
 							int fade = Integer.parseInt(sliderValues[1]);
 							int splashlenght = Integer.parseInt(sliderValues[2]);
 							// Set the slider values to the read values
-							ControlsPanel.sld_Brightness.setValue(brightness);
-							ControlsPanel.sld_Fade.setValue(fade);
-							ControlsPanel.sld_SplashMaxLenght.setValue(splashlenght);
+							pnl_Controls.sld_Brightness.setValue(brightness);
+							pnl_Controls.sld_Fade.setValue(fade);
+							pnl_Controls.sld_SplashMaxLenght.setValue(splashlenght);
 
 						}
 					} else if (line.startsWith("LED Mode = ")) {
 						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
-						ControlsPanel.cb_LED_Mode.setSelectedIndex(index);
+						pnl_Controls.cb_LED_Mode.setSelectedIndex(index);
 					} else if (line.startsWith("Animation = ")) {
 						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
-						ControlsPanel.cb_LED_Animations.setSelectedIndex(index);
+						pnl_Controls.cb_LED_Animations.setSelectedIndex(index);
 					} // Assuming this code is inside a method or a block
 					else if (line.startsWith("Gradient = ")) {
 						String[] gradientValues = line.substring(line.indexOf("=") + 1).trim().split(";");
@@ -184,45 +176,32 @@ public class Profile {
 								setColorFromValue(gradientValues[i], i + 1);
 							}
 						}
-
 					} else if (line.startsWith("Background Light = ")) {
 						String state = line.substring(line.indexOf("=") + 1).trim();
-						Enumeration<AbstractButton> buttons = ControlsPanel.bgGroup.getElements();
-						while (buttons.hasMoreElements()) {
-							AbstractButton button = buttons.nextElement();
-							if (button instanceof JRadioButton && button.getText().equals(state)) {
-								button.doClick();
-								break;
-							}
+						boolean isToggleOn = state.equals("ON");
+						if (isToggleOn) {
+							pnl_Controls.bgToggle.doClick();
 						}
 					} else if (line.startsWith("Fixed LED = ")) {
 						String state = line.substring(line.indexOf("=") + 1).trim();
-						Enumeration<AbstractButton> buttons = ControlsPanel.fixLEDGroup.getElements();
-						while (buttons.hasMoreElements()) {
-							AbstractButton button = buttons.nextElement();
-							if (button instanceof JRadioButton && button.getText().equals(state)) {
-								button.doClick();
-								break;
-							}
+						boolean isToggleOn = state.equals("ON");
+						if (isToggleOn) {
+							pnl_Controls.fixToggle.doClick();
 						}
 					} else if (line.startsWith("Reverse LED = ")) {
 						String state = line.substring(line.indexOf("=") + 1).trim();
-						Enumeration<AbstractButton> buttons = ControlsPanel.reverseLEDGroup.getElements();
-						while (buttons.hasMoreElements()) {
-							AbstractButton button = buttons.nextElement();
-							if (button instanceof JRadioButton && button.getText().equals(state)) {
-								button.doClick();
-								break;
-							}
+						boolean isToggleOn = state.equals("ON");
+						if (isToggleOn) {
+							pnl_Controls.reverseToggle.doClick();
 						}
 					} else if (line.startsWith("Custom Color = ")) {
 						String[] rgb = line.substring(line.indexOf("=") + 1).trim().split(",");
 						int r = Integer.parseInt(rgb[0]);
 						int g = Integer.parseInt(rgb[1]);
 						int b = Integer.parseInt(rgb[2]);
-						ControlsPanel.txt_R.setText(Integer.toString(r));
-						ControlsPanel.txt_G.setText(Integer.toString(g));
-						ControlsPanel.txt_B.setText(Integer.toString(b));
+						pnl_Colors.txt_R.setText(Integer.toString(r));
+						pnl_Colors.txt_G.setText(Integer.toString(g));
+						pnl_Colors.txt_B.setText(Integer.toString(b));
 						ColorPickerPanel colorPicker = new ColorPickerPanel();
 						colorPicker.repaint();
 					}
@@ -292,11 +271,11 @@ public class Profile {
 				writer.newLine();
 				writer.write("Gradient = " + saveGradients());
 				writer.newLine();
-				writer.write("Background Light = " + saveRadioButtonState(ControlsPanel.bgGroup));
+				writer.write("Background Light = " + saveToggleButtonState(pnl_Controls.bgToggle));
 				writer.newLine();
-				writer.write("Fixed LED = " + saveRadioButtonState(ControlsPanel.fixLEDGroup));
+				writer.write("Fixed LED = " + saveToggleButtonState(pnl_Controls.fixToggle));
 				writer.newLine();
-				writer.write("Reverse LED = " + saveRadioButtonState(ControlsPanel.reverseLEDGroup));
+				writer.write("Reverse LED = " + saveToggleButtonState(pnl_Controls.reverseToggle));
 				writer.newLine();
 				writer.write("Custom Color = " + saveFields());
 				writer.newLine();

@@ -6,6 +6,7 @@ import jssc.SerialPortList;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
@@ -42,7 +45,7 @@ public class DashboardPanel extends JPanel {
 
 	public DashboardPanel(PianoLED pianoLED) {
 		setLayout(new BorderLayout(0, 0));
-		setBackground(Color.BLACK);
+		setBackground(new Color(21, 21, 21));
 
 		pianoController = pianoLED.getPianoController();
 		init();
@@ -58,32 +61,34 @@ public class DashboardPanel extends JPanel {
 				midiDevices.toArray(new Info[midiDevices.size()]));
 
 		JPanel pnlDashboard = new JPanel();
-		pnlDashboard.setBackground(new Color(231, 76, 60));
+		pnlDashboard.setBackground(new Color(21, 21, 21));
 		add(pnlDashboard, BorderLayout.NORTH);
 		pnlDashboard.setLayout(new BorderLayout(0, 0));
 
 		JLabel lblDashboard = new JLabel("Dashboard");
-		lblDashboard.setBackground(new Color(0, 0, 0));
+		lblDashboard.setBackground(new Color(21, 21, 21));
 		lblDashboard.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDashboard.setForeground(Color.WHITE);
-		lblDashboard.setFont(new Font("Tahoma", Font.BOLD, 40));
+		lblDashboard.setForeground(new Color(204, 204, 204));
+		lblDashboard.setFont(new Font("Poppins", Font.PLAIN, 35));
 		pnlDashboard.add(lblDashboard);
 
 		JLabel lblDashboard_1 = new JLabel("<");
+		lblDashboard_1.setBackground(new Color(21, 21, 21));
 		lblDashboard_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDashboard_1.setForeground(Color.WHITE);
 		lblDashboard_1.setFont(new Font("Tahoma", Font.BOLD, 40));
-		lblDashboard_1.setBackground(Color.BLACK);
+		// lblDashboard_1.setBackground(Color.BLACK);
 		pnlDashboard.add(lblDashboard_1, BorderLayout.WEST);
 
 		JPanel pnlButtons = new JPanel();
-		pnlButtons.setBackground(new Color(0, 0, 0));
+		pnlButtons.setForeground(new Color(77, 77, 77));
+		pnlButtons.setBackground(new Color(21, 21, 21));
 		add(pnlButtons, BorderLayout.SOUTH);
 		pnlButtons.setLayout(new GridLayout(0, 4, 0, 0));
 
 		btnUpdate = createButton("Update");
 		btnClean = createButton("Clean");
-		btnOpen = createButton("Open");
+		btnOpen = createButton("Connect");
 		btnOpen.setBackground(new Color(231, 76, 60));
 		btnRefresh = createButton("Refresh");
 
@@ -95,133 +100,213 @@ public class DashboardPanel extends JPanel {
 		buttonActions();
 
 		JPanel pnlMain = new JPanel();
-		pnlMain.setBackground(new Color(0, 0, 0));
+		pnlMain.setForeground(new Color(21, 21, 21));
+		pnlMain.setBackground(new Color(21, 21, 21));
 		add(pnlMain, BorderLayout.CENTER);
 		pnlMain.setLayout(new GridLayout(0, 4, 0, 0));
 
 		JPanel pnlLeftSpace = new JPanel();
-		pnlLeftSpace.setBackground(new Color(0, 0, 0));
+		pnlLeftSpace.setForeground(new Color(21, 21, 21));
+		pnlLeftSpace.setBackground(new Color(51, 51, 51));
 		pnlMain.add(pnlLeftSpace);
 		pnlLeftSpace.setLayout(new BorderLayout(0, 0));
 
 		lb_Version = new JLabel("Current Version:");
-		lb_Version.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lb_Version.setForeground(Color.WHITE);
+		lb_Version.setBackground(new Color(21, 21, 21));
+		lb_Version.setHorizontalAlignment(SwingConstants.LEFT);
+		lb_Version.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lb_Version.setForeground(new Color(204, 204, 204));
 		pnlLeftSpace.add(lb_Version, BorderLayout.SOUTH);
 
 		JPanel pnlLeftSide = new JPanel();
-		pnlLeftSide.setBackground(new Color(0, 0, 0));
+		pnlLeftSide.setForeground(new Color(21, 21, 21));
+		pnlLeftSide.setBackground(new Color(51, 51, 51));
 		pnlMain.add(pnlLeftSide);
 		pnlLeftSide.setLayout(new GridLayout(3, 0, 0, 0));
 
 		JLabel lblSerialDevice = new JLabel("Serial Device:");
-		lblSerialDevice.setForeground(new Color(255, 255, 255));
-		lblSerialDevice.setBackground(new Color(0, 0, 0));
-		lblSerialDevice.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lblSerialDevice.setForeground(new Color(204, 204, 204));
+		lblSerialDevice.setBackground(new Color(21, 21, 21));
+		lblSerialDevice.setFont(new Font("Poppins", Font.PLAIN, 21));
 		lblSerialDevice.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlLeftSide.add(lblSerialDevice);
 
 		JLabel lblMidiDevice = new JLabel("MIDI Device:");
-		lblMidiDevice.setForeground(new Color(255, 255, 255));
-		lblMidiDevice.setBackground(new Color(0, 0, 0));
-		lblMidiDevice.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lblMidiDevice.setForeground(new Color(204, 204, 204));
+		lblMidiDevice.setBackground(new Color(21, 21, 21));
+		lblMidiDevice.setFont(new Font("Poppins", Font.PLAIN, 21));
 		lblMidiDevice.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlLeftSide.add(lblMidiDevice);
 
 		JLabel lblUpdateBranch = new JLabel("Branch:");
-		lblUpdateBranch.setForeground(new Color(255, 255, 255));
-		lblUpdateBranch.setBackground(new Color(0, 0, 0));
-		lblUpdateBranch.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lblUpdateBranch.setForeground(new Color(204, 204, 204));
+		lblUpdateBranch.setBackground(new Color(21, 21, 21));
+		lblUpdateBranch.setFont(new Font("Poppins", Font.PLAIN, 21));
 		lblUpdateBranch.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlLeftSide.add(lblUpdateBranch);
 
 		JPanel pnlRightSide = new JPanel();
-		pnlRightSide.setBackground(new Color(0, 0, 0));
+		pnlRightSide.setForeground(new Color(21, 21, 21));
+		pnlRightSide.setBackground(new Color(51, 51, 51));
 		pnlMain.add(pnlRightSide);
 		pnlRightSide.setLayout(new GridLayout(3, 0, 0, 0));
 
 		JPanel pnlSerialDevice = new JPanel();
-		pnlSerialDevice.setBackground(new Color(0, 0, 0));
+		pnlSerialDevice.setForeground(new Color(21, 21, 21));
+		pnlSerialDevice.setBackground(new Color(51, 51, 51));
 		pnlRightSide.add(pnlSerialDevice);
 		pnlSerialDevice.setLayout(new GridLayout(3, 0, 0, 0));
 
 		JPanel pnlEmpty1 = new JPanel();
-		pnlEmpty1.setBackground(new Color(0, 0, 0));
+		pnlEmpty1.setForeground(new Color(21, 21, 21));
+		pnlEmpty1.setBackground(new Color(51, 51, 51));
 		pnlSerialDevice.add(pnlEmpty1);
 
 		cbSerialDevices = new JComboBox<>(defaultSerialDevicesModel);
-		cbSerialDevices.setFont(new Font("Tahoma", Font.BOLD, 15));
-		cbSerialDevices.setFocusable(false);
+		cbSerialDevices.setBackground(new Color(77, 77, 77));
+		cbSerialDevices.setForeground(new Color(204, 204, 204));
+		cbSerialDevices.setFont(new Font("Poppins", Font.PLAIN, 21));
+		cbSerialDevices.setFocusable(false); // Set the JComboBox as non-focusable
+
+		// Customize the JComboBox UI
+		cbSerialDevices.setUI(new BasicComboBoxUI() {
+			@Override
+			protected JButton createArrowButton() {
+				return new JButton() {
+					@Override
+					public void paint(Graphics g) {
+						// Do nothing to remove the arrow button painting
+					}
+
+					@Override
+					public boolean contains(int x, int y) {
+						// Override contains() method to hide the button when the mouse is over it
+						return false;
+					}
+				};
+			}
+		});
+
 		pnlSerialDevice.add(cbSerialDevices);
 
 		JPanel pnlEmpty2 = new JPanel();
-		pnlEmpty2.setBackground(new Color(0, 0, 0));
+		pnlEmpty2.setForeground(new Color(21, 21, 21));
+		pnlEmpty2.setBackground(new Color(51, 51, 51));
 		pnlSerialDevice.add(pnlEmpty2);
 		pnlEmpty2.setLayout(new BorderLayout(0, 0));
 
 		JPanel pnlMidiDevice = new JPanel();
-		pnlMidiDevice.setBackground(new Color(0, 0, 0));
+		pnlMidiDevice.setForeground(new Color(21, 21, 21));
+		pnlMidiDevice.setBackground(new Color(51, 51, 51));
 		pnlRightSide.add(pnlMidiDevice);
 		pnlMidiDevice.setLayout(new GridLayout(3, 0, 0, 0));
 
 		JPanel pnlEmpty3 = new JPanel();
-		pnlEmpty3.setBackground(new Color(0, 0, 0));
+		pnlEmpty3.setForeground(new Color(21, 21, 21));
+		pnlEmpty3.setBackground(new Color(51, 51, 51));
 		pnlMidiDevice.add(pnlEmpty3);
 		pnlEmpty3.setLayout(new BorderLayout(0, 0));
 
 		cbMidiDevices = new JComboBox<>(defaultMidiDevices);
-		cbMidiDevices.setFont(new Font("Tahoma", Font.BOLD, 15));
-		cbMidiDevices.setFocusable(false);
+		cbMidiDevices.setBackground(new Color(77, 77, 77));
+		cbMidiDevices.setForeground(new Color(204, 204, 204));
+		cbMidiDevices.setFont(new Font("Poppins", Font.PLAIN, 21));
+		cbMidiDevices.setFocusable(false); // Set the JComboBox as non-focusable
+
+		// Customize the JComboBox UI
+		cbMidiDevices.setUI(new BasicComboBoxUI() {
+			@Override
+			protected JButton createArrowButton() {
+				return new JButton() {
+					@Override
+					public void paint(Graphics g) {
+						// Do nothing to remove the arrow button painting
+					}
+
+					@Override
+					public boolean contains(int x, int y) {
+						// Override contains() method to hide the button when the mouse is over it
+						return false;
+					}
+				};
+			}
+		});
 		pnlMidiDevice.add(cbMidiDevices);
 
 		JPanel pnlEmpty4 = new JPanel();
-		pnlEmpty4.setBackground(new Color(0, 0, 0));
+		pnlEmpty4.setForeground(new Color(21, 21, 21));
+		pnlEmpty4.setBackground(new Color(51, 51, 51));
 		pnlMidiDevice.add(pnlEmpty4);
 
 		JPanel pnlBranch = new JPanel();
-		pnlBranch.setBackground(new Color(0, 0, 0));
+		pnlBranch.setForeground(new Color(21, 21, 21));
+		pnlBranch.setBackground(new Color(51, 51, 51));
 		pnlRightSide.add(pnlBranch);
 		pnlBranch.setLayout(new GridLayout(3, 0, 0, 0));
 
 		JPanel pnlEmpty5 = new JPanel();
-		pnlEmpty5.setBackground(new Color(0, 0, 0));
+		pnlEmpty5.setForeground(new Color(21, 21, 21));
+		pnlEmpty5.setBackground(new Color(51, 51, 51));
 		pnlBranch.add(pnlEmpty5);
 
 		String[] branch = { "stable", "beta" };
 
 		cbBranch = new JComboBox<Object>(branch);
-		cbBranch.setFont(new Font("Tahoma", Font.BOLD, 15));
-		cbBranch.setFocusable(isFocusable());
+		cbBranch.setBackground(new Color(77, 77, 77));
+		cbBranch.setForeground(new Color(204, 204, 204));
+		cbBranch.setFont(new Font("Poppins", Font.PLAIN, 21));
+		cbBranch.setFocusable(false); // Set the JComboBox as non-focusable
 		cbBranch.setSelectedItem("stable");
+		// Customize the JComboBox UI
+		cbBranch.setUI(new BasicComboBoxUI() {
+			@Override
+			protected JButton createArrowButton() {
+				return new JButton() {
+					@Override
+					public void paint(Graphics g) {
+						// Do nothing to remove the arrow button painting
+					}
+
+					@Override
+					public boolean contains(int x, int y) {
+						// Override contains() method to hide the button when the mouse is over it
+						return false;
+					}
+				};
+			}
+		});
+
 		pnlBranch.add(cbBranch);
 
 		JPanel pnlEmpty6 = new JPanel();
-		pnlEmpty6.setBackground(new Color(0, 0, 0));
+		pnlEmpty6.setForeground(new Color(21, 21, 21));
+		pnlEmpty6.setBackground(new Color(51, 51, 51));
 		pnlBranch.add(pnlEmpty6);
 
 		JPanel pnlRightSpace = new JPanel();
-		pnlRightSpace.setBackground(new Color(0, 0, 0));
+		pnlRightSpace.setForeground(new Color(21, 21, 21));
+		pnlRightSpace.setBackground(new Color(51, 51, 51));
 		pnlMain.add(pnlRightSpace);
 	}
 
 	private JButton createButton(String text) {
 		JButton button = new JButton(text);
-		button.setFont(new Font("Tahoma", Font.BOLD, 45));
-		button.setBackground(new Color(52, 152, 219));
-		button.setForeground(Color.WHITE);
+		button.setFont(new Font("Poppins", Font.PLAIN, 30));
+		button.setBackground(new Color(21, 21, 21));
+		button.setForeground(new Color(204, 204, 204));
 		button.setFocusable(false);
 		button.setBorderPainted(false);
 		button.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
-				if (!text.equals("Open")) {
+				if (!text.equals("Connect")) {
 					button.setBackground(new Color(231, 76, 60));
 				}
 			}
 
 			public void mouseExited(MouseEvent e) {
-				if (!button.isSelected() && !text.equals("Open")) {
-					button.setBackground(new Color(52, 152, 219));
+				if (!button.isSelected() && !text.equals("Connect")) {
+					button.setBackground(new Color(77, 77, 77));
 				}
 			}
 
@@ -275,12 +360,11 @@ public class DashboardPanel extends JPanel {
 
 					break;
 				case "btnOpen":
-					if (btnOpen.getText().equals("Open")) {
+					if (btnOpen.getText().equals("Connect")) {
 						try {
 
 							pianoController.openSerial();
 							pianoController.openMidi();
-
 							btnOpen.setBackground(new Color(46, 204, 113));
 							btnOpen.setText("Close");
 
@@ -291,7 +375,7 @@ public class DashboardPanel extends JPanel {
 						pianoController.closeMidi();
 
 						btnOpen.setBackground(new Color(231, 76, 60));
-						btnOpen.setText("Open");
+						btnOpen.setText("Connect");
 					}
 					break;
 				case "btnRefresh":

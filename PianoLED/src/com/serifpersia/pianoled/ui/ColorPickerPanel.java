@@ -30,7 +30,7 @@ public class ColorPickerPanel extends JPanel {
 	private int ColorrectY;
 
 	public ColorPickerPanel() {
-		setBackground(Color.BLACK);
+		setBackground(new Color(51, 51, 51));
 
 		MouseAdapter mouseAdapter = new MouseAdapter() {
 
@@ -195,9 +195,9 @@ public class ColorPickerPanel extends JPanel {
 	private void updateSelcetedColor() {
 		Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
 		GetUI.selectedColor = colorPickerColor;
-		ControlsPanel.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
-		ControlsPanel.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
-		ControlsPanel.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
+		pnl_Colors.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
+		pnl_Colors.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
+		pnl_Colors.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
 	}
 
 	public void setCustomColor(float hue, float saturation, float brightness) {

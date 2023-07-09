@@ -48,7 +48,7 @@ public class PianoLED extends JFrame {
 	}
 
 	private void init() {
-		setSize(910, 685);
+		setSize(1110, 730);
 		setLocationRelativeTo(null);
 		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
@@ -96,7 +96,7 @@ public class PianoLED extends JFrame {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				int x = e.getX();
-				if (x <= 100) {
+				if (x <= 35) {
 					leftPanel.setVisible(true);
 				} else {
 					leftPanel.setVisible(false);

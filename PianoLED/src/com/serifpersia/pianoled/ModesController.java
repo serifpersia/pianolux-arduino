@@ -1,6 +1,9 @@
 package com.serifpersia.pianoled;
 
+import java.awt.Color;
+
 import com.serifpersia.pianoled.ui.GetUI;
+import com.serifpersia.pianoled.ui.pnl_Guide;
 
 public class ModesController {
 
@@ -33,6 +36,13 @@ public class ModesController {
 
 	public static boolean Gradient8Side = false;
 
+	public static int scaleKeyLedIndex;
+	public static int[] defaultMajorScalePattern = { 0, 4, 8, 10, 14, 18, 22 };
+	public static int[] defaultMinorScalePattern = { 0, 4, 6, 10, 14, 16, 20 };
+	public static int[] scalePattern = defaultMajorScalePattern;
+
+	public static int currentArray = 7;
+
 	public ModesController(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
 	}
@@ -61,38 +71,35 @@ public class ModesController {
 		if (pianoLED.getPianoController().arduino != null)
 			pianoLED.getPianoController().arduino.sendCommandBlackOut();
 
+		disableAllModes();
+
 		switch (GetUI.getModeName(n)) {
 		case "Default":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 0);
+			GetUI.selectedColor = Color.RED;
 			break;
 		case "Splash":
-			disableAllModes();
-			GetUI.setDefaults(8, 255, 150);
+			GetUI.setDefaults(8, 255, 153);
 			SplashOn = true;
+			GetUI.selectedColor = Color.BLACK;
 			break;
 		case "Random":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 0);
 			RandomOn = true;
 			break;
 		case "Gradient":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 0);
 			GradientOn = true;
 			break;
 		case "Velocity":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 0);
 			VelocityOn = true;
 			break;
 		case "Split":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 0);
 			SplitOn = true;
 			break;
 		case "Animation":
-			disableAllModes();
 			GetUI.setDefaults(8, 255, 255);
 			AnimationOn = true;
 			break;
@@ -103,38 +110,110 @@ public class ModesController {
 		if (pianoLED.getPianoController().arduino != null)
 			pianoLED.getPianoController().arduino.sendCommandBlackOut();
 
+		disableGradient();
+
 		switch (GetUI.getGradientName(n)) {
 		case "2 Side Gradient":
-			disableGradient();
 			Gradient2Side = true;
 			break;
 		case "3 Side Gradient":
-			disableGradient();
 			Gradient3Side = true;
 			break;
 		case "4 Side Gradient":
-			disableGradient();
 			Gradient4Side = true;
 			break;
 		case "5 Side Gradient":
-			disableGradient();
 			Gradient5Side = true;
 			break;
 		case "6 Side Gradient":
-			disableGradient();
 			Gradient6Side = true;
 			break;
 		case "7 Side Gradient":
-			disableGradient();
 			Gradient7Side = true;
 			break;
 		case "8 Side Gradient":
-			disableGradient();
 			Gradient8Side = true;
 			break;
 		default:
 			break;
 		}
+	}
+
+	public void ScaleKeySelect(String scaleName) {
+		if (pianoLED.getPianoController().arduino != null)
+			pianoLED.getPianoController().arduino.sendCommandBlackOut();
+
+		switch (scaleName) {
+		case "A":
+			scaleKeyLedIndex = 0;
+			break;
+		case "A#":
+			scaleKeyLedIndex = 2;
+			break;
+		case "B":
+			scaleKeyLedIndex = 4;
+			break;
+		case "C":
+			scaleKeyLedIndex = 6;
+			break;
+		case "C#":
+			scaleKeyLedIndex = 8;
+			break;
+		case "D":
+			scaleKeyLedIndex = 10;
+			break;
+		case "D#":
+			scaleKeyLedIndex = 12;
+			break;
+		case "E":
+			scaleKeyLedIndex = 14;
+			break;
+		case "F":
+			scaleKeyLedIndex = 16;
+			break;
+		case "F#":
+			scaleKeyLedIndex = 18;
+			break;
+		case "G":
+			scaleKeyLedIndex = 20;
+			break;
+		case "G#":
+			scaleKeyLedIndex = 22;
+			break;
+		default:
+			break;
+		}
+	}
+
+	public void ScaleSelect(String scaleName) {
+		if (pianoLED.getPianoController().arduino != null)
+			pianoLED.getPianoController().arduino.sendCommandBlackOut();
+
+		switch (scaleName) {
+		case "Major":
+			currentArray = 7;
+			scalePattern = defaultMajorScalePattern;
+
+			System.out.println(scalePattern);
+			break;
+
+		case "Minor":
+			currentArray = 7;
+			scalePattern = defaultMinorScalePattern;
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	public void setCustomScale() {
+		if (pianoLED.getPianoController().arduino != null)
+			pianoLED.getPianoController().arduino.sendCommandBlackOut();
+
+		scalePattern = pnl_Guide.getScalePattern();
+		currentArray = pnl_Guide.getCurrentArray();
+
 	}
 
 	public static int getGradientSideCount() {

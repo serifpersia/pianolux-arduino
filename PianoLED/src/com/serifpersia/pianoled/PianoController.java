@@ -17,6 +17,7 @@ import com.serifpersia.pianoled.learn.PianoReceiver;
 import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
+import com.serifpersia.pianoled.ui.pnl_Gradient;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -217,6 +218,7 @@ public class PianoController implements PianoMidiConsumer {
 	public boolean useFixedMapping = false;
 	public boolean stripReverse = false; // default value
 	public boolean bgToggle = false; // default value
+	public boolean guideToggle = false; // default value
 
 	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -282,75 +284,75 @@ public class PianoController implements PianoMidiConsumer {
 
 					switch (segmentIndex) {
 					case 0:
-						r = interpolateColorComponent(ControlsPanel.colors[0].getRed(),
-								ControlsPanel.colors[1].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[0].getGreen(),
-								ControlsPanel.colors[1].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[0].getBlue(),
-								ControlsPanel.colors[1].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[0].getRed(), pnl_Gradient.colors[1].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[0].getGreen(),
+								pnl_Gradient.colors[1].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[0].getBlue(),
+								pnl_Gradient.colors[1].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 1:
-						r = interpolateColorComponent(ControlsPanel.colors[1].getRed(),
-								ControlsPanel.colors[2].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[1].getGreen(),
-								ControlsPanel.colors[2].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[1].getBlue(),
-								ControlsPanel.colors[2].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[1].getRed(), pnl_Gradient.colors[2].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[1].getGreen(),
+								pnl_Gradient.colors[2].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[1].getBlue(),
+								pnl_Gradient.colors[2].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 2:
-						r = interpolateColorComponent(ControlsPanel.colors[2].getRed(),
-								ControlsPanel.colors[3].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[2].getGreen(),
-								ControlsPanel.colors[3].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[2].getBlue(),
-								ControlsPanel.colors[3].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[2].getRed(), pnl_Gradient.colors[3].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[2].getGreen(),
+								pnl_Gradient.colors[3].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[2].getBlue(),
+								pnl_Gradient.colors[3].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 3:
-						r = interpolateColorComponent(ControlsPanel.colors[3].getRed(),
-								ControlsPanel.colors[4].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[3].getGreen(),
-								ControlsPanel.colors[4].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[3].getBlue(),
-								ControlsPanel.colors[4].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[3].getRed(), pnl_Gradient.colors[4].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[3].getGreen(),
+								pnl_Gradient.colors[4].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[3].getBlue(),
+								pnl_Gradient.colors[4].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 4:
-						r = interpolateColorComponent(ControlsPanel.colors[4].getRed(),
-								ControlsPanel.colors[5].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[4].getGreen(),
-								ControlsPanel.colors[5].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[4].getBlue(),
-								ControlsPanel.colors[5].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[4].getRed(), pnl_Gradient.colors[5].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[4].getGreen(),
+								pnl_Gradient.colors[5].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[4].getBlue(),
+								pnl_Gradient.colors[5].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 5:
-						r = interpolateColorComponent(ControlsPanel.colors[5].getRed(),
-								ControlsPanel.colors[6].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[5].getGreen(),
-								ControlsPanel.colors[6].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[5].getBlue(),
-								ControlsPanel.colors[6].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[5].getRed(), pnl_Gradient.colors[6].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[5].getGreen(),
+								pnl_Gradient.colors[6].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[5].getBlue(),
+								pnl_Gradient.colors[6].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 6:
-						r = interpolateColorComponent(ControlsPanel.colors[6].getRed(),
-								ControlsPanel.colors[7].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[6].getGreen(),
-								ControlsPanel.colors[7].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[6].getBlue(),
-								ControlsPanel.colors[7].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[6].getRed(), pnl_Gradient.colors[7].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[6].getGreen(),
+								pnl_Gradient.colors[7].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[6].getBlue(),
+								pnl_Gradient.colors[7].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 7:
-						r = interpolateColorComponent(ControlsPanel.colors[7].getRed(),
-								ControlsPanel.colors[0].getRed(), progress);
-						g = interpolateColorComponent(ControlsPanel.colors[7].getGreen(),
-								ControlsPanel.colors[0].getGreen(), progress);
-						b = interpolateColorComponent(ControlsPanel.colors[7].getBlue(),
-								ControlsPanel.colors[0].getBlue(), progress);
+						r = interpolateColorComponent(pnl_Gradient.colors[7].getRed(), pnl_Gradient.colors[0].getRed(),
+								progress);
+						g = interpolateColorComponent(pnl_Gradient.colors[7].getGreen(),
+								pnl_Gradient.colors[0].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient.colors[7].getBlue(),
+								pnl_Gradient.colors[0].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					}
@@ -448,6 +450,28 @@ public class PianoController implements PianoMidiConsumer {
 			arduino.sendCommandSetBG(hue, saturation, brightness);
 	}
 
+	public void setLedGuide(boolean on) {
+		int red = GetUI.selectedColor.getRed();
+		int green = GetUI.selectedColor.getGreen();
+		int blue = GetUI.selectedColor.getBlue();
+
+		int scaleKeyIndex = ModesController.scaleKeyLedIndex;
+		int[] scalePattern = ModesController.scalePattern;
+		int currentArray = ModesController.currentArray;
+
+		float[] hsbValues = Color.RGBtoHSB(red, green, blue, null);
+		int hue = (int) (hsbValues[0] * 255);
+		int saturation = (int) (hsbValues[1] * 255);
+		int brightness = 100;
+
+		if (on) {
+			if (arduino != null)
+				arduino.sendCommandSetGuide(currentArray, hue, saturation, brightness, scaleKeyIndex, scalePattern);
+		} else {
+			arduino.sendCommandSetGuide(currentArray, 0, 0, 0, scaleKeyIndex, scalePattern);
+		}
+	}
+
 	public void animationlist(int n) {
 		if (arduino != null)
 			arduino.sendCommandAnimation(n);
@@ -459,6 +483,7 @@ public class PianoController implements PianoMidiConsumer {
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
 				arduino.sendCommandSetBG(0, 0, 0);
+				arduino.sendCommandSetGuide(7, 0, 0, 0, 0, ModesController.defaultMajorScalePattern);
 				arduino.stop();
 			}
 		} catch (Exception e) {
