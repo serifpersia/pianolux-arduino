@@ -4,7 +4,6 @@ import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.learn.LearnPanel;
-import com.serifpersia.pianoled.liveplay.LivePlayPanel;
 
 import java.awt.CardLayout;
 
@@ -17,7 +16,7 @@ public class RightPanel extends JPanel {
 		// UI
 		// Create an object of DashboardPanel
 		DashboardPanel dashboardPanel = new DashboardPanel(pianoLED);
-		LivePlayPanel livePlayPanel = new LivePlayPanel(pianoLED);
+
 		ControlsPanel controlsPanel = new ControlsPanel(pianoLED);
 		LearnPanel learnPanel = new LearnPanel(pianoLED);
 
@@ -26,7 +25,6 @@ public class RightPanel extends JPanel {
 		// Add the panels objects to the RightPanel
 
 		add(dashboardPanel, "Dashboard");
-		add(livePlayPanel, "LivePlay");
 		add(controlsPanel, "Controls");
 		add(learnPanel, "Learn");
 

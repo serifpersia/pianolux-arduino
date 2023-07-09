@@ -39,7 +39,6 @@ public class LeftPanel extends JPanel {
 		setBackground(Color.BLACK);
 		JButton AboutButton = new JButton("");
 		dashboardButton = createButton("", "Dashboard");
-		JButton livePlayButton = createButton("LivePlay", "LivePlay");
 		JButton controlsButton = createButton("Controls", "Controls");
 		learnButton = createButton("Learn", "Learn");
 
@@ -63,7 +62,6 @@ public class LeftPanel extends JPanel {
 
 		add(dashboardButton);
 		add(controlsButton);
-		add(livePlayButton);
 		add(learnButton);
 		add(AboutButton);
 

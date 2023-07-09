@@ -14,7 +14,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.learn.PianoReceiver;
-import com.serifpersia.pianoled.ui.ControlsPanel;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
 import com.serifpersia.pianoled.ui.pnl_Gradient;
