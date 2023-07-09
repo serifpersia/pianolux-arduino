@@ -306,7 +306,7 @@ public class DashboardPanel extends JPanel {
 
 			public void mouseExited(MouseEvent e) {
 				if (!button.isSelected() && !text.equals("Connect")) {
-					button.setBackground(new Color(77, 77, 77));
+					button.setBackground(new Color(21, 21, 21));
 				}
 			}
 

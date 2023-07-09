@@ -62,7 +62,7 @@ public class LeftPanel extends JPanel {
 
 		add(dashboardButton);
 		add(controlsButton);
-		add(learnButton);
+		//add(learnButton);
 		add(AboutButton);
 
 	}
