@@ -2,7 +2,6 @@ package com.serifpersia.pianoled.ui;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -35,77 +34,44 @@ public class LeftPanel extends JPanel {
 		this.rightPanel = rightPanel;
 
 		setPreferredSize(new Dimension(100, getHeight()));
-		setLayout(new GridLayout(5, 1));
-		setBackground(Color.BLACK);
-		JButton AboutButton = new JButton("");
+		setLayout(new GridLayout(3, 1));
+		JButton AboutButton = createButton("", "");
 		dashboardButton = createButton("", "Dashboard");
 		JButton controlsButton = createButton("Controls", "Controls");
 		learnButton = createButton("Learn", "Learn");
 
 		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
 				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-		// dashboardDarkIcon = new ImageIcon(new
-		// ImageIcon(getClass().getResource("/icons/home_dark.png")).getImage()
-		// .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 
 		dashboardButton.setIcon(dashboardIcon);
 
 		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/AppIcon.png")).getImage()
-				.getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+				.getScaledInstance(75, 75, Image.SCALE_SMOOTH));
 
 		AboutButton.setIcon(pianoLEDIcon);
 
-		AboutButton.setBackground(Color.BLACK);
-		AboutButton.setFocusable(false);
-		AboutButton.setBorderPainted(false);
 		AboutButton.addActionListener(e -> showAboutPianoLEDDialog());
 
 		add(dashboardButton);
 		add(controlsButton);
-		//add(learnButton);
+		// add(learnButton);
 		add(AboutButton);
 
 	}
 
 	private JButton createButton(String text, String cardName) {
 		JButton button = new JButton(text);
-		button.setFont(new Font("Tahoma", Font.BOLD, 18));
-		button.setBackground(Color.BLACK);
-		button.setForeground(Color.WHITE);
-		button.setFocusable(false);
-		button.setBorderPainted(false);
+
+		button.setFont(new Font("Poppins", Font.PLAIN, 16));
+		button.setForeground(new Color(204, 204, 204));
+		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
 		button.addMouseListener(new MouseAdapter() {
 
-			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(231, 76, 60));
-				button.setForeground(Color.WHITE);
-			}
-
-			public void mouseExited(MouseEvent e) {
-				if (!button.isSelected()) {
-					button.setBackground(Color.BLACK);
-					button.setForeground(Color.WHITE);
-				}
-			}
-
 			public void mousePressed(MouseEvent e) {
-				button.setBackground(new Color(231, 76, 60));
-				button.setForeground(Color.WHITE);
-				button.setSelected(true);
+
 				CardLayout cardLayout = (CardLayout) rightPanel.getLayout();
 				cardLayout.show(rightPanel, cardName);
-				for (Component c : getComponents()) {
-					if (c instanceof JButton && c != button) {
-						((JButton) c).setSelected(false);
-						((JButton) c).setBackground(Color.BLACK);
-						((JButton) c).setForeground(Color.WHITE);
-					}
-				}
-				if (button == dashboardButton) {
-					dashboardButton.setIcon(dashboardIcon);
-				} else {
-					dashboardButton.setIcon(dashboardIcon);
-				}
 
 				if (button == learnButton) {
 					System.out.println("in learn mode");
@@ -116,8 +82,6 @@ public class LeftPanel extends JPanel {
 			}
 
 		});
-
-		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
 		return button;
 	}

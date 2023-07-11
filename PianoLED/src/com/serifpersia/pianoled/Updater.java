@@ -36,7 +36,7 @@ public class Updater {
 	String os = System.getProperty("os.name").toLowerCase();
 
 	private boolean debugJSONOff = true;
-	public String VersionTag = "v4.2.0";
+	public String VersionTag = "v4.2.2";
 	String VersionFile;
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -84,17 +84,13 @@ public class Updater {
 	}
 
 	public void getUpdate() {
-		String branchName = (String) DashboardPanel.cbBranch.getSelectedItem();
-		if (branchName.equals("stable")) {
 
-			int choice = JOptionPane.showConfirmDialog(null, "Do you want to update?", "Update",
-					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-			if (choice == JOptionPane.YES_OPTION) {
-				checkForUpdates();
-			}
-		} else {
-			downloadFilesFromBranch(owner, repo, "beta");
+		int choice = JOptionPane.showConfirmDialog(null, "Do you want to update?", "Update", JOptionPane.YES_NO_OPTION,
+				JOptionPane.INFORMATION_MESSAGE);
+		if (choice == JOptionPane.YES_OPTION) {
+			checkForUpdates();
 		}
+
 	}
 
 	private void checkForUpdates() {

@@ -183,7 +183,15 @@ public class PianoController implements PianoMidiConsumer {
 
 	public void closeSerial() {
 		try {
+
+			if (arduino != null) {
+				arduino.sendCommandBlackOut();
+				arduino.sendCommandSetBG(0, 0, 0);
+				arduino.sendCommandSetGuide(7, 0, 0, 0, 0, ModesController.defaultMajorScalePattern);
+
+			}
 			arduino.serialPort.closePort();
+
 		} catch (SerialPortException ex) {
 			System.out.println(ex);
 		}

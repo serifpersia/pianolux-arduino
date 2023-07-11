@@ -3,7 +3,6 @@ package com.serifpersia.pianoled.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +18,7 @@ import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.plaf.basic.BasicComboBoxUI;
-
+import javax.swing.UIManager;
 import java.awt.CardLayout;
 
 @SuppressWarnings("serial")
@@ -198,29 +195,11 @@ public class pnl_Guide extends JPanel {
 		add(pnl_Bottom);
 
 		cb_ScaleKey = new JComboBox<Object>(GetUI.scaleKeyNames.toArray(new String[0]));
-		cb_ScaleKey.setBackground(new Color(77, 77, 77));
+		cb_ScaleKey.putClientProperty("JComponent.roundRect", true);
+
 		cb_ScaleKey.setForeground(new Color(204, 204, 204));
 		cb_ScaleKey.setFont(new Font("Poppins", Font.PLAIN, 21));
-		cb_ScaleKey.setFocusable(false); // Set the JComboBox as non-focusable
 
-		// Customize the JComboBox UI
-		cb_ScaleKey.setUI(new BasicComboBoxUI() {
-			@Override
-			protected JButton createArrowButton() {
-				return new JButton() {
-					@Override
-					public void paint(Graphics g) {
-						// Do nothing to remove the arrow button painting
-					}
-
-					@Override
-					public boolean contains(int x, int y) {
-						// Override contains() method to hide the button when the mouse is over it
-						return false;
-					}
-				};
-			}
-		});
 		cb_ScaleKey.addActionListener(e -> {
 			String selectedScaleKeyName = (String) cb_ScaleKey.getSelectedItem();
 
@@ -241,29 +220,11 @@ public class pnl_Guide extends JPanel {
 		});
 
 		cb_Scale = new JComboBox<Object>(GetUI.scaleNames.toArray(new String[0]));
-		cb_Scale.setBackground(new Color(77, 77, 77));
+		cb_Scale.putClientProperty("JComponent.roundRect", true);
+
 		cb_Scale.setForeground(new Color(204, 204, 204));
 		cb_Scale.setFont(new Font("Poppins", Font.PLAIN, 21));
-		cb_Scale.setFocusable(false); // Set the JComboBox as non-focusable
 
-		// Customize the JComboBox UI
-		cb_Scale.setUI(new BasicComboBoxUI() {
-			@Override
-			protected JButton createArrowButton() {
-				return new JButton() {
-					@Override
-					public void paint(Graphics g) {
-						// Do nothing to remove the arrow button painting
-					}
-
-					@Override
-					public boolean contains(int x, int y) {
-						// Override contains() method to hide the button when the mouse is over it
-						return false;
-					}
-				};
-			}
-		});
 		cb_Scale.addActionListener(e -> {
 			String selectedScaleName = (String) cb_Scale.getSelectedItem();
 
@@ -280,56 +241,47 @@ public class pnl_Guide extends JPanel {
 
 		btn_Load = new JButton("Load");
 		btn_Load.setForeground(new Color(204, 204, 204));
-		btn_Load.setBackground(new Color(77, 77, 77));
 		btn_Load.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Load.setFocusable(false);
-		btn_Load.setBorderPainted(false);
 
 		btn_Save = new JButton("Save");
 		btn_Save.setForeground(new Color(204, 204, 204));
-		btn_Save.setBackground(new Color(77, 77, 77));
 		btn_Save.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Save.setFocusable(false);
-		btn_Save.setBorderPainted(false);
-
-		btn_Save.setFont(new Font("Tahoma", Font.BOLD, 20));
 
 		btn_Reset = new JButton("Reset");
 		btn_Reset.setForeground(new Color(204, 204, 204));
 		btn_Reset.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Reset.setFocusable(false);
-		btn_Reset.setBorderPainted(false);
-		btn_Reset.setBackground(new Color(77, 77, 77));
+
 		btn_Reset.setActionCommand("btn_Save");
 		GroupLayout gl_pnl_Top = new GroupLayout(pnl_Top);
-		gl_pnl_Top
-				.setHorizontalGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnl_Top.createSequentialGroup().addContainerGap()
+		gl_pnl_Top.setHorizontalGroup(gl_pnl_Top.createParallelGroup(Alignment.TRAILING).addGroup(gl_pnl_Top
+				.createSequentialGroup().addGap(20)
+				.addGroup(gl_pnl_Top.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btn_Reset, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
+						.addGroup(gl_pnl_Top.createSequentialGroup()
 								.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
-										.addComponent(cb_ScaleKey, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(cb_Scale, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addGap(156)
-								.addGroup(gl_pnl_Top.createParallelGroup(Alignment.TRAILING)
+										.addComponent(cb_ScaleKey, 0, 675, Short.MAX_VALUE)
+										.addComponent(cb_Scale, 0, 675, Short.MAX_VALUE))
+								.addGap(20)
+								.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING, false)
 										.addComponent(btn_Load, GroupLayout.PREFERRED_SIZE, 130,
 												GroupLayout.PREFERRED_SIZE)
 										.addComponent(btn_Save, GroupLayout.PREFERRED_SIZE, 130,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(btn_Reset, GroupLayout.PREFERRED_SIZE, 130,
-												GroupLayout.PREFERRED_SIZE))
-								.addContainerGap()));
-		gl_pnl_Top.setVerticalGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING).addGroup(gl_pnl_Top
-				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING, false).addComponent(btn_Load)
-						.addComponent(cb_ScaleKey, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
-				.addGap(0)
-				.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING, false)
-						.addGroup(gl_pnl_Top.createSequentialGroup().addGap(26).addComponent(cb_Scale,
-								GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnl_Top.createSequentialGroup()
-								.addPreferredGap(ComponentPlacement.RELATED, 1, Short.MAX_VALUE)
-								.addComponent(btn_Save, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btn_Reset)))
-				.addGap(7)));
+												GroupLayout.PREFERRED_SIZE))))
+				.addGap(20)));
+		gl_pnl_Top.setVerticalGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnl_Top.createSequentialGroup().addGap(10)
+						.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
+								.addComponent(btn_Load, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+								.addComponent(cb_ScaleKey, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+						.addGap(10)
+						.addGroup(gl_pnl_Top.createParallelGroup(Alignment.BASELINE)
+								.addComponent(cb_Scale, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btn_Save, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+						.addGap(10).addComponent(btn_Reset, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(131, Short.MAX_VALUE)));
 		pnl_Top.setLayout(gl_pnl_Top);
 
 	}
@@ -358,7 +310,6 @@ public class pnl_Guide extends JPanel {
 
 	private JButton createSpaceButtons(String buttonText) {
 		JButton button = new JButton(buttonText);
-		button.setBackground(Color.WHITE);
 		button.setFocusable(false);
 		button.setBorderPainted(false);
 
@@ -367,8 +318,7 @@ public class pnl_Guide extends JPanel {
 
 	private JButton createWhiteButton(String buttonText, int buttonIndex) {
 		JButton button = new JButton(buttonText);
-		button.setBackground(Color.WHITE);
-		button.setFont(new Font("Tahoma", Font.BOLD, 12));
+		Color defaultBackground = UIManager.getColor("Button.background");
 		button.setFocusable(false);
 		button.setBorderPainted(false);
 		button.addMouseListener(new MouseAdapter() {
@@ -378,10 +328,8 @@ public class pnl_Guide extends JPanel {
 
 				if (buttonStates[buttonIndex]) {
 					button.setBackground(Color.RED);
-					button.setForeground(Color.WHITE);
 				} else {
-					button.setBackground(Color.WHITE);
-					button.setForeground(Color.BLACK);
+					button.setBackground(defaultBackground);
 				}
 
 				updateButtonStates();
@@ -402,16 +350,17 @@ public class pnl_Guide extends JPanel {
 	private JButton createBlackButton(String buttonText, int buttonIndex) {
 		JButton button = new JButton(buttonText);
 		button.setBackground(Color.BLACK);
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Tahoma", Font.BOLD, 10));
+		button.setFont(new Font("Tahoma", Font.BOLD, 0));
 		button.setFocusable(false);
 		button.setBorderPainted(false);
+
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				buttonStates[buttonIndex] = !buttonStates[buttonIndex];
 
 				if (buttonStates[buttonIndex]) {
+
 					button.setBackground(Color.RED);
 
 				} else {
@@ -489,6 +438,10 @@ public class pnl_Guide extends JPanel {
 
 	private void resetButtonsInPanel(JPanel panel, boolean resetWhite) {
 		Component[] components = panel.getComponents();
+
+		Color defaultBackground = UIManager.getColor("Button.background");
+		Color defaultForeground = UIManager.getColor("Button.foreground");
+
 		for (Component component : components) {
 			if (component instanceof JButton) {
 				JButton button = (JButton) component;
@@ -496,15 +449,16 @@ public class pnl_Guide extends JPanel {
 					if (!button.getText().startsWith("C#") && !button.getText().startsWith("D#")
 							&& !button.getText().startsWith("F#") && !button.getText().startsWith("G#")
 							&& !button.getText().startsWith("A#")) {
-						button.setBackground(Color.WHITE);
-						button.setForeground(Color.BLACK);
+
+						button.setBackground(defaultBackground);
+						button.setForeground(defaultForeground);
 					}
 				} else {
 					if (button.getText().startsWith("C#") || button.getText().startsWith("D#")
 							|| button.getText().startsWith("F#") || button.getText().startsWith("G#")
 							|| button.getText().startsWith("A#")) {
 						button.setBackground(Color.BLACK);
-						button.setForeground(Color.WHITE);
+						button.setForeground(defaultForeground);
 					}
 				}
 			}

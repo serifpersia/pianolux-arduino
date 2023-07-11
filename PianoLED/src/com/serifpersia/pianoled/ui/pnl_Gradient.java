@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -15,10 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import javax.swing.plaf.basic.BasicComboBoxUI;
-
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoLED;
 
@@ -225,31 +221,11 @@ public class pnl_Gradient extends JPanel {
 		pnl_GradientControls.setLayout(new BorderLayout(0, 0));
 
 		cb_GradientSideList = new JComboBox<Object>(GetUI.gradientSides.toArray(new String[0]));
-		cb_GradientSideList.setFont(new Font("Tahoma", Font.BOLD, 25));
-		pnl_GradientControls.add(cb_GradientSideList, BorderLayout.NORTH);
-		cb_GradientSideList.setBackground(new Color(77, 77, 77));
+		cb_GradientSideList.putClientProperty("JComponent.roundRect", true);
 		cb_GradientSideList.setForeground(new Color(204, 204, 204));
 		cb_GradientSideList.setFont(new Font("Poppins", Font.PLAIN, 30));
-		cb_GradientSideList.setFocusable(false); // Set the JComboBox as non-focusable
 
-		// Customize the JComboBox UI
-		cb_GradientSideList.setUI(new BasicComboBoxUI() {
-			@Override
-			protected JButton createArrowButton() {
-				return new JButton() {
-					@Override
-					public void paint(Graphics g) {
-						// Do nothing to remove the arrow button painting
-					}
-
-					@Override
-					public boolean contains(int x, int y) {
-						// Override contains() method to hide the button when the mouse is over it
-						return false;
-					}
-				};
-			}
-		});
+		pnl_GradientControls.add(cb_GradientSideList, BorderLayout.NORTH);
 
 		cb_GradientSideList.addActionListener(e -> {
 			int selectedIndex = cb_GradientSideList.getSelectedIndex();
