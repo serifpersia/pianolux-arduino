@@ -48,7 +48,8 @@ To use the app, you need to install the latest Java OpenJRE version and use the 
 
 4. With Upload Complete prompt, you are ready to use the PianoLED app.
 
-Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
+Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/)
+
 
 ## Instructions for Linux
 - Install jre17 package:
