@@ -187,8 +187,11 @@ public class DashboardPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
 				case "btnUpdate":
-					updater.getUpdate();
+					if (updater.getOs().contains("win")) {
+						updater.getUpdate();
+					}
 					break;
+
 				case "btnOpen":
 					if (btnOpen.getText().equals("Connect")) {
 						try {

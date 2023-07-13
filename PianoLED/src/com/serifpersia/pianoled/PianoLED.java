@@ -34,6 +34,7 @@ public class PianoLED extends JFrame {
 	public static void main(String[] args) {
 		try {
 			FlatDarkLaf.setup();
+			UIManager.put("Panel.background", new Color(25, 25, 25));
 			UIManager.put("Button.arc", 999);
 			UIManager.put("Button.foreground", new Color(204, 204, 204));
 		} catch (Throwable e) {
@@ -48,7 +49,7 @@ public class PianoLED extends JFrame {
 
 		Updater updater = new Updater();
 		updater.getVersion();
-
+		updater.deleteSetupFile();
 		init();
 	}
 

@@ -101,7 +101,7 @@ public class pnl_Controls extends JPanel {
 		lblNewLabel_1_1_1_1_1.setForeground(new Color(204, 204, 204));
 		lblNewLabel_1_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		JLabel lblNewLabel_1_1_1_1_1_1 = new JLabel("Splash Lenght");
+		JLabel lblNewLabel_1_1_1_1_1_1 = new JLabel("Splash Length");
 		lblNewLabel_1_1_1_1_1_1.setForeground(new Color(204, 204, 204));
 		lblNewLabel_1_1_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
 

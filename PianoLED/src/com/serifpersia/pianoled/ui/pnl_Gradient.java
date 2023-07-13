@@ -98,7 +98,6 @@ public class pnl_Gradient extends JPanel {
 
 	int divisionCount = 2; // Specify the number of divisions
 
-	private JButton SetButton;
 	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
 
 	private ImageIcon setIcon;
