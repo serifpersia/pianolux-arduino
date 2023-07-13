@@ -1,6 +1,6 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/ec900c63-feda-4605-80e6-9b792fe4f855)
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/7fafc0af-0641-4296-81f1-4f9acbcb3371)
 
 
 This app is a simple Java based GUI that controls a WS2812B LED strip using an Arduino. The LED strip must be 2m/144 for 88 keys/76/73, and for smaller key sizes 1m/144 is sufficient.
@@ -48,7 +48,8 @@ To use the app, you need to install the latest Java OpenJRE version and use the 
 
 4. With Upload Complete prompt, you are ready to use the PianoLED app.
 
-Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/
+Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/)
+
 
 ## Instructions for Linux
 - Install jre17 package:
