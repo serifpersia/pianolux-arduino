@@ -36,7 +36,7 @@ public class PianoController implements PianoMidiConsumer {
 
 	public static Color splitLeftColor = Color.RED;
 	public static Color splitRightColor = Color.BLUE;
-	public static int BG_BRIGHTNESS = 10;
+	public static int BG_BRIGHTNESS = 50;
 
 	public boolean useFixedMapping = false;
 	public boolean stripReverse = false; // default value

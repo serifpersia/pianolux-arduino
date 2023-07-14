@@ -366,7 +366,7 @@ public class pnl_Controls extends JPanel {
 		bg_slider.setForeground(new Color(128, 128, 128));
 		bg_slider.setSnapToTicks(true);
 		bg_slider.setMajorTickSpacing(10);
-		bg_slider.setValue(10);
+		bg_slider.setValue(50);
 
 	}
 
