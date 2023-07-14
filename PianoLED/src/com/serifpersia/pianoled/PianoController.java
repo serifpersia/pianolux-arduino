@@ -38,6 +38,12 @@ public class PianoController implements PianoMidiConsumer {
 	public static Color splitRightColor = Color.BLUE;
 	public static int BG_BRIGHTNESS = 10;
 
+	public boolean useFixedMapping = false;
+	public boolean stripReverse = false; // default value
+	public boolean bgToggle = false; // default value
+	public boolean guideToggle = false; // default value
+	public boolean use72LEDSMap = false;
+
 	// Helper method to interpolate a color component value
 	private int interpolateColorComponent(int start, int end, double progress) {
 		return (int) (start * (1 - progress) + end * progress);
@@ -222,10 +228,16 @@ public class PianoController implements PianoMidiConsumer {
 		}
 	}
 
-	public boolean useFixedMapping = false;
-	public boolean stripReverse = false; // default value
-	public boolean bgToggle = false; // default value
-	public boolean guideToggle = false; // default value
+	public int mapMidiNoteToLED72(int midiNote, int lowestNote, int highestNote, int stripLEDNumber) {
+		int totalNotes = highestNote - lowestNote;
+		int notesPerLED = (int) Math.ceil((double) totalNotes / stripLEDNumber);
+		int ledIndex = (midiNote - lowestNote) / notesPerLED + 1;
+
+		// Ensure the LED index is within the valid range
+		ledIndex = Math.max(0, Math.min(stripLEDNumber, ledIndex));
+
+		return ledIndex;
+	}
 
 	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
@@ -250,12 +262,19 @@ public class PianoController implements PianoMidiConsumer {
 
 	public void noteOn(int channel, int pitch, int velocity) {
 		int notePushed;
-		if (useFixedMapping) {
+		if (useFixedMapping && use72LEDSMap == false) {
 			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum(), 1);
+		}
+
+		else if (use72LEDSMap && useFixedMapping == false) {
+
+			notePushed = mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum());
 		} else {
 			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum(), 1);
+
 		}
 
 		pianoLED.setPianoKey(pitch, 1);
@@ -389,15 +408,24 @@ public class PianoController implements PianoMidiConsumer {
 
 	public void noteOff(int channel, int pitch, int velocity) {
 		int notePushed;
-		if (useFixedMapping) {
+		if (useFixedMapping && use72LEDSMap == false) {
 			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum(), 1);
+		}
+
+		else if (use72LEDSMap && useFixedMapping == false) {
+
+			notePushed = mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum());
 		} else {
 			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum(), 1);
+
 		}
 		pianoLED.setPianoKey(pitch, 0);
-		try {
+		try
+
+		{
 			if (!ModesController.AnimationOn) {
 				arduino.sendCommandKeyOff(notePushed);
 			}

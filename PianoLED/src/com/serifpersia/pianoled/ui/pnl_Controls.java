@@ -52,6 +52,7 @@ public class pnl_Controls extends JPanel {
 	public static JToggleButton fixToggle;
 	public static JToggleButton reverseToggle;
 	public static JToggleButton guideToggle;
+	public static JToggleButton LEDS72_Toggle;
 
 	private JButton btn_SetBG;
 	private JButton btn_rightArrow;
@@ -115,7 +116,7 @@ public class pnl_Controls extends JPanel {
 
 		JPanel PianoPanel = new JPanel();
 		PianoPanel.setBackground(new Color(50, 50, 50));
-		PianoPanel.setLayout(new GridLayout(0, 3, 0, 0));
+		PianoPanel.setLayout(new GridLayout(0, 4, 0, 0));
 
 		PianoPanel.add(btn_leftArrow);
 
@@ -236,6 +237,8 @@ public class pnl_Controls extends JPanel {
 		modifiers_Panel.add(bgToggle);
 
 		PianoPanel.add(btn_SetBG);
+
+		PianoPanel.add(LEDS72_Toggle);
 		buttonPanel.setLayout(new GridLayout(0, 2, 0, 0));
 
 		buttonPanel.add(btn_Load);
@@ -272,6 +275,11 @@ public class pnl_Controls extends JPanel {
 		btn_SetBG.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_SetBG.setFocusable(false);
 
+		LEDS72_Toggle = new JToggleButton("72");
+		LEDS72_Toggle.setForeground(new Color(204, 204, 204));
+		LEDS72_Toggle.setFont(new Font("Poppins", Font.PLAIN, 21));
+		LEDS72_Toggle.setFocusable(false);
+
 		bgToggle = new JToggleButton("");
 		fixToggle = new JToggleButton("");
 		reverseToggle = new JToggleButton("");
@@ -303,6 +311,10 @@ public class pnl_Controls extends JPanel {
 		guideToggle.setBackground(new Color(50, 50, 50));
 		guideToggle.setBorderPainted(false);
 		guideToggle.setFocusable(false);
+
+		LEDS72_Toggle.setBackground(new Color(50, 50, 50));
+		LEDS72_Toggle.setBorderPainted(false);
+		LEDS72_Toggle.setFocusable(false);
 
 	}
 
@@ -500,6 +512,16 @@ public class pnl_Controls extends JPanel {
 						pianoController.setLedGuide(pianoController.guideToggle);
 					}
 				}
+
+				else if (source == LEDS72_Toggle) {
+					if (LEDS72_Toggle.isSelected()) {
+
+						pianoController.use72LEDSMap = true;
+					} else {
+						pianoController.use72LEDSMap = false;
+					}
+				}
+
 			}
 		};
 
@@ -507,5 +529,7 @@ public class pnl_Controls extends JPanel {
 		fixToggle.addActionListener(tgl_listener);
 		reverseToggle.addActionListener(tgl_listener);
 		guideToggle.addActionListener(tgl_listener);
+		LEDS72_Toggle.addActionListener(tgl_listener);
+
 	}
 }
