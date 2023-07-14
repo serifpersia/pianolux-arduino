@@ -47,7 +47,7 @@ int splashMaxLength = 8;
 
 boolean bgOn = false;
 CRGB bgColor = CRGB::Black;
-CRGB guideColor = CRGB::Black;
+CRGB guideColor = CRGB::Red;
 
 
 unsigned long currentTime = 0;
@@ -59,16 +59,17 @@ unsigned long fadeInterval = 20;  // general fade interval in milliseconds
 int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
 
 
-const int OCTAVE_LEDS = 22;           // Number of LEDs in one octave
+const int OCTAVE_LEDS = 23;           // Number of LEDs in one octave
 const int OCTAVE_COUNT = 8;           // Number of octaves
-const int LED_SKIP = 2;               // Number of LEDs to skip before starting the next octave pattern
-const int LED_OFFSET_4TH_OCTAVE = 1;  // Offset for the fourth octave
-const int LED_OFFSET_5TH_OCTAVE = 1;  // Offset for the fifth octave
-const int LED_OFFSET_6TH_OCTAVE = 1;  // Offset for the sixth octave
-const int LED_OFFSET_7TH_OCTAVE = 2;  // Offset for the seventh octave
-const int LED_OFFSET_8TH_OCTAVE = 2;  // Offset for the eighth octave
+const int LED_SKIP = 1;               // Number of LEDs to skip before starting the next octave pattern
+const int LED_OFFSET_4TH_OCTAVE = 0;  // Offset for the fourth octave
+const int LED_OFFSET_5TH_OCTAVE = 0;  // Offset for the fifth octave
+const int LED_OFFSET_6TH_OCTAVE = 0;  // Offset for the sixth octave
+const int LED_OFFSET_7TH_OCTAVE = 0;  // Offset for the seventh octave
+const int LED_OFFSET_8TH_OCTAVE = 0;  // Offset for the eighth octave
 int scalePattern[7];
 int scaleKeyIndex;
+const int majorScale[] = { 0, 4, 8, 10, 14, 18, 21};
 
 
 //Animation select variables
@@ -129,7 +130,8 @@ void setup() {
   // FastLED.addLeds<WS2803, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);  // set power limit
   FastLED.setBrightness(DEFAULT_BRIGHTNESS);
-  StartupAnimation();
+ StartupAnimation();
+// setGuide(CRGB::Red,6,majorScale);
 }
 
 #define MAX_EFFECTS 128
@@ -438,12 +440,109 @@ int ledNum(int i) {
 
 
 void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
-  if (ledNo < 0 || ledNo > NUM_LEDS) {
+  if (ledNo < 0 || ledNo >= NUM_LEDS) {
     return;
   }
+
+  // Check if guideColor is black
+  if (guideColor != CRGB::Black) {
+    // Check if the current LED index is in the scalePattern across all octaves
+    boolean ledInScalePattern = false;
+    for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
+      int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
+
+      // Apply offsets for specific octaves
+      if (octave == 3) {
+        octaveOffset -= LED_OFFSET_4TH_OCTAVE;
+      } else if (octave == 4) {
+        octaveOffset -= LED_OFFSET_5TH_OCTAVE;
+      } else if (octave == 5) {
+        octaveOffset -= LED_OFFSET_6TH_OCTAVE;
+      } else if (octave == 6) {
+        octaveOffset -= LED_OFFSET_7TH_OCTAVE;
+      } else if (octave == 7) {
+        octaveOffset -= LED_OFFSET_8TH_OCTAVE;
+      }
+
+      for (int i = 0; i < 7; i++) {
+        int ledIndex = octaveOffset + scalePattern[i] + scaleKeyIndex;
+
+        // Display only the first LED for the eighth octave
+        if (octave == 7 && i > 0) {
+          break;
+        }
+
+        if (ledIndex == ledNo) {
+          ledInScalePattern = true;
+          break;
+        }
+      }
+
+      if (ledInScalePattern) {
+        break;
+      }
+    }
+
+    if (!ledInScalePattern) {
+      // Find the nearest LEDs inside the pattern
+      int prevLedIndex = -1;
+      int nextLedIndex = -1;
+
+      for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
+        int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
+
+        // Apply offsets for specific octaves
+        if (octave == 3) {
+          octaveOffset -= LED_OFFSET_4TH_OCTAVE;
+        } else if (octave == 4) {
+          octaveOffset -= LED_OFFSET_5TH_OCTAVE;
+        } else if (octave == 5) {
+          octaveOffset -= LED_OFFSET_6TH_OCTAVE;
+        } else if (octave == 6) {
+          octaveOffset -= LED_OFFSET_7TH_OCTAVE;
+        } else if (octave == 7) {
+          octaveOffset -= LED_OFFSET_8TH_OCTAVE;
+        }
+
+        for (int i = 0; i < 7; i++) {
+          int ledIndex = octaveOffset + scalePattern[i] + scaleKeyIndex;
+
+          // Display only the first LED for the eighth octave
+          if (octave == 7 && i > 0) {
+            break;
+          }
+
+          if (ledIndex < ledNo && (prevLedIndex == -1 || ledIndex > prevLedIndex)) {
+            prevLedIndex = ledIndex;
+          }
+
+          if (ledIndex > ledNo && (nextLedIndex == -1 || ledIndex < nextLedIndex)) {
+            nextLedIndex = ledIndex;
+          }
+        }
+      }
+
+      // Light up the nearest LEDs with blue color
+      if (prevLedIndex != -1) {
+        leds[ledNum(prevLedIndex)].setRGB(0, 0, 255);  // Blue color
+      }
+
+      if (nextLedIndex != -1) {
+        leds[ledNum(nextLedIndex)].setRGB(0, 0, 255);  // Blue color
+      }
+
+      FastLED.show();
+      return;
+    }
+  }
+
   leds[ledNum(ledNo)].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
+
+
+
+
 
 float distance(CRGB color1, CRGB color2) {
   return sqrt(pow(color1.r - color2.r, 2) + pow(color1.g - color2.g, 2) + pow(color1.b - color2.b, 2));
