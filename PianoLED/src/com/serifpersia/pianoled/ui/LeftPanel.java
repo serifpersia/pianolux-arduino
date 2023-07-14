@@ -24,7 +24,6 @@ public class LeftPanel extends JPanel {
 	private JButton learnButton;
 	private ImageIcon dashboardIcon;
 	// private ImageIcon dashboardDarkIcon;
-
 	private ImageIcon pianoLEDIcon;
 	private JFrame AboutPianoLEDDialog;
 
@@ -34,10 +33,13 @@ public class LeftPanel extends JPanel {
 		this.rightPanel = rightPanel;
 
 		setPreferredSize(new Dimension(100, getHeight()));
-		setLayout(new GridLayout(3, 1));
+		setLayout(new GridLayout(5, 1));
 		JButton AboutButton = createButton("", "");
 		dashboardButton = createButton("", "Dashboard");
 		JButton controlsButton = createButton("Controls", "Controls");
+
+		JButton livePlayButton = createButton("LivePlay", "LivePlay");
+
 		learnButton = createButton("Learn", "Learn");
 
 		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
@@ -45,7 +47,7 @@ public class LeftPanel extends JPanel {
 
 		dashboardButton.setIcon(dashboardIcon);
 
-		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/AppIcon.png")).getImage()
+		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
 				.getScaledInstance(75, 75, Image.SCALE_SMOOTH));
 
 		AboutButton.setIcon(pianoLEDIcon);
@@ -54,7 +56,8 @@ public class LeftPanel extends JPanel {
 
 		add(dashboardButton);
 		add(controlsButton);
-		// add(learnButton);
+		add(livePlayButton);
+		add(learnButton);
 		add(AboutButton);
 
 	}
