@@ -6,12 +6,15 @@
 
 
 This app is a simple Java based GUI that controls  LED strip using an Arduino. The LED strip must be 2m/144 or 72/2m for 88 keys/76/73, and for smaller key sizes 1m is sufficient.
+
 LED strip support:
 Any 5V adressable strip supported by FastLED library for Arduino 72 and 144 density/m 
+
 Exampeles:
+
 5v Adressable LED strips
-WS2812B/WS2812/WS2811
-SK6812 
+
+WS2812B/WS2812/WS2811,SK6812 
 
 PianoLED reqiures native usb Arduino boards like Atmega32U4 cpu boards like:
 Arduino Leonardo,Pro Micro,Zero
