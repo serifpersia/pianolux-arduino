@@ -5,7 +5,7 @@
 
 
 
-This app is a simple Java based GUI that controls  LED strip using an Arduino. The LED strip must be 2m/144 or 72/2m for 88 keys/76/73, and for smaller key sizes 1m is sufficient.
+This app is a simple Java based GUI that controls  LED strip using an Arduino. The LED strip must be 2m/144 or 2m/72 for 88 keys/76/73, and for smaller key sizes 1m is sufficient.
 
 LED strip support:
 Any 5V addressable strip supported by FastLED library for Arduino 72 and 144 density/m 
