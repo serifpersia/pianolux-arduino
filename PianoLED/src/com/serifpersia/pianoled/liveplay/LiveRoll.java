@@ -14,7 +14,7 @@ import com.serifpersia.pianoled.ui.DrawPiano;
 @SuppressWarnings("serial")
 public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
-	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 5;
+	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 2;
 	private static final Color WHITE_NOTE_COLOR = new Color(122, 164, 212);
 	private static final Color BLACK_NOTE_COLOR = new Color(145, 225, 66);
 	private DrawPiano piano;
@@ -54,7 +54,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		drawPianoRoll(g, elapsedTime);
 		if (notes != null && notes.size() > 0)
 		{
-			drawNotes(g, new LinkedList<NoteWithTime>(notes), elapsedTime);
+			drawNotes(g, notes, elapsedTime);
 			if(livePanel.isShowInfoSelected())
 			{
 				int y = 20;
@@ -87,7 +87,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		int x = (int) piano.getKeyXPos(note.getPitch());
 		int w = (int) piano.getKeyWidth(note.getPitch());
 		int y = (int) getTickY(noteElapsedTime);
-		int h = note.getEnd() == -1 ? getHeight() : (int) timeMsToPixels(note.getEnd() - note.getStart());
+		int h = note.getEnd() == -1 ? getHeight()*1000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
 
 		// Draw the note rectangle
 		if (piano.isBlackKey(note.getPitch())) {
