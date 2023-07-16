@@ -23,7 +23,7 @@ public class OutMidiReceiver implements Receiver {
 		disableMidiTrack[track] = !on;
 	}
 	
-	boolean isTrackPlaying(int trackNum)
+	public boolean isTrackPlaying(int trackNum)
 	{
 		return !disableMidiTrack[trackNum];
 	}
