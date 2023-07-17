@@ -15,8 +15,7 @@ import com.serifpersia.pianoled.ui.DrawPiano;
 public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 2;
-	private static final Color WHITE_NOTE_COLOR = new Color(122, 164, 212);
-	private static final Color BLACK_NOTE_COLOR = new Color(145, 225, 66);
+	private static final Color NOTE_COLOR = new Color(145, 225, 66);
 	private DrawPiano piano;
 	private LivePlayPanel livePanel;
 
@@ -34,12 +33,10 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		return notes;
 	}
 
-
 	public void start() {
 		startTime = System.currentTimeMillis();
 		resetNotes();
 	}
-
 
 	private void resetNotes() {
 		notes = new LinkedList<>();
@@ -52,15 +49,14 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		long elapsedTime = getElapsedTime();
 
 		drawPianoRoll(g, elapsedTime);
-		if (notes != null && notes.size() > 0)
-		{
+		if (notes != null && notes.size() > 0) {
 			drawNotes(g, notes, elapsedTime);
-			if(livePanel.isShowInfoSelected())
-			{
+			if (livePanel.isShowInfoSelected()) {
 				int y = 20;
 				int n = 0;
 				for (NoteWithTime note : notes) {
-					drawText(g, 20, y+n*20, note.getPitch()+ " " + note.getStart()+ " " + note.getEnd()+ " " + note.getVelocity() + " Elapsed: "+getElapsedTime());
+					drawText(g, 20, y + n * 20, note.getPitch() + " " + note.getStart() + " " + note.getEnd() + " "
+							+ note.getVelocity() + " Elapsed: " + getElapsedTime());
 					n++;
 				}
 			}
@@ -77,8 +73,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	public void drawNote(Graphics g, NoteWithTime note, long elapsedTime) {
-		if( note.getEnd() > 0 && note.getEnd() < elapsedTime - PIANO_ROLL_HEIGHT_IN_SEC * 1000)
-		{
+		if (note.getEnd() > 0 && note.getEnd() < elapsedTime - PIANO_ROLL_HEIGHT_IN_SEC * 1000) {
 			// note not visible
 			return;
 		}
@@ -87,25 +82,25 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		int x = (int) piano.getKeyXPos(note.getPitch());
 		int w = (int) piano.getKeyWidth(note.getPitch());
 		int y = (int) getTickY(noteElapsedTime);
-		int h = note.getEnd() == -1 ? getHeight()*1000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
+		int h = note.getEnd() == -1 ? getHeight() * 1000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
 
 		// Draw the note rectangle
 		if (piano.isBlackKey(note.getPitch())) {
-			g.setColor(WHITE_NOTE_COLOR);
+			g.setColor(NOTE_COLOR);
 		} else {
-			g.setColor(BLACK_NOTE_COLOR);
+			g.setColor(NOTE_COLOR);
 		}
 //		y = 50;
 		g.fillRoundRect(x, y, w, h, 5, 5);
 
-		g.setColor(Color.GRAY);
-//		 g.drawRoundRect(x, y - h, w, h, 5, 5);
+		g.setColor(Color.RED);
+	//	g.drawRoundRect(x, y - h, w, h, 5, 5);
 
 		if (livePanel.isShowInfoSelected()) {
 			drawText(g, x, y - 25, "" + note.getPitch());
 			drawText(g, x, y - 15, "" + note.getStart() + "(" + noteElapsedTime + ")");
 			drawText(g, x, y - 5, "" + note.getEnd());
-			drawText(g, x, y + 15, "y: "+y+" H:" + h);
+			drawText(g, x, y + 15, "y: " + y + " H:" + h);
 		}
 	}
 
@@ -114,8 +109,8 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	private double getMsHeight() {
-		
-		return ((double)getHeight())/(PIANO_ROLL_HEIGHT_IN_SEC*1000);
+
+		return ((double) getHeight()) / (PIANO_ROLL_HEIGHT_IN_SEC * 1000);
 	}
 
 	public double getTickY(long noteElapsedTime) {
@@ -124,10 +119,9 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	public void drawPianoRoll(Graphics g, long currentTime) {
 
-		// g.setColor(Color.BLACK);
-		g.setColor(Color.BLUE); // debug color to differentiate liveplay from learn
+		g.setColor(Color.BLACK);
+		// g.setColor(Color.BLUE); // debug color to differentiate liveplay from learn
 		g.fillRect(0, 0, getWidth(), getHeight());
-		
 
 		if (livePanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);
@@ -164,7 +158,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 			}
 		}
 
-}
+	}
 
 	private void drawText(Graphics g, int x, int y, String text) {
 		g.drawChars(text.toCharArray(), 0, text.length(), x, y);
@@ -199,6 +193,6 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	private void addNoteWithOpenEnd(int pitch, int velocity) {
- 		notes.add(new NoteWithTime(pitch, velocity, getElapsedTime(), -1, 0));
+		notes.add(new NoteWithTime(pitch, velocity, getElapsedTime(), -1, 0));
 	}
 }
