@@ -116,7 +116,7 @@ public class pnl_Colors extends JPanel {
 		lb_RGB_1.setFont(new Font("Poppins", Font.PLAIN, 18));
 
 		sld_idle = new JSlider(5, 240, 10);
-		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 10));
+		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 12));
 		sld_idle.setSnapToTicks(true);
 		sld_idle.setMinorTickSpacing(5);
 		sld_idle.setPaintLabels(true);

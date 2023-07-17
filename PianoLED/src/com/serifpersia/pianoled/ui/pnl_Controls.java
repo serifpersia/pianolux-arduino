@@ -129,82 +129,80 @@ public class pnl_Controls extends JPanel {
 		panel_3.setBackground(new Color(50, 50, 50));
 
 		GroupLayout gl_left = new GroupLayout(this);
-		gl_left.setHorizontalGroup(gl_left.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_left.createSequentialGroup().addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_left.createSequentialGroup().addContainerGap().addComponent(panel_3,
-								GroupLayout.PREFERRED_SIZE, 464, Short.MAX_VALUE))
-						.addGroup(gl_left.createSequentialGroup().addContainerGap().addComponent(modifiers_Panel,
-								GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
-						.addGroup(gl_left.createSequentialGroup().addGap(10)
-								.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-										.addComponent(lbl_PianoSize, GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-										.addComponent(lblNewLabel_1).addComponent(lblNewLabel_1_1)
-										.addComponent(lblNewLabel_1_1_1).addComponent(lblNewLabel_1_1_1_1)
-										.addComponent(lblNewLabel_1_1_1_1_1).addComponent(lblNewLabel_1_1_1_1_1_1)
-										.addComponent(lblNewLabel_1_1_1_1_1_1_1))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_left.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(PianoPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(bg_slider, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(sld_SplashMaxLenght, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(sld_Fade, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(sld_Brightness, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(cb_LED_Animations, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(cb_LED_Mode, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 278,
-												GroupLayout.PREFERRED_SIZE))))
-						.addGap(22)));
-		gl_left.setVerticalGroup(gl_left.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_left.createSequentialGroup().addGap(10)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-								.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cb_LED_Mode, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cb_LED_Animations, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(sld_Brightness, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(sld_Fade, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(sld_SplashMaxLenght, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_1_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(bg_slider, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lbl_PianoSize, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-								.addComponent(PianoPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(modifiers_Panel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addGap(5).addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(13, Short.MAX_VALUE)));
+		gl_left.setHorizontalGroup(
+			gl_left.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_left.createSequentialGroup()
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_left.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 473, Short.MAX_VALUE))
+						.addGroup(gl_left.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(modifiers_Panel, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
+						.addGroup(gl_left.createSequentialGroup()
+							.addGap(10)
+							.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+								.addComponent(lbl_PianoSize, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+								.addComponent(lblNewLabel_1)
+								.addComponent(lblNewLabel_1_1)
+								.addComponent(lblNewLabel_1_1_1)
+								.addComponent(lblNewLabel_1_1_1_1)
+								.addComponent(lblNewLabel_1_1_1_1_1)
+								.addComponent(lblNewLabel_1_1_1_1_1_1)
+								.addComponent(lblNewLabel_1_1_1_1_1_1_1))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_left.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(bg_slider, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(sld_SplashMaxLenght, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(sld_Fade, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(sld_Brightness, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(cb_LED_Animations, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(cb_LED_Mode, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE)
+								.addComponent(PianoPanel, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE))))
+					.addGap(22))
+		);
+		gl_left.setVerticalGroup(
+			gl_left.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_left.createSequentialGroup()
+					.addGap(10)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cb_LED_Mode, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cb_LED_Animations, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(sld_Brightness, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(sld_Fade, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(sld_SplashMaxLenght, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_1_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(bg_slider, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
+						.addComponent(lbl_PianoSize, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addComponent(PianoPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(modifiers_Panel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(5)
+					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(13, Short.MAX_VALUE))
+		);
 		panel_3.setLayout(new GridLayout(1, 0, 0, 0));
 
 		JLabel lblNewLabel_1_1_1_1_1_2_1_1 = new JLabel("Reverse LED");
@@ -312,7 +310,7 @@ public class pnl_Controls extends JPanel {
 		guideToggle.setBorderPainted(false);
 		guideToggle.setFocusable(false);
 
-		LEDS72_Toggle.setBackground(new Color(50, 50, 50));
+
 		LEDS72_Toggle.setBorderPainted(false);
 		LEDS72_Toggle.setFocusable(false);
 

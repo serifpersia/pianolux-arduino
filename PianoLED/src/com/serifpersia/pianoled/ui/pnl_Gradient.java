@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoLED;
+import javax.swing.JSlider;
 
 @SuppressWarnings("serial")
 public class pnl_Gradient extends JPanel {
@@ -101,6 +102,9 @@ public class pnl_Gradient extends JPanel {
 	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
 
 	private ImageIcon setIcon;
+	private JPanel panel;
+	private JLabel lb_GradientFade;
+	private JSlider slider;
 
 	private void initializeColors() {
 
@@ -672,6 +676,21 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide8.setBorderPainted(false);
 		btn_Gradient8_SetSide8.setFocusable(false);
 		gradient8Side.add(btn_Gradient8_SetSide8);
+		
+		panel = new JPanel();
+		panel.setBackground(new Color(50, 50, 50));
+		add(panel, BorderLayout.SOUTH);
+		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		lb_GradientFade = new JLabel("Fade Gradient");
+		lb_GradientFade.setHorizontalAlignment(SwingConstants.LEFT);
+		lb_GradientFade.setForeground(Color.WHITE);
+		lb_GradientFade.setFont(new Font("Poppins", Font.PLAIN, 21));
+		lb_GradientFade.setBackground(new Color(204, 204, 204));
+		panel.add(lb_GradientFade);
+		
+		slider = new JSlider();
+		panel.add(slider);
 	}
 
 	Color interpolateColor(Color color1, Color color2, float ratio) {
