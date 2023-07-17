@@ -50,7 +50,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 		drawPianoRoll(g, elapsedTime);
 		if (notes != null && notes.size() > 0) {
-			drawNotes(g, notes, elapsedTime);
+			drawNotes(g, new LinkedList<NoteWithTime>(notes), elapsedTime);
 			if (livePanel.isShowInfoSelected()) {
 				int y = 20;
 				int n = 0;
