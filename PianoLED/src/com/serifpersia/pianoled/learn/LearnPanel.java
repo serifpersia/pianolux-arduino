@@ -39,6 +39,9 @@ import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiConsumer {
@@ -46,7 +49,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private static final String DEFAULT_MIDI_RESOURCE = "/midi/clair_de_lune.mid";
 	private static final int PLAYER_REWIND_SEC = 5;
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
-	private static final Color SLIDING_PANEL_BG = Color.BLACK;
 	private static final int REFRESH_RATE_MS = 16;
 	public static JComboBox<?> MidiOutList;
 	private MidiPlayer midiPlayer;
@@ -63,10 +65,15 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private static final int COMMAND_KEY1 = DrawPiano.FIRST_KEY_PITCH_OFFSET + 86;
 	private Map<Integer, String> commandKeys = Map.of(COMMAND_KEY1 - 2, "Back", COMMAND_KEY1, "PlayPause",
 			COMMAND_KEY1 + 1, "Forward");
+	private JButton lbLoadMidi;
+	private JLabel midiFileName_1;
+	private JButton lbStart;
+	private JButton lbGoBack;
+	private JButton lbGoForwards;
 
 	public LearnPanel(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
-		setBackground(SLIDING_PANEL_BG);
+		setBackground(Color.BLACK);
 		setLayout(new BorderLayout(0, 0));
 		pianoRoll = new PianoRoll(pianoLED, this);
 		add(pianoRoll);
@@ -106,7 +113,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	}
 
 	private void addSlidingControlPanel() {
-		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
 		slideControlsPane.setLayout(new BorderLayout(0, 0));
@@ -162,25 +168,60 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 		JLabel lbControls = new JLabel("Controls");
 		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
-		lbControls.setForeground(Color.WHITE);
-		lbControls.setFont(new Font("Tahoma", Font.BOLD, 40));
+		lbControls.setFont(new Font("Poppins", Font.PLAIN, 35));
 		slideControlsPane.add(lbControls, BorderLayout.NORTH);
 
 		JPanel controlsPane = new JPanel();
-		controlsPane.setBackground(SLIDING_PANEL_BG);
 		slideControlsPane.add(controlsPane, BorderLayout.EAST);
-		GridBagLayout gbl_controlsPane = new GridBagLayout();
-		gbl_controlsPane.columnWidths = new int[] { 25, 0, 0, 0 };
-		gbl_controlsPane.rowHeights = new int[] { 143, 0, -14, 30, 94, 36, 0 };
-		gbl_controlsPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0 };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		controlsPane.setLayout(gbl_controlsPane);
 
 		midiFileName = addMidiFileNameLabel(controlsPane, 1);
 		addLoadMidiFileControl(controlsPane, 0, midiFileName);
 		addMidiOutListControl(controlsPane, 2);
 		addPlaybackControls(controlsPane, 3);
 		addUIControls(controlsPane, 3);
+		GroupLayout gl_controlsPane = new GroupLayout(controlsPane);
+		gl_controlsPane.setHorizontalGroup(
+			gl_controlsPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_controlsPane.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_controlsPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(infoToggle, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+						.addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+						.addComponent(MidiOutList, 0, 210, Short.MAX_VALUE)
+						.addGroup(gl_controlsPane.createSequentialGroup()
+							.addComponent(lbStart, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+							.addGap(5)
+							.addComponent(lbGoBack, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+							.addGap(5)
+							.addComponent(lbPlayMidi, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+							.addGap(5)
+							.addComponent(lbGoForwards, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lbLoadMidi, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+						.addComponent(midiFileName_1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_controlsPane.setVerticalGroup(
+			gl_controlsPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_controlsPane.createSequentialGroup()
+					.addGap(20)
+					.addComponent(lbLoadMidi)
+					.addGap(10)
+					.addComponent(midiFileName_1)
+					.addGap(10)
+					.addComponent(MidiOutList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addGroup(gl_controlsPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lbStart, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbPlayMidi, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbGoBack, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbGoForwards, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+					.addGap(10)
+					.addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addComponent(infoToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(164))
+		);
+		controlsPane.setLayout(gl_controlsPane);
 
 	}
 
@@ -192,19 +233,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	}
 
 	private JLabel addMidiFileNameLabel(JPanel controlsPane, int gridy) {
-		JButton lbLoadMidi = new JButton("Load Midi File");
-		GridBagConstraints gbc_lbLoadMidi = new GridBagConstraints();
-		lbLoadMidi.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lbLoadMidi.setBackground(new Color(231, 76, 60));
-		lbLoadMidi.setForeground(Color.WHITE);
-		lbLoadMidi.setFocusable(false);
-		lbLoadMidi.setBorderPainted(false);
+		lbLoadMidi = new JButton("Load Midi File");
+		lbLoadMidi.setFont(new Font("Poppins", Font.PLAIN, 16));
 		lbLoadMidi.setToolTipText("Load MIDI File");
-		gbc_lbLoadMidi.gridwidth = 4;
-		gbc_lbLoadMidi.insets = new Insets(0, 0, 5, 0);
-		gbc_lbLoadMidi.gridx = 0;
-		gbc_lbLoadMidi.gridy = 1;
-		controlsPane.add(lbLoadMidi, gbc_lbLoadMidi);
 		lbLoadMidi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -220,32 +251,16 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 				}
 			}
 		});
-		JLabel midiFileName = new JLabel("");
-		GridBagConstraints gbc_lbMidiFileName = new GridBagConstraints();
-		gbc_lbMidiFileName.gridwidth = 4;
-		gbc_lbMidiFileName.insets = new Insets(0, 0, 5, 0);
-		gbc_lbMidiFileName.gridx = 0;
-		gbc_lbMidiFileName.gridy = 2;
-		midiFileName.setFont(SLIDING_PANEL_FONT);
-		midiFileName.setForeground(Color.WHITE);
-		controlsPane.add(midiFileName, gbc_lbMidiFileName);
-		return midiFileName;
+		midiFileName_1 = new JLabel("");
+		midiFileName_1.setFont(SLIDING_PANEL_FONT);
+		return midiFileName_1;
 	}
 
 	private int addMidiOutListControl(JPanel controlsPane, int gridy) {
 		MidiOutList = new JComboBox<Object>(pianoLED.getPianoController().getMidiOutDevices());
-		MidiOutList.setFont(new Font("Tahoma", Font.BOLD, 11));
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		MidiOutList.setBackground(new Color(255, 255, 255));
-		MidiOutList.setForeground(new Color(0, 0, 0));
-		MidiOutList.setFocusable(false);
+		MidiOutList.putClientProperty("JComponent.roundRect", true);
+		MidiOutList.setFont(new Font("Poppins", Font.PLAIN, 12));
 		MidiOutList.setToolTipText("MIDI Output Device");
-		gbc_comboBox.gridwidth = 4;
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 0;
-		gbc_comboBox.gridy = 3;
-		controlsPane.add(MidiOutList, gbc_comboBox);
 		MidiOutList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setMidiPlayerOutputDevice();
@@ -257,29 +272,10 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 	private int addUIControls(JPanel controlsPane, int gridy) {
 		gridToggle = new JCheckBox("Show Grid");
-		gridToggle.setBackground(SLIDING_PANEL_BG);
-		gridToggle.setForeground(Color.WHITE);
 		gridToggle.setFont(SLIDING_PANEL_FONT);
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridwidth = 4;
-		gbc.insets = new Insets(5, 5, 5, 0);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		controlsPane.add(gridToggle, gbc);
-
-		infoToggle = new JCheckBox("Tech Info");
-		GridBagConstraints gbc_InfoToggle = new GridBagConstraints();
-		infoToggle.setBackground(SLIDING_PANEL_BG);
-		infoToggle.setForeground(Color.WHITE);
+		infoToggle = new JCheckBox("Tech Info");;
 		infoToggle.setFont(SLIDING_PANEL_FONT);
-		gbc_InfoToggle.insets = new Insets(0, 0, 0, 5);
-		gbc_InfoToggle.gridwidth = 2;
-		gbc_InfoToggle.gridx = 0;
-		gbc_InfoToggle.gridy = 5;
-		controlsPane.add(infoToggle, gbc_InfoToggle);
-		gbc.gridy = gridy + 1;
 		return gridy;
 	}
 
@@ -313,19 +309,13 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	private void addPlaybackControls(JPanel controlsPane, int gridy) {
 		Font midiControlsFont = new Font("Symbola", Font.BOLD, 16);
 
-		JButton lbStart = new JButton("⏮");
-		GridBagConstraints gbc_lbStart = new GridBagConstraints();
+		lbStart = new JButton("⏮");
 		lbStart.setBackground(new Color(52, 152, 219));
 		lbStart.setForeground(Color.WHITE);
 		lbStart.setFocusable(false);
 		lbStart.setBorderPainted(false);
 		lbStart.setToolTipText("Restart Playback");
-		gbc_lbStart.anchor = GridBagConstraints.NORTH;
-		gbc_lbStart.insets = new Insets(0, 0, 5, 5);
-		gbc_lbStart.gridx = 0;
-		gbc_lbStart.gridy = 4;
-		lbStart.setFont(midiControlsFont);
-		controlsPane.add(lbStart, gbc_lbStart);
+		lbStart.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lbStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -333,38 +323,25 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 			}
 		});
 
-		JButton lbGoBack = new JButton("⏪");
-		GridBagConstraints gbc_lbGoBack = new GridBagConstraints();
+		lbGoBack = new JButton("⏪");
 		lbGoBack.setBackground(new Color(52, 152, 219));
 		lbGoBack.setForeground(Color.WHITE);
 		lbGoBack.setFocusable(false);
 		lbGoBack.setBorderPainted(false);
 		lbGoBack.setToolTipText("Previous");
-		gbc_lbGoBack.anchor = GridBagConstraints.NORTH;
-		gbc_lbGoBack.insets = new Insets(0, 0, 5, 5);
-		gbc_lbGoBack.gridx = 1;
-		gbc_lbGoBack.gridy = 4;
-		lbGoBack.setFont(midiControlsFont);
-		controlsPane.add(lbGoBack, gbc_lbGoBack);
+		lbGoBack.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lbGoBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				midiPlayer.rewind(-PLAYER_REWIND_SEC);
 			}
 		});
-
-		GridBagConstraints gbc_lbPlayMidi = new GridBagConstraints();
 		lbPlayMidi.setBackground(new Color(52, 152, 219));
 		lbPlayMidi.setForeground(Color.WHITE);
 		lbPlayMidi.setFocusable(false);
 		lbPlayMidi.setBorderPainted(false);
 		lbPlayMidi.setToolTipText("Play/Pause");
-		gbc_lbPlayMidi.anchor = GridBagConstraints.NORTH;
-		gbc_lbPlayMidi.insets = new Insets(0, 0, 5, 5);
-		gbc_lbPlayMidi.gridx = 2;
-		gbc_lbPlayMidi.gridy = 4;
-		lbPlayMidi.setFont(midiControlsFont);
-		controlsPane.add(lbPlayMidi, gbc_lbPlayMidi);
+		lbPlayMidi.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lbPlayMidi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -378,19 +355,13 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 
 		});
 
-		JButton lbGoForwards = new JButton("⏩");
-		GridBagConstraints gbc_lbGoForwards = new GridBagConstraints();
+		lbGoForwards = new JButton("⏩");
 		lbGoForwards.setBackground(new Color(52, 152, 219));
 		lbGoForwards.setForeground(Color.WHITE);
 		lbGoForwards.setFocusable(false);
 		lbGoForwards.setBorderPainted(false);
 		lbGoForwards.setToolTipText("Next");
-		gbc_lbGoForwards.anchor = GridBagConstraints.NORTH;
-		gbc_lbGoForwards.insets = new Insets(0, 0, 5, 0);
-		gbc_lbGoForwards.gridx = 3;
-		gbc_lbGoForwards.gridy = 4;
-		lbGoForwards.setFont(midiControlsFont);
-		controlsPane.add(lbGoForwards, gbc_lbGoForwards);
+		lbGoForwards.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lbGoForwards.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

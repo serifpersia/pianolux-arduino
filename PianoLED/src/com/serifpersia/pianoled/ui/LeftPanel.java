@@ -66,7 +66,9 @@ public class LeftPanel extends JPanel {
 		JButton button = new JButton(text);
 
 		button.setFont(new Font("Poppins", Font.PLAIN, 16));
-		button.setForeground(new Color(204, 204, 204));
+		button.setBackground(new Color(25,25,25));
+	
+
 		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
 		button.addMouseListener(new MouseAdapter() {

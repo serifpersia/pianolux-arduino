@@ -10,26 +10,24 @@ import java.awt.Font;
 
 import javax.sound.midi.MidiDevice;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoLED;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 
 @SuppressWarnings("serial")
-public class LivePlayPanel extends JPanel{
+public class LivePlayPanel extends JPanel {
 
 	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
-	private static final Color SLIDING_PANEL_BG = Color.BLACK;
 	private static final int REFRESH_RATE_MS = 16;
 	public static JComboBox<?> MidiOutList;
 //	private MidiRecorder midiRecorder;
@@ -38,10 +36,13 @@ public class LivePlayPanel extends JPanel{
 	private JCheckBox gridToggle;
 	private PianoLED pianoLED;
 	private JCheckBox infoToggle;
+	private JCheckBox customColor_Toggle;
+	private JPanel controlsPane_1;
 
 	public LivePlayPanel(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
-		setBackground(SLIDING_PANEL_BG);
+		setBackground(Color.BLACK);
+		
 		setLayout(new BorderLayout(0, 0));
 		liveRoll = new LiveRoll(pianoLED, this);
 		add(liveRoll);
@@ -61,10 +62,9 @@ public class LivePlayPanel extends JPanel{
 //		midiRecorder = new MidiRecorder(midiInDevice);
 //		midiRecorder.addConsumer(LivePlayPanel.this);
 		liveRoll.start();
- 	}
+	}
 
 	private void addSlidingControlPanel() {
-		slideControlsPane.setBackground(new Color(231, 76, 60));
 		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
 		slideControlsPane.setLayout(new BorderLayout(0, 0));
@@ -120,54 +120,53 @@ public class LivePlayPanel extends JPanel{
 
 		JLabel lbControls = new JLabel("Controls");
 		lbControls.setHorizontalAlignment(SwingConstants.CENTER);
-		lbControls.setForeground(Color.WHITE);
-		lbControls.setFont(new Font("Tahoma", Font.BOLD, 40));
+		lbControls.setFont(new Font("Poppins", Font.PLAIN, 35));
 		slideControlsPane.add(lbControls, BorderLayout.NORTH);
 
-		JPanel controlsPane = new JPanel();
-		controlsPane.setBackground(SLIDING_PANEL_BG);
-		slideControlsPane.add(controlsPane, BorderLayout.EAST);
-		GridBagLayout gbl_controlsPane = new GridBagLayout();
-		gbl_controlsPane.columnWidths = new int[] { 170 };
-		gbl_controlsPane.rowHeights = new int[] { 77, -18, -33, 0 };
-		gbl_controlsPane.columnWeights = new double[] { 1.0 };
-		gbl_controlsPane.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		controlsPane.setLayout(gbl_controlsPane);
+		controlsPane_1 = new JPanel();
+		slideControlsPane.add(controlsPane_1, BorderLayout.EAST);
 
-		addUIControls(controlsPane, 3);
+		addUIControls(controlsPane_1, 3);
+		GroupLayout gl_controlsPane_1 = new GroupLayout(controlsPane_1);
+		gl_controlsPane_1.setHorizontalGroup(
+			gl_controlsPane_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_controlsPane_1.createSequentialGroup()
+					.addGap(10)
+					.addGroup(gl_controlsPane_1.createParallelGroup(Alignment.TRAILING)
+						.addComponent(gridToggle, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+						.addComponent(customColor_Toggle, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 164, Short.MAX_VALUE))
+					.addGap(10))
+		);
+		gl_controlsPane_1.setVerticalGroup(
+			gl_controlsPane_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_controlsPane_1.createSequentialGroup()
+					.addGap(20)
+					.addComponent(customColor_Toggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(157))
+		);
+		controlsPane_1.setLayout(gl_controlsPane_1);
 
 	}
 
 	private int addUIControls(JPanel controlsPane, int gridy) {
+
+		customColor_Toggle = new JCheckBox("Use CustomColor");
+		customColor_Toggle.setFont(new Font("Poppins", Font.PLAIN, 16));
+
 		gridToggle = new JCheckBox("Show Grid");
-		gridToggle.setHorizontalAlignment(SwingConstants.CENTER);
-		gridToggle.setBackground(SLIDING_PANEL_BG);
-		gridToggle.setForeground(Color.WHITE);
-		gridToggle.setFont(SLIDING_PANEL_FONT);
-		
-				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.insets = new Insets(5, 5, 5, 0);
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.gridx = 0;
-				gbc.gridy = 1;
-				controlsPane.add(gridToggle, gbc);
-				gbc.gridy = gridy + 1;
+		gridToggle.setFont(new Font("Poppins", Font.PLAIN, 16));
 
 		infoToggle = new JCheckBox("Tech Info");
 		infoToggle.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_InfoToggle = new GridBagConstraints();
-		infoToggle.setBackground(SLIDING_PANEL_BG);
-		infoToggle.setForeground(Color.WHITE);
 		infoToggle.setFont(SLIDING_PANEL_FONT);
 		gbc_InfoToggle.gridx = 0;
-		gbc_InfoToggle.gridy = 2;
-		controlsPane.add(infoToggle, gbc_InfoToggle);
+		gbc_InfoToggle.gridy = 3;
+		// controlsPane.add(infoToggle, gbc_InfoToggle);
 		return gridy;
 	}
-
-
-
-
 
 	public boolean drawLines() {
 
@@ -182,6 +181,11 @@ public class LivePlayPanel extends JPanel{
 	public boolean isShowInfoSelected() {
 
 		return infoToggle.isSelected();
+	}
+
+	public boolean isCustomColorSelected() {
+
+		return customColor_Toggle.isSelected();
 	}
 
 }

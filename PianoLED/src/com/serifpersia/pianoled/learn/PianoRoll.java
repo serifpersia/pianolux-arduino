@@ -87,8 +87,6 @@ public class PianoRoll extends JPanel {
 	}
 
 	public void drawPianoRoll(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, getWidth(), getHeight());
 
 		if (learnPanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);

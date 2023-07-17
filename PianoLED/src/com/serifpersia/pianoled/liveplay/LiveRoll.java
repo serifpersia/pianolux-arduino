@@ -7,15 +7,17 @@ import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
+import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.ui.DrawPiano;
+import com.serifpersia.pianoled.ui.GetUI;
 
 @SuppressWarnings("serial")
 public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 2;
-	private static final Color NOTE_COLOR = new Color(145, 225, 66);
+	private Color NOTE_COLOR = new Color(145, 225, 66);
 	private DrawPiano piano;
 	private LivePlayPanel livePanel;
 
@@ -84,6 +86,11 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		int y = (int) getTickY(noteElapsedTime);
 		int h = note.getEnd() == -1 ? getHeight() * 1000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
 
+		if (livePanel.isCustomColorSelected()) {
+			NOTE_COLOR = GetUI.selectedColor;
+		} else {
+			NOTE_COLOR = new Color(145, 225, 66);
+		}
 		// Draw the note rectangle
 		if (piano.isBlackKey(note.getPitch())) {
 			g.setColor(NOTE_COLOR);
@@ -94,7 +101,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		g.fillRoundRect(x, y, w, h, 5, 5);
 
 		g.setColor(Color.RED);
-	//	g.drawRoundRect(x, y - h, w, h, 5, 5);
+		// g.drawRoundRect(x, y - h, w, h, 5, 5);
 
 		if (livePanel.isShowInfoSelected()) {
 			drawText(g, x, y - 25, "" + note.getPitch());
@@ -120,8 +127,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	public void drawPianoRoll(Graphics g, long currentTime) {
 
 		g.setColor(Color.BLACK);
-		// g.setColor(Color.BLUE); // debug color to differentiate liveplay from learn
-		g.fillRect(0, 0, getWidth(), getHeight());
+	//	g.fillRect(0, 0, getWidth(), getHeight());
 
 		if (livePanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);

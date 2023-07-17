@@ -17,6 +17,7 @@ import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.learn.PianoReceiver;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
+import com.serifpersia.pianoled.ui.pnl_Controls;
 import com.serifpersia.pianoled.ui.pnl_Gradient;
 
 import jssc.SerialPortException;
@@ -54,7 +55,7 @@ public class PianoController implements PianoMidiConsumer {
 	private List<PianoMidiConsumer> sequenceConsumers = new LinkedList<>();
 
 	private PianoReceiver pianoReceiver;
-	
+
 	private MidiDevice device = null;
 
 	public PianoController(PianoLED pianoLED) {
@@ -214,20 +215,18 @@ public class PianoController implements PianoMidiConsumer {
 			device = MidiSystem.getMidiDevice(deviceInfo);
 			device.open();
 			pianoReceiver = new PianoReceiver();
-			sequenceConsumers.forEach(pianoReceiver::addConsumer); 
+			sequenceConsumers.forEach(pianoReceiver::addConsumer);
 			device.getTransmitter().setReceiver(pianoReceiver);
 		} catch (MidiUnavailableException ex) {
 			System.err.println("Error opening MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}
 	}
-	
-	public void addPianoReceiverConsumer(PianoMidiConsumer consumer)
-	{
+
+	public void addPianoReceiverConsumer(PianoMidiConsumer consumer) {
 		sequenceConsumers.add(consumer);
 	}
-	
-	public MidiDevice getMidiDevice()
-	{
+
+	public MidiDevice getMidiDevice() {
 		return device;
 	}
 
@@ -312,13 +311,13 @@ public class PianoController implements PianoMidiConsumer {
 					int numSteps = GetUI.getStripLedNum();
 					int step = notePushed;
 
-					Color currentColor = null;
-
 					int sideCount = ModesController.getGradientSideCount();
 					int segmentSize = numSteps / sideCount;
 					int segmentIndex = step / segmentSize;
 
 					double progress = (double) (step % segmentSize) / segmentSize;
+
+					Color currentColor = null;
 
 					int r, g, b;
 
