@@ -152,7 +152,7 @@ public class LivePlayPanel extends JPanel {
 
 	private int addUIControls(JPanel controlsPane, int gridy) {
 
-		customColor_Toggle = new JCheckBox("Use CustomColor");
+		customColor_Toggle = new JCheckBox("Use Custom Color");
 		customColor_Toggle.setFont(new Font("Poppins", Font.PLAIN, 16));
 
 		gridToggle = new JCheckBox("Show Grid");
