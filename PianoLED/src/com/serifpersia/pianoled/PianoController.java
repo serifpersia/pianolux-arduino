@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.sound.midi.MidiDevice;
@@ -50,11 +51,15 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	private List<PianoMidiConsumer> consumers = new ArrayList<>();
+	private List<PianoMidiConsumer> sequenceConsumers = new LinkedList<>();
 
 	private PianoReceiver pianoReceiver;
+	
+	private MidiDevice device = null;
 
 	public PianoController(PianoLED pianoLED) {
 		this.pianoLED = pianoLED;
+		sequenceConsumers.add(this);
 	}
 
 	public void addPianoMidiConsumer(PianoMidiConsumer consumer) {
@@ -205,16 +210,25 @@ public class PianoController implements PianoMidiConsumer {
 
 	public void openMidi() {
 		Info deviceInfo = (Info) DashboardPanel.cbMidiDevices.getSelectedItem();
-		MidiDevice device = null;
 		try {
 			device = MidiSystem.getMidiDevice(deviceInfo);
 			device.open();
 			pianoReceiver = new PianoReceiver();
-			pianoReceiver.addConsumer(this);
+			sequenceConsumers.forEach(pianoReceiver::addConsumer); 
 			device.getTransmitter().setReceiver(pianoReceiver);
 		} catch (MidiUnavailableException ex) {
 			System.err.println("Error opening MIDI device " + deviceInfo + ": " + ex.getMessage());
 		}
+	}
+	
+	public void addPianoReceiverConsumer(PianoMidiConsumer consumer)
+	{
+		sequenceConsumers.add(consumer);
+	}
+	
+	public MidiDevice getMidiDevice()
+	{
+		return device;
 	}
 
 	public void closeMidi() {
