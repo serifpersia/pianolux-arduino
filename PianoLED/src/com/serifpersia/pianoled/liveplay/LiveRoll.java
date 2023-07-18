@@ -16,7 +16,7 @@ import com.serifpersia.pianoled.ui.GetUI;
 @SuppressWarnings("serial")
 public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
-	public static final int PIANO_ROLL_HEIGHT_IN_SEC = 2;
+	public static int PIANO_ROLL_HEIGHT_IN_SEC = 2;
 	private Color NOTE_COLOR = new Color(145, 225, 66);
 	private DrawPiano piano;
 	private LivePlayPanel livePanel;
@@ -127,7 +127,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	public void drawPianoRoll(Graphics g, long currentTime) {
 
 		g.setColor(Color.BLACK);
-	//	g.fillRect(0, 0, getWidth(), getHeight());
+		// g.fillRect(0, 0, getWidth(), getHeight());
 
 		if (livePanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);

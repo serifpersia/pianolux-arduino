@@ -1,10 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PianoLED</groupId>
 	<artifactId>PianoLED</artifactId>
-	<version>4.2.4</version>
+	<version>4.2.5</version>
 	<properties>
 		<main.class>com.serifpersia.pianoled.PianoLED</main.class>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +16,6 @@
 
 	<description>PianoLED Application</description>
 	<inceptionYear>2022</inceptionYear>
-
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -159,6 +156,11 @@
 			<groupId>io.github.java-native</groupId>
 			<artifactId>jssc</artifactId>
 			<version>2.9.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sarxos</groupId>
+			<artifactId>webcam-capture</artifactId>
+			<version>0.3.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
