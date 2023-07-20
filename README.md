@@ -12,7 +12,7 @@ This app is a simple Java based GUI that controls  LED strip using an Arduino. T
 LED strip support:
 Any 5V addressable strip supported by FastLED library for Arduino 72 and 144 density/m 
 
-Exampeles:
+Example:
 
 5v Adressable LED strips
 
