@@ -44,7 +44,7 @@ public class DrawPiano extends JPanel {
 
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setFont(new Font("Arial", Font.PLAIN, 10));
+		g.setFont(new Font("Poppins", Font.PLAIN, 10));
 
 		int currentX = getStartX();
 

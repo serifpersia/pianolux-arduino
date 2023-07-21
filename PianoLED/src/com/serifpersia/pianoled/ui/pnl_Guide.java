@@ -350,7 +350,7 @@ public class pnl_Guide extends JPanel {
 	private JButton createBlackButton(String buttonText, int buttonIndex) {
 		JButton button = new JButton(buttonText);
 		button.setBackground(Color.BLACK);
-		button.setFont(new Font("Tahoma", Font.BOLD, 0));
+		button.setFont(new Font("Poppins", Font.BOLD, 0));
 		button.setFocusable(false);
 		button.setBorderPainted(false);
 

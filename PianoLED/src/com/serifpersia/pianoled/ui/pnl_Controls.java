@@ -207,14 +207,14 @@ public class pnl_Controls extends JPanel {
 
 		JLabel lblNewLabel_1_1_1_1_1_2_1_1 = new JLabel("Reverse LED");
 		lblNewLabel_1_1_1_1_1_2_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_1_1.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel_1_1_1_1_1_2_1_1.setFont(new Font("Poppins", Font.PLAIN, 20));
 		panel_3.add(lblNewLabel_1_1_1_1_1_2_1_1);
 
 		panel_3.add(reverseToggle);
 
 		JLabel lblNewLabel_1_1_1_1_1_2_4_1 = new JLabel("Guide LED");
 		lblNewLabel_1_1_1_1_1_2_4_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_4_1.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel_1_1_1_1_1_2_4_1.setFont(new Font("Poppins", Font.PLAIN, 20));
 		panel_3.add(lblNewLabel_1_1_1_1_1_2_4_1);
 
 		panel_3.add(guideToggle);
@@ -222,14 +222,14 @@ public class pnl_Controls extends JPanel {
 
 		JLabel lblNewLabel_1_1_1_1_1_2_1 = new JLabel("Fix LED");
 		lblNewLabel_1_1_1_1_1_2_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_1.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel_1_1_1_1_1_2_1.setFont(new Font("Poppins", Font.PLAIN, 20));
 		modifiers_Panel.add(lblNewLabel_1_1_1_1_1_2_1);
 
 		modifiers_Panel.add(fixToggle);
 
 		JLabel lblNewLabel_1_1_1_1_1_2_4 = new JLabel("BG LED");
 		lblNewLabel_1_1_1_1_1_2_4.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_4.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel_1_1_1_1_1_2_4.setFont(new Font("Poppins", Font.PLAIN, 20));
 		modifiers_Panel.add(lblNewLabel_1_1_1_1_1_2_4);
 
 		modifiers_Panel.add(bgToggle);

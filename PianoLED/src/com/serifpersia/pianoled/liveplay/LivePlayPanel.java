@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -12,7 +11,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
@@ -20,7 +18,6 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.serifpersia.pianoled.PianoLED;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
@@ -42,8 +39,6 @@ public class LivePlayPanel extends JPanel {
 
 	private LiveRoll liveRoll;
 	private JPanel slideControlsPane = new JPanel();
-	private PianoLED pianoLED;
-
 	private JLabel lb_Controls;
 	private JCheckBox gridToggle;
 	private JCheckBox infoToggle = new JCheckBox("Tech Info");
@@ -68,7 +63,6 @@ public class LivePlayPanel extends JPanel {
 	private Webcam webcam;
 
 	public LivePlayPanel(PianoLED pianoLED) {
-		this.pianoLED = pianoLED;
 		setBackground(Color.BLACK);
 
 		setLayout(new BorderLayout(0, 0));
@@ -90,7 +84,6 @@ public class LivePlayPanel extends JPanel {
 	}
 
 	private void addSlidingControlPanel() {
-		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
 
 		lb_Controls = new JLabel("Controls");
@@ -197,15 +190,12 @@ public class LivePlayPanel extends JPanel {
 			public void mouseMoved(MouseEvent e) {
 				int x = e.getX();
 				int width = getWidth();
-				if (width - x <= 205) {
+				if (width - x <= 200) {
 					// Mouse is near the right border of LearnPanel
 					slideControlsPane.setVisible(true);
-				} else if (x <= 100) {
-					pianoLED.leftPanel.setVisible(true);
 				} else {
 					// Mouse is not near the right border of LearnPanel
 					slideControlsPane.setVisible(false);
-					pianoLED.leftPanel.setVisible(false);
 				}
 			}
 		});
@@ -219,24 +209,6 @@ public class LivePlayPanel extends JPanel {
 				if (x <= 0 || x >= width || e.getY() <= 0 || e.getY() >= slideControlsPane.getHeight()) {
 					// Mouse is out of slideControlsPane
 					slideControlsPane.setVisible(false);
-				}
-			}
-		});
-
-		// Add hotkey to toggle visibility of slideControlsPane
-		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK),
-				"toggleControls");
-		getActionMap().put("toggleControls", new AbstractAction() {
-			boolean controlsVisible = false;
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controlsVisible = !controlsVisible;
-				slideControlsPane.setVisible(controlsVisible);
-				if (controlsVisible) {
-					System.out.println("Ctrl+C(Controls_Visible)");
-				} else {
-					System.out.println("Ctrl+C(Controls_Hidden)");
 				}
 			}
 		});

@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
@@ -18,8 +16,8 @@ import javax.swing.UIManager;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.serifpersia.pianoled.ui.BottomPanel;
 import com.serifpersia.pianoled.ui.DrawPiano;
-import com.serifpersia.pianoled.ui.LeftPanel;
 import com.serifpersia.pianoled.ui.RightPanel;
+import com.serifpersia.pianoled.ui.TopPanel;
 
 @SuppressWarnings("serial")
 public class PianoLED extends JFrame {
@@ -27,7 +25,7 @@ public class PianoLED extends JFrame {
 	private PianoController pianoController = new PianoController(this);
 	private BottomPanel bottomPanel = new BottomPanel(this);
 	private RightPanel rightPanel = new RightPanel(this);
-	public LeftPanel leftPanel = new LeftPanel(rightPanel);
+	public TopPanel topPanel = new TopPanel(rightPanel);
 
 	static Updater updator = new Updater();
 
@@ -54,7 +52,7 @@ public class PianoLED extends JFrame {
 	}
 
 	private void init() {
-		setSize(1004, 604);
+		setSize(1004, 640);
 		setLocationRelativeTo(null);
 		// setResizable(false);
 		setTitle("PianoLED " + updator.VersionTag);
@@ -93,21 +91,8 @@ public class PianoLED extends JFrame {
 
 		setVisible(true);
 
-		leftPanel.setVisible(false);
-		rightPanelWrapper.add(leftPanel, BorderLayout.WEST);
+		add(topPanel, BorderLayout.NORTH);
 
-		// Add mouse listeners to slideControlsPane and LearnPanel
-		addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				int x = e.getX();
-				if (x <= 35) {
-					leftPanel.setVisible(true);
-				} else {
-					leftPanel.setVisible(false);
-				}
-			}
-		});
 	}
 
 	public PianoController getPianoController() {

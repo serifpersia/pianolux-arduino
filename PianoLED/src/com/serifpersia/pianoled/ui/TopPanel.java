@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class LeftPanel extends JPanel {
+public class TopPanel extends JPanel {
 
 	private RightPanel rightPanel;
 	private JButton dashboardButton;
@@ -29,11 +29,11 @@ public class LeftPanel extends JPanel {
 
 	public static boolean learnOn = false;
 
-	public LeftPanel(RightPanel rightPanel) {
+	public TopPanel(RightPanel rightPanel) {
 		this.rightPanel = rightPanel;
 
-		setPreferredSize(new Dimension(100, getHeight()));
-		setLayout(new GridLayout(5, 1));
+		setPreferredSize(new Dimension(getWidth(), 35));
+		setLayout(new GridLayout(1, 5));
 		JButton AboutButton = createButton("", "");
 		dashboardButton = createButton("", "Dashboard");
 		JButton controlsButton = createButton("Controls", "Controls");
@@ -43,12 +43,12 @@ public class LeftPanel extends JPanel {
 		learnButton = createButton("Learn", "Learn");
 
 		dashboardIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/home.png")).getImage()
-				.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+				.getScaledInstance(35, 35, Image.SCALE_SMOOTH));
 
 		dashboardButton.setIcon(dashboardIcon);
 
 		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
-				.getScaledInstance(75, 75, Image.SCALE_SMOOTH));
+				.getScaledInstance(35, 35, Image.SCALE_SMOOTH));
 
 		AboutButton.setIcon(pianoLEDIcon);
 
@@ -65,11 +65,10 @@ public class LeftPanel extends JPanel {
 	private JButton createButton(String text, String cardName) {
 		JButton button = new JButton(text);
 
-		button.setFont(new Font("Poppins", Font.PLAIN, 16));
-		button.setBackground(new Color(25,25,25));
-	
+		button.setFont(new Font("Poppins", Font.PLAIN, 21));
+		button.setBackground(new Color(25, 25, 25));
 
-		button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
 		button.addMouseListener(new MouseAdapter() {
 

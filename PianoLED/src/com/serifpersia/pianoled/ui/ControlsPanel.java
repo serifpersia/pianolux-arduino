@@ -60,12 +60,6 @@ public class ControlsPanel extends JPanel {
 		pnl_Left.add(GradientPanel, "Gradient");
 		pnl_Left.add(pnl_Guide, "GuideControls");
 
-		JLabel lblNewLabel = new JLabel("Controls");
-		lblNewLabel.setForeground(new Color(204, 204, 204));
-		lblNewLabel.setFont(new Font("Poppins", Font.PLAIN, 30));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblNewLabel, BorderLayout.NORTH);
-
 		JPanel innerPanel = new JPanel();
 		innerPanel.setBackground(new Color(25, 25, 25));
 		add(innerPanel, BorderLayout.CENTER);

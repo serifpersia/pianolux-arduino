@@ -52,7 +52,7 @@ public class AboutPianoLED extends JPanel {
 		JLabel exitX = new JLabel("X");
 		exitX.setHorizontalAlignment(SwingConstants.RIGHT);
 		exitX.setForeground(new Color(255, 255, 255));
-		exitX.setFont(new Font("Tahoma", Font.BOLD, 25));
+		exitX.setFont(new Font("Poppins", Font.BOLD, 25));
 		exitX.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Add an empty border on the right side
 		buttonPane.add(exitX);
 		exitX.addMouseListener(new MouseAdapter() {
@@ -75,7 +75,7 @@ public class AboutPianoLED extends JPanel {
 		JLabel lbPianoLED = new JLabel("PianoLED");
 		lbPianoLED.setHorizontalAlignment(SwingConstants.CENTER);
 		lbPianoLED.setForeground(new Color(255, 255, 255));
-		lbPianoLED.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lbPianoLED.setFont(new Font("Poppins", Font.BOLD, 30));
 		GridBagConstraints gbc_lbPianoLED = new GridBagConstraints();
 		gbc_lbPianoLED.insets = new Insets(0, 0, 5, 0);
 		gbc_lbPianoLED.gridx = 0;
@@ -83,7 +83,7 @@ public class AboutPianoLED extends JPanel {
 		add(lbPianoLED, gbc_lbPianoLED);
 
 		JLabel lbPianoLEDVersion = new JLabel("Version " + updator.VersionTag);
-		lbPianoLEDVersion.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbPianoLEDVersion.setFont(new Font("Poppins", Font.BOLD, 18));
 		lbPianoLEDVersion.setForeground(new Color(255, 255, 255));
 		GridBagConstraints gbc_lbPianoLEDVersion = new GridBagConstraints();
 		gbc_lbPianoLEDVersion.insets = new Insets(0, 0, 5, 0);
@@ -93,7 +93,7 @@ public class AboutPianoLED extends JPanel {
 
 		JLabel lbCopyright = new JLabel("Copyright © 2023 serifpersia");
 		lbCopyright.setForeground(Color.WHITE);
-		lbCopyright.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbCopyright.setFont(new Font("Poppins", Font.BOLD, 18));
 		GridBagConstraints gbc_lbCopyright = new GridBagConstraints();
 		gbc_lbCopyright.gridx = 0;
 		gbc_lbCopyright.gridy = 4;

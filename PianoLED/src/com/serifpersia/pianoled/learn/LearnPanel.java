@@ -21,11 +21,8 @@ import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.ui.DrawPiano;
-import com.serifpersia.pianoled.ui.LeftPanel;
+import com.serifpersia.pianoled.ui.TopPanel;
 
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -41,14 +38,13 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 @SuppressWarnings("serial")
 public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiConsumer {
 
 	private static final String DEFAULT_MIDI_RESOURCE = "/midi/clair_de_lune.mid";
 	private static final int PLAYER_REWIND_SEC = 5;
-	private static final Font SLIDING_PANEL_FONT = new Font("Tahoma", Font.BOLD, 16);
+	private static final Font SLIDING_PANEL_FONT = new Font("Poppins", Font.PLAIN, 16);
 	private static final int REFRESH_RATE_MS = 16;
 	public static JComboBox<?> MidiOutList;
 	private MidiPlayer midiPlayer;
@@ -113,7 +109,6 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	}
 
 	private void addSlidingControlPanel() {
-		slideControlsPane.setVisible(false);
 		add(slideControlsPane, BorderLayout.EAST);
 		slideControlsPane.setLayout(new BorderLayout(0, 0));
 		// Add mouse listener to slideControlsPane
@@ -125,12 +120,9 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 				if (width - x <= 205) {
 					// Mouse is near the right border of LearnPanel
 					slideControlsPane.setVisible(true);
-				} else if (x <= 100) {
-					pianoLED.leftPanel.setVisible(true);
 				} else {
 					// Mouse is not near the right border of LearnPanel
 					slideControlsPane.setVisible(false);
-					pianoLED.leftPanel.setVisible(false);
 				}
 			}
 		});
@@ -180,47 +172,37 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		addPlaybackControls(controlsPane, 3);
 		addUIControls(controlsPane, 3);
 		GroupLayout gl_controlsPane = new GroupLayout(controlsPane);
-		gl_controlsPane.setHorizontalGroup(
-			gl_controlsPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_controlsPane.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_controlsPane.createParallelGroup(Alignment.LEADING)
+		gl_controlsPane.setHorizontalGroup(gl_controlsPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_controlsPane.createSequentialGroup().addContainerGap().addGroup(gl_controlsPane
+						.createParallelGroup(Alignment.LEADING)
 						.addComponent(infoToggle, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
 						.addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
 						.addComponent(MidiOutList, 0, 210, Short.MAX_VALUE)
 						.addGroup(gl_controlsPane.createSequentialGroup()
-							.addComponent(lbStart, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-							.addGap(5)
-							.addComponent(lbGoBack, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-							.addGap(5)
-							.addComponent(lbPlayMidi, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-							.addGap(5)
-							.addComponent(lbGoForwards, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lbStart, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+								.addGap(5)
+								.addComponent(lbGoBack, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+								.addGap(5)
+								.addComponent(lbPlayMidi, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+								.addGap(5)
+								.addComponent(lbGoForwards, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
 						.addComponent(lbLoadMidi, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
 						.addComponent(midiFileName_1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		gl_controlsPane.setVerticalGroup(
-			gl_controlsPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_controlsPane.createSequentialGroup()
-					.addGap(20)
-					.addComponent(lbLoadMidi)
-					.addGap(10)
-					.addComponent(midiFileName_1)
-					.addGap(10)
-					.addComponent(MidiOutList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addGroup(gl_controlsPane.createParallelGroup(Alignment.BASELINE)
+						.addContainerGap()));
+		gl_controlsPane.setVerticalGroup(gl_controlsPane.createParallelGroup(Alignment.LEADING).addGroup(gl_controlsPane
+				.createSequentialGroup().addGap(20).addComponent(lbLoadMidi).addGap(10).addComponent(midiFileName_1)
+				.addGap(10)
+				.addComponent(
+						MidiOutList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGap(10)
+				.addGroup(gl_controlsPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lbStart, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lbPlayMidi, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lbGoBack, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lbGoForwards, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addGap(10)
-					.addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(infoToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addGap(164))
-		);
+				.addGap(10).addComponent(gridToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+				.addGap(10).addComponent(infoToggle, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+				.addGap(164)));
 		controlsPane.setLayout(gl_controlsPane);
 
 	}
@@ -274,7 +256,8 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		gridToggle = new JCheckBox("Show Grid");
 		gridToggle.setFont(SLIDING_PANEL_FONT);
 
-		infoToggle = new JCheckBox("Tech Info");;
+		infoToggle = new JCheckBox("Tech Info");
+		;
 		infoToggle.setFont(SLIDING_PANEL_FONT);
 		return gridy;
 	}
@@ -307,7 +290,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	}
 
 	private void addPlaybackControls(JPanel controlsPane, int gridy) {
-		Font midiControlsFont = new Font("Symbola", Font.BOLD, 16);
+		Font midiControlsFont = new Font("Poppins", Font.PLAIN, 16);
 
 		lbStart = new JButton("⏮");
 		lbStart.setBackground(new Color(52, 152, 219));
@@ -315,7 +298,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbStart.setFocusable(false);
 		lbStart.setBorderPainted(false);
 		lbStart.setToolTipText("Restart Playback");
-		lbStart.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lbStart.setFont(new Font("Poppins", Font.PLAIN, 14));
 		lbStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -329,7 +312,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbGoBack.setFocusable(false);
 		lbGoBack.setBorderPainted(false);
 		lbGoBack.setToolTipText("Previous");
-		lbGoBack.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lbGoBack.setFont(new Font("Poppins", Font.PLAIN, 14));
 		lbGoBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -341,7 +324,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbPlayMidi.setFocusable(false);
 		lbPlayMidi.setBorderPainted(false);
 		lbPlayMidi.setToolTipText("Play/Pause");
-		lbPlayMidi.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lbPlayMidi.setFont(new Font("Poppins", Font.PLAIN, 14));
 		lbPlayMidi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -361,7 +344,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbGoForwards.setFocusable(false);
 		lbGoForwards.setBorderPainted(false);
 		lbGoForwards.setToolTipText("Next");
-		lbGoForwards.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lbGoForwards.setFont(new Font("Poppins", Font.PLAIN, 14));
 		lbGoForwards.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -411,7 +394,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	@Override
 	public void onPianoKeyOn(int pitch, int velocity) {
 		// catching commands
-		if (commandKeys.containsKey(pitch) && LeftPanel.learnOn) {
+		if (commandKeys.containsKey(pitch) && TopPanel.learnOn) {
 //			if (System.currentTimeMillis() - commandKey1Arrived < COMMAND_MAX_SPAN_MS) {
 			switch (commandKeys.get(pitch)) {
 			case "Back":

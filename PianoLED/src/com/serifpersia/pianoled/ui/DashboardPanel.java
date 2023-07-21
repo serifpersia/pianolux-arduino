@@ -61,12 +61,6 @@ public class DashboardPanel extends JPanel {
 		DefaultComboBoxModel<Info> defaultMidiDevices = new DefaultComboBoxModel<>(
 				midiDevices.toArray(new Info[midiDevices.size()]));
 
-		JLabel lblNewLabel = new JLabel("Dashboard");
-		lblNewLabel.setForeground(new Color(204, 204, 204));
-		lblNewLabel.setFont(new Font("Poppins", Font.PLAIN, 30));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblNewLabel, BorderLayout.NORTH);
-
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(25, 25, 25));
 		add(panel, BorderLayout.CENTER);
@@ -136,41 +130,45 @@ public class DashboardPanel extends JPanel {
 		btnRefresh.setFocusable(false);
 
 		GroupLayout gl_pnl_MainControls = new GroupLayout(pnl_MainControls);
-		gl_pnl_MainControls.setHorizontalGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnl_MainControls.createSequentialGroup().addGap(20).addGroup(gl_pnl_MainControls
-						.createParallelGroup(Alignment.LEADING)
+		gl_pnl_MainControls.setHorizontalGroup(
+			gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnl_MainControls.createSequentialGroup()
+					.addGap(20)
+					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_pnl_MainControls.createSequentialGroup()
-								.addComponent(btnUpdate, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(btnOpen, GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE).addGap(10)
-								.addComponent(btnRefresh, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
-						.addGroup(gl_pnl_MainControls.createSequentialGroup().addComponent(lb_Serial)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(cbSerialDevices, 0, 207, Short.MAX_VALUE))
+							.addComponent(btnUpdate, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnOpen, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+							.addGap(10)
+							.addComponent(btnRefresh, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
 						.addGroup(gl_pnl_MainControls.createSequentialGroup()
-								.addComponent(lb_Midi, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(cbMidiDevices, 0, 207, Short.MAX_VALUE)))
-						.addGap(4)));
-		gl_pnl_MainControls.setVerticalGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnl_MainControls.createSequentialGroup().addGap(5)
-						.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-								.addComponent(cbSerialDevices, GroupLayout.PREFERRED_SIZE, 35,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lb_Serial, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-						.addGap(10)
-						.addGroup(
-								gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-										.addComponent(lb_Midi, GroupLayout.PREFERRED_SIZE, 35,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(cbMidiDevices, GroupLayout.PREFERRED_SIZE, 35,
-												GroupLayout.PREFERRED_SIZE))
-						.addGap(10)
-						.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnOpen, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(39, Short.MAX_VALUE)));
+							.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(lb_Serial, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lb_Midi, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.TRAILING)
+								.addComponent(cbSerialDevices, 0, 224, Short.MAX_VALUE)
+								.addComponent(cbMidiDevices, 0, 224, Short.MAX_VALUE))))
+					.addContainerGap())
+		);
+		gl_pnl_MainControls.setVerticalGroup(
+			gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnl_MainControls.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
+						.addComponent(cbSerialDevices, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lb_Serial, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+					.addGap(10)
+					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
+						.addComponent(lb_Midi, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbMidiDevices, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+					.addGap(10)
+					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnOpen, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(91, Short.MAX_VALUE))
+		);
 		pnl_MainControls.setLayout(gl_pnl_MainControls);
 
 		JPanel panel_4 = new JPanel();

@@ -7,7 +7,6 @@ import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
-import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.ui.DrawPiano;
