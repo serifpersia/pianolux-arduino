@@ -1,6 +1,8 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/9be23577-c90b-41eb-a175-f5083e14973c)
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/ffffe61c-d70d-4708-968f-761790cbfe5b)
+
+
 
 
 
@@ -10,7 +12,7 @@ This app is a simple Java based GUI that controls  LED strip using an Arduino. T
 LED strip support:
 Any 5V addressable strip supported by FastLED library for Arduino 72 and 144 density/m 
 
-Exampeles:
+Example:
 
 5v Adressable LED strips
 
