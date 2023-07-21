@@ -14,196 +14,212 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ColorPickerPanel extends JPanel {
 
-	private float hue = 0f;
-	private float saturation = 1f;
-	private float brightness = 1f;
+    private float hue = 0f;
+    private float saturation = 1f;
+    private float brightness = 1f;
 
-	private BufferedImage colorPanel;
-	private BufferedImage huePanel;
+    private BufferedImage colorPanel;
+    private BufferedImage huePanel;
 
-	private int hueRectWidth; // Width of the hue panel rectangle
-	private int hueRectHeight; // Height of the hue panel rectangle
+    private int hueRectWidth; // Width of the hue panel rectangle
+    private int hueRectHeight; // Height of the hue panel rectangle
 
-	private int HuerectX;
-	private int HuerectY;
-	private int ColorrectX;
-	private int ColorrectY;
+    private int HuerectX;
+    private int HuerectY;
+    private int ColorrectX;
+    private int ColorrectY;
 
-	public ColorPickerPanel() {
-		setBackground(new Color(51, 51, 51));
+    public ColorPickerPanel() {
+        setBackground(new Color(51, 51, 51));
 
-		MouseAdapter mouseAdapter = new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                handleDrag(e.getX(), e.getY());
+            }
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				handleClick(e.getX(), e.getY());
-			}
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                handleDrag(e.getX(), e.getY());
+            }
+        };
 
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				handleDrag(e.getX(), e.getY());
-			}
-		};
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
+    }
 
-		addMouseListener(mouseAdapter);
-		addMouseMotionListener(mouseAdapter);
-	}
+    private void handleDrag(int x, int y) {
+        if (x >= HuerectX && x < HuerectX + hueRectWidth && y >= HuerectY && y < HuerectY + hueRectHeight) {
+            float normalizedHue = (float) (x - HuerectX) / (float) hueRectWidth;
+            hue = normalizedHue;
 
-	private void handleClick(int x, int y) {
-		handleDrag(x, y);
-	}
+        } else if (x >= ColorrectX && x < ColorrectX + colorPanel.getWidth() && y >= ColorrectY
+                && y < ColorrectY + colorPanel.getHeight()) {
+            // Calculate the color coordinates within the color panel
+            int colorX = x - ColorrectX;
+            int colorY = y - ColorrectY;
 
-	private void handleDrag(int x, int y) {
-		if (x >= HuerectX && x < HuerectX + hueRectWidth && y >= HuerectY && y < HuerectY + hueRectHeight) {
-			float normalizedHue = (float) (x - HuerectX) / (float) hueRectWidth;
-			hue = normalizedHue;
+            // Update the saturation and brightness values based on the mouse location
+            float normalizedSaturation = (float) colorX / (float) colorPanel.getWidth();
+            float normalizedBrightness = 1.0f - ((float) colorY / (float) colorPanel.getHeight());
+            saturation = normalizedSaturation;
+            brightness = normalizedBrightness;
+        }
+        updateSelectedColor();
+        repaintColorPanel();
+        repaintHuePanel();
+    }
 
-		} else if (x >= ColorrectX && x < ColorrectX + colorPanel.getWidth() && y >= ColorrectY
-				&& y < ColorrectY + colorPanel.getHeight()) {
-			// Calculate the color coordinates within the color panel
-			int colorX = x - ColorrectX;
-			int colorY = y - ColorrectY;
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawColorPanel(g);
+        drawHuePanel(g);
+    }
 
-			// Update the saturation and brightness values based on the mouse location
-			float normalizedSaturation = (float) colorX / (float) colorPanel.getWidth();
-			float normalizedBrightness = 1.0f - ((float) colorY / (float) colorPanel.getHeight());
-			saturation = normalizedSaturation;
-			brightness = normalizedBrightness;
-		}
-		updateSelcetedColor();
-		repaint();
-	}
+    private void drawColorPanel(Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
 
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		drawColorPanel(g);
-		drawHuePanel(g);
-	}
+        int padding = 25; // Set the desired padding
+        int bottomPadding = 50; // Set the desired padding
 
-	private void drawColorPanel(Graphics g) {
-		int width = getWidth();
-		int height = getHeight();
+        // Calculate the dimensions with spacing
+        int rectWidth = width - 2 * padding;
+        int rectHeight = height - 2 * padding;
 
-		int padding = 25; // Set the desired padding
-		int bottomPadding = 50; // Set the desired padding
+        // Calculate the positions with spacing
+        ColorrectX = padding;
+        ColorrectY = padding;
 
-		// Calculate the dimensions with spacing
-		int rectWidth = width - 2 * padding;
-		int rectHeight = height - 2 * padding;
+        if (colorPanel == null || colorPanel.getWidth() != rectWidth || colorPanel.getHeight() != rectHeight - bottomPadding) {
+            // Create a new BufferedImage when the panel is resized
+            colorPanel = new BufferedImage(rectWidth, rectHeight - bottomPadding, BufferedImage.TYPE_INT_ARGB);
 
-		// Calculate the positions with spacing
-		ColorrectX = padding;
-		ColorrectY = padding;
+            // Fill the image with the hue color
+            for (int x = 0; x < rectWidth; x++) {
+                for (int y = 0; y < rectHeight - bottomPadding; y++) {
+                    float saturation = (float) x / (float) rectWidth;
+                    float brightness = 1.0f - ((float) y / (float) (rectHeight - bottomPadding));
+                    Color color = Color.getHSBColor(hue, saturation, brightness);
+                    colorPanel.setRGB(x, y, color.getRGB());
+                }
+            }
+        }
 
-		if (colorPanel == null || colorPanel.getWidth() != rectWidth
-				|| colorPanel.getHeight() != rectHeight - bottomPadding) {
-			// Create a new BufferedImage when the panel is resized
-			colorPanel = new BufferedImage(rectWidth, rectHeight - bottomPadding, BufferedImage.TYPE_INT_ARGB);
-		}
+        // Draw the BufferedImage onto the JPanel
+        g.drawImage(colorPanel, ColorrectX, ColorrectY, null);
 
-		// Fill the image with the hue color
-		for (int x = 0; x < rectWidth; x++) {
-			for (int y = 0; y < rectHeight - bottomPadding; y++) {
-				float saturation = (float) x / (float) rectWidth;
-				float brightness = 1.0f - ((float) y / (float) (rectHeight - bottomPadding));
-				Color color = Color.getHSBColor(hue, saturation, brightness);
-				colorPanel.setRGB(x, y, color.getRGB());
-			}
-		}
+        // Calculate the position of the oval inside the color panel
+        int ovalWidth = 30;
+        int ovalHeight = 30;
+        int ovalX = ColorrectX + (int) (saturation * rectWidth) - ovalWidth / 2;
+        int ovalY = ColorrectY + (int) ((1.0f - brightness) * (rectHeight - bottomPadding)) - ovalHeight / 2;
 
-		// Draw the BufferedImage onto the JPanel
-		g.drawImage(colorPanel, ColorrectX, ColorrectY, null);
+        // Draw the white border oval
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawOval(ovalX, ovalY, ovalWidth, ovalHeight);
+    }
 
-		// Calculate the position of the oval inside the color panel
-		int ovalWidth = 30;
-		int ovalHeight = 30;
-		int ovalX = ColorrectX + (int) (saturation * rectWidth) - ovalWidth / 2;
-		int ovalY = ColorrectY + (int) ((1.0f - brightness) * (rectHeight - bottomPadding)) - ovalHeight / 2;
+    private void drawHuePanel(Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
 
-		// Draw the white border oval
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.WHITE);
-		g2d.setStroke(new BasicStroke(3));
-		g2d.drawOval(ovalX, ovalY, ovalWidth, ovalHeight);
-		g2d.dispose();
-	}
+        int padding = 25; // Set the desired padding
+        int bottomPadding = 50; // Set the desired padding
 
-	private void drawHuePanel(Graphics g) {
-		int width = getWidth();
-		int height = getHeight();
+        // Calculate the dimensions with spacing
+        int rectWidth = width - 2 * padding;
+        int rectHeight = 25;
 
-		int padding = 25; // Set the desired padding
-		int bottomPadding = 50; // Set the desired padding
+        // Check if huePanel needs to be created or resized
+        if (huePanel == null || huePanel.getWidth() != rectWidth || huePanel.getHeight() != rectHeight) {
+            // Create a new BufferedImage for the hue panel
+            huePanel = new BufferedImage(rectWidth, rectHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D hueGraphics = huePanel.createGraphics();
 
-		// Calculate the dimensions with spacing
-		int rectWidth = width - 2 * padding;
-		int rectHeight = 25;
+            // Draw the hue panel
+            for (int x = 0; x < rectWidth; x++) {
+                float hueValue = (float) x / (float) rectWidth;
+                Color hueColor = Color.getHSBColor(hueValue, 1.0f, 1.0f);
+                hueGraphics.setColor(hueColor);
+                hueGraphics.fillRect(x, 0, 1, rectHeight);
+            }
 
-		// Check if huePanel needs to be created or resized
-		if (huePanel == null || huePanel.getWidth() != rectWidth || huePanel.getHeight() != rectHeight) {
-			// Create a new BufferedImage for the hue panel
-			huePanel = new BufferedImage(rectWidth, rectHeight, BufferedImage.TYPE_INT_RGB);
-			Graphics2D hueGraphics = huePanel.createGraphics();
+            hueGraphics.dispose();
+        }
 
-			// Draw the hue panel
-			for (int x = 0; x < rectWidth; x++) {
-				float hueValue = (float) x / (float) rectWidth;
-				Color hueColor = Color.getHSBColor(hueValue, 1.0f, 1.0f);
-				hueGraphics.setColor(hueColor);
-				hueGraphics.fillRect(x, 0, 1, rectHeight);
-			}
+        HuerectX = padding;
+        HuerectY = height - bottomPadding;
 
-			hueGraphics.dispose();
-		}
+        // Draw the BufferedImage onto the JPanel
+        g.drawImage(huePanel, HuerectX, HuerectY, null);
 
-		HuerectX = padding;
-		HuerectY = height - bottomPadding;
+        // Calculate the dimensions of the hue panel rectangle
+        hueRectWidth = rectWidth;
+        hueRectHeight = rectHeight;
 
-		// Draw the BufferedImage onto the JPanel
-		g.drawImage(huePanel, HuerectX, HuerectY, null);
+        // Draw the white border circle
+        int ovalWidth = 36;
+        int ovalHeight = rectHeight + 12;
+        int ovalX = HuerectX - ovalWidth / 2;
+        int ovalY = HuerectY - 5;
+        int hueOvalX = (int) (ovalX + (hue * rectWidth));
 
-		// Calculate the dimensions of the hue panel rectangle
-		hueRectWidth = rectWidth;
-		hueRectHeight = rectHeight;
+        int borderThickness = 5;
 
-		// Draw the white border circle
-		int ovalWidth = 36;
-		int ovalHeight = rectHeight + 12;
-		int ovalX = HuerectX - ovalWidth / 2;
-		int ovalY = HuerectY - 5;
-		int hueOvalX = (int) (ovalX + (hue * rectWidth));
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int borderThickness = 5;
+        // Draw the filled hue oval
+        g2d.setColor(Color.getHSBColor(hue, saturation, brightness));
+        g2d.fillOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
 
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        // Draw the white border circle
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(borderThickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.drawOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
+    }
 
-		// Draw the filled hue oval
-		g2d.setColor(Color.getHSBColor(hue, saturation, brightness));
-		g2d.fillOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
+    private void updateSelectedColor() {
+        Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
+        GetUI.selectedColor = colorPickerColor;
+        pnl_Colors.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
+        pnl_Colors.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
+        pnl_Colors.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
+    }
 
-		// Draw the white border circle
-		g2d.setColor(Color.WHITE);
-		g2d.setStroke(new BasicStroke(borderThickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		g2d.drawOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
+    private void repaintColorPanel() {
+        int rectWidth = getWidth() - 2 * 25;
+        int rectHeight = getHeight() - 2 * 25 - 50;
+        for (int x = 0; x < rectWidth; x++) {
+            for (int y = 0; y < rectHeight; y++) {
+                float saturation = (float) x / (float) rectWidth;
+                float brightness = 1.0f - ((float) y / (float) rectHeight);
+                Color color = Color.getHSBColor(hue, saturation, brightness);
+                colorPanel.setRGB(x, y, color.getRGB());
+            }
+        }
+        repaint();
+    }
 
-		g2d.dispose();
-	}
+    private void repaintHuePanel() {
+        int rectWidth = getWidth() - 2 * 25;
+        for (int x = 0; x < rectWidth; x++) {
+            float hueValue = (float) x / (float) rectWidth;
+            Color hueColor = Color.getHSBColor(hueValue, 1.0f, 1.0f);
+            huePanel.setRGB(x, 0, hueColor.getRGB());
+        }
+        repaint();
+    }
 
-	private void updateSelcetedColor() {
-		Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
-		GetUI.selectedColor = colorPickerColor;
-		pnl_Colors.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
-		pnl_Colors.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
-		pnl_Colors.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
-	}
-
-	public void setCustomColor(float hue, float saturation, float brightness) {
-		this.hue = hue;
-		this.saturation = saturation;
-		this.brightness = brightness;
-		GetUI.selectedColor = Color.getHSBColor(hue, saturation, brightness);
-	}
+    public void setCustomColor(float hue, float saturation, float brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
+        GetUI.selectedColor = Color.getHSBColor(hue, saturation, brightness);
+    }
 }
