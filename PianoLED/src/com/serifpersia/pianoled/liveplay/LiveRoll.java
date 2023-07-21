@@ -27,6 +27,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		this.piano = pianoLED.getDrawPiano();
 		this.livePanel = livePlayPanel;
 		pianoLED.getPianoController().addPianoReceiverConsumer(this);
+		setDoubleBuffered(true); // Enable double buffering
 		start();
 	}
 
@@ -96,12 +97,10 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		} else {
 			g.setColor(NOTE_COLOR);
 		}
-//		y = 50;
 		g.fillRoundRect(x, y, w, h, 5, 5);
 
-		g.setColor(Color.RED);
-		// g.drawRoundRect(x, y - h, w, h, 5, 5);
-
+		g.setColor(Color.BLACK);
+		g.drawRoundRect(x, y, w, h, 5, 5);
 		if (livePanel.isShowInfoSelected()) {
 			drawText(g, x, y - 25, "" + note.getPitch());
 			drawText(g, x, y - 15, "" + note.getStart() + "(" + noteElapsedTime + ")");
@@ -124,9 +123,6 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	public void drawPianoRoll(Graphics g, long currentTime) {
-
-		g.setColor(Color.BLACK);
-		// g.fillRect(0, 0, getWidth(), getHeight());
 
 		if (livePanel.isShowInfoSelected()) {
 			g.setColor(Color.WHITE);

@@ -52,7 +52,7 @@ public class PianoLED extends JFrame {
 	}
 
 	private void init() {
-		setSize(1004, 640);
+		setSize(1004, 604);
 		setLocationRelativeTo(null);
 		// setResizable(false);
 		setTitle("PianoLED " + updator.VersionTag);
