@@ -7,6 +7,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,8 +22,13 @@ import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.RightPanel;
 import com.serifpersia.pianoled.ui.TopPanel;
 
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
 @SuppressWarnings("serial")
-public class PianoLED extends JFrame {
+public class PianoLED extends JFrame implements NativeKeyListener {
 
 	private PianoController pianoController = new PianoController(this);
 	private BottomPanel bottomPanel = new BottomPanel(this);
@@ -28,6 +36,9 @@ public class PianoLED extends JFrame {
 	public TopPanel topPanel = new TopPanel(rightPanel);
 
 	static Updater updator = new Updater();
+
+	private boolean isFullScreen = false;
+	private Dimension initialSize;
 
 	public static void main(String[] args) {
 		try {
@@ -45,10 +56,24 @@ public class PianoLED extends JFrame {
 
 	public PianoLED() {
 
+		// Register the PianoLED instance as a native key listener
+		GlobalScreen.addNativeKeyListener(this);
+		try {
+			GlobalScreen.registerNativeHook();
+		} catch (NativeHookException e) {
+			e.printStackTrace();
+		}
+
+		// Set JNativeHook's logging level to WARNING
+		Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+		logger.setLevel(Level.WARNING);
+
 		Updater updater = new Updater();
 		updater.getVersion();
 		updater.deleteSetupFile();
+
 		init();
+
 	}
 
 	private void init() {
@@ -107,4 +132,39 @@ public class PianoLED extends JFrame {
 		bottomPanel.getPiano().setPianoKey(pitch, on);
 	}
 
+	// NativeKeyListener methods
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent e) {
+		if (e.getKeyCode() == NativeKeyEvent.VC_F) {
+			toggleFullScreen();
+		}
+	}
+
+	@Override
+	public void nativeKeyReleased(NativeKeyEvent e) {
+		// Empty implementation, but required by the interface
+	}
+
+	@Override
+	public void nativeKeyTyped(NativeKeyEvent e) {
+		// Empty implementation, but required by the interface
+	}
+
+	private void toggleFullScreen() {
+
+		if (isFullScreen) {
+			setExtendedState(JFrame.NORMAL);
+			setSize(initialSize);
+			topPanel.setVisible(true);
+			repaint();
+			revalidate();
+		} else {
+			initialSize = getSize();
+			setExtendedState(JFrame.MAXIMIZED_BOTH);
+			topPanel.setVisible(false);
+			repaint();
+			revalidate();
+		}
+		isFullScreen = !isFullScreen;
+	}
 }
