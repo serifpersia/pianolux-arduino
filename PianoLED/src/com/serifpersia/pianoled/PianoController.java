@@ -17,7 +17,6 @@ import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.learn.PianoReceiver;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
-import com.serifpersia.pianoled.ui.pnl_Controls;
 import com.serifpersia.pianoled.ui.pnl_Gradient;
 
 import jssc.SerialPortException;

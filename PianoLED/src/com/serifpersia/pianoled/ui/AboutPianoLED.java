@@ -37,7 +37,7 @@ public class AboutPianoLED extends JPanel {
 		gridBagLayout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
-		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/AppIcon.png")).getImage()
+		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
 				.getScaledInstance(150, 150, Image.SCALE_SMOOTH));
 
 		JPanel buttonPane = new JPanel();
@@ -63,6 +63,7 @@ public class AboutPianoLED extends JPanel {
 		});
 
 		JButton btnPianoLED = new JButton("");
+		btnPianoLED.setBackground(new Color(25, 25, 25));
 		GridBagConstraints gbc_button = new GridBagConstraints();
 		gbc_button.insets = new Insets(0, 0, 5, 0);
 		gbc_button.gridx = 0;
@@ -70,6 +71,7 @@ public class AboutPianoLED extends JPanel {
 		btnPianoLED.setIcon(pianoLEDIcon);
 		btnPianoLED.setFocusable(false);
 		btnPianoLED.setBorderPainted(false);
+
 		add(btnPianoLED, gbc_button);
 
 		JLabel lbPianoLED = new JLabel("PianoLED");

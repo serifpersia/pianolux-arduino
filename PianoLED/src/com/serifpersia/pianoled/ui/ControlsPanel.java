@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
 import com.serifpersia.pianoled.PianoLED;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -132,26 +130,19 @@ public class ControlsPanel extends JPanel {
 		topPanel.add(lb_Right);
 
 		GroupLayout gl_innerPanel = new GroupLayout(innerPanel);
-		gl_innerPanel.setHorizontalGroup(
-			gl_innerPanel.createParallelGroup(Alignment.LEADING)
+		gl_innerPanel.setHorizontalGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
 				.addComponent(topPanel, GroupLayout.DEFAULT_SIZE, 1004, Short.MAX_VALUE)
+				.addGroup(gl_innerPanel.createSequentialGroup().addContainerGap()
+						.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 488, GroupLayout.PREFERRED_SIZE).addGap(8)
+						.addComponent(pnl_Right, GroupLayout.PREFERRED_SIZE, 479, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		gl_innerPanel.setVerticalGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_innerPanel.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 488, GroupLayout.PREFERRED_SIZE)
-					.addGap(8)
-					.addComponent(pnl_Right, GroupLayout.PREFERRED_SIZE, 479, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
-		gl_innerPanel.setVerticalGroup(
-			gl_innerPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_innerPanel.createSequentialGroup()
-					.addComponent(topPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(pnl_Right, 0, 0, Short.MAX_VALUE)
-						.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 328, Short.MAX_VALUE))
-					.addGap(9))
-		);
+						.addComponent(topPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(10)
+						.addGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(pnl_Right, 0, 0, Short.MAX_VALUE)
+								.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 328, Short.MAX_VALUE))
+						.addGap(9)));
 
 		innerPanel.setLayout(gl_innerPanel);
 
