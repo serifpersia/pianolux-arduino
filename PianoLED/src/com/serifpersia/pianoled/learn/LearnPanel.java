@@ -290,7 +290,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 	}
 
 	private void addPlaybackControls(JPanel controlsPane, int gridy) {
-		Font midiControlsFont = new Font("Poppins", Font.PLAIN, 16);
+		Font midiControlsFont = new Font("Dialog", Font.PLAIN, 14);
 
 		lbStart = new JButton("⏮");
 		lbStart.setBackground(new Color(52, 152, 219));
@@ -298,7 +298,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbStart.setFocusable(false);
 		lbStart.setBorderPainted(false);
 		lbStart.setToolTipText("Restart Playback");
-		lbStart.setFont(new Font("Poppins", Font.PLAIN, 14));
+		lbStart.setFont(midiControlsFont);
 		lbStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -312,7 +312,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbGoBack.setFocusable(false);
 		lbGoBack.setBorderPainted(false);
 		lbGoBack.setToolTipText("Previous");
-		lbGoBack.setFont(new Font("Poppins", Font.PLAIN, 14));
+		lbGoBack.setFont(midiControlsFont);
 		lbGoBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -324,7 +324,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbPlayMidi.setFocusable(false);
 		lbPlayMidi.setBorderPainted(false);
 		lbPlayMidi.setToolTipText("Play/Pause");
-		lbPlayMidi.setFont(new Font("Poppins", Font.PLAIN, 14));
+		lbPlayMidi.setFont(midiControlsFont);
 		lbPlayMidi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -344,7 +344,7 @@ public class LearnPanel extends JPanel implements MidiPlayerConsumer, PianoMidiC
 		lbGoForwards.setFocusable(false);
 		lbGoForwards.setBorderPainted(false);
 		lbGoForwards.setToolTipText("Next");
-		lbGoForwards.setFont(new Font("Poppins", Font.PLAIN, 14));
+		lbGoForwards.setFont(midiControlsFont);
 		lbGoForwards.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

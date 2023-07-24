@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PianoLED</groupId>
 	<artifactId>PianoLED</artifactId>
-	<version>4.2.5</version>
+	<version>4.2.6</version>
 	<properties>
 		<main.class>com.serifpersia.pianoled.PianoLED</main.class>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,36 +44,6 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>2.4.1</version>
-				<executions>
-					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
-						<configuration>
-							<headerType>gui</headerType>
-							<outfile>release/nojre/${project.artifactId}v4.2.2.exe</outfile>
-							<jar>
-								target/${project.build.finalName}-jar-with-dependencies.jar</jar>
-							<icon>target/classes/icons/icon.ico</icon>
-							<jre>
-								<path>%JAVA_HOME%;%PATH%</path>
-								<requiresJdk>false</requiresJdk>
-								<requires64Bit>false</requires64Bit>
-								<minVersion>17</minVersion>
-							</jre>
-							<downloadUrl>
-								https://adoptium.net/temurin/releases/?version=17</downloadUrl>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -161,21 +131,6 @@
 			<groupId>com.github.sarxos</groupId>
 			<artifactId>webcam-capture</artifactId>
 			<version>0.3.12</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.17.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.17.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.17.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.formdev</groupId>

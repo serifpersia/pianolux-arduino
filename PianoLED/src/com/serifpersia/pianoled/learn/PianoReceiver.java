@@ -6,7 +6,6 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.SysexMessage;
-import com.serifpersia.pianoled.Log;
 import com.serifpersia.pianoled.ui.pnl_Colors;
 import com.serifpersia.pianoled.ui.pnl_Controls;
 
@@ -43,19 +42,19 @@ public class PianoReceiver implements Receiver {
 					consumer.onPianoKeyOff(pitch);
 				}
 			} else {
-				Log.debug("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
 			}
 		} else if (midiMessage instanceof MetaMessage) {
 			MetaMessage metaMessage = (MetaMessage) midiMessage;
 			byte[] data = metaMessage.getData();
-			Log.debug("Meta Command " + metaMessage.getType() + ": " + data[0] + " " + data[1]);
+			System.out.println("Meta Command " + metaMessage.getType() + ": " + data[0] + " " + data[1]);
 		} else if (midiMessage instanceof SysexMessage) {
 			SysexMessage sysexMessage = (SysexMessage) midiMessage;
 			byte[] data = sysexMessage.getData();
-			Log.debug("Sysex Command " + (data[0] & 0xFF) + " " + (data[1] & 0xFF));
+			System.out.println("Sysex Command " + (data[0] & 0xFF) + " " + (data[1] & 0xFF));
 		} else {
 			byte[] msg = midiMessage.getMessage();
-			Log.debug("Unknown Command " + (msg[0] & 0xFF) + " : " + (msg[1] & 0xFF) + " " + (msg[2] & 0xFF));
+			System.out.println("Unknown Command " + (msg[0] & 0xFF) + " : " + (msg[1] & 0xFF) + " " + (msg[2] & 0xFF));
 		}
 
 		// Check for no input timeout

@@ -70,7 +70,7 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 
 		Updater updater = new Updater();
 		updater.getVersion();
-		updater.deleteSetupFile();
+		updater.deleteSetupFileAndPianoLEDvFiles();
 
 		init();
 
