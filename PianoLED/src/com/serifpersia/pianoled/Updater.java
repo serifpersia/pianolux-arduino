@@ -30,7 +30,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	private boolean debugJSONOff = true;
+	private boolean debugJSONOff = false;
 	public String VersionTag = "v4.2.6";
 	String VersionFile;
 
@@ -223,36 +223,36 @@ public class Updater {
 	}
 
 	public void deleteSetupFileAndPianoLEDvFiles() {
-	    String setupFileName = "PianoLED_Setup.exe";
-	    File setupFile = new File(setupFileName);
+		String setupFileName = "PianoLED_Setup.exe";
+		File setupFile = new File(setupFileName);
 
-	    if (setupFile.exists()) {
-	        boolean deleted = setupFile.delete();
-	        if (deleted) {
-	            System.out.println("Deleted " + setupFileName);
-	        } else {
-	            System.out.println("Failed to delete " + setupFileName);
-	        }
-	    }
+		if (setupFile.exists()) {
+			boolean deleted = setupFile.delete();
+			if (deleted) {
+				System.out.println("Deleted " + setupFileName);
+			} else {
+				System.out.println("Failed to delete " + setupFileName);
+			}
+		}
 
-	    // Get the current working directory
-	    String currentDirectory = System.getProperty("user.dir");
+		// Get the current working directory
+		String currentDirectory = System.getProperty("user.dir");
 
-	    // Get all files in the directory
-	    File[] filesInDirectory = new File(currentDirectory).listFiles();
+		// Get all files in the directory
+		File[] filesInDirectory = new File(currentDirectory).listFiles();
 
-	    if (filesInDirectory != null) {
-	        for (File file : filesInDirectory) {
-	            if (file.getName().startsWith("PianoLEDv") && file.getName().endsWith(".exe")) {
-	                boolean deletedPianoLEDvFile = file.delete();
-	                if (deletedPianoLEDvFile) {
-	                    System.out.println("Deleted " + file.getName());
-	                } else {
-	                    System.out.println("Failed to delete " + file.getName());
-	                }
-	            }
-	        }
-	    }
+		if (filesInDirectory != null) {
+			for (File file : filesInDirectory) {
+				if (file.getName().startsWith("PianoLEDv") && file.getName().endsWith(".exe")) {
+					boolean deletedPianoLEDvFile = file.delete();
+					if (deletedPianoLEDvFile) {
+						System.out.println("Deleted " + file.getName());
+					} else {
+						System.out.println("Failed to delete " + file.getName());
+					}
+				}
+			}
+		}
 	}
 
 	public String getOs() {
