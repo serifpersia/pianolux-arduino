@@ -13,39 +13,32 @@ import java.awt.event.MouseEvent;
 import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import java.awt.GridLayout;
+import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class ControlsPanel extends JPanel {
 
-	private pnl_Colors pnl_Right;
-	static JPanel pnl_GradientPreview;
-
-	private pnl_Gradient GradientPanel;
-	private pnl_Guide pnl_Guide;
-
-	private pnl_Controls pnl_Controls;
+	private JPanel pnl_Labels;
 	private JLabel lb_Left;
 	private JLabel lb_Controls;
 	private JLabel lb_Right;
-
-	private JPanel pnl_Left;
-	CardLayout cardLayout = new CardLayout();
+	private CardLayout cl_LeftPanel = new CardLayout();
+	private JPanel LeftPanel;
+	private pnl_Controls pnl_Controls;
+	private JPanel rightInner_pnl = new pnl_Colors();
+	private pnl_Guide pnl_Guide;
+	static JPanel pnl_GradientPreview;
+	private pnl_Gradient GradientPanel;
 
 	public ControlsPanel(PianoLED pianoLED) {
 
-		// Create CardLayout for pnl_Left
-
-		pnl_Left = new JPanel();
-		pnl_Left.setLayout(cardLayout);
-
 		GradientPanel = new pnl_Gradient(pianoLED);
-		pnl_Guide = new pnl_Guide(pianoLED);
 		pnl_Controls = new pnl_Controls(pianoLED);
+		pnl_Guide = new pnl_Guide(pianoLED);
 
-		pnl_Right = new pnl_Colors();
 		init();
+		initTopLabels();
 		topLabelCardAction();
 	}
 
@@ -53,14 +46,28 @@ public class ControlsPanel extends JPanel {
 
 		setLayout(new BorderLayout(0, 0));
 
-		// Add panels to pnl_Left with corresponding names
-		pnl_Left.add(pnl_Controls, "Controls");
-		pnl_Left.add(GradientPanel, "Gradient");
-		pnl_Left.add(pnl_Guide, "GuideControls");
+		JPanel pnl_ParentSplit = new JPanel();
+		add(pnl_ParentSplit, BorderLayout.CENTER);
+		pnl_ParentSplit.setLayout(new GridLayout(0, 2, 0, 0));
 
-		JPanel innerPanel = new JPanel();
-		innerPanel.setBackground(new Color(25, 25, 25));
-		add(innerPanel, BorderLayout.CENTER);
+		LeftPanel = new JPanel();
+		LeftPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		LeftPanel.setLayout(cl_LeftPanel);
+
+		pnl_ParentSplit.add(LeftPanel);
+
+		JPanel RightPanel = new JPanel();
+
+		RightPanel.setLayout(new BorderLayout(0, 0));
+		RightPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
+
+		RightPanel.add(rightInner_pnl, BorderLayout.CENTER);
+
+		pnl_ParentSplit.add(RightPanel);
+
+		pnl_Labels = new JPanel();
+
+		add(pnl_Labels, BorderLayout.NORTH);
 
 		pnl_GradientPreview = new JPanel() {
 			@Override
@@ -105,12 +112,14 @@ public class ControlsPanel extends JPanel {
 
 			}
 		};
-		pnl_GradientPreview.setBackground(new Color(0, 0, 0));
 		add(pnl_GradientPreview, BorderLayout.SOUTH);
 
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 48, 5));
-		topPanel.setBackground(new Color(50, 50, 50));
+	}
+
+	private void initTopLabels() {
+
+		pnl_Labels.setLayout(new FlowLayout(FlowLayout.CENTER, 48, 5));
+		pnl_Labels.setBackground(new Color(50, 50, 50));
 
 		lb_Controls = new JLabel("Controls");
 		lb_Controls.setForeground(new Color(204, 204, 204));
@@ -121,32 +130,18 @@ public class ControlsPanel extends JPanel {
 		lb_Left.setFont(new Font("Poppins", Font.PLAIN, 21));
 
 		lb_Right = new JLabel("Guide Controls");
-		lb_Right.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 27));
+		lb_Right.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 45));
 		lb_Right.setForeground(new Color(128, 128, 128));
 		lb_Right.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		topPanel.add(lb_Left);
-		topPanel.add(lb_Controls);
-		topPanel.add(lb_Right);
+		pnl_Labels.add(lb_Left);
+		pnl_Labels.add(lb_Controls);
+		pnl_Labels.add(lb_Right);
 
-		GroupLayout gl_innerPanel = new GroupLayout(innerPanel);
-		gl_innerPanel.setHorizontalGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(topPanel, GroupLayout.DEFAULT_SIZE, 1004, Short.MAX_VALUE)
-				.addGroup(gl_innerPanel.createSequentialGroup().addContainerGap()
-						.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 488, GroupLayout.PREFERRED_SIZE).addGap(8)
-						.addComponent(pnl_Right, GroupLayout.PREFERRED_SIZE, 479, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		gl_innerPanel.setVerticalGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_innerPanel.createSequentialGroup()
-						.addComponent(topPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(10)
-						.addGroup(gl_innerPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(pnl_Right, 0, 0, Short.MAX_VALUE)
-								.addComponent(pnl_Left, GroupLayout.PREFERRED_SIZE, 328, Short.MAX_VALUE))
-						.addGap(9)));
-
-		innerPanel.setLayout(gl_innerPanel);
-
-		// Function to handle all label clicks
+		// Add panels to pnl_Left with corresponding names
+		LeftPanel.add(pnl_Controls, "Controls");
+		LeftPanel.add(GradientPanel, "Gradient");
+		LeftPanel.add(pnl_Guide, "GuideControls");
 
 	}
 
@@ -167,11 +162,11 @@ public class ControlsPanel extends JPanel {
 
 				// Switch panels based on the clicked label
 				if (clickedLabel == lb_Left) {
-					cardLayout.show(pnl_Left, "Gradient");
+					cl_LeftPanel.show(LeftPanel, "Gradient");
 				} else if (clickedLabel == lb_Controls) {
-					cardLayout.show(pnl_Left, "Controls");
+					cl_LeftPanel.show(LeftPanel, "Controls");
 				} else if (clickedLabel == lb_Right) {
-					cardLayout.show(pnl_Left, "GuideControls");
+					cl_LeftPanel.show(LeftPanel, "GuideControls");
 				}
 			}
 		};
@@ -181,5 +176,4 @@ public class ControlsPanel extends JPanel {
 		lb_Controls.addMouseListener(labelClickListener);
 		lb_Right.addMouseListener(labelClickListener);
 	}
-
 }

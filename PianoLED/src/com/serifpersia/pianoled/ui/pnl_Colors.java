@@ -1,22 +1,23 @@
 package com.serifpersia.pianoled.ui;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JSlider;
+
+import javax.swing.SwingConstants;
+import java.awt.FlowLayout;
+import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class pnl_Colors extends JPanel {
@@ -38,35 +39,30 @@ public class pnl_Colors extends JPanel {
 
 		initComboBoxParam();
 		initFieldParam();
-		fieldActions();
 		init();
 		sliderActions();
 
 	}
 
-	private void initFieldParam() {
+	private void sliderActions() {
+		ChangeListener sliderChangeListener = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				if (source == sld_idle) {
+					int idleVal = sld_idle.getValue();
+					sld_idle.setToolTipText(Integer.toString(idleVal));
+					idleTime = idleVal;
+				}
+			}
+		};
 
-		txt_R = new JTextField("255");
-		txt_R.setForeground(new Color(204, 204, 204));
-		txt_R.setHorizontalAlignment(SwingConstants.CENTER);
-		txt_R.setFont(new Font("Poppins", Font.PLAIN, 18));
-		txt_R.setColumns(10);
-
-		txt_G = new JTextField("0");
-		txt_G.setForeground(new Color(204, 204, 204));
-		txt_G.setHorizontalAlignment(SwingConstants.CENTER);
-		txt_G.setFont(new Font("Poppins", Font.PLAIN, 18));
-		txt_G.setColumns(10);
-
-		txt_B = new JTextField("0");
-		txt_B.setForeground(new Color(204, 204, 204));
-		txt_B.setHorizontalAlignment(SwingConstants.CENTER);
-		txt_B.setFont(new Font("Poppins", Font.PLAIN, 18));
-		txt_B.setColumns(10);
+		sld_idle.addChangeListener(sliderChangeListener);
 
 	}
 
 	private void initComboBoxParam() {
+
 		cb_ColorPresets = new JComboBox<Object>(GetUI.colorNames.toArray(new String[0]));
 		cb_ColorPresets.putClientProperty("JComponent.roundRect", true);
 		cb_ColorPresets.setForeground(new Color(204, 204, 204));
@@ -90,94 +86,29 @@ public class pnl_Colors extends JPanel {
 
 	}
 
-	private void init() {
-		setBackground(new Color(50, 50, 50));
+	private void initFieldParam() {
+		txt_R = new JTextField("255");
+		txt_G = new JTextField("0");
+		txt_B = new JTextField("0");
 
-		JLabel lb_Colors = new JLabel("Colors");
-		lb_Colors.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Colors.setForeground(new Color(204, 204, 204));
-		lb_Colors.setFont(new Font("Poppins", Font.PLAIN, 35));
+		txt_R.setHorizontalAlignment(SwingConstants.CENTER);
+		txt_R.setBackground(new Color(70, 70, 70));
+		txt_R.setForeground(new Color(204, 204, 204));
+		txt_R.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_R.setColumns(2);
 
-		JLabel lb_Preset = new JLabel("Preset");
-		lb_Preset.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Preset.setForeground(new Color(204, 204, 204));
-		lb_Preset.setFont(new Font("Poppins", Font.PLAIN, 24));
+		txt_G.setHorizontalAlignment(SwingConstants.CENTER);
+		txt_G.setBackground(new Color(70, 70, 70));
+		txt_G.setForeground(new Color(204, 204, 204));
+		txt_G.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_G.setColumns(2);
 
-		JPanel colorPickerPanel = new JPanel();
+		txt_B.setHorizontalAlignment(SwingConstants.CENTER);
+		txt_B.setBackground(new Color(70, 70, 70));
+		txt_B.setForeground(new Color(204, 204, 204));
+		txt_B.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_B.setColumns(2);
 
-		JLabel lb_RGB = new JLabel("RGB");
-		lb_RGB.setForeground(new Color(204, 204, 204));
-		lb_RGB.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_RGB.setFont(new Font("Poppins", Font.PLAIN, 18));
-
-		JLabel lb_RGB_1 = new JLabel("Idle");
-		lb_RGB_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_RGB_1.setForeground(new Color(204, 204, 204));
-		lb_RGB_1.setFont(new Font("Poppins", Font.PLAIN, 18));
-
-		sld_idle = new JSlider(5, 240, 10);
-		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 12));
-		sld_idle.setSnapToTicks(true);
-		sld_idle.setMinorTickSpacing(5);
-		sld_idle.setPaintLabels(true);
-		sld_idle.setForeground(new Color(204, 204, 204));
-		sld_idle.setMajorTickSpacing(60);
-
-		rdb_IdleOn = new JRadioButton("On");
-		rdb_IdleOn.setFont(new Font("Poppins", Font.PLAIN, 11));
-		rdb_IdleOn.setHorizontalAlignment(SwingConstants.CENTER);
-		rdb_IdleOn.setSelected(false);
-
-		GroupLayout gl_right = new GroupLayout(this);
-		gl_right.setHorizontalGroup(gl_right.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_right.createSequentialGroup().addContainerGap()
-						.addComponent(lb_RGB_1, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE).addGap(4)
-						.addComponent(rdb_IdleOn).addGap(3)
-						.addComponent(sld_idle, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(lb_RGB, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE).addGap(5)
-						.addComponent(txt_R, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE).addGap(5)
-						.addComponent(txt_G, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE).addGap(5)
-						.addComponent(txt_B, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(30, Short.MAX_VALUE))
-				.addGroup(
-						gl_right.createSequentialGroup().addGap(85)
-								.addComponent(lb_Preset, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE).addGap(71)
-								.addComponent(cb_ColorPresets, GroupLayout.PREFERRED_SIZE, 215,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(30))
-				.addGroup(gl_right.createSequentialGroup().addContainerGap()
-						.addComponent(lb_Colors, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE).addContainerGap())
-				.addGroup(gl_right.createSequentialGroup().addGap(25)
-						.addComponent(colorPickerPanel, GroupLayout.PREFERRED_SIZE, 449, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		gl_right.setVerticalGroup(gl_right.createParallelGroup(Alignment.LEADING).addGroup(gl_right
-				.createSequentialGroup().addGap(10)
-				.addComponent(lb_Colors, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE).addGap(5)
-				.addGroup(gl_right.createParallelGroup(Alignment.LEADING)
-						.addComponent(cb_ColorPresets, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lb_Preset, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-				.addGap(5).addComponent(colorPickerPanel, GroupLayout.PREFERRED_SIZE, 231, GroupLayout.PREFERRED_SIZE)
-				.addGap(5)
-				.addGroup(gl_right.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_right.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lb_RGB_1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-								.addComponent(rdb_IdleOn, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_right.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lb_RGB, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txt_R, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txt_G, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txt_B, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-						.addComponent(sld_idle, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(32, Short.MAX_VALUE)));
-		colorPickerPanel.setLayout(new BorderLayout(0, 0));
-
-		colorPickerPanel.add(colorPicker, BorderLayout.CENTER);
-		setLayout(gl_right);
-
-	}
-
-	private void fieldActions() {
 		ActionListener actionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -194,21 +125,70 @@ public class pnl_Colors extends JPanel {
 		txt_B.addActionListener(actionListener);
 	}
 
-	private void sliderActions() {
-		ChangeListener sliderChangeListener = new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				if (source == sld_idle) {
-					int idleVal = sld_idle.getValue();
-					sld_idle.setToolTipText(Integer.toString(idleVal));
-					idleTime = idleVal;
-				}
-			}
-		};
+	private void init() {
+		setLayout(new BorderLayout(0, 0));
+		setBackground(new Color(50, 50, 50));
+		setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		sld_idle.addChangeListener(sliderChangeListener);
+		JLabel lblNewLabel = new JLabel("Colors");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setForeground(new Color(204, 204, 204));
+		lblNewLabel.setFont(new Font("Poppins", Font.PLAIN, 30));
+		add(lblNewLabel, BorderLayout.NORTH);
 
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(50, 50, 50));
+		add(panel, BorderLayout.CENTER);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(50, 50, 50));
+		panel.add(panel_1, BorderLayout.NORTH);
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		JLabel lblPreset = new JLabel("Preset");
+		lblPreset.setBorder(new EmptyBorder(0, 0, 0, 50));
+		lblPreset.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPreset.setForeground(new Color(204, 204, 204));
+		lblPreset.setFont(new Font("Poppins", Font.PLAIN, 24));
+		panel_1.add(lblPreset);
+
+		panel_1.add(cb_ColorPresets);
+
+		panel.add(colorPicker, BorderLayout.CENTER);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(50, 50, 50));
+		add(panel_2, BorderLayout.SOUTH);
+
+		rdb_IdleOn = new JRadioButton("Idle");
+		rdb_IdleOn.setBackground(new Color(50, 50, 50));
+		rdb_IdleOn.setForeground(new Color(204, 204, 204));
+		rdb_IdleOn.setFont(new Font("Poppins", Font.PLAIN, 16));
+		rdb_IdleOn.setSelected(false);
+
+		panel_2.add(rdb_IdleOn);
+
+		sld_idle = new JSlider(0, 240, 10);
+		sld_idle.setBackground(new Color(70, 70, 70));
+		sld_idle.setForeground(new Color(204, 204, 204));
+		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 16));
+		sld_idle.setSnapToTicks(true);
+		sld_idle.setMajorTickSpacing(60);
+		sld_idle.setMinorTickSpacing(5);
+		sld_idle.setPaintLabels(true);
+		sld_idle.setValue(5);
+
+		panel_2.add(sld_idle);
+
+		JLabel lblNewLabel_1 = new JLabel("RGB");
+		lblNewLabel_1.setForeground(new Color(204, 204, 204));
+		lblNewLabel_1.setFont(new Font("Poppins", Font.PLAIN, 16));
+		panel_2.add(lblNewLabel_1);
+
+		panel_2.add(txt_R);
+		panel_2.add(txt_G);
+		panel_2.add(txt_B);
 	}
 
 	private void updateColorPreset() {
@@ -240,4 +220,5 @@ public class pnl_Colors extends JPanel {
 	private void setTextFieldValue(JTextField textField, int value) {
 		textField.setText(String.valueOf(value));
 	}
+
 }

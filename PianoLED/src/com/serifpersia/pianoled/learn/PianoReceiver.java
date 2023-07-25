@@ -42,7 +42,10 @@ public class PianoReceiver implements Receiver {
 					consumer.onPianoKeyOff(pitch);
 				}
 			} else {
-				System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				if (message.getCommand() == ShortMessage.NOTE_OFF
+						|| message.getCommand() == ShortMessage.NOTE_ON && message.getData2() == 0) {
+					System.out.println("Command " + message.getCommand() + ": " + pitch + " " + velocity);
+				}
 			}
 		} else if (midiMessage instanceof MetaMessage) {
 			MetaMessage metaMessage = (MetaMessage) midiMessage;

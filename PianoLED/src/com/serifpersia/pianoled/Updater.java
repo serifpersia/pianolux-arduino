@@ -30,9 +30,8 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	private boolean debugJSONOff = true;
-	public String VersionTag = "v4.2.6";
-	String VersionFile;
+	private boolean debugJSONOff = false;
+	public String VersionTag = "v4.2.7";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
 		return latestRelease.findValue("browser_download_url").asText();
@@ -40,7 +39,6 @@ public class Updater {
 
 	File folder = new File(appPath);
 	File[] listOfFiles = folder.listFiles();
-	File versionFile = null;
 
 	public void getVersion() {
 		String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner, repo);

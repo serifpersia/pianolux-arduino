@@ -15,6 +15,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoLED;
 import javax.swing.JSlider;
@@ -122,6 +124,17 @@ public class pnl_Gradient extends JPanel {
 
 		modesController = new ModesController(pianoLED);
 
+		initButtons();
+		init();
+		buttonActions(pianoLED);
+		initializeColors();
+	}
+
+	private void initButtons() {
+
+		setIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/Set.png")).getImage().getScaledInstance(90,
+				45, Image.SCALE_SMOOTH));
+
 		btn_Gradient2_SetSide1 = new JButton("");
 		btn_Gradient2_SetSide2 = new JButton("");
 
@@ -163,9 +176,6 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide6 = new JButton("");
 		btn_Gradient8_SetSide7 = new JButton("");
 		btn_Gradient8_SetSide8 = new JButton("");
-
-		setIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/Set.png")).getImage().getScaledInstance(90,
-				45, Image.SCALE_SMOOTH));
 
 		btn_Gradient2_SetSide1.setIcon(setIcon);
 		btn_Gradient2_SetSide2.setIcon(setIcon);
@@ -209,13 +219,11 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide7.setIcon(setIcon);
 		btn_Gradient8_SetSide8.setIcon(setIcon);
 
-		init();
-		buttonActions(pianoLED);
-		initializeColors();
 	}
 
 	private void init() {
 		setBackground(new Color(51, 51, 51));
+		setBorder(new EmptyBorder(10, 10, 10, 10));
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel pnl_GradientControls = new JPanel();
@@ -676,19 +684,19 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide8.setBorderPainted(false);
 		btn_Gradient8_SetSide8.setFocusable(false);
 		gradient8Side.add(btn_Gradient8_SetSide8);
-		
+
 		panel = new JPanel();
 		panel.setBackground(new Color(50, 50, 50));
 		add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new GridLayout(0, 2, 0, 0));
-		
+
 		lb_GradientFade = new JLabel("Fade Gradient");
 		lb_GradientFade.setHorizontalAlignment(SwingConstants.LEFT);
 		lb_GradientFade.setForeground(Color.WHITE);
 		lb_GradientFade.setFont(new Font("Poppins", Font.PLAIN, 21));
 		lb_GradientFade.setBackground(new Color(204, 204, 204));
 		panel.add(lb_GradientFade);
-		
+
 		slider = new JSlider();
 		panel.add(slider);
 	}

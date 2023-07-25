@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -331,17 +333,29 @@ public class LivePlayPanel extends JPanel {
 				switch (e.getActionCommand()) {
 				case "btnOpenCamera":
 					if (btnOpenCamera.getText().equals("Open Camera")) {
-						// Perform first action
-						btnOpenCamera.setText("Close Camera");
-						btnOpenCamera.setBackground(new Color(46, 204, 113));
-						addWebcamFeedPane();
+						try {
+							// Attempt to open the camera
+							// If successful, proceed with the action
+							addWebcamFeedPane();
+
+							// Update the button appearance
+							btnOpenCamera.setText("Close Camera");
+							btnOpenCamera.setBackground(new Color(46, 204, 113));
+						} catch (Exception ex) {
+							// If opening the camera fails, catch the exception
+							// and display an error message to the user
+							JOptionPane.showMessageDialog(null,
+									"Failed to open camera. Make sure you have a working webcam connected!");
+						}
 
 					} else {
+
 						removeWebcamFeedPane();
+						// Update the button appearance
 						btnOpenCamera.setText("Open Camera");
 						btnOpenCamera.setBackground(new Color(231, 76, 60));
+						break;
 					}
-					break;
 
 				case "btnFlip_X":
 					if (btnFlip_X.getText().equals("Flip X")) {

@@ -1,64 +1,60 @@
 package com.serifpersia.pianoled.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JToggleButton;
-import javax.swing.GroupLayout;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.GroupLayout.Alignment;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.Profile;
-import javax.swing.LayoutStyle.ComponentPlacement;
+
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class pnl_Controls extends JPanel {
 
 	private ModesController modesController;
 	private PianoController pianoController;
-
-	private JButton btn_Load;
-	private JButton btn_Save;
-
-	public static JComboBox<?> cb_LED_Mode;
-	public static JComboBox<?> cb_LED_Animations;
-
 	static int defaultBrighntessVal = 255;
 	static int defaultFadeVal = 0;
 	static int defaultMaxSplashLengthVal = 8;
-
+	private JButton btn_Load;
+	private JButton btn_Save;
+	public static JComboBox<?> cb_LED_Mode;
+	public static JComboBox<?> cb_LED_Animations;
 	public static JSlider sld_Brightness;
 	public static JSlider sld_Fade;
 	public static JSlider sld_SplashMaxLenght;
 	public static JSlider bg_slider;
-
+	private JButton btn_SetBG;
+	private JButton btn_rightArrow;
+	private JButton btn_leftArrow;
+	private JLabel lbl_PianoSize;
 	private ImageIcon toggle_on_Icon;
 	private ImageIcon toggle_off_Icon;
-
 	public static JToggleButton bgToggle;
 	public static JToggleButton fixToggle;
 	public static JToggleButton reverseToggle;
 	public static JToggleButton guideToggle;
 	public static JToggleButton LEDS72_Toggle;
-
-	private JButton btn_SetBG;
-	private JButton btn_rightArrow;
-	private JButton btn_leftArrow;
-
-	private JLabel lbl_PianoSize;
 
 	public pnl_Controls(PianoLED pianoLED) {
 
@@ -76,173 +72,188 @@ public class pnl_Controls extends JPanel {
 	}
 
 	private void init() {
+		setLayout(new BorderLayout(0, 0));
+		JPanel innerPanel = new JPanel();
+		innerPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		innerPanel.setBackground(new Color(50, 50, 50));
+		add(innerPanel, BorderLayout.CENTER);
 
-		setBackground(new Color(50, 50, 50));
+		JPanel leftPanel = new JPanel();
+		leftPanel.setBorder(new EmptyBorder(10, 10, 0, 10));
+		leftPanel.setLayout(new GridLayout(10, 0, 0, 0));
+		leftPanel.setBackground(new Color(50, 50, 50));
 
-		JLabel lblNewLabel_1 = new JLabel("Profile");
-		lblNewLabel_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel Profile = new JLabel("Profile");
+		Profile.setBorder(new EmptyBorder(0, 0, 10, 0));
+		Profile.setHorizontalAlignment(SwingConstants.LEFT);
+		Profile.setForeground(new Color(204, 204, 204));
+		Profile.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(Profile);
 
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBackground(new Color(50, 50, 50));
+		JLabel LED_Mode = new JLabel("LED Mode");
+		LED_Mode.setBorder(new EmptyBorder(0, 0, 10, 0));
+		LED_Mode.setHorizontalAlignment(SwingConstants.LEFT);
+		LED_Mode.setForeground(new Color(204, 204, 204));
+		LED_Mode.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(LED_Mode);
 
-		JLabel lblNewLabel_1_1 = new JLabel("LED Mode");
-		lblNewLabel_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel Animation = new JLabel("Animation");
+		Animation.setBorder(new EmptyBorder(0, 0, 10, 0));
+		Animation.setHorizontalAlignment(SwingConstants.LEFT);
+		Animation.setForeground(new Color(204, 204, 204));
+		Animation.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(Animation);
 
-		JLabel lblNewLabel_1_1_1 = new JLabel("Animation");
-		lblNewLabel_1_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel Brightness = new JLabel("Brightness");
+		Brightness.setHorizontalAlignment(SwingConstants.LEFT);
+		Brightness.setForeground(new Color(204, 204, 204));
+		Brightness.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(Brightness);
 
-		JLabel lblNewLabel_1_1_1_1 = new JLabel("Brightness");
-		lblNewLabel_1_1_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel Fade = new JLabel("Fade");
+		Fade.setHorizontalAlignment(SwingConstants.LEFT);
+		Fade.setForeground(new Color(204, 204, 204));
+		Fade.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(Fade);
 
-		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Fade");
-		lblNewLabel_1_1_1_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel SplashLength = new JLabel("Splash Length");
+		SplashLength.setHorizontalAlignment(SwingConstants.LEFT);
+		SplashLength.setForeground(new Color(204, 204, 204));
+		SplashLength.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(SplashLength);
 
-		JLabel lblNewLabel_1_1_1_1_1_1 = new JLabel("Splash Length");
-		lblNewLabel_1_1_1_1_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		JLabel BG_Brightness = new JLabel("BG LED Brightness");
+		BG_Brightness.setHorizontalAlignment(SwingConstants.LEFT);
+		BG_Brightness.setForeground(new Color(204, 204, 204));
+		BG_Brightness.setFont(new Font("Poppins", Font.PLAIN, 21));
+		leftPanel.add(BG_Brightness);
 
-		JLabel lblNewLabel_1_1_1_1_1_1_1 = new JLabel("BG LED Brightness");
-		lblNewLabel_1_1_1_1_1_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
-
-		lbl_PianoSize = new JLabel("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+		lbl_PianoSize = new JLabel("Piano " + GetUI.getNumPianoKeys() + " Keys");
+		lbl_PianoSize.setHorizontalAlignment(SwingConstants.LEFT);
 		lbl_PianoSize.setForeground(new Color(204, 204, 204));
 		lbl_PianoSize.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		JPanel PianoPanel = new JPanel();
-		PianoPanel.setBackground(new Color(50, 50, 50));
-		PianoPanel.setLayout(new GridLayout(0, 4, 0, 0));
+		leftPanel.add(lbl_PianoSize);
 
-		PianoPanel.add(btn_leftArrow);
+		JPanel leftPanelModifiers_upper = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) leftPanelModifiers_upper.getLayout();
+		flowLayout.setVgap(-10);
+		flowLayout.setHgap(0);
+		leftPanelModifiers_upper.setBackground(new Color(50, 50, 50));
 
-		PianoPanel.add(btn_rightArrow);
+		JLabel FixLED = new JLabel("Fix LED");
+		FixLED.setHorizontalAlignment(SwingConstants.LEFT);
+		FixLED.setForeground(new Color(204, 204, 204));
+		FixLED.setFont(new Font("Poppins", Font.PLAIN, 21));
+		FixLED.setBorder(new EmptyBorder(0, 0, 0, 73));
 
-		JPanel modifiers_Panel = new JPanel();
-		modifiers_Panel.setBackground(new Color(50, 50, 50));
+		leftPanelModifiers_upper.add(FixLED);
+		leftPanelModifiers_upper.add(fixToggle);
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(new Color(50, 50, 50));
+		leftPanel.add(leftPanelModifiers_upper);
 
-		GroupLayout gl_left = new GroupLayout(this);
-		gl_left.setHorizontalGroup(
-			gl_left.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_left.createSequentialGroup()
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_left.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 473, Short.MAX_VALUE))
-						.addGroup(gl_left.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(modifiers_Panel, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
-						.addGroup(gl_left.createSequentialGroup()
-							.addGap(10)
-							.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-								.addComponent(lbl_PianoSize, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-								.addComponent(lblNewLabel_1)
-								.addComponent(lblNewLabel_1_1)
-								.addComponent(lblNewLabel_1_1_1)
-								.addComponent(lblNewLabel_1_1_1_1)
-								.addComponent(lblNewLabel_1_1_1_1_1)
-								.addComponent(lblNewLabel_1_1_1_1_1_1)
-								.addComponent(lblNewLabel_1_1_1_1_1_1_1))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_left.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(bg_slider, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(sld_SplashMaxLenght, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(sld_Fade, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(sld_Brightness, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(cb_LED_Animations, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(cb_LED_Mode, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE)
-								.addComponent(PianoPanel, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE))))
-					.addGap(22))
-		);
-		gl_left.setVerticalGroup(
-			gl_left.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_left.createSequentialGroup()
-					.addGap(10)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(buttonPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cb_LED_Mode, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cb_LED_Animations, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(sld_Brightness, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(sld_Fade, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(sld_SplashMaxLenght, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_1_1_1_1_1_1_1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(bg_slider, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_left.createParallelGroup(Alignment.LEADING)
-						.addComponent(lbl_PianoSize, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addComponent(PianoPanel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(modifiers_Panel, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addGap(5)
-					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(13, Short.MAX_VALUE))
-		);
-		panel_3.setLayout(new GridLayout(1, 0, 0, 0));
+		JPanel leftPanelModifiers_bottom = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) leftPanelModifiers_bottom.getLayout();
+		flowLayout_1.setVgap(-10);
+		flowLayout_1.setHgap(0);
+		leftPanelModifiers_bottom.setBackground(new Color(50, 50, 50));
 
-		JLabel lblNewLabel_1_1_1_1_1_2_1_1 = new JLabel("Reverse LED");
-		lblNewLabel_1_1_1_1_1_2_1_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_1_1.setFont(new Font("Poppins", Font.PLAIN, 20));
-		panel_3.add(lblNewLabel_1_1_1_1_1_2_1_1);
+		JLabel ReverseLED = new JLabel("Reverse LED");
+		ReverseLED.setHorizontalAlignment(SwingConstants.LEFT);
+		ReverseLED.setForeground(new Color(204, 204, 204));
+		ReverseLED.setFont(new Font("Poppins", Font.PLAIN, 21));
+		ReverseLED.setBorder(new EmptyBorder(0, 0, 0, 15));
 
-		panel_3.add(reverseToggle);
+		leftPanelModifiers_bottom.add(ReverseLED);
+		leftPanelModifiers_bottom.add(reverseToggle);
 
-		JLabel lblNewLabel_1_1_1_1_1_2_4_1 = new JLabel("Guide LED");
-		lblNewLabel_1_1_1_1_1_2_4_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_4_1.setFont(new Font("Poppins", Font.PLAIN, 20));
-		panel_3.add(lblNewLabel_1_1_1_1_1_2_4_1);
+		leftPanel.add(leftPanelModifiers_bottom);
 
-		panel_3.add(guideToggle);
-		modifiers_Panel.setLayout(new GridLayout(1, 0, 0, 0));
+		innerPanel.add(leftPanel);
 
-		JLabel lblNewLabel_1_1_1_1_1_2_1 = new JLabel("Fix LED");
-		lblNewLabel_1_1_1_1_1_2_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_1.setFont(new Font("Poppins", Font.PLAIN, 20));
-		modifiers_Panel.add(lblNewLabel_1_1_1_1_1_2_1);
+		JPanel rightPanel = new JPanel();
+		rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+		rightPanel.setLayout(new GridLayout(10, 0, 0, 0));
+		rightPanel.setBackground(new Color(50, 50, 50));
 
-		modifiers_Panel.add(fixToggle);
+		JPanel ProfileButtons = new JPanel();
+		ProfileButtons.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		ProfileButtons.setLayout(new GridLayout(0, 2, 0, 0));
+		ProfileButtons.setBackground(new Color(50, 50, 50));
 
-		JLabel lblNewLabel_1_1_1_1_1_2_4 = new JLabel("BG LED");
-		lblNewLabel_1_1_1_1_1_2_4.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1_1_1_1_1_2_4.setFont(new Font("Poppins", Font.PLAIN, 20));
-		modifiers_Panel.add(lblNewLabel_1_1_1_1_1_2_4);
+		rightPanel.add(ProfileButtons);
 
-		modifiers_Panel.add(bgToggle);
+		ProfileButtons.add(btn_Load);
 
-		PianoPanel.add(btn_SetBG);
+		ProfileButtons.add(btn_Save);
 
-		PianoPanel.add(LEDS72_Toggle);
-		buttonPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		JPanel pnlLED_Mode = new JPanel();
+		pnlLED_Mode.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		pnlLED_Mode.setLayout(new BorderLayout(0, 0));
+		pnlLED_Mode.setBackground(new Color(50, 50, 50));
 
-		buttonPanel.add(btn_Load);
+		pnlLED_Mode.add(cb_LED_Mode);
+		rightPanel.add(pnlLED_Mode);
 
-		buttonPanel.add(btn_Save);
-		setLayout(gl_left);
+		JPanel pnlAnimation = new JPanel();
+		pnlAnimation.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		pnlAnimation.setLayout(new BorderLayout(0, 0));
+		pnlAnimation.setBackground(new Color(50, 50, 50));
+
+		pnlAnimation.add(cb_LED_Animations);
+		rightPanel.add(pnlAnimation);
+
+		rightPanel.add(sld_Brightness);
+		rightPanel.add(sld_Fade);
+		rightPanel.add(sld_SplashMaxLenght);
+		rightPanel.add(bg_slider);
+
+		JPanel ButtonsPanel = new JPanel();
+		ButtonsPanel.setLayout(new GridLayout(0, 4, 0, 0));
+		ButtonsPanel.setBackground(new Color(50, 50, 50));
+
+		ButtonsPanel.add(btn_leftArrow);
+		ButtonsPanel.add(btn_rightArrow);
+		ButtonsPanel.add(btn_SetBG);
+		ButtonsPanel.add(LEDS72_Toggle);
+
+		rightPanel.add(ButtonsPanel);
+
+		JPanel rightPanelModifiers_upper = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) rightPanelModifiers_upper.getLayout();
+		flowLayout_2.setVgap(-10);
+		flowLayout_2.setHgap(0);
+		rightPanelModifiers_upper.setBackground(new Color(50, 50, 50));
+
+		JLabel BGLED = new JLabel("BG LED");
+		BGLED.setHorizontalAlignment(SwingConstants.LEFT);
+		BGLED.setForeground(new Color(204, 204, 204));
+		BGLED.setFont(new Font("Poppins", Font.PLAIN, 21));
+		BGLED.setBorder(new EmptyBorder(0, 0, 0, 46));
+
+		rightPanelModifiers_upper.add(BGLED);
+		rightPanelModifiers_upper.add(bgToggle);
+
+		rightPanel.add(rightPanelModifiers_upper);
+
+		JPanel rightPanelModifiers_bottom = new JPanel();
+		FlowLayout flowLayout_3 = (FlowLayout) rightPanelModifiers_bottom.getLayout();
+		flowLayout_3.setVgap(-10);
+		flowLayout_3.setHgap(0);
+		rightPanelModifiers_bottom.setBackground(new Color(50, 50, 50));
+
+		JLabel GuideLED = new JLabel("Guide LED");
+		GuideLED.setHorizontalAlignment(SwingConstants.LEFT);
+		GuideLED.setForeground(new Color(204, 204, 204));
+		GuideLED.setFont(new Font("Poppins", Font.PLAIN, 21));
+		GuideLED.setBorder(new EmptyBorder(0, 0, 0, 15));
+
+		rightPanelModifiers_bottom.add(GuideLED);
+		rightPanelModifiers_bottom.add(guideToggle);
+
+		rightPanel.add(rightPanelModifiers_bottom);
+
+		innerPanel.add(rightPanel);
 
 	}
 
@@ -250,32 +261,32 @@ public class pnl_Controls extends JPanel {
 
 		btn_Save = new JButton("Save");
 		btn_Save.setForeground(new Color(204, 204, 204));
-		btn_Save.setFont(new Font("Poppins", Font.PLAIN, 24));
+		btn_Save.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Save.setFocusable(false);
 
 		btn_Load = new JButton("Load");
 		btn_Load.setForeground(new Color(204, 204, 204));
-		btn_Load.setFont(new Font("Poppins", Font.PLAIN, 24));
+		btn_Load.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Load.setFocusable(false);
 
 		btn_leftArrow = new JButton("<");
 		btn_leftArrow.setForeground(new Color(204, 204, 204));
-		btn_leftArrow.setFont(new Font("Poppins", Font.PLAIN, 24));
+		btn_leftArrow.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btn_leftArrow.setFocusable(false);
 
 		btn_rightArrow = new JButton(">");
 		btn_rightArrow.setForeground(new Color(204, 204, 204));
-		btn_rightArrow.setFont(new Font("Poppins", Font.PLAIN, 24));
+		btn_rightArrow.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btn_rightArrow.setFocusable(false);
 
 		btn_SetBG = new JButton("BG");
 		btn_SetBG.setForeground(new Color(204, 204, 204));
-		btn_SetBG.setFont(new Font("Poppins", Font.PLAIN, 21));
+		btn_SetBG.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btn_SetBG.setFocusable(false);
 
 		LEDS72_Toggle = new JToggleButton("72");
 		LEDS72_Toggle.setForeground(new Color(204, 204, 204));
-		LEDS72_Toggle.setFont(new Font("Poppins", Font.PLAIN, 21));
+		LEDS72_Toggle.setFont(new Font("Poppins", Font.PLAIN, 16));
 		LEDS72_Toggle.setFocusable(false);
 
 		bgToggle = new JToggleButton("");
@@ -309,7 +320,6 @@ public class pnl_Controls extends JPanel {
 		guideToggle.setBackground(new Color(50, 50, 50));
 		guideToggle.setBorderPainted(false);
 		guideToggle.setFocusable(false);
-
 
 		LEDS72_Toggle.setBorderPainted(false);
 		LEDS72_Toggle.setFocusable(false);
@@ -386,7 +396,7 @@ public class pnl_Controls extends JPanel {
 					}
 					GetUI.counter--;
 					GetUI.setKeyboardSize(GetUI.counter);
-					lbl_PianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+					lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
 					pianoLED.getDrawPiano().repaint();
 					break;
 				case "btn_RightArrow":
@@ -396,7 +406,7 @@ public class pnl_Controls extends JPanel {
 					GetUI.counter++;
 
 					GetUI.setKeyboardSize(GetUI.counter);
-					lbl_PianoSize.setText("Piano: " + GetUI.getNumPianoKeys() + " Keys");
+					lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
 					pianoLED.getDrawPiano().repaint();
 					break;
 				case "btnSet_BG":

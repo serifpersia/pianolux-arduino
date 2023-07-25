@@ -16,8 +16,7 @@ import com.serifpersia.pianoled.GuideProfile;
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import javax.swing.border.EmptyBorder;
 import javax.swing.UIManager;
 import java.awt.CardLayout;
 
@@ -27,18 +26,18 @@ public class pnl_Guide extends JPanel {
 	private ModesController modesController;
 	private PianoController pianoController;
 
-	JPanel pnl_A;
-	JPanel pnl_A_sharp;
-	JPanel pnl_B;
-	JPanel pnl_C;
-	JPanel pnl_C_sharp;
-	JPanel pnl_D;
-	JPanel pnl_D_sharp;
-	JPanel pnl_E;
-	JPanel pnl_F;
-	JPanel pnl_F_sharp;
-	JPanel pnl_G;
-	JPanel pnl_G_sharp;
+	private JPanel pnl_A;
+	private JPanel pnl_A_sharp;
+	private JPanel pnl_B;
+	private JPanel pnl_C;
+	private JPanel pnl_C_sharp;
+	private JPanel pnl_D;
+	private JPanel pnl_D_sharp;
+	private JPanel pnl_E;
+	private JPanel pnl_F;
+	private JPanel pnl_F_sharp;
+	private JPanel pnl_G;
+	private JPanel pnl_G_sharp;
 
 	public static JComboBox<Object> cb_ScaleKey;
 	public static JComboBox<Object> cb_Scale;
@@ -71,11 +70,13 @@ public class pnl_Guide extends JPanel {
 
 	private void init() {
 
-		setBackground(new Color(51, 51, 51));
+		setBackground(new Color(50, 50, 50));
+		setBorder(new EmptyBorder(10, 10, 10, 10));
 		setLayout(new GridLayout(2, 0, 0, 0));
 
 		JPanel pnl_Top = new JPanel();
-		pnl_Top.setBackground(new Color(51, 51, 51));
+		pnl_Top.setLayout(new GridLayout(3, 2, 0, 0));
+		pnl_Top.setBackground(new Color(50, 50, 50));
 		add(pnl_Top);
 
 		// A Scale
@@ -177,7 +178,8 @@ public class pnl_Guide extends JPanel {
 		pnl_G_sharp = createPanelWithButtons(G_sharp_buttonLabels, G_sharp_buttonIndices);
 
 		JPanel pnl_Bottom = new JPanel(new CardLayout());
-		pnl_Bottom.setBackground(new Color(51, 51, 51));
+		pnl_Bottom.setBorder(new EmptyBorder(10, 0, 0, 0));
+		pnl_Bottom.setBackground(new Color(50, 50, 50));
 
 		pnl_Bottom.add(pnl_A, "A");
 		pnl_Bottom.add(pnl_A_sharp, "A#");
@@ -193,6 +195,11 @@ public class pnl_Guide extends JPanel {
 		pnl_Bottom.add(pnl_G_sharp, "G#");
 
 		add(pnl_Bottom);
+
+		JPanel topPanel = new JPanel();
+		topPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
+		topPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		topPanel.setBackground(new Color(50, 50, 50));
 
 		cb_ScaleKey = new JComboBox<Object>(GetUI.scaleKeyNames.toArray(new String[0]));
 		cb_ScaleKey.putClientProperty("JComponent.roundRect", true);
@@ -218,6 +225,21 @@ public class pnl_Guide extends JPanel {
 			pianoController.setLedGuide(pianoController.guideToggle);
 
 		});
+		topPanel.add(cb_ScaleKey);
+
+		btn_Load = new JButton("Load");
+		btn_Load.setForeground(new Color(204, 204, 204));
+		btn_Load.setFont(new Font("Poppins", Font.PLAIN, 21));
+		btn_Load.setFocusable(false);
+
+		topPanel.add(btn_Load);
+
+		pnl_Top.add(topPanel);
+
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
+		bottomPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		bottomPanel.setBackground(new Color(50, 50, 50));
 
 		cb_Scale = new JComboBox<Object>(GetUI.scaleNames.toArray(new String[0]));
 		cb_Scale.putClientProperty("JComponent.roundRect", true);
@@ -239,15 +261,20 @@ public class pnl_Guide extends JPanel {
 			pianoController.setLedGuide(pianoController.guideToggle);
 		});
 
-		btn_Load = new JButton("Load");
-		btn_Load.setForeground(new Color(204, 204, 204));
-		btn_Load.setFont(new Font("Poppins", Font.PLAIN, 21));
-		btn_Load.setFocusable(false);
+		bottomPanel.add(cb_Scale);
 
 		btn_Save = new JButton("Save");
 		btn_Save.setForeground(new Color(204, 204, 204));
 		btn_Save.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btn_Save.setFocusable(false);
+		bottomPanel.add(btn_Save);
+
+		pnl_Top.add(bottomPanel);
+
+		JPanel ResetPanel = new JPanel();
+		ResetPanel.setBackground(new Color(50, 50, 50));
+		pnl_Top.add(ResetPanel);
+		ResetPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
 		btn_Reset = new JButton("Reset");
 		btn_Reset.setForeground(new Color(204, 204, 204));
@@ -255,40 +282,14 @@ public class pnl_Guide extends JPanel {
 		btn_Reset.setFocusable(false);
 
 		btn_Reset.setActionCommand("btn_Save");
-		GroupLayout gl_pnl_Top = new GroupLayout(pnl_Top);
-		gl_pnl_Top.setHorizontalGroup(gl_pnl_Top.createParallelGroup(Alignment.TRAILING).addGroup(gl_pnl_Top
-				.createSequentialGroup().addGap(20)
-				.addGroup(gl_pnl_Top.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btn_Reset, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
-						.addGroup(gl_pnl_Top.createSequentialGroup()
-								.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
-										.addComponent(cb_ScaleKey, 0, 675, Short.MAX_VALUE)
-										.addComponent(cb_Scale, 0, 675, Short.MAX_VALUE))
-								.addGap(20)
-								.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(btn_Load, GroupLayout.PREFERRED_SIZE, 130,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(btn_Save, GroupLayout.PREFERRED_SIZE, 130,
-												GroupLayout.PREFERRED_SIZE))))
-				.addGap(20)));
-		gl_pnl_Top.setVerticalGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnl_Top.createSequentialGroup().addGap(10)
-						.addGroup(gl_pnl_Top.createParallelGroup(Alignment.LEADING)
-								.addComponent(btn_Load, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(cb_ScaleKey, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-						.addGap(10)
-						.addGroup(gl_pnl_Top.createParallelGroup(Alignment.BASELINE)
-								.addComponent(cb_Scale, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btn_Save, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-						.addGap(10).addComponent(btn_Reset, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(131, Short.MAX_VALUE)));
-		pnl_Top.setLayout(gl_pnl_Top);
+
+		ResetPanel.add(btn_Reset);
 
 	}
 
 	private JPanel createPanelWithButtons(String[] buttonLabels, int[] buttonIndices) {
 		JPanel pianoUI = new JPanel();
-		pianoUI.setBackground(new Color(51, 51, 51));
+		pianoUI.setBackground(new Color(50, 50, 50));
 		pianoUI.setLayout(new GridLayout(2, buttonLabels.length / 2, 0, 0));
 
 		for (int i = 0; i < buttonLabels.length; i++) {

@@ -1,8 +1,15 @@
 package com.serifpersia.pianoled.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.sound.midi.MidiDevice.Info;
 
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
@@ -10,22 +17,14 @@ import com.serifpersia.pianoled.Updater;
 
 import jssc.SerialPortList;
 
-import java.awt.BorderLayout;
-import javax.swing.SwingConstants;
 import java.awt.Font;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.sound.midi.MidiDevice.Info;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JButton;
+import java.awt.FlowLayout;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class DashboardPanel extends JPanel {
@@ -45,79 +44,71 @@ public class DashboardPanel extends JPanel {
 	private PianoController pianoController;
 
 	public DashboardPanel(PianoLED pianoLED) {
-		setLayout(new BorderLayout(0, 0));
 
 		pianoController = pianoLED.getPianoController();
+
 		init();
 		buttonActions();
 	}
 
 	private void init() {
+		setLayout(new BorderLayout(0, 0));
 
 		DefaultComboBoxModel<Object> defaultSerialDevicesModel = new DefaultComboBoxModel<>(pianoController.portNames);
-
 		ArrayList<Info> midiDevices = pianoController.getMidiDevices();
-
 		DefaultComboBoxModel<Info> defaultMidiDevices = new DefaultComboBoxModel<>(
 				midiDevices.toArray(new Info[midiDevices.size()]));
 
+		JPanel MainPanel = new JPanel();
+		MainPanel.setBorder(new EmptyBorder(125, 0, 125, 0));
+		add(MainPanel, BorderLayout.CENTER);
+		MainPanel.setLayout(new BorderLayout(0, 0));
+
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(25, 25, 25));
-		add(panel, BorderLayout.CENTER);
-		panel.setLayout(new GridLayout(0, 3, 0, 0));
+		MainPanel.add(panel, BorderLayout.NORTH);
+		panel.setLayout(new GridLayout(4, 0, 0, 0));
 
-		JPanel panel_1 = new JPanel();
-		panel.add(panel_1);
+		JPanel SerialPanel = new JPanel();
+		panel.add(SerialPanel);
 
-		lb_Version = new JLabel("Current Version");
-		lb_Version.setVerticalAlignment(SwingConstants.BOTTOM);
-		lb_Version.setHorizontalAlignment(SwingConstants.LEFT);
-		lb_Version.setForeground(new Color(204, 204, 204));
-		lb_Version.setFont(new Font("Poppins", Font.PLAIN, 16));
-		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
-						.addComponent(lb_Version, GroupLayout.PREFERRED_SIZE, 231, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(93, Short.MAX_VALUE)));
-		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
-				gl_panel_1.createSequentialGroup().addContainerGap(472, Short.MAX_VALUE).addComponent(lb_Version)
-						.addGap(5)));
-		panel_1.setLayout(gl_panel_1);
-
-		JPanel panel_2 = new JPanel();
-		panel.add(panel_2);
-		panel_2.setLayout(new GridLayout(3, 0, 0, 0));
-
-		JPanel panel_5 = new JPanel();
-		panel_2.add(panel_5);
-
-		JPanel pnl_MainControls = new JPanel();
-
-		panel_2.add(pnl_MainControls);
+		JLabel Serial = new JLabel("Serial");
+		Serial.setBorder(new EmptyBorder(0, 0, 0, 10));
+		Serial.setHorizontalAlignment(SwingConstants.LEFT);
+		Serial.setForeground(new Color(204, 204, 204));
+		Serial.setFont(new Font("Poppins", Font.PLAIN, 28));
+		SerialPanel.add(Serial);
 
 		cbSerialDevices = new JComboBox<>(defaultSerialDevicesModel);
-		cbSerialDevices.setFont(new Font("Poppins", Font.PLAIN, 13));
-		cbSerialDevices.setForeground(new Color(204, 204, 204));
 		cbSerialDevices.putClientProperty("JComponent.roundRect", true);
+		cbSerialDevices.setForeground(new Color(204, 204, 204));
+		cbSerialDevices.setFont(new Font("Poppins", Font.PLAIN, 18));
+		SerialPanel.add(cbSerialDevices);
 
-		JLabel lb_Serial = new JLabel("Serial");
-		lb_Serial.setFont(new Font("Poppins", Font.PLAIN, 34));
-		lb_Serial.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Serial.setForeground(new Color(204, 204, 204));
+		JPanel MIDIPanel = new JPanel();
+		panel.add(MIDIPanel);
 
-		JLabel lb_Midi = new JLabel("MIDI");
-		lb_Midi.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_Midi.setForeground(new Color(204, 204, 204));
-		lb_Midi.setFont(new Font("Poppins", Font.PLAIN, 34));
+		JLabel lblMidi = new JLabel("MIDI");
+		lblMidi.setBorder(new EmptyBorder(0, 0, 0, 10));
+		lblMidi.setHorizontalAlignment(SwingConstants.LEFT);
+		lblMidi.setForeground(new Color(204, 204, 204));
+		lblMidi.setFont(new Font("Poppins", Font.PLAIN, 28));
+		MIDIPanel.add(lblMidi);
 
 		cbMidiDevices = new JComboBox<>(defaultMidiDevices);
-		cbMidiDevices.setFont(new Font("Poppins", Font.PLAIN, 12));
-		cbMidiDevices.setForeground(new Color(204, 204, 204));
 		cbMidiDevices.putClientProperty("JComponent.roundRect", true);
+		cbMidiDevices.setForeground(new Color(204, 204, 204));
+		cbMidiDevices.setFont(new Font("Poppins", Font.PLAIN, 18));
+		MIDIPanel.add(cbMidiDevices);
+
+		JPanel ButtonsPanel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) ButtonsPanel.getLayout();
+		flowLayout.setHgap(20);
+		panel.add(ButtonsPanel);
 
 		btnUpdate = new JButton("Update");
 		btnUpdate.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btnUpdate.setFocusable(false);
+		ButtonsPanel.add(btnUpdate);
 
 		btnOpen = new JButton("Connect");
 		btnOpen.setBackground(new Color(231, 76, 60));
@@ -125,62 +116,23 @@ public class DashboardPanel extends JPanel {
 		btnOpen.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btnOpen.setFocusable(false);
 
+		ButtonsPanel.add(btnOpen);
+
 		btnRefresh = new JButton("Refresh");
 		btnRefresh.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btnRefresh.setFocusable(false);
+		ButtonsPanel.add(btnRefresh);
 
-		GroupLayout gl_pnl_MainControls = new GroupLayout(pnl_MainControls);
-		gl_pnl_MainControls.setHorizontalGroup(
-			gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnl_MainControls.createSequentialGroup()
-					.addGap(20)
-					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnl_MainControls.createSequentialGroup()
-							.addComponent(btnUpdate, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnOpen, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-							.addGap(10)
-							.addComponent(btnRefresh, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
-						.addGroup(gl_pnl_MainControls.createSequentialGroup()
-							.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(lb_Serial, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(lb_Midi, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.TRAILING)
-								.addComponent(cbSerialDevices, 0, 224, Short.MAX_VALUE)
-								.addComponent(cbMidiDevices, 0, 224, Short.MAX_VALUE))))
-					.addContainerGap())
-		);
-		gl_pnl_MainControls.setVerticalGroup(
-			gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnl_MainControls.createSequentialGroup()
-					.addGap(5)
-					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-						.addComponent(cbSerialDevices, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lb_Serial, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-					.addGap(10)
-					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-						.addComponent(lb_Midi, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cbMidiDevices, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-					.addGap(10)
-					.addGroup(gl_pnl_MainControls.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnOpen, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(91, Short.MAX_VALUE))
-		);
-		pnl_MainControls.setLayout(gl_pnl_MainControls);
-
-		JPanel panel_4 = new JPanel();
-		panel_2.add(panel_4);
-
-		JPanel panel_3 = new JPanel();
-		panel.add(panel_3);
+		lb_Version = new JLabel("Current Version");
+		lb_Version.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lb_Version.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lb_Version);
 
 	}
 
 	private void buttonActions() {
 		ActionListener buttonListener = new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
@@ -212,6 +164,7 @@ public class DashboardPanel extends JPanel {
 					break;
 				case "btnRefresh":
 					pianoController.portNames = SerialPortList.getPortNames();
+
 					@SuppressWarnings("unchecked")
 					DefaultComboBoxModel<Object> serialDevicesModel = (DefaultComboBoxModel<Object>) cbSerialDevices
 							.getModel();
@@ -246,5 +199,4 @@ public class DashboardPanel extends JPanel {
 		btnOpen.setActionCommand("btnOpen");
 		btnRefresh.setActionCommand("btnRefresh");
 	}
-
 }
