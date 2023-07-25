@@ -41,7 +41,7 @@ Here is how you connect external power
 
 
 ## Mounting the LED strip
-For 88 keys piano aling the 3rd led with first black key
+For 88 keys piano align the 3rd led with first black key
 
 ![image](https://user-images.githubusercontent.com/62844718/235168165-9b97120a-66ed-44f5-a7fb-11cc164cf945.png)
 
