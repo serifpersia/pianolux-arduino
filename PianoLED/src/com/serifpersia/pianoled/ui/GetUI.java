@@ -139,6 +139,8 @@ public class GetUI {
 		pnl_Controls.sld_SplashMaxLenght.setValue(splashLenght);
 		pnl_Controls.sld_Brightness.setValue(pnl_Controls.defaultBrighntessVal);
 		pnl_Controls.sld_Fade.setValue(pnl_Controls.defaultFadeVal);
+
+		pnl_Colors.cb_ColorPresets.setSelectedIndex(2);
 	}
 
 }

@@ -30,7 +30,7 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	private boolean debugJSONOff = false;
+	private boolean debugJSONOff = true;
 	public String VersionTag = "v4.2.7";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
@@ -196,7 +196,8 @@ public class Updater {
 						installFile(saveDir + downloadFileName, destinationFolderPath);
 						dialog.dispose();
 						String Message = "Update Downloaded!"
-								+ "Install the new version of PianoLED. Downloaded setup installer will be deleted the next time you launch PianoLED!";
+								+ " Install the new version of PianoLED. Downloaded setup installer will be deleted the next time you launch PianoLED!"
+								+ " Upload Arduino code before using PianoLED!";
 						JOptionPane.showMessageDialog(null, Message, "Message", JOptionPane.INFORMATION_MESSAGE);
 						System.exit(0);
 					}

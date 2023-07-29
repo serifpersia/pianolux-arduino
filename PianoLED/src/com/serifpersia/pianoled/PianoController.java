@@ -296,10 +296,10 @@ public class PianoController implements PianoMidiConsumer {
 			if (!ModesController.AnimationOn) {
 				if (ModesController.RandomOn) {
 					Random rand = new Random();
-					message = arduino.commandSetColor(
-							new Color(rand.nextInt(250) + 1, rand.nextInt(250) + 1, rand.nextInt(250) + 1), notePushed);
+					int randomHue = rand.nextInt(360); // Generate a random hue value between 0 and 359
+					message = arduino.commandSetColor(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
 				} else if (ModesController.VelocityOn) {
-					message = arduino.commandVelocity(velocity, notePushed, GetUI.selectedColor);
+					message = arduino.commandVelocity(velocity, notePushed, Color.RED);
 				} else if (ModesController.SplitOn) {
 					if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
 						message = arduino.commandSetColor(splitLeftColor, notePushed);

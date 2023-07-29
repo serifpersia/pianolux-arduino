@@ -511,10 +511,27 @@ float distance(CRGB color1, CRGB color2) {
 }
 
 void setColorFromVelocity(int velocity, CRGB& rgb) {
-  // Map velocity to hue value
-  int hue = map(velocity, 0, 127, 0, 255);
+  static int previousVelocity = 0;
 
-  // Convert hue to RGB color
-  CHSV hsv(hue, 255, 255);
-  rgb = hsv;
+  // Calculate the smoothed velocity as a weighted average
+  int smoothedVelocity = (velocity + previousVelocity * 3) / 4;
+  previousVelocity = smoothedVelocity;
+
+  // Map smoothed velocity to hue value (green is 0° and red is 120° in HSV color space)
+  int hue = map(smoothedVelocity, 16, 80, 75, 255);
+
+  // Clamp the hue value within the valid range
+  hue = constrain(hue, 75, 255);
+
+  // Map smoothed velocity to brightness value (higher velocity means higher brightness)
+  int brightness = map(smoothedVelocity, 16, 80, 65, 255);
+
+  // Clamp the brightness value within the valid range
+  brightness = constrain(brightness, 65, 255);
+
+  // Set saturation to a fixed value (e.g., 255 for fully saturated color)
+  int saturation = 255;
+
+  // Convert HSV values to RGB color
+  rgb = CHSV(hue, saturation, brightness);
 }

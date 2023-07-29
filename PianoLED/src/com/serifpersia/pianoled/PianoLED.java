@@ -135,9 +135,10 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 	// NativeKeyListener methods
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
-		if (e.getKeyCode() == NativeKeyEvent.VC_F) {
-			toggleFullScreen();
-		}
+	    // Check if the application is in focus before toggling fullscreen
+	    if (isActive() && e.getKeyCode() == NativeKeyEvent.VC_F) {
+	        toggleFullScreen();
+	    }
 	}
 
 	@Override

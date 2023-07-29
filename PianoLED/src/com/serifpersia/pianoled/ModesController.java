@@ -3,6 +3,7 @@ package com.serifpersia.pianoled;
 import java.awt.Color;
 
 import com.serifpersia.pianoled.ui.GetUI;
+import com.serifpersia.pianoled.ui.pnl_Colors;
 import com.serifpersia.pianoled.ui.pnl_Guide;
 
 public class ModesController {
@@ -76,12 +77,11 @@ public class ModesController {
 		switch (GetUI.getModeName(n)) {
 		case "Default":
 			GetUI.setDefaults(8, 255, 0);
-			GetUI.selectedColor = Color.RED;
 			break;
 		case "Splash":
 			GetUI.setDefaults(8, 255, 153);
 			SplashOn = true;
-			GetUI.selectedColor = Color.BLACK;
+			pnl_Colors.cb_ColorPresets.setSelectedIndex(0);
 			break;
 		case "Random":
 			GetUI.setDefaults(8, 255, 0);
@@ -92,7 +92,7 @@ public class ModesController {
 			GradientOn = true;
 			break;
 		case "Velocity":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 100);
 			VelocityOn = true;
 			break;
 		case "Split":
