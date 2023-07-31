@@ -3,7 +3,7 @@
 set "jre_url=https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7%%2B7/OpenJDK17U-jre_x64_windows_hotspot_17.0.7_7.msi"
 set "jre_msifile=%~dp0OpenJDK17U-jre_x64_windows_hotspot_17.0.7_7.msi"
 
-set "ide_url=https://downloads.arduino.cc/arduino-ide/arduino-ide_2.1.0_Windows_64bit.msi"
+set "ide_url=https://downloads.arduino.cc/arduino-ide/arduino-ide_2.1.1_Windows_64bit.msi"
 set "ide_msifile=%~dp0arduino-ide_2.1.0_Windows_64
 
 set /p choice=Do you want to download Java JRE? (1 for Yes, 2 for No)
