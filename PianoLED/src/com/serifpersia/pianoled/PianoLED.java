@@ -33,12 +33,11 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 	private PianoController pianoController = new PianoController(this);
 	private BottomPanel bottomPanel = new BottomPanel(this);
 	private RightPanel rightPanel = new RightPanel(this);
-	public TopPanel topPanel = new TopPanel(rightPanel);
+	public TopPanel topPanel = new TopPanel(rightPanel, this);
 
 	static Updater updator = new Updater();
 
 	private boolean isFullScreen = false;
-	private Dimension initialSize;
 
 	public static void main(String[] args) {
 		try {
@@ -46,6 +45,7 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 			UIManager.put("Panel.background", new Color(25, 25, 25));
 			UIManager.put("Button.arc", 999);
 			UIManager.put("Button.foreground", new Color(204, 204, 204));
+			UIManager.put("Button.hoverBackground", new Color(200, 0, 0));
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -77,13 +77,13 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 	}
 
 	private void init() {
-		setSize(1004, 604);
+		setSize(990, 575);
 		setLocationRelativeTo(null);
 		// setResizable(false);
 		setTitle("PianoLED " + updator.VersionTag);
 		setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
 
-		// setUndecorated(true);
+		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
 		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
@@ -135,10 +135,10 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 	// NativeKeyListener methods
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
-	    // Check if the application is in focus before toggling fullscreen
-	    if (isActive() && e.getKeyCode() == NativeKeyEvent.VC_F) {
-	        toggleFullScreen();
-	    }
+		// Check if the application is in focus before toggling fullscreen
+		if (isActive() && e.getKeyCode() == NativeKeyEvent.VC_F) {
+			toggleFullScreen();
+		}
 	}
 
 	@Override
@@ -151,21 +151,17 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 		// Empty implementation, but required by the interface
 	}
 
-	private void toggleFullScreen() {
-
+	public void toggleFullScreen() {
 		if (isFullScreen) {
+			// Restore the application to normal size and position
 			setExtendedState(JFrame.NORMAL);
-			setSize(initialSize);
 			topPanel.setVisible(true);
-			repaint();
-			revalidate();
 		} else {
-			initialSize = getSize();
+			// Maximize the application to full screen
 			setExtendedState(JFrame.MAXIMIZED_BOTH);
 			topPanel.setVisible(false);
-			repaint();
-			revalidate();
 		}
 		isFullScreen = !isFullScreen;
 	}
+
 }

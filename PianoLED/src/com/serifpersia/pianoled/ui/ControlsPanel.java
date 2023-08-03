@@ -28,14 +28,17 @@ public class ControlsPanel extends JPanel {
 	private pnl_Controls pnl_Controls;
 	private JPanel rightInner_pnl = new pnl_Colors();
 	private pnl_Guide pnl_Guide;
+	private pnl_AudioReact pnl_AudioReact;
 	static JPanel pnl_GradientPreview;
 	private pnl_Gradient GradientPanel;
+	private JLabel lb_AudioReact;
 
 	public ControlsPanel(PianoLED pianoLED) {
 
 		GradientPanel = new pnl_Gradient(pianoLED);
 		pnl_Controls = new pnl_Controls(pianoLED);
 		pnl_Guide = new pnl_Guide(pianoLED);
+		pnl_AudioReact = new pnl_AudioReact(pianoLED);
 
 		init();
 		initTopLabels();
@@ -130,18 +133,23 @@ public class ControlsPanel extends JPanel {
 		lb_Left.setFont(new Font("Poppins", Font.PLAIN, 21));
 
 		lb_Right = new JLabel("Guide Controls");
-		lb_Right.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 45));
 		lb_Right.setForeground(new Color(128, 128, 128));
 		lb_Right.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		pnl_Labels.add(lb_Left);
+		lb_AudioReact = new JLabel("Audio React Controls");
+		lb_AudioReact.setForeground(Color.GRAY);
+		lb_AudioReact.setFont(new Font("Poppins", Font.PLAIN, 21));
+
 		pnl_Labels.add(lb_Controls);
+		pnl_Labels.add(lb_Left);
 		pnl_Labels.add(lb_Right);
+		pnl_Labels.add(lb_AudioReact);
 
 		// Add panels to pnl_Left with corresponding names
 		LeftPanel.add(pnl_Controls, "Controls");
 		LeftPanel.add(GradientPanel, "Gradient");
 		LeftPanel.add(pnl_Guide, "GuideControls");
+		LeftPanel.add(pnl_AudioReact, "AudioReactControls");
 
 	}
 
@@ -156,6 +164,7 @@ public class ControlsPanel extends JPanel {
 				lb_Left.setForeground(new Color(128, 128, 128));
 				lb_Controls.setForeground(new Color(128, 128, 128));
 				lb_Right.setForeground(new Color(128, 128, 128));
+				lb_AudioReact.setForeground(new Color(128, 128, 128));
 
 				// Set clicked label color to highlighted
 				clickedLabel.setForeground(new Color(204, 204, 204));
@@ -167,6 +176,8 @@ public class ControlsPanel extends JPanel {
 					cl_LeftPanel.show(LeftPanel, "Controls");
 				} else if (clickedLabel == lb_Right) {
 					cl_LeftPanel.show(LeftPanel, "GuideControls");
+				} else if (clickedLabel == lb_AudioReact) {
+					cl_LeftPanel.show(LeftPanel, "AudioReactControls");
 				}
 			}
 		};
@@ -175,5 +186,6 @@ public class ControlsPanel extends JPanel {
 		lb_Left.addMouseListener(labelClickListener);
 		lb_Controls.addMouseListener(labelClickListener);
 		lb_Right.addMouseListener(labelClickListener);
+		lb_AudioReact.addMouseListener(labelClickListener);
 	}
 }

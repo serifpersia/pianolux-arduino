@@ -9,16 +9,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class ColorPickerPanel extends JPanel {
+public class pnl_HueOnly extends JPanel {
+
+	public static JLabel lb_Version;
+
+	public static JComboBox<?> cbSerialDevices;
+	public static JComboBox<?> cbMidiDevices;
+	public static JComboBox<?> cbBranch;
 
 	private float hue = 0f;
 	private float saturation = 1f;
 	private float brightness = 1f;
 
-	private BufferedImage colorPanel;
 	private BufferedImage huePanel;
 
 	private int hueRectWidth; // Width of the hue panel rectangle
@@ -26,10 +33,8 @@ public class ColorPickerPanel extends JPanel {
 
 	private int HuerectX;
 	private int HuerectY;
-	private int ColorrectX;
-	private int ColorrectY;
 
-	public ColorPickerPanel() {
+	public pnl_HueOnly() {
 		setBackground(new Color(50, 50, 50));
 
 		MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -58,17 +63,6 @@ public class ColorPickerPanel extends JPanel {
 			float normalizedHue = (float) (x - HuerectX) / (float) hueRectWidth;
 			hue = normalizedHue;
 
-		} else if (x >= ColorrectX && x < ColorrectX + colorPanel.getWidth() && y >= ColorrectY
-				&& y < ColorrectY + colorPanel.getHeight()) {
-			// Calculate the color coordinates within the color panel
-			int colorX = x - ColorrectX;
-			int colorY = y - ColorrectY;
-
-			// Update the saturation and brightness values based on the mouse location
-			float normalizedSaturation = (float) colorX / (float) colorPanel.getWidth();
-			float normalizedBrightness = 1.0f - ((float) colorY / (float) colorPanel.getHeight());
-			saturation = normalizedSaturation;
-			brightness = normalizedBrightness;
 		}
 		updateSelcetedColor();
 		repaint();
@@ -77,65 +71,16 @@ public class ColorPickerPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		drawColorPanel(g);
+
 		drawHuePanel(g);
-	}
-
-	private void drawColorPanel(Graphics g) {
-		int width = getWidth();
-		int height = getHeight();
-
-		int padding = 25; // Set the desired padding
-		int bottomPadding = 50; // Set the desired padding
-
-		// Calculate the dimensions with spacing
-		int rectWidth = width - 2 * padding;
-		int rectHeight = height - 2 * padding;
-
-		// Calculate the positions with spacing
-		ColorrectX = padding;
-		ColorrectY = padding;
-
-		if (colorPanel == null || colorPanel.getWidth() != rectWidth
-				|| colorPanel.getHeight() != rectHeight - bottomPadding) {
-			// Create a new BufferedImage when the panel is resized
-			colorPanel = new BufferedImage(rectWidth, rectHeight - bottomPadding, BufferedImage.TYPE_INT_ARGB);
-		}
-
-		// Fill the image with the hue color
-		for (int x = 0; x < rectWidth; x++) {
-			for (int y = 0; y < rectHeight - bottomPadding; y++) {
-				float saturation = (float) x / (float) rectWidth;
-				float brightness = 1.0f - ((float) y / (float) (rectHeight - bottomPadding));
-				Color color = Color.getHSBColor(hue, saturation, brightness);
-				colorPanel.setRGB(x, y, color.getRGB());
-			}
-		}
-
-		// Draw the BufferedImage onto the JPanel
-		g.drawImage(colorPanel, ColorrectX, ColorrectY, null);
-
-		// Calculate the position of the oval inside the color panel
-		int ovalWidth = 30;
-		int ovalHeight = 30;
-		int ovalX = ColorrectX + (int) (saturation * rectWidth) - ovalWidth / 2;
-		int ovalY = ColorrectY + (int) ((1.0f - brightness) * (rectHeight - bottomPadding)) - ovalHeight / 2;
-
-		// Draw the white border oval
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.WHITE);
-		g2d.setStroke(new BasicStroke(3));
-		g2d.drawOval(ovalX, ovalY, ovalWidth, ovalHeight);
-		g2d.dispose();
 	}
 
 	private void drawHuePanel(Graphics g) {
 		int width = getWidth();
-		int height = getHeight();
+		getHeight();
 
 		int padding = 25; // Set the desired padding
-		int bottomPadding = 50; // Set the desired padding
+		int bottomPadding = 10; // Set the desired padding
 
 		// Calculate the dimensions with spacing
 		int rectWidth = width - 2 * padding;
@@ -145,21 +90,19 @@ public class ColorPickerPanel extends JPanel {
 		if (huePanel == null || huePanel.getWidth() != rectWidth || huePanel.getHeight() != rectHeight) {
 			// Create a new BufferedImage for the hue panel
 			huePanel = new BufferedImage(rectWidth, rectHeight, BufferedImage.TYPE_INT_RGB);
-			Graphics2D hueGraphics = huePanel.createGraphics();
-
-			// Draw the hue panel
-			for (int x = 0; x < rectWidth; x++) {
-				float hueValue = (float) x / (float) rectWidth;
-				Color hueColor = Color.getHSBColor(hueValue, 1.0f, 1.0f);
-				hueGraphics.setColor(hueColor);
-				hueGraphics.fillRect(x, 0, 1, rectHeight);
-			}
-
-			hueGraphics.dispose();
 		}
 
+		Graphics2D hueGraphics = huePanel.createGraphics();
+
+		// Draw the current hue value on the hue panel
+		Color currentHueColor = Color.getHSBColor(hue, 1.0f, 1.0f);
+		hueGraphics.setColor(currentHueColor);
+		hueGraphics.fillRect(0, 0, rectWidth, rectHeight);
+
+		hueGraphics.dispose();
+
 		HuerectX = padding;
-		HuerectY = height - bottomPadding;
+		HuerectY = 0 + bottomPadding;
 
 		// Draw the BufferedImage onto the JPanel
 		g.drawImage(huePanel, HuerectX, HuerectY, null);
