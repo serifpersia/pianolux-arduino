@@ -35,7 +35,7 @@ public class GetUI {
 			"CloudColors", "LavaColors", "ForestColors", "PartyColors");
 
 	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
-			"Animation");
+			"Animation", "Visualizer");
 
 	static List<String> gradientSides = Arrays.asList("2 Side Gradient", "3 Side Gradient", "4 Side Gradient",
 			"5 Side Gradient", "6 Side Gradient", "7 Side Gradient", "8 Side Gradient");
@@ -59,6 +59,8 @@ public class GetUI {
 	static List<String> scaleKeyNames = Arrays.asList("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
 
 	static List<String> scaleNames = Arrays.asList("Major", "Minor");
+
+	static List<String> ledVisualizerEffectsName = Arrays.asList("SpectrumFlow", "Bouncing", "Wave", "ColorfulWave");
 
 	public static String getModeName(int n) {
 		return modes.get(n);

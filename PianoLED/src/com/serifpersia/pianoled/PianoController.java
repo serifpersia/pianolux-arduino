@@ -293,7 +293,7 @@ public class PianoController implements PianoMidiConsumer {
 		try {
 			ByteArrayOutputStream message = null;
 
-			if (!ModesController.AnimationOn) {
+			if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
 				if (ModesController.RandomOn) {
 					Random rand = new Random();
 					int randomHue = rand.nextInt(360); // Generate a random hue value between 0 and 359
@@ -438,7 +438,7 @@ public class PianoController implements PianoMidiConsumer {
 		try
 
 		{
-			if (!ModesController.AnimationOn) {
+			if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
 				arduino.sendCommandKeyOff(notePushed);
 			}
 		} catch (Exception e) {
@@ -524,6 +524,10 @@ public class PianoController implements PianoMidiConsumer {
 			arduino.sendCommandAnimation(n);
 	}
 
+	public void setLedVisualizerEffect(int n) {
+		arduino.sendCommandSetLedVisualizer(n);
+	}
+
 	public void dispose() {
 		// Dispose your app here
 		try {
@@ -546,5 +550,16 @@ public class PianoController implements PianoMidiConsumer {
 	@Override
 	public void onPianoKeyOff(int pitch) {
 		noteOff(0, pitch, 0);
+	}
+
+	public void sendAudioDataToArduino(String data) {
+		try {
+
+			String dataToSend = data + "\n";
+			arduino.sendToArduinoAudio(dataToSend.getBytes());
+
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+		}
 	}
 }

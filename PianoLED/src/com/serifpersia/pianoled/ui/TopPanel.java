@@ -43,6 +43,7 @@ public class TopPanel extends JPanel {
 
 	private Point initialClick;
 	private JButton livePlayButton;
+	public static boolean isLivePlay = false;
 
 	public TopPanel(RightPanel rightPanel, PianoLED pianoLED) {
 		this.rightPanel = rightPanel;
@@ -120,12 +121,13 @@ public class TopPanel extends JPanel {
 				cardLayout.show(rightPanel, cardName);
 
 				if (button == learnButton) {
-					System.out.println("in learn mode");
 					learnOn = true;
 				} else if (button == livePlayButton) {
 					pianoLED.toggleFullScreen();
+					isLivePlay = true;
 				} else {
 					learnOn = false;
+					isLivePlay = false;
 				}
 			}
 
@@ -149,24 +151,18 @@ public class TopPanel extends JPanel {
 	}
 
 	private void dragMouse(JFrame frame) {
-		this.addMouseListener(new MouseAdapter() {
+		frame.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				initialClick = e.getPoint();
-				getComponentAt(initialClick);
 			}
 		});
 
-		this.addMouseMotionListener(new MouseAdapter() {
+		frame.addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				int thisX = frame.getLocation().x;
-				int thisY = frame.getLocation().y;
+				int xMoved = e.getXOnScreen() - initialClick.x;
+				int yMoved = e.getYOnScreen() - initialClick.y;
 
-				int xMoved = (thisX + e.getX()) - (thisX + initialClick.x);
-				int yMoved = (thisY + e.getY()) - (thisY + initialClick.y);
-
-				int x = thisX + xMoved;
-				int y = thisY + yMoved;
-				frame.setLocation(x, y);
+				frame.setLocation(xMoved, yMoved);
 			}
 		});
 	}
@@ -175,5 +171,4 @@ public class TopPanel extends JPanel {
 		WindowEvent windowClosing = new WindowEvent(pianoLED, WindowEvent.WINDOW_CLOSING);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(windowClosing);
 	}
-
 }

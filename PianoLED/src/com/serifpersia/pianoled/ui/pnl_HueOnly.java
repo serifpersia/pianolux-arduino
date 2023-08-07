@@ -1,5 +1,7 @@
 package com.serifpersia.pianoled.ui;
 
+import javax.swing.JPanel;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,18 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 @SuppressWarnings("serial")
 public class pnl_HueOnly extends JPanel {
-
-	public static JLabel lb_Version;
-
-	public static JComboBox<?> cbSerialDevices;
-	public static JComboBox<?> cbMidiDevices;
-	public static JComboBox<?> cbBranch;
 
 	private float hue = 0f;
 	private float saturation = 1f;
@@ -28,9 +20,8 @@ public class pnl_HueOnly extends JPanel {
 
 	private BufferedImage huePanel;
 
-	private int hueRectWidth; // Width of the hue panel rectangle
-	private int hueRectHeight; // Height of the hue panel rectangle
-
+	private int hueRectWidth;
+	private int hueRectHeight;
 	private int HuerectX;
 	private int HuerectY;
 
@@ -59,13 +50,20 @@ public class pnl_HueOnly extends JPanel {
 	}
 
 	private void handleDrag(int x, int y) {
+		boolean hueUpdated = false;
+
 		if (x >= HuerectX && x < HuerectX + hueRectWidth && y >= HuerectY && y < HuerectY + hueRectHeight) {
 			float normalizedHue = (float) (x - HuerectX) / (float) hueRectWidth;
-			hue = normalizedHue;
-
+			if (hue != normalizedHue) {
+				hue = normalizedHue;
+				hueUpdated = true;
+			}
 		}
-		updateSelcetedColor();
-		repaint();
+
+		if (hueUpdated) {
+			updateSelectedColor();
+			repaint();
+		}
 	}
 
 	@Override
@@ -77,24 +75,19 @@ public class pnl_HueOnly extends JPanel {
 
 	private void drawHuePanel(Graphics g) {
 		int width = getWidth();
-		getHeight();
 
-		int padding = 25; // Set the desired padding
-		int bottomPadding = 10; // Set the desired padding
+		int padding = 25;
+		int bottomPadding = 10;
 
-		// Calculate the dimensions with spacing
 		int rectWidth = width - 2 * padding;
 		int rectHeight = 25;
 
-		// Check if huePanel needs to be created or resized
 		if (huePanel == null || huePanel.getWidth() != rectWidth || huePanel.getHeight() != rectHeight) {
-			// Create a new BufferedImage for the hue panel
 			huePanel = new BufferedImage(rectWidth, rectHeight, BufferedImage.TYPE_INT_RGB);
 		}
 
 		Graphics2D hueGraphics = huePanel.createGraphics();
 
-		// Draw the current hue value on the hue panel
 		Color currentHueColor = Color.getHSBColor(hue, 1.0f, 1.0f);
 		hueGraphics.setColor(currentHueColor);
 		hueGraphics.fillRect(0, 0, rectWidth, rectHeight);
@@ -104,14 +97,11 @@ public class pnl_HueOnly extends JPanel {
 		HuerectX = padding;
 		HuerectY = 0 + bottomPadding;
 
-		// Draw the BufferedImage onto the JPanel
 		g.drawImage(huePanel, HuerectX, HuerectY, null);
 
-		// Calculate the dimensions of the hue panel rectangle
 		hueRectWidth = rectWidth;
 		hueRectHeight = rectHeight;
 
-		// Draw the white border circle
 		int ovalWidth = 36;
 		int ovalHeight = rectHeight + 12;
 		int ovalX = HuerectX - ovalWidth / 2;
@@ -123,11 +113,9 @@ public class pnl_HueOnly extends JPanel {
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		// Draw the filled hue oval
 		g2d.setColor(Color.getHSBColor(hue, saturation, brightness));
 		g2d.fillOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
 
-		// Draw the white border circle
 		g2d.setColor(Color.WHITE);
 		g2d.setStroke(new BasicStroke(borderThickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		g2d.drawOval(hueOvalX, ovalY, ovalWidth, ovalHeight);
@@ -135,7 +123,7 @@ public class pnl_HueOnly extends JPanel {
 		g2d.dispose();
 	}
 
-	private void updateSelcetedColor() {
+	private void updateSelectedColor() {
 		Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
 		GetUI.selectedColor = colorPickerColor;
 		pnl_Colors.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
@@ -147,6 +135,7 @@ public class pnl_HueOnly extends JPanel {
 		this.hue = hue;
 		this.saturation = saturation;
 		this.brightness = brightness;
-		GetUI.selectedColor = Color.getHSBColor(hue, saturation, brightness);
+		updateSelectedColor();
+		repaint();
 	}
 }

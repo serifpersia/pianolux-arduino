@@ -33,14 +33,15 @@ const int COMMAND_SET_BG = 247;
 const int COMMAND_VELOCITY = 246;
 const int COMMAND_STRIP_DIRECTION = 245;
 const int COMMAND_SET_GUIDE = 244;
+const int COMMAND_SET_LED_VISUALIZER = 243;
 
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
 int generalBrightness = buffer[++bufIdx];
 int animationIndex;
+int selectedEffect;
 
-
-int DEFAULT_BRIGHTNESS = 200;
+int DEFAULT_BRIGHTNESS = 255;
 
 int SPLASH_HEAD_FADE_RATE = 5;
 int splashMaxLength = 8;
@@ -111,10 +112,9 @@ void StartupAnimation() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CHSV(getHueForPos(i), 255, 255);
     FastLED.show();
-    delay(3);
     leds[i] = CHSV(0, 0, 0);
-    FastLED.show();
   }
+  FastLED.show();
 }
 
 void setup() {
@@ -380,6 +380,19 @@ void loop() {
           break;
         }
 
+      case COMMAND_SET_LED_VISUALIZER:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          debugLightOn(13);
+
+          bool on = buffer[++bufIdx];
+
+          selectedEffect = buffer[++bufIdx];
+          MODE = COMMAND_SET_LED_VISUALIZER;
+          break;
+        }
+
       default:
         {
           break;
@@ -408,7 +421,6 @@ void loop() {
   }
   //Animation
 
-
   if (MODE == COMMAND_ANIMATION) {
     Animatons(animationIndex);
     static uint8_t startIndex = 0;
@@ -416,6 +428,13 @@ void loop() {
 
     FillLEDsFromPaletteColors(startIndex);
   }
+
+  //LED Audio Visualizer
+
+  if (MODE == COMMAND_SET_LED_VISUALIZER) {
+    Visualizer(selectedEffect);
+  }
+
   FastLED.show();
 }
 int ledNum(int i) {

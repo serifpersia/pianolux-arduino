@@ -1,18 +1,20 @@
 package com.serifpersia.pianoled.liveplay;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.ui.DrawPiano;
 import com.serifpersia.pianoled.ui.GetUI;
+import com.serifpersia.pianoled.ui.TopPanel;
 
 @SuppressWarnings("serial")
 public class LiveRoll extends JPanel implements PianoMidiConsumer {
@@ -25,6 +27,12 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	private LinkedList<NoteWithTime> notes;
 	private long startTime;
 
+	private boolean showMessage = true;
+	private long lastActivityTime;
+	private Timer inactivityTimer;
+
+	private HashSet<Integer> activeNotes;
+
 	public LiveRoll(PianoLED pianoLED, LivePlayPanel livePlayPanel) {
 
 		setBackground(Color.BLACK);
@@ -34,6 +42,18 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		pianoLED.getPianoController().addPianoReceiverConsumer(this);
 		setDoubleBuffered(true); // Enable double buffering
 		start();
+
+		activeNotes = new HashSet<>();
+
+		inactivityTimer = new Timer(3000, e -> checkInactivity());
+		inactivityTimer.start();
+	}
+
+	private void checkInactivity() {
+		if (activeNotes.isEmpty() && hasInactivityPassed(3000)) {
+			showMessage = true;
+			repaint();
+		}
 	}
 
 	public LinkedList<NoteWithTime> getNotes() {
@@ -42,6 +62,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	public void start() {
 		startTime = System.currentTimeMillis();
+		lastActivityTime = startTime;
 		resetNotes();
 	}
 
@@ -58,7 +79,7 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 			drawGrid(g);
 		}
 		if (notes != null && notes.size() > 0) {
-			drawNotes(g, new LinkedList<NoteWithTime>(notes), elapsedTime);
+			drawNotes(g, elapsedTime);
 		}
 	}
 
@@ -67,14 +88,16 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	// Visualisation
-	public void drawNotes(Graphics g, LinkedList<NoteWithTime> notes, long elapsedTime) {
-		notes.forEach(note -> drawNote(g, note, elapsedTime, 0.9, 1.5));
+	public void drawNotes(Graphics g, long elapsedTime) {
+		for (NoteWithTime note : notes) {
+			drawNote(g, note, elapsedTime, 0.9, 1.5);
+		}
 	}
 
 	public void drawNote(Graphics g, NoteWithTime note, long elapsedTime, double whiteKeyScaleFactor,
 			double blackKeyScaleFactor) {
 		if (note.getEnd() > 0 && note.getEnd() < elapsedTime - PIANO_ROLL_HEIGHT_IN_SEC * 1000) {
-// note not visible
+			// note not visible
 			return;
 		}
 		long noteElapsedTime = note.getStart() - elapsedTime;
@@ -85,33 +108,40 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		int h = note.getEnd() == -1 ? getHeight() * 4000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
 
 		if (livePanel.isCustomColorSelected()) {
-			NOTE_COLOR = GetUI.selectedColor;
+			if (piano.isBlackKey(note.getPitch())) {
+				// Use the custom color with darkened version for black keys
+				int darkerRed = (int) (GetUI.selectedColor.getRed() * 0.7); // Reduce red component by 30%
+				int darkerGreen = (int) (GetUI.selectedColor.getGreen() * 0.7); // Reduce green component by 30%
+				int darkerBlue = (int) (GetUI.selectedColor.getBlue() * 0.7); // Reduce blue component by 30%
+				NOTE_COLOR = new Color(darkerRed, darkerGreen, darkerBlue);
+			} else {
+				// Use the custom color for white keys
+				NOTE_COLOR = GetUI.selectedColor;
+			}
 		} else {
-			NOTE_COLOR = new Color(145, 225, 66);
+			if (piano.isBlackKey(note.getPitch())) {
+				// Use the darker version of the default color for black keys
+				int darkerRed = (int) (NOTE_COLOR.getRed() * 0.7); // Reduce red component by 30%
+				int darkerGreen = (int) (NOTE_COLOR.getGreen() * 0.7); // Reduce green component by 30%
+				int darkerBlue = (int) (NOTE_COLOR.getBlue() * 0.7); // Reduce blue component by 30%
+				NOTE_COLOR = new Color(darkerRed, darkerGreen, darkerBlue);
+			} else {
+				// Use the default color for white keys
+				NOTE_COLOR = new Color(145, 225, 66);
+			}
 		}
 
 		double scaleFactor = piano.isBlackKey(note.getPitch()) ? blackKeyScaleFactor : whiteKeyScaleFactor;
 
-// Calculate the new width with the appropriate scaleFactor
+		// Calculate the new width with the appropriate scaleFactor
 		int newWidth = (int) (w * scaleFactor);
 
-// Calculate the new x coordinate to keep the same center position
+		// Calculate the new x coordinate to keep the same center position
 		int newX = x + (w - newWidth) / 2;
 
-// Calculate the darker shade of the NOTE_COLOR for black keys
-		Color mainColor;
-		if (piano.isBlackKey(note.getPitch())) {
-			int darkerRed = (int) (NOTE_COLOR.getRed() * 0.7); // Reduce red component by 30%
-			int darkerGreen = (int) (NOTE_COLOR.getGreen() * 0.7); // Reduce green component by 30%
-			int darkerBlue = (int) (NOTE_COLOR.getBlue() * 0.7); // Reduce blue component by 30%
-			mainColor = new Color(darkerRed, darkerGreen, darkerBlue);
-		} else {
-			mainColor = NOTE_COLOR; // For white keys, use the original color
-		}
-
-// Draw the note rectangle
+		// Draw the note rectangle
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(mainColor);
+		g2d.setColor(NOTE_COLOR);
 		g2d.fillRoundRect(newX, y, newWidth, h, 10, 10);
 	}
 
@@ -120,7 +150,6 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	}
 
 	private double getMsHeight() {
-
 		return ((double) getHeight()) / (PIANO_ROLL_HEIGHT_IN_SEC * 1000);
 	}
 
@@ -142,12 +171,23 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	@Override
 	public void onPianoKeyOn(int pitch, int velocity) {
+		lastActivityTime = System.currentTimeMillis();
+		showMessage = false;
 		addNoteWithOpenEnd(pitch, velocity);
+		activeNotes.add(pitch);
+		inactivityTimer.restart();
 	}
 
 	@Override
 	public void onPianoKeyOff(int pitch) {
+		lastActivityTime = System.currentTimeMillis();
 		closeNote(pitch);
+		activeNotes.remove(pitch);
+		inactivityTimer.restart();
+	}
+
+	private boolean hasInactivityPassed(long inactivityTime) {
+		return (System.currentTimeMillis() - lastActivityTime) > inactivityTime;
 	}
 
 	private void closeNote(int pitch) {
@@ -171,4 +211,26 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	private void addNoteWithOpenEnd(int pitch, int velocity) {
 		notes.add(new NoteWithTime(pitch, velocity, getElapsedTime(), -1, 0));
 	}
+
+	@Override
+	public void paint(Graphics g) {
+		String message1 = "Awaiting Midi Input...";
+		String message2 = "Press F key to exit/enter fullscreen mode!";
+
+		super.paint(g);
+		if (TopPanel.isLivePlay && showMessage) {
+			// Draw the message in the center of the frame.
+			Font font = new Font("Poppins", Font.PLAIN, 35);
+			g.setColor(Color.WHITE);
+			g.setFont(font);
+
+			int x1 = (getWidth() - g.getFontMetrics().stringWidth(message1)) / 2;
+			int x2 = (getWidth() - g.getFontMetrics().stringWidth(message2)) / 2;
+			int y = getHeight() / 2;
+
+			g.drawString(message1, x1, y);
+			g.drawString(message2, x2, y + 45);
+		}
+	}
+
 }

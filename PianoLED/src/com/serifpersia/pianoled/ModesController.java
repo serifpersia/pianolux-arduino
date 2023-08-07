@@ -23,6 +23,8 @@ public class ModesController {
 
 	public static boolean AnimationOn = false;
 
+	public static boolean VisualizerOn = false;
+
 	public static boolean Gradient2Side = true;
 
 	public static boolean Gradient3Side = false;
@@ -55,6 +57,7 @@ public class ModesController {
 		SplitOn = false;
 		GradientOn = false;
 		SplashOn = false;
+		VisualizerOn = false;
 
 	}
 
@@ -103,7 +106,13 @@ public class ModesController {
 			GetUI.setDefaults(8, 255, 255);
 			AnimationOn = true;
 			break;
+		case "Visualizer":
+			GetUI.setDefaults(8, 255, 0);
+			VisualizerOn = true;
+			break;
 		}
+		System.out.println(n);
+		System.out.println(VisualizerOn);
 	}
 
 	public void gradientSideSelect(int n) {

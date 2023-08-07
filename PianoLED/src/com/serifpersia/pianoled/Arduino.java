@@ -37,6 +37,7 @@ public class Arduino {
 	final static byte COMMAND_VELOCITY = (byte) 246;
 	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
 	final static byte COMMAND_SET_GUIDE = (byte) 244;
+	final static byte COMMAND_SET_LED_VISUALIZER = (byte) 243;
 
 	public ByteArrayOutputStream commandSetColor(Color c, int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -163,11 +164,20 @@ public class Arduino {
 		message.write((byte) brightness);
 		message.write((byte) scaleKeyIndex);
 
-
 		for (int i = 0; i < scalePattern.length; i++) {
 			message.write((byte) scalePattern[i]);
 		}
 
+		return message;
+	}
+
+	public ByteArrayOutputStream commandSetLedVisualizer(int effect) {
+		ByteArrayOutputStream message = new ByteArrayOutputStream();
+		message.write((byte) COMMAND_BYTE1);
+		message.write((byte) COMMAND_BYTE2);
+		message.write((byte) COMMAND_SET_LED_VISUALIZER);
+
+		message.write((byte) effect);
 		return message;
 	}
 
@@ -214,6 +224,17 @@ public class Arduino {
 	public void sendCommandSetGuide(int currentArray, int hue, int saturation, int brightness, int scaleKeyIndex,
 			int[] scalePattern) {
 		sendToArduino(commandSetGuide(currentArray, hue, saturation, brightness, scaleKeyIndex, scalePattern));
+	}
+
+	public void sendCommandSetLedVisualizer(int effect) {
+		sendToArduino(commandSetLedVisualizer(effect));
+
+	}
+
+	public void sendToArduinoAudio(byte[] data) throws SerialPortException {
+		if (serialPort != null && serialPort.isOpened()) {
+			serialPort.writeBytes(data);
+		}
 	}
 
 	public void sendToArduino(ByteArrayOutputStream msg) {
