@@ -21,7 +21,7 @@ long post_react = 0;  // OLD SPIKE CONVERSION
 
 // RAINBOW WAVE SETTINGS
 int wheel_speed = 3;
-int selectedAnimationIndex;
+int selectedAnimationIndex = 0;
 
 // Function prototypes for animation effects
 CRGB SpectrumFlow(int pos);
@@ -72,15 +72,17 @@ CRGB ColorfulWave(int pos) {
 }
 
 // Function pointer array for different animation effects
-CRGB (*animationFunctions[])
+CRGB(*animationFunctions[])
 (int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave };
 
 void Visualizer(int selectedAnimation) {
-  if (Serial.available() > 0) {
-    String data = Serial.readStringUntil('\n');
-    int audioInputValue = data.toInt();
+  if (Serial.available() >= 2) {
+    byte dataBytes[2];
+    Serial.readBytes(dataBytes, 2);
+    int audioInputValue = dataBytes[0] | (dataBytes[1] << 8);
     react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
   }
+
 
   animation();
 
@@ -125,6 +127,4 @@ void animation() {
         leds[i] = CRGB::Black;
     }
   }
-
-  FastLED.show();
 }

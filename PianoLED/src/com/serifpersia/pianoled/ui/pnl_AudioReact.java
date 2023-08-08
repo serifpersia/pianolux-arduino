@@ -31,12 +31,11 @@ public class pnl_AudioReact extends JPanel {
 
 	private static final int ANALOG_MIN_VALUE = 0;
 	private static final int ANALOG_MAX_VALUE = 1023;
-	private static final int AUDIO_BUFFER_SIZE = 4096; // Increased buffer size for audio data
+	private static final int AUDIO_BUFFER_SIZE = 1024; // Increased buffer size for audio data
 
 	private TargetDataLine line;
 	private boolean capturing = false;
 
-	private ModesController modesController;
 	private PianoController pianoController;
 
 	public static JComboBox<?> cb_AudioReactLEDEffect;
@@ -47,7 +46,7 @@ public class pnl_AudioReact extends JPanel {
 		setBackground(new Color(50, 50, 50));
 
 		pianoController = pianoLED.getPianoController();
-		modesController = new ModesController(pianoLED);
+		new ModesController(pianoLED);
 
 		init();
 		populateAudioInputDevices();
@@ -201,7 +200,7 @@ public class pnl_AudioReact extends JPanel {
 				return;
 			}
 
-			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 22050, 16, 1, 2, 22050, false);
+			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 41000, 16, 1, 2, 41000, false);
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 			if (!AudioSystem.isLineSupported(info)) {
 				System.err.println("Line not supported");
@@ -232,13 +231,12 @@ public class pnl_AudioReact extends JPanel {
 					int audioInputValue = chunks.get(chunks.size() - 1);
 					System.out.println("Audio Input Value: " + audioInputValue);
 					if (audioInputValue > 0) {
-						pianoController.sendAudioDataToArduino(String.valueOf(audioInputValue));
+						pianoController.sendAudioDataToArduino(audioInputValue);
 					}
 				}
 
 				@Override
 				protected void done() {
-
 				}
 			};
 
@@ -251,16 +249,16 @@ public class pnl_AudioReact extends JPanel {
 
 	private int processAudioData(byte[] audioData, int bytesRead) {
 		long sum = 0;
+
 		for (int i = 0; i < bytesRead - 1; i += 2) {
 			short sample = (short) ((audioData[i + 1] << 8) | audioData[i]);
 			sum += sample * sample;
 		}
-		double rms = Math.sqrt(sum / (bytesRead / 2));
-		return (int) map(rms, 0, Short.MAX_VALUE, ANALOG_MIN_VALUE, ANALOG_MAX_VALUE);
-	}
 
-	private double map(double value, double inMin, double inMax, double outMin, double outMax) {
-		return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+		double rms = Math.sqrt(sum / (bytesRead / 2));
+		double scalingFactor = (ANALOG_MAX_VALUE - ANALOG_MIN_VALUE) / (double) Short.MAX_VALUE;
+
+		return ANALOG_MIN_VALUE + (int) (scalingFactor * rms);
 	}
 
 	private void stopAudioCapture() {
