@@ -385,9 +385,6 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(13);
-
-          bool on = buffer[++bufIdx];
-
           selectedEffect = buffer[++bufIdx];
           MODE = COMMAND_SET_LED_VISUALIZER;
           break;
