@@ -37,7 +37,8 @@ CRGB Wave(int pos);
 CRGB ColorfulWave(int pos);
 
 // Function pointer array for different animation effects
-CRGB (*animationFunctions[])(int pos) = {SpectrumFlow, BouncingBalls, Wave, ColorfulWave};
+CRGB (*animationFunctions[])
+(int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave };
 
 // Selected animation index (Change this to select different animations)
 int selectedAnimationIndex = 1;
@@ -110,7 +111,7 @@ void animation() {
   int center = NUM_LEDS / 2;
   int scroll_position = (millis() / wheel_speed) % 256;
 
-  int audio_threshold = 0;  // You can adjust this value based on your experimentation
+  int audio_threshold = 0;    // You can adjust this value based on your experimentation
   float scalingFactor = 1.1;  // Adjust this value to control the boost level
 
   if (react <= audio_threshold) {
@@ -118,7 +119,8 @@ void animation() {
   } else {
     int boostedReact = react * scalingFactor;
 
-    CRGB (*currentAnimation)(int pos) = animationFunctions[selectedAnimationIndex];
+    CRGB (*currentAnimation)
+    (int pos) = animationFunctions[selectedAnimationIndex];
 
     for (int i = center; i < NUM_LEDS; i++) {
       if (i < center + boostedReact)
@@ -139,9 +141,10 @@ void animation() {
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    String data = Serial.readStringUntil('\n');
-    int audioInputValue = data.toInt();
+  if (Serial.available() >= 2) {
+    byte dataBytes[2];
+    Serial.readBytes(dataBytes, 2);
+    int audioInputValue = dataBytes[0] | (dataBytes[1] << 8);
     react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
   }
 

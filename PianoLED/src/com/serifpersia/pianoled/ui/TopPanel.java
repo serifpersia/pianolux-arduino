@@ -61,7 +61,7 @@ public class TopPanel extends JPanel {
 		lb_Title.setFont(new Font("Poppins", Font.PLAIN, 16));
 		add(lb_Title);
 
-		lb_Title.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 636));
+		lb_Title.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 635));
 
 		JButton dashboardButton = createButton(pianoLED, "", "Dashboard");
 
