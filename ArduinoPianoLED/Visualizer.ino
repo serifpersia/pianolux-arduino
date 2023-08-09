@@ -1,6 +1,5 @@
 #include "Visualizer.h"
 
-
 // Variables for the Colorful Wave effect
 #define WAVE_FREQUENCY 2
 #define WAVE_AMPLITUDE 20
@@ -21,6 +20,7 @@ long post_react = 0;  // OLD SPIKE CONVERSION
 
 // RAINBOW WAVE SETTINGS
 int wheel_speed = 3;
+int audioDataMapped;
 int selectedAnimationIndex = 0;
 
 // Function prototypes for animation effects
@@ -32,14 +32,14 @@ CRGB ColorfulWave(int pos);
 
 CRGB SpectrumFlow(int pos) {
   int hue = pos + k * NUM_LEDS / 255;
-  int audio_level = react * 255 / NUM_LEDS;
+  int audio_level = audioDataMapped * 255 / NUM_LEDS;
   hue = constrain(hue + audio_level, 0, 255);
   return CHSV(hue, 255, 255);
 }
 
 CRGB BouncingBalls(int pos) {
   int hue = pos + k * NUM_LEDS / 255;
-  int audio_level = react * 255 / NUM_LEDS;
+  int audio_level = audioDataMapped * 255 / NUM_LEDS;
   int brightness = audio_level;
   int ballPos[NUM_BALLS];
   for (int i = 0; i < NUM_BALLS; i++) {
@@ -58,14 +58,14 @@ CRGB BouncingBalls(int pos) {
 
 CRGB Wave(int pos) {
   int hue = pos * 255 / NUM_LEDS;
-  int audio_level = react * 255 / NUM_LEDS;
+  int audio_level = audioDataMapped * 255 / NUM_LEDS;
   hue = constrain(hue + audio_level, 0, 255);
   return CHSV(hue, 255, 255);
 }
 
 CRGB ColorfulWave(int pos) {
   int hue = (pos * WAVE_FREQUENCY + k) * 255 / NUM_LEDS;
-  int audio_level = react * 255 / NUM_LEDS;
+  int audio_level = audioDataMapped * 255 / NUM_LEDS;
   int brightness = audio_level;
   int offset = pos * WAVE_AMPLITUDE / NUM_LEDS;
   return CHSV(hue, 255, brightness - offset);
@@ -75,40 +75,22 @@ CRGB ColorfulWave(int pos) {
 CRGB(*animationFunctions[])
 (int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave };
 
-void Visualizer(int selectedAnimation) {
-  if (Serial.available() >= 2) {
-    byte dataBytes[2];
-    Serial.readBytes(dataBytes, 2);
-    int audioInputValue = dataBytes[0] | (dataBytes[1] << 8);
-    react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
-  }
+void Visualizer(int audioDataMapped, int selectedAnimation) {
 
+  selectedAnimationIndex = selectedAnimation;
+  
+  int audio = audioDataMapped;
 
-  animation();
-
-  k = k - wheel_speed;
-  if (k < 0)
-    k = 255;
-
-  decay_check++;
-  if (decay_check > decay) {
-    decay_check = 0;
-    if (react > 0)
-      react--;
-  }
-}
-
-void animation() {
   int center = NUM_LEDS / 2;
   int scroll_position = (millis() / wheel_speed) % 256;
 
   int audio_threshold = 0;    // You can adjust this value based on your experimentation
   float scalingFactor = 1.1;  // Adjust this value to control the boost level
 
-  if (react <= audio_threshold) {
+  if (audioDataMapped <= audio_threshold) {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
   } else {
-    int boostedReact = react * scalingFactor;
+    int boostedReact = audioDataMapped * scalingFactor;
 
     CRGB(*currentAnimation)
     (int pos) = animationFunctions[selectedAnimationIndex];
@@ -126,5 +108,16 @@ void animation() {
       else
         leds[i] = CRGB::Black;
     }
+  }
+
+  k = k - wheel_speed;
+  if (k < 0)
+    k = 255;
+
+  decay_check++;
+  if (decay_check > decay) {
+    decay_check = 0;
+    if (react > 0)
+      react--;
   }
 }

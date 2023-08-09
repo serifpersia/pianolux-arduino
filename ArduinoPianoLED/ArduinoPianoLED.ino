@@ -218,6 +218,13 @@ void loop() {
   int bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
+
+  // Combine the two bytes into an integer value
+  int audioInputValue = (buffer[1] << 8) | buffer[0];
+
+  // Map the audio input value to the desired range
+  int audioDataMapped = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
+
   boolean commandByte1Arrived = false;
   boolean commandByte2Arrived = false;
   for (int bufIdx = 0; bufIdx < bufferSize; bufIdx++) {
@@ -430,7 +437,7 @@ void loop() {
   //LED Audio Visualizer
 
   if (MODE == COMMAND_SET_LED_VISUALIZER) {
-    Visualizer(selectedEffect);
+    Visualizer(audioDataMapped, selectedEffect);
   }
 
   FastLED.show();
