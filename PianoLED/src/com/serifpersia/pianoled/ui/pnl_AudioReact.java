@@ -200,7 +200,7 @@ public class pnl_AudioReact extends JPanel {
 				return;
 			}
 
-			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 41000, 16, 1, 2, 41000, false);
+			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 22050, 16, 1, 2, 22050, false);
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 			if (!AudioSystem.isLineSupported(info)) {
 				System.err.println("Line not supported");

@@ -37,11 +37,11 @@ CRGB Wave(int pos);
 CRGB ColorfulWave(int pos);
 
 // Function pointer array for different animation effects
-CRGB (*animationFunctions[])
+CRGB(*animationFunctions[])
 (int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave };
 
 // Selected animation index (Change this to select different animations)
-int selectedAnimationIndex = 1;
+int selectedAnimationIndex = 0;
 
 int getHueForPos(int pos) {
   return pos * 255 / NUM_LEDS;
@@ -119,7 +119,7 @@ void animation() {
   } else {
     int boostedReact = react * scalingFactor;
 
-    CRGB (*currentAnimation)
+    CRGB(*currentAnimation)
     (int pos) = animationFunctions[selectedAnimationIndex];
 
     for (int i = center; i < NUM_LEDS; i++) {

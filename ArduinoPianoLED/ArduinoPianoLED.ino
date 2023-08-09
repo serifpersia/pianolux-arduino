@@ -35,6 +35,7 @@ const int COMMAND_STRIP_DIRECTION = 245;
 const int COMMAND_SET_GUIDE = 244;
 const int COMMAND_SET_LED_VISUALIZER = 243;
 
+int bufferSize;
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
 int generalBrightness = buffer[++bufIdx];
@@ -215,7 +216,7 @@ void loop() {
 
   currentTime = millis();
 
-  int bufferSize = Serial.available();
+  bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
 
