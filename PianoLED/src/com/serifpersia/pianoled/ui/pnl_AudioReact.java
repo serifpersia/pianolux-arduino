@@ -229,8 +229,8 @@ public class pnl_AudioReact extends JPanel {
 				@Override
 				protected void process(java.util.List<Integer> chunks) {
 					int audioInputValue = chunks.get(chunks.size() - 1);
-					System.out.println("Audio Input Value: " + audioInputValue);
 					if (audioInputValue > 0) {
+						System.out.println("Audio Input Value: " + audioInputValue);
 						pianoController.sendAudioDataToArduino(audioInputValue);
 					}
 				}

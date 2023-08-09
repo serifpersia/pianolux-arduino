@@ -12,6 +12,8 @@
 #define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
                                  //for external power type the current example 3000 for 3A (3 Amps)
 
+boolean debug = false;
+
 int NUM_LEDS = 176;  // how many leds do you want to control
 
 int STRIP_DIRECTION = 0;  //0 - left-to-right
@@ -200,15 +202,24 @@ void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[],
   FastLED.show();
 }
 
-
-
-boolean debug = false;
-void debugLightOn(int n) {
+void debugLightOn(int n, CRGB color) {
   if (debug) {
-    leds[n] = leds[n].LightBlue;
+    if( n > 0 && n <= NUM_LEDS )
+    {
+      leds[n] = color;
+    }
+    else
+    {
+      leds[0] = CRGB::Red;
+    }
     FastLED.show();
   }
 }
+
+void debugLightOn(int n) {
+  debugLightOn(n, CRGB::LightBlue);
+}
+
 
 FadeController* fadeCtrl = new FadeController();
 //Main loop
@@ -216,7 +227,8 @@ void loop() {
 
   currentTime = millis();
 
-  bufferSize = Serial.available();
+  int rawDataReceived = 0;
+  int bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
 
@@ -242,6 +254,7 @@ void loop() {
           debugLightOn(2);
           if (commandByte1Arrived) {
             commandByte2Arrived = true;
+            rawDataReceived = 0;
           }
           commandByte1Arrived = false;
           break;
@@ -292,7 +305,6 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(6);
-          MODE = COMMAND_SET_COLOR;
           byte redVal = buffer[++bufIdx];
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];
@@ -401,9 +413,27 @@ void loop() {
 
       default:
         {
+          rawDataReceived++;
+          if (MODE == COMMAND_SET_LED_VISUALIZER && rawDataReceived >= 2) {
+            rawDataReceived = 0;
+            int audioInputValue = buffer[bufIdx-1] | (buffer[bufIdx] << 8);
+            debugLightOn(audioInputValue);
+            Visualizer(audioInputValue, selectedEffect);
+            FastLED.show();
+          }
           break;
         }
     }
+  }
+
+  if(MODE > 240 && MODE < 260)
+  {
+    debugLightOn(MODE-240+10, CRGB::Green);
+  }
+
+  if (MODE == COMMAND_SET_LED_VISUALIZER )
+  {
+    return;
   }
 
   //slowing it down with interval
@@ -426,19 +456,11 @@ void loop() {
     previousFadeTime = currentTime;
   }
   //Animation
-
   if (MODE == COMMAND_ANIMATION) {
     Animatons(animationIndex);
     static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
-
     FillLEDsFromPaletteColors(startIndex);
-  }
-
-  //LED Audio Visualizer
-
-  if (MODE == COMMAND_SET_LED_VISUALIZER) {
-    Visualizer(audioDataMapped, selectedEffect);
   }
 
   FastLED.show();
