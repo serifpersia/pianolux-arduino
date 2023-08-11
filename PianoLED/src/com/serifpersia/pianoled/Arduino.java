@@ -152,11 +152,14 @@ public class Arduino {
 	}
 	
 	public ByteArrayOutputStream commandAudioData(int data) {
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		message.write((byte) (data & 0xFF));
-		message.write((byte) ((data >> 8) & 0xFF));
-		return message;
+	    ByteArrayOutputStream message = new ByteArrayOutputStream();
+	    byte[] dataBytes = new byte[2];
+	    dataBytes[0] = (byte) (data & 0xFF);
+	    dataBytes[1] = (byte) ((data >> 8) & 0xFF);
+	    message.write(dataBytes, 0, 2);
+	    return message;
 	}
+
 	
 	public ByteArrayOutputStream commandSetGuide(int currentArray, int hue, int saturation, int brightness,
 			int scaleKeyIndex, int[] scalePattern) {

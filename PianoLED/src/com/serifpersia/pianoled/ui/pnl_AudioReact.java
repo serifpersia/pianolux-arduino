@@ -12,6 +12,9 @@ import com.serifpersia.pianoled.PianoLED;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import javax.swing.JComboBox;
 import java.awt.Font;
 import javax.swing.JLabel;
@@ -41,6 +44,9 @@ public class pnl_AudioReact extends JPanel {
 	public static JComboBox<?> cb_AudioReactLEDEffect;
 	private JComboBox<String> cb_AudioDevice;
 	private JButton btnStart;;
+	
+	private BlockingQueue<Integer> audioQueue = new LinkedBlockingQueue<>(); // Added aud
+	
 
 	public pnl_AudioReact(PianoLED pianoLED) {
 		setBackground(new Color(50, 50, 50));
@@ -200,7 +206,10 @@ public class pnl_AudioReact extends JPanel {
 				return;
 			}
 
-			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 22050, 16, 1, 2, 22050, false);
+			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 16000, 8, 1, 1, 16000, false); // 16
+																													// kHz,
+																													// 8
+																													// bits
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 			if (!AudioSystem.isLineSupported(info)) {
 				System.err.println("Line not supported");
@@ -221,18 +230,9 @@ public class pnl_AudioReact extends JPanel {
 					while (capturing) {
 						bytesRead = line.read(buffer, 0, buffer.length);
 						int audioInputValue = processAudioData(buffer, bytesRead);
-						publish(audioInputValue);
+						audioQueue.put(audioInputValue); // Put audio data into the queue
 					}
 					return null;
-				}
-
-				@Override
-				protected void process(java.util.List<Integer> chunks) {
-					int audioInputValue = chunks.get(chunks.size() - 1);
-					if (audioInputValue > 0) {
-						System.out.println("Audio Input Value: " + audioInputValue);
-						pianoController.sendAudioDataToArduino(audioInputValue);
-					}
 				}
 
 				@Override
@@ -241,6 +241,19 @@ public class pnl_AudioReact extends JPanel {
 			};
 
 			worker.execute();
+
+			// Create a separate thread for non-blocking serial communication
+			new Thread(() -> {
+				while (capturing) {
+					try {
+						int audioValue = audioQueue.take(); // Take audio data from the queue
+						pianoController.sendAudioDataToArduino(audioValue);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						e.printStackTrace();
+					}
+				}
+			}).start();
 
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();

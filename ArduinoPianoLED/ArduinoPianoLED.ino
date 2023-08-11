@@ -1,4 +1,18 @@
+/*
+PianoLED is an open-source project that aims to provide MIDI-based LED control to the masses.
+ It is developed by a one-person team, yours truly, known as serifpersia, or Scarlett.
 
+If you modify this code and redistribute the PianoLED project, please ensure that you
+don't remove this disclaimer or appropriately credit the original author of the project 
+by linking to the project's source on GitHub: github.com/serifpersia/pianoled-arduino/
+Failure to comply with these terms would constitute a violation of the project's 
+MIT license under which PianoLED is released.
+
+Copyright © 2023 Serif Rami, also known as serifpersia.
+
+Contributors: hasimov, also known as Arthist.
+
+*/
 //PianoLED
 
 #include <FastLED.h>
@@ -36,7 +50,7 @@ const int COMMAND_VELOCITY = 246;
 const int COMMAND_STRIP_DIRECTION = 245;
 const int COMMAND_SET_GUIDE = 244;
 const int COMMAND_SET_LED_VISUALIZER = 243;
-
+long react = 0;
 int bufferSize;
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -204,12 +218,9 @@ void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[],
 
 void debugLightOn(int n, CRGB color) {
   if (debug) {
-    if( n > 0 && n <= NUM_LEDS )
-    {
+    if (n > 0 && n <= NUM_LEDS) {
       leds[n] = color;
-    }
-    else
-    {
+    } else {
       leds[0] = CRGB::Red;
     }
     FastLED.show();
@@ -227,16 +238,9 @@ void loop() {
 
   currentTime = millis();
 
-  int rawDataReceived = 0;
   int bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
-
-  // Combine the two bytes into an integer value
-  int audioInputValue = (buffer[1] << 8) | buffer[0];
-
-  // Map the audio input value to the desired range
-  int audioDataMapped = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
 
   boolean commandByte1Arrived = false;
   boolean commandByte2Arrived = false;
@@ -254,7 +258,6 @@ void loop() {
           debugLightOn(2);
           if (commandByte1Arrived) {
             commandByte2Arrived = true;
-            rawDataReceived = 0;
           }
           commandByte1Arrived = false;
           break;
@@ -413,27 +416,13 @@ void loop() {
 
       default:
         {
-          rawDataReceived++;
-          if (MODE == COMMAND_SET_LED_VISUALIZER && rawDataReceived >= 2) {
-            rawDataReceived = 0;
-            int audioInputValue = buffer[bufIdx-1] | (buffer[bufIdx] << 8);
-            debugLightOn(audioInputValue);
-            Visualizer(audioInputValue, selectedEffect);
-            FastLED.show();
+          if (buffer >= 2) {
+            int audioInputValue = buffer[0] | (buffer[1] << 8);
+            react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
           }
           break;
         }
     }
-  }
-
-  if(MODE > 240 && MODE < 260)
-  {
-    debugLightOn(MODE-240+10, CRGB::Green);
-  }
-
-  if (MODE == COMMAND_SET_LED_VISUALIZER )
-  {
-    return;
   }
 
   //slowing it down with interval
@@ -461,6 +450,10 @@ void loop() {
     static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
     FillLEDsFromPaletteColors(startIndex);
+  }
+
+  if (MODE == COMMAND_SET_LED_VISUALIZER) {
+    Visualizer(selectedEffect);
   }
 
   FastLED.show();
@@ -548,9 +541,6 @@ void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   leds[ledNum(ledNo)].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
-
-
-
 
 
 float distance(CRGB color1, CRGB color2) {
