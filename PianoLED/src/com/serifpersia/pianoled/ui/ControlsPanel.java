@@ -136,7 +136,7 @@ public class ControlsPanel extends JPanel {
 		lb_Right.setForeground(new Color(128, 128, 128));
 		lb_Right.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		lb_AudioReact = new JLabel("Audio React Controls");
+		lb_AudioReact = new JLabel("Visualizer");
 		lb_AudioReact.setForeground(Color.GRAY);
 		lb_AudioReact.setFont(new Font("Poppins", Font.PLAIN, 21));
 

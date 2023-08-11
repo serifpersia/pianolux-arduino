@@ -123,7 +123,7 @@ public class TopPanel extends JPanel {
 				if (button == learnButton) {
 					learnOn = true;
 				} else if (button == livePlayButton) {
-					pianoLED.toggleFullScreen();
+				//	pianoLED.toggleFullScreen();
 					isLivePlay = true;
 				} else {
 					learnOn = false;

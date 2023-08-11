@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
@@ -20,6 +22,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -28,13 +31,14 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.JButton;
+import javax.swing.JSlider;
 
 @SuppressWarnings("serial")
 public class pnl_AudioReact extends JPanel {
 
 	private static final int ANALOG_MIN_VALUE = 0;
 	private static final int ANALOG_MAX_VALUE = 1023;
-	private static final int AUDIO_BUFFER_SIZE = 1024; // Increased buffer size for audio data
+	private int AUDIO_BUFFER_SIZE = 2048; // Increased buffer size for audio data
 
 	private TargetDataLine line;
 	private boolean capturing = false;
@@ -44,9 +48,15 @@ public class pnl_AudioReact extends JPanel {
 	public static JComboBox<?> cb_AudioReactLEDEffect;
 	private JComboBox<String> cb_AudioDevice;
 	private JButton btnStart;;
-	
+
 	private BlockingQueue<Integer> audioQueue = new LinkedBlockingQueue<>(); // Added aud
-	
+
+	static int defaultFadeVal = 200;
+
+	static int defaultResponseVal = 2048;
+
+	private JSlider sld_Fade;
+	private JSlider sld_Response;
 
 	public pnl_AudioReact(PianoLED pianoLED) {
 		setBackground(new Color(50, 50, 50));
@@ -57,18 +67,18 @@ public class pnl_AudioReact extends JPanel {
 		init();
 		populateAudioInputDevices();
 		buttonActions();
-
+		sliderActions();
 	}
 
 	private void init() {
 		setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		setLayout(new GridLayout(2, 0, 0, 0));
+		setLayout(new GridLayout(1, 0, 0, 0));
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(50, 50, 50));
 		add(panel);
-		panel.setLayout(new GridLayout(3, 0, 0, 0));
+		panel.setLayout(new GridLayout(5, 0, 0, 0));
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -111,11 +121,78 @@ public class pnl_AudioReact extends JPanel {
 			}
 		});
 
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(new Color(50, 50, 50));
+		panel.add(panel_3);
+		panel_3.setLayout(new GridLayout(0, 2, 0, 0));
+
+		JLabel lb_Fade = new JLabel("Fade");
+		lb_Fade.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Fade.setFont(new Font("Poppins", Font.PLAIN, 21));
+		panel_3.add(lb_Fade);
+
+		sld_Fade = new JSlider(0, 255, defaultFadeVal);
+		sld_Fade.setBackground(new Color(77, 77, 77));
+		sld_Fade.setForeground(new Color(128, 128, 128));
+		panel_3.add(sld_Fade);
+
+		JPanel panel_4 = new JPanel();
+		panel_4.setBackground(new Color(50, 50, 50));
+		panel.add(panel_4);
+		panel_4.setLayout(new GridLayout(0, 2, 0, 0));
+
+		JLabel lb_Response = new JLabel("Response");
+		lb_Response.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Response.setFont(new Font("Poppins", Font.PLAIN, 21));
+		panel_4.add(lb_Response);
+
+		sld_Response = new JSlider(128, 4096, defaultResponseVal);
+		sld_Response.setBackground(new Color(77, 77, 77));
+		sld_Response.setForeground(new Color(128, 128, 128));
+		sld_Response.setSnapToTicks(true);
+		sld_Response.setMajorTickSpacing(128);
+		panel_4.add(sld_Response);
+
 		btnStart = new JButton("Start");
 		btnStart.setFont(new Font("Poppins", Font.PLAIN, 21));
 		btnStart.setBackground(new Color(231, 76, 60));
 		panel.add(btnStart);
+
 	}
+
+	private void sliderActions() {
+	    ChangeListener sliderChangeListener = new ChangeListener() {
+	        Timer buttonClickTimer = new Timer(100, new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                for (int i = 0; i < 2; i++) {
+	                    btnStart.doClick();
+	                }
+	                buttonClickTimer.stop();
+	            }
+	        });
+
+	        @Override
+	        public void stateChanged(ChangeEvent e) {
+	            JSlider source = (JSlider) e.getSource();
+	            if (source == sld_Fade) {
+	                int FadeVal = 255 - sld_Fade.getValue();
+	                sld_Fade.setToolTipText(Integer.toString(FadeVal));
+	                pianoController.FadeRate(FadeVal);
+	            } else if (source == sld_Response) {
+	                int ResponseVal = 4224 - sld_Response.getValue();
+	                sld_Response.setToolTipText(Integer.toString(ResponseVal));
+	                AUDIO_BUFFER_SIZE = ResponseVal;
+	                // Restart the timer every time the slider is changed
+	                buttonClickTimer.restart();
+	            }
+	        }
+	    };
+
+	    sld_Response.addChangeListener(sliderChangeListener);
+	    sld_Fade.addChangeListener(sliderChangeListener);
+	}
+
 
 	private void populateAudioInputDevices() {
 
@@ -247,7 +324,10 @@ public class pnl_AudioReact extends JPanel {
 				while (capturing) {
 					try {
 						int audioValue = audioQueue.take(); // Take audio data from the queue
-						pianoController.sendAudioDataToArduino(audioValue);
+						if (audioValue > 3) {
+							pianoController.sendAudioDataToArduino(audioValue);
+						}
+
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						e.printStackTrace();

@@ -21,7 +21,7 @@ CRGB(*animationFunctions[])
 (int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave, Test };
 
 // Selected animation index (Change this to select different animations)
-int selectedAnimationIndex = 4;
+int selectedAnimationIndex;
 
 
 
@@ -75,19 +75,15 @@ void animation() {
   int center = NUM_LEDS / 2;
   int scroll_position = (millis() / wheel_speed) % 256;
 
-  if (react <= 0) {
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-  } else {
-    int boostedReact = react;
-    CRGB(*currentAnimation)
-    (int pos) = animationFunctions[selectedAnimationIndex];
+  int boostedReact = react;
+  CRGB(*currentAnimation)
+  (int pos) = animationFunctions[selectedAnimationIndex];
 
-    for (int i = 0; i < NUM_LEDS; i++) {
-      if (abs(i - center) < boostedReact) {
-        leds[i] = currentAnimation(abs(i - center));
-      } else {
-        leds[i] = CRGB::Black;
-      }
+  for (int i = 0; i < NUM_LEDS; i++) {
+    if (abs(i - center) < boostedReact) {
+      leds[i] = currentAnimation(abs(i - center));
+    } else {
+      leds[i].fadeToBlackBy(generalFadeRate);  // Fades the current LED to black gradually
     }
   }
 }

@@ -216,20 +216,23 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 	public void paint(Graphics g) {
 		String message1 = "Awaiting Midi Input...";
 		String message2 = "Press F key to exit/enter fullscreen mode!";
+		String message3 = "Move mouse cursor to right edge to view parameters!";
 
 		super.paint(g);
 		if (TopPanel.isLivePlay && showMessage) {
 			// Draw the message in the center of the frame.
-			Font font = new Font("Poppins", Font.PLAIN, 35);
+			Font font = new Font("Poppins", Font.PLAIN, 24);
 			g.setColor(Color.WHITE);
 			g.setFont(font);
 
 			int x1 = (getWidth() - g.getFontMetrics().stringWidth(message1)) / 2;
 			int x2 = (getWidth() - g.getFontMetrics().stringWidth(message2)) / 2;
+			int x3 = (getWidth() - g.getFontMetrics().stringWidth(message3)) / 2;
 			int y = getHeight() / 2;
 
 			g.drawString(message1, x1, y);
 			g.drawString(message2, x2, y + 45);
+			g.drawString(message3, x3, y + 90);
 		}
 	}
 
