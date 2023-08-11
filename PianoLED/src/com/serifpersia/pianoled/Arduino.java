@@ -150,7 +150,17 @@ public class Arduino {
 		message.write((byte) numLeds);
 		return message;
 	}
+	
+	public ByteArrayOutputStream commandAudioData(int data) {
+	    ByteArrayOutputStream message = new ByteArrayOutputStream();
+	    byte[] dataBytes = new byte[2];
+	    dataBytes[0] = (byte) (data & 0xFF);
+	    dataBytes[1] = (byte) ((data >> 8) & 0xFF);
+	    message.write(dataBytes, 0, 2);
+	    return message;
+	}
 
+	
 	public ByteArrayOutputStream commandSetGuide(int currentArray, int hue, int saturation, int brightness,
 			int scaleKeyIndex, int[] scalePattern) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -179,6 +189,10 @@ public class Arduino {
 
 		message.write((byte) effect);
 		return message;
+	}
+
+	public void sendCommandAudioData(int audioData) {
+		sendToArduino(commandAudioData(audioData));
 	}
 
 	public void sendCommandAnimation(int animationIndex) {

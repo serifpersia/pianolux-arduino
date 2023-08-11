@@ -553,15 +553,6 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	public void sendAudioDataToArduino(int data) {
-		try {
-
-			byte[] dataBytes = new byte[2];
-			dataBytes[0] = (byte) (data & 0xFF);
-			dataBytes[1] = (byte) ((data >> 8) & 0xFF);
-			arduino.sendToArduinoAudio(dataBytes);
-
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-		}
+		arduino.sendCommandAudioData(data);
 	}
 }

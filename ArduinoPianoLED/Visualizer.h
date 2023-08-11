@@ -3,6 +3,6 @@
 
 #include "FastLED.h"
 
-void Visualizer(int selectedEffect);
+void Visualizer(int inputAudio, int selectedEffect);
 
 #endif

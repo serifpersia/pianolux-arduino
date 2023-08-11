@@ -7,37 +7,34 @@
 #define BALL_RADIUS 21
 #define BALL_SPEED 8
 
-// STANDARD VISUALIZER VARIABLES
-int loop_max = 0;
-int k = 255;    // COLOR WHEEL POSITION
-int decay = 0;  // HOW MANY MS BEFORE ONE LIGHT DECAY
-int decay_check = 0;
-long pre_react = 0;   // NEW SPIKE CONVERSION
-long react_null = 0;       // NUMBER OF LEDs BEING LIT
-long post_react = 0;  // OLD SPIKE CONVERSION
-
-// RAINBOW WAVE SETTINGS
+int k = 255;
 int wheel_speed = 3;
-int audio;
-int selectedAnimationIndex = 0;
 
 // Function prototypes for animation effects
 CRGB SpectrumFlow(int pos);
 CRGB BouncingBalls(int pos);
 CRGB Wave(int pos);
 CRGB ColorfulWave(int pos);
+CRGB Test(int pos);
+// Function pointer array for different animation effects
+CRGB(*animationFunctions[])
+(int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave, Test };
+
+// Selected animation index (Change this to select different animations)
+int selectedAnimationIndex = 4;
+
 
 
 CRGB SpectrumFlow(int pos) {
   int hue = pos + k * NUM_LEDS / 255;
-  int audio_level = react_null * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
   hue = constrain(hue + audio_level, 0, 255);
   return CHSV(hue, 255, 255);
 }
 
 CRGB BouncingBalls(int pos) {
   int hue = pos + k * NUM_LEDS / 255;
-  int audio_level = react_null * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
   int brightness = audio_level;
   int ballPos[NUM_BALLS];
   for (int i = 0; i < NUM_BALLS; i++) {
@@ -56,65 +53,55 @@ CRGB BouncingBalls(int pos) {
 
 CRGB Wave(int pos) {
   int hue = pos * 255 / NUM_LEDS;
-  int audio_level = react_null * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
   hue = constrain(hue + audio_level, 0, 255);
   return CHSV(hue, 255, 255);
 }
 
 CRGB ColorfulWave(int pos) {
   int hue = (pos * WAVE_FREQUENCY + k) * 255 / NUM_LEDS;
-  int audio_level = react_null * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
   int brightness = audio_level;
   int offset = pos * WAVE_AMPLITUDE / NUM_LEDS;
   return CHSV(hue, 255, brightness - offset);
 }
 
-// Function pointer array for different animation effects
-CRGB(*animationFunctions[])
-(int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave };
+CRGB Test(int pos) {
+  int audio_level = react * 255 / NUM_LEDS;
+  return CHSV(0, 255, 255);
+}
 
-void Visualizer(int audioDataMapped, int selectedAnimation) {
-
-  selectedAnimationIndex = selectedAnimation;
-
-  int audio = audioDataMapped;
-
+void animation() {
   int center = NUM_LEDS / 2;
   int scroll_position = (millis() / wheel_speed) % 256;
 
-  float scalingFactor = 1.1;  // Adjust this value to control the boost level
-
-  if (audio ==  0) {
+  if (react <= 0) {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
   } else {
-    int boostedReact = audio * scalingFactor;
-
+    int boostedReact = react;
     CRGB(*currentAnimation)
     (int pos) = animationFunctions[selectedAnimationIndex];
 
-    for (int i = center; i < NUM_LEDS; i++) {
-      if (i < center + boostedReact)
-        leds[i] = currentAnimation(i - center);
-      else
+    for (int i = 0; i < NUM_LEDS; i++) {
+      if (abs(i - center) < boostedReact) {
+        leds[i] = currentAnimation(abs(i - center));
+      } else {
         leds[i] = CRGB::Black;
-    }
-
-    for (int i = center - 1; i >= 0; i--) {
-      if (center - i < boostedReact)
-        leds[i] = currentAnimation(center - i);
-      else
-        leds[i] = CRGB::Black;
+      }
     }
   }
+}
 
-  k = k - wheel_speed;
-  if (k < 0)
-    k = 255;
+void Visualizer(int effectIndex) {
+  selectedAnimationIndex = effectIndex;
 
-  decay_check++;
-  if (decay_check > decay) {
-    decay_check = 0;
-    if (react_null > 0)
-      react_null--;
+  animation();
+
+  k = (k - wheel_speed + 256) % 256;
+
+  static int decay_check = 0;
+  decay_check = (decay_check + 1) % 1;
+  if (decay_check == 0 && react > 0) {
+    react--;
   }
 }

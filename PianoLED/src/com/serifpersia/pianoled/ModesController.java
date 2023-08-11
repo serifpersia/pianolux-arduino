@@ -1,7 +1,5 @@
 package com.serifpersia.pianoled;
 
-import java.awt.Color;
-
 import com.serifpersia.pianoled.ui.GetUI;
 import com.serifpersia.pianoled.ui.pnl_Colors;
 import com.serifpersia.pianoled.ui.pnl_Guide;
@@ -105,6 +103,7 @@ public class ModesController {
 		case "Animation":
 			GetUI.setDefaults(8, 255, 255);
 			AnimationOn = true;
+			pianoLED.getPianoController().arduino.sendCommandAnimation(0);
 			break;
 		case "Visualizer":
 			GetUI.setDefaults(8, 255, 0);

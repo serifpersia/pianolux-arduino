@@ -1,4 +1,18 @@
+/*
+PianoLED is an open-source project that aims to provide MIDI-based LED control to the masses.
+ It is developed by a one-person team, yours truly, known as serifpersia, or Scarlett.
 
+If you modify this code and redistribute the PianoLED project, please ensure that you
+don't remove this disclaimer or appropriately credit the original author of the project 
+by linking to the project's source on GitHub: github.com/serifpersia/pianoled-arduino/
+Failure to comply with these terms would constitute a violation of the project's 
+MIT license under which PianoLED is released.
+
+Copyright © 2023 Serif Rami, also known as serifpersia.
+
+Contributors: hasimov, also known as Arthist.
+
+*/
 //PianoLED
 
 #include <FastLED.h>
@@ -11,6 +25,8 @@
 #define DATA_PIN 5               // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
                                  //for external power type the current example 3000 for 3A (3 Amps)
+
+boolean debug = false;
 
 int NUM_LEDS = 176;  // how many leds do you want to control
 
@@ -34,7 +50,7 @@ const int COMMAND_VELOCITY = 246;
 const int COMMAND_STRIP_DIRECTION = 245;
 const int COMMAND_SET_GUIDE = 244;
 const int COMMAND_SET_LED_VISUALIZER = 243;
-
+long react = 0;
 int bufferSize;
 int buffer[10];  // declare buffer as an array of 10 integers
 int bufIdx = 0;  // initialize bufIdx to zero
@@ -200,15 +216,21 @@ void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[],
   FastLED.show();
 }
 
-
-
-boolean debug = false;
-void debugLightOn(int n) {
+void debugLightOn(int n, CRGB color) {
   if (debug) {
-    leds[n] = leds[n].LightBlue;
+    if (n > 0 && n <= NUM_LEDS) {
+      leds[n] = color;
+    } else {
+      leds[0] = CRGB::Red;
+    }
     FastLED.show();
   }
 }
+
+void debugLightOn(int n) {
+  debugLightOn(n, CRGB::LightBlue);
+}
+
 
 FadeController* fadeCtrl = new FadeController();
 //Main loop
@@ -216,15 +238,9 @@ void loop() {
 
   currentTime = millis();
 
-  bufferSize = Serial.available();
+  int bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
-
-  // Combine the two bytes into an integer value
-  int audioInputValue = (buffer[1] << 8) | buffer[0];
-
-  // Map the audio input value to the desired range
-  int audioDataMapped = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
 
   boolean commandByte1Arrived = false;
   boolean commandByte2Arrived = false;
@@ -292,7 +308,6 @@ void loop() {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
           debugLightOn(6);
-          MODE = COMMAND_SET_COLOR;
           byte redVal = buffer[++bufIdx];
           byte greenVal = buffer[++bufIdx];
           byte blueVal = buffer[++bufIdx];
@@ -401,6 +416,10 @@ void loop() {
 
       default:
         {
+          if (buffer >= 2) {
+            int audioInputValue = buffer[0] | (buffer[1] << 8);
+            react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
+          }
           break;
         }
     }
@@ -426,19 +445,15 @@ void loop() {
     previousFadeTime = currentTime;
   }
   //Animation
-
   if (MODE == COMMAND_ANIMATION) {
     Animatons(animationIndex);
     static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
-
     FillLEDsFromPaletteColors(startIndex);
   }
 
-  //LED Audio Visualizer
-
   if (MODE == COMMAND_SET_LED_VISUALIZER) {
-    Visualizer(audioDataMapped, selectedEffect);
+    Visualizer(selectedEffect);
   }
 
   FastLED.show();
@@ -526,9 +541,6 @@ void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
   leds[ledNum(ledNo)].setRGB(redVal, greenVal, blueVal);
   FastLED.show();
 }
-
-
-
 
 
 float distance(CRGB color1, CRGB color2) {
