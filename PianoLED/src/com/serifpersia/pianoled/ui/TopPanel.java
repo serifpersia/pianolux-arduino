@@ -3,6 +3,7 @@ package com.serifpersia.pianoled.ui;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -31,10 +32,16 @@ public class TopPanel extends JPanel {
 	private ImageIcon controlsIcon;
 	private ImageIcon liveplayIcon;
 	private ImageIcon learnIcon;
+
+	private ImageIcon maximizeIcon;
+	private ImageIcon minimizeIcon;
 	private ImageIcon exitIcon;
 
 	private JFrame AboutPianoLEDDialog;
 	private JButton learnButton;
+
+	private JButton minimizeButton;
+	private JButton maximizeButton;
 	private JButton exitButton;
 
 	static Updater updator = new Updater();
@@ -61,7 +68,7 @@ public class TopPanel extends JPanel {
 		lb_Title.setFont(new Font("Poppins", Font.PLAIN, 16));
 		add(lb_Title);
 
-		lb_Title.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 635));
+		lb_Title.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 556));
 
 		JButton dashboardButton = createButton(pianoLED, "", "Dashboard");
 
@@ -71,8 +78,12 @@ public class TopPanel extends JPanel {
 
 		learnButton = createButton(pianoLED, "", "Learn");
 
+		maximizeButton = createButton(pianoLED, "", "maximizeButton");
+		minimizeButton = createButton(pianoLED, "", "minimizeButton");
 		exitButton = createButton(pianoLED, "", "exitButton");
 
+		minimizeButton.addActionListener(e -> minimize(pianoLED));
+		maximizeButton.addActionListener(e -> maximize(pianoLED));
 		exitButton.addActionListener(e -> exit(pianoLED));
 
 		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
@@ -85,6 +96,12 @@ public class TopPanel extends JPanel {
 				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 		learnIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/learn.png")).getImage()
 				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+		minimizeIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/minimize.png")).getImage()
+				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+		maximizeIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/maximize.png")).getImage()
+				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
 		exitIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/exit.png")).getImage()
 				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 
@@ -93,6 +110,9 @@ public class TopPanel extends JPanel {
 		controlsButton.setIcon(controlsIcon);
 		livePlayButton.setIcon(liveplayIcon);
 		learnButton.setIcon(learnIcon);
+
+		minimizeButton.setIcon(minimizeIcon);
+		maximizeButton.setIcon(maximizeIcon);
 		exitButton.setIcon(exitIcon);
 
 		add(dashboardButton);
@@ -100,6 +120,8 @@ public class TopPanel extends JPanel {
 		add(livePlayButton);
 		add(learnButton);
 
+		add(minimizeButton);
+		add(maximizeButton);
 		add(exitButton);
 
 		dragMouse(pianoLED);
@@ -123,7 +145,7 @@ public class TopPanel extends JPanel {
 				if (button == learnButton) {
 					learnOn = true;
 				} else if (button == livePlayButton) {
-				//	pianoLED.toggleFullScreen();
+					// pianoLED.toggleFullScreen();
 					isLivePlay = true;
 				} else {
 					learnOn = false;
@@ -166,6 +188,22 @@ public class TopPanel extends JPanel {
 			}
 		});
 	}
+
+	private void minimize(PianoLED pianoLED) {
+	    pianoLED.setState(Frame.ICONIFIED); // Minimize the frame
+	}
+
+	private void maximize(PianoLED pianoLED) {
+	    int state = pianoLED.getExtendedState();
+	    if ((state & Frame.MAXIMIZED_BOTH) != 0) {
+	        // Window is currently maximized, so restore to normal size
+	        pianoLED.setExtendedState(state & ~Frame.MAXIMIZED_BOTH);
+	    } else {
+	        // Window is currently in normal state, so maximize it
+	        pianoLED.setExtendedState(state | Frame.MAXIMIZED_BOTH);
+	    }
+	}
+
 
 	private void exit(PianoLED pianoLED) {
 		WindowEvent windowClosing = new WindowEvent(pianoLED, WindowEvent.WINDOW_CLOSING);
