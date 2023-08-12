@@ -16,11 +16,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
 import com.serifpersia.pianoled.PianoLED;
 import com.serifpersia.pianoled.Updater;
 
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
+import java.awt.GridLayout;
 
 @SuppressWarnings("serial")
 public class TopPanel extends JPanel {
@@ -54,21 +57,27 @@ public class TopPanel extends JPanel {
 
 	public TopPanel(RightPanel rightPanel, PianoLED pianoLED) {
 		this.rightPanel = rightPanel;
-
-		setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		setBackground(new Color(25, 25, 25));
+		setLayout(new GridLayout(0, 3, 0, 0));
+
+		JPanel pnl_pianoledControls = new JPanel();
+		pnl_pianoledControls.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		JButton AboutButton = createButton(pianoLED, "", "");
 
 		AboutButton.addActionListener(e -> showAboutPianoLEDDialog());
 
-		add(AboutButton);
+		pnl_pianoledControls.add(AboutButton);
 
 		JLabel lb_Title = new JLabel("PianoLED" + updator.VersionTag);
 		lb_Title.setFont(new Font("Poppins", Font.PLAIN, 16));
-		add(lb_Title);
+		lb_Title.setBorder(new EmptyBorder(0, 5, 0, 0));
+		pnl_pianoledControls.add(lb_Title);
 
-		lb_Title.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 556));
+		add(pnl_pianoledControls);
+
+		JPanel pnl_panelsControls = new JPanel();
+		pnl_panelsControls.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
 
 		JButton dashboardButton = createButton(pianoLED, "", "Dashboard");
 
@@ -78,13 +87,29 @@ public class TopPanel extends JPanel {
 
 		learnButton = createButton(pianoLED, "", "Learn");
 
+		pnl_panelsControls.add(dashboardButton);
+		pnl_panelsControls.add(controlsButton);
+		pnl_panelsControls.add(livePlayButton);
+		pnl_panelsControls.add(learnButton);
+
+		add(pnl_panelsControls);
+
+		JPanel pnl_frameControls = new JPanel();
+		pnl_frameControls.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+
 		maximizeButton = createButton(pianoLED, "", "maximizeButton");
 		minimizeButton = createButton(pianoLED, "", "minimizeButton");
 		exitButton = createButton(pianoLED, "", "exitButton");
 
+		pnl_frameControls.add(minimizeButton);
+		pnl_frameControls.add(maximizeButton);
+		pnl_frameControls.add(exitButton);
+
 		minimizeButton.addActionListener(e -> minimize(pianoLED));
 		maximizeButton.addActionListener(e -> maximize(pianoLED));
 		exitButton.addActionListener(e -> exit(pianoLED));
+
+		add(pnl_frameControls);
 
 		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
 				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
@@ -115,17 +140,7 @@ public class TopPanel extends JPanel {
 		maximizeButton.setIcon(maximizeIcon);
 		exitButton.setIcon(exitIcon);
 
-		add(dashboardButton);
-		add(controlsButton);
-		add(livePlayButton);
-		add(learnButton);
-
-		add(minimizeButton);
-		add(maximizeButton);
-		add(exitButton);
-
 		dragMouse(pianoLED);
-
 	}
 
 	private JButton createButton(PianoLED pianoLED, String text, String cardName) {
@@ -163,7 +178,10 @@ public class TopPanel extends JPanel {
 		AboutPianoLED aboutPanel = new AboutPianoLED();
 
 		if (AboutPianoLEDDialog == null) { // Check if the frame has already been created
-			AboutPianoLEDDialog = new JFrame("AboutPianoLED");
+			AboutPianoLEDDialog = new JFrame("About");
+
+			AboutPianoLEDDialog.setIconImage(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage());
+
 			AboutPianoLEDDialog.setUndecorated(true);
 			AboutPianoLEDDialog.getContentPane().add(aboutPanel);
 			AboutPianoLEDDialog.setSize(300, 400);
@@ -190,20 +208,19 @@ public class TopPanel extends JPanel {
 	}
 
 	private void minimize(PianoLED pianoLED) {
-	    pianoLED.setState(Frame.ICONIFIED); // Minimize the frame
+		pianoLED.setState(Frame.ICONIFIED); // Minimize the frame
 	}
 
 	private void maximize(PianoLED pianoLED) {
-	    int state = pianoLED.getExtendedState();
-	    if ((state & Frame.MAXIMIZED_BOTH) != 0) {
-	        // Window is currently maximized, so restore to normal size
-	        pianoLED.setExtendedState(state & ~Frame.MAXIMIZED_BOTH);
-	    } else {
-	        // Window is currently in normal state, so maximize it
-	        pianoLED.setExtendedState(state | Frame.MAXIMIZED_BOTH);
-	    }
+		int state = pianoLED.getExtendedState();
+		if ((state & Frame.MAXIMIZED_BOTH) != 0) {
+			// Window is currently maximized, so restore to normal size
+			pianoLED.setExtendedState(state & ~Frame.MAXIMIZED_BOTH);
+		} else {
+			// Window is currently in normal state, so maximize it
+			pianoLED.setExtendedState(state | Frame.MAXIMIZED_BOTH);
+		}
 	}
-
 
 	private void exit(PianoLED pianoLED) {
 		WindowEvent windowClosing = new WindowEvent(pianoLED, WindowEvent.WINDOW_CLOSING);

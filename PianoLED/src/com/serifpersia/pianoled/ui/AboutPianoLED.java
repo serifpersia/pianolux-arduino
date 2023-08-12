@@ -1,112 +1,38 @@
 package com.serifpersia.pianoled.ui;
 
-import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import java.awt.Image;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.JLabel;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Font;
-import javax.swing.SwingConstants;
 
 import com.serifpersia.pianoled.Updater;
-
-import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class AboutPianoLED extends JPanel {
 
 	static Updater updator = new Updater();
+
 	private ImageIcon pianoLEDIcon;
+	private ImageIcon exitIcon;
 
 	public AboutPianoLED() {
 
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 300, 0 };
-		gridBagLayout.rowHeights = new int[] { 200, 36, 81, 33, 71, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		setLayout(gridBagLayout);
+		setLayout(new BorderLayout(0, 0));
 
-		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
-				.getScaledInstance(150, 150, Image.SCALE_SMOOTH));
-
-		JPanel buttonPane = new JPanel();
-		GridBagConstraints gbc_buttonPane = new GridBagConstraints();
-		gbc_buttonPane.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonPane.fill = GridBagConstraints.BOTH;
-		gbc_buttonPane.gridx = 0;
-		gbc_buttonPane.gridy = 0;
-		add(buttonPane, gbc_buttonPane);
-		buttonPane.setLayout(new BorderLayout(0, 0));
-
-		JLabel exitX = new JLabel("X");
-		exitX.setHorizontalAlignment(SwingConstants.RIGHT);
-		exitX.setForeground(new Color(255, 255, 255));
-		exitX.setFont(new Font("Poppins", Font.BOLD, 25));
-		exitX.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Add an empty border on the right side
-		buttonPane.add(exitX);
-		exitX.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				getTopLevelAncestor().setVisible(false);
-			}
-		});
-
-		JButton btnPianoLED = new JButton("");
-		btnPianoLED.setBackground(new Color(25, 25, 25));
-		GridBagConstraints gbc_button = new GridBagConstraints();
-		gbc_button.insets = new Insets(0, 0, 5, 0);
-		gbc_button.gridx = 0;
-		gbc_button.gridy = 1;
-		btnPianoLED.setIcon(pianoLEDIcon);
-		btnPianoLED.setFocusable(false);
-		btnPianoLED.setBorderPainted(false);
-
-		add(btnPianoLED, gbc_button);
-
-		JLabel lbPianoLED = new JLabel("PianoLED");
-		lbPianoLED.setHorizontalAlignment(SwingConstants.CENTER);
-		lbPianoLED.setForeground(new Color(255, 255, 255));
-		lbPianoLED.setFont(new Font("Poppins", Font.BOLD, 30));
-		GridBagConstraints gbc_lbPianoLED = new GridBagConstraints();
-		gbc_lbPianoLED.insets = new Insets(0, 0, 5, 0);
-		gbc_lbPianoLED.gridx = 0;
-		gbc_lbPianoLED.gridy = 2;
-		add(lbPianoLED, gbc_lbPianoLED);
-
-		JLabel lbPianoLEDVersion = new JLabel("Version " + updator.VersionTag);
-		lbPianoLEDVersion.setFont(new Font("Poppins", Font.BOLD, 18));
-		lbPianoLEDVersion.setForeground(new Color(255, 255, 255));
-		GridBagConstraints gbc_lbPianoLEDVersion = new GridBagConstraints();
-		gbc_lbPianoLEDVersion.insets = new Insets(0, 0, 5, 0);
-		gbc_lbPianoLEDVersion.gridx = 0;
-		gbc_lbPianoLEDVersion.gridy = 3;
-		add(lbPianoLEDVersion, gbc_lbPianoLEDVersion);
-
-		JLabel lbCopyright = new JLabel("Copyright © 2023 serifpersia");
-		lbCopyright.setForeground(Color.WHITE);
-		lbCopyright.setFont(new Font("Poppins", Font.BOLD, 18));
-		GridBagConstraints gbc_lbCopyright = new GridBagConstraints();
-		gbc_lbCopyright.gridx = 0;
-		gbc_lbCopyright.gridy = 4;
-		add(lbCopyright, gbc_lbCopyright);
-
-		exitX.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				((Window) getRootPane().getParent()).dispose();
-			}
-		});
+		this.setFocusable(true);
 
 		// Add key listener to panel
 		this.addKeyListener(new KeyAdapter() {
@@ -119,7 +45,73 @@ public class AboutPianoLED extends JPanel {
 				}
 			}
 		});
+
+		pianoLEDIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/PianoLED.png")).getImage()
+				.getScaledInstance(150, 150, Image.SCALE_SMOOTH));
+
+		exitIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/exit.png")).getImage()
+				.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
 		// Set focusable to true to receive key events
-		this.setFocusable(true);
+
+		JPanel pnl_topButtonPanel = new JPanel();
+		pnl_topButtonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+
+		add(pnl_topButtonPanel, BorderLayout.NORTH);
+
+		JButton exitButton = new JButton("");
+		exitButton.setBackground(new Color(25, 25, 25));
+		exitButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+		exitButton.setBorderPainted(false);
+		exitButton.setIcon(exitIcon);
+
+		exitButton.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				getTopLevelAncestor().setVisible(false);
+			}
+		});
+
+		exitButton.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				((Window) getRootPane().getParent()).dispose();
+			}
+		});
+
+		pnl_topButtonPanel.add(exitButton);
+
+		JPanel pnl_aboutPianoLED = new JPanel();
+		add(pnl_aboutPianoLED, BorderLayout.CENTER);
+		pnl_aboutPianoLED.setLayout(new BorderLayout(0, 0));
+
+		JLabel pianoLEDBLogo = new JLabel("");
+		pianoLEDBLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		pianoLEDBLogo.setIcon(pianoLEDIcon);
+		pnl_aboutPianoLED.add(pianoLEDBLogo, BorderLayout.CENTER);
+
+		JPanel pnl__copyrightLabel = new JPanel();
+		pnl_aboutPianoLED.add(pnl__copyrightLabel, BorderLayout.SOUTH);
+		pnl__copyrightLabel.setLayout(new GridLayout(3, 0, 0, 0));
+
+		JLabel lb_pianoLED = new JLabel("PianoLED ");
+		lb_pianoLED.setForeground(Color.WHITE);
+		lb_pianoLED.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_pianoLED.setFont(new Font("Poppins", Font.BOLD, 40));
+		pnl__copyrightLabel.add(lb_pianoLED);
+
+		JLabel lb_version = new JLabel("Version " + updator.VersionTag);
+		lb_version.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_version.setForeground(Color.WHITE);
+		lb_version.setFont(new Font("Poppins", Font.BOLD, 24));
+		pnl__copyrightLabel.add(lb_version);
+
+		JLabel lb_copyright = new JLabel("Copyright © 2023 serifpersia");
+		lb_copyright.setForeground(Color.WHITE);
+		lb_copyright.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_copyright.setFont(new Font("Poppins", Font.BOLD, 18));
+		pnl__copyrightLabel.add(lb_copyright);
 	}
 }

@@ -54,7 +54,7 @@ public class pnl_Controls extends JPanel {
 	public static JToggleButton fixToggle;
 	public static JToggleButton reverseToggle;
 	public static JToggleButton guideToggle;
-	public static JToggleButton LEDS72_Toggle;
+	public static JToggleButton oneToOneRatioToggle;
 
 	public pnl_Controls(PianoLED pianoLED) {
 
@@ -214,8 +214,8 @@ public class pnl_Controls extends JPanel {
 
 		ButtonsPanel.add(btn_leftArrow);
 		ButtonsPanel.add(btn_rightArrow);
+		ButtonsPanel.add(oneToOneRatioToggle);
 		ButtonsPanel.add(btn_SetBG);
-		ButtonsPanel.add(LEDS72_Toggle);
 
 		rightPanel.add(ButtonsPanel);
 
@@ -279,15 +279,15 @@ public class pnl_Controls extends JPanel {
 		btn_rightArrow.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btn_rightArrow.setFocusable(false);
 
+		oneToOneRatioToggle = new JToggleButton("1:1");
+		oneToOneRatioToggle.setForeground(new Color(204, 204, 204));
+		oneToOneRatioToggle.setFont(new Font("Poppins", Font.PLAIN, 16));
+		oneToOneRatioToggle.setFocusable(false);
+
 		btn_SetBG = new JButton("BG");
 		btn_SetBG.setForeground(new Color(204, 204, 204));
 		btn_SetBG.setFont(new Font("Poppins", Font.PLAIN, 16));
 		btn_SetBG.setFocusable(false);
-
-		LEDS72_Toggle = new JToggleButton("72");
-		LEDS72_Toggle.setForeground(new Color(204, 204, 204));
-		LEDS72_Toggle.setFont(new Font("Poppins", Font.PLAIN, 16));
-		LEDS72_Toggle.setFocusable(false);
 
 		bgToggle = new JToggleButton("");
 		fixToggle = new JToggleButton("");
@@ -321,8 +321,8 @@ public class pnl_Controls extends JPanel {
 		guideToggle.setBorderPainted(false);
 		guideToggle.setFocusable(false);
 
-		LEDS72_Toggle.setBorderPainted(false);
-		LEDS72_Toggle.setFocusable(false);
+		oneToOneRatioToggle.setBorderPainted(false);
+		oneToOneRatioToggle.setFocusable(false);
 
 	}
 
@@ -521,8 +521,8 @@ public class pnl_Controls extends JPanel {
 					}
 				}
 
-				else if (source == LEDS72_Toggle) {
-					if (LEDS72_Toggle.isSelected()) {
+				else if (source == oneToOneRatioToggle) {
+					if (oneToOneRatioToggle.isSelected()) {
 
 						pianoController.use72LEDSMap = true;
 					} else {
@@ -537,7 +537,7 @@ public class pnl_Controls extends JPanel {
 		fixToggle.addActionListener(tgl_listener);
 		reverseToggle.addActionListener(tgl_listener);
 		guideToggle.addActionListener(tgl_listener);
-		LEDS72_Toggle.addActionListener(tgl_listener);
+		oneToOneRatioToggle.addActionListener(tgl_listener);
 
 	}
 }
