@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
 public class pnl_Colors extends JPanel {
@@ -34,6 +35,7 @@ public class pnl_Colors extends JPanel {
 
 	public static int idleTime = 10;
 	public static JRadioButton rdb_IdleOn;
+	public static JToggleButton keyColor_toggle;
 
 	public pnl_Colors() {
 
@@ -94,19 +96,19 @@ public class pnl_Colors extends JPanel {
 		txt_R.setHorizontalAlignment(SwingConstants.CENTER);
 		txt_R.setBackground(new Color(70, 70, 70));
 		txt_R.setForeground(new Color(204, 204, 204));
-		txt_R.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_R.setFont(new Font("Poppins", Font.PLAIN, 14));
 		txt_R.setColumns(2);
 
 		txt_G.setHorizontalAlignment(SwingConstants.CENTER);
 		txt_G.setBackground(new Color(70, 70, 70));
 		txt_G.setForeground(new Color(204, 204, 204));
-		txt_G.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_G.setFont(new Font("Poppins", Font.PLAIN, 14));
 		txt_G.setColumns(2);
 
 		txt_B.setHorizontalAlignment(SwingConstants.CENTER);
 		txt_B.setBackground(new Color(70, 70, 70));
 		txt_B.setForeground(new Color(204, 204, 204));
-		txt_B.setFont(new Font("Poppins", Font.PLAIN, 16));
+		txt_B.setFont(new Font("Poppins", Font.PLAIN, 14));
 		txt_B.setColumns(2);
 
 		ActionListener actionListener = new ActionListener() {
@@ -161,10 +163,17 @@ public class pnl_Colors extends JPanel {
 		panel_2.setBackground(new Color(50, 50, 50));
 		add(panel_2, BorderLayout.SOUTH);
 
+		keyColor_toggle = new JToggleButton("C");
+		keyColor_toggle.setFont(new Font("Poppins", Font.PLAIN, 14));
+		keyColor_toggle.setFocusable(false);
+		keyColor_toggle.setBorderPainted(false);
+		
+		panel_2.add(keyColor_toggle);
+
 		rdb_IdleOn = new JRadioButton("Idle");
 		rdb_IdleOn.setBackground(new Color(50, 50, 50));
 		rdb_IdleOn.setForeground(new Color(204, 204, 204));
-		rdb_IdleOn.setFont(new Font("Poppins", Font.PLAIN, 16));
+		rdb_IdleOn.setFont(new Font("Poppins", Font.PLAIN, 14));
 		rdb_IdleOn.setSelected(false);
 
 		panel_2.add(rdb_IdleOn);
@@ -172,7 +181,7 @@ public class pnl_Colors extends JPanel {
 		sld_idle = new JSlider(0, 240, 10);
 		sld_idle.setBackground(new Color(70, 70, 70));
 		sld_idle.setForeground(new Color(204, 204, 204));
-		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 16));
+		sld_idle.setFont(new Font("Poppins", Font.PLAIN, 14));
 		sld_idle.setSnapToTicks(true);
 		sld_idle.setMajorTickSpacing(60);
 		sld_idle.setMinorTickSpacing(5);
@@ -183,7 +192,7 @@ public class pnl_Colors extends JPanel {
 
 		JLabel lblNewLabel_1 = new JLabel("RGB");
 		lblNewLabel_1.setForeground(new Color(204, 204, 204));
-		lblNewLabel_1.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblNewLabel_1.setFont(new Font("Poppins", Font.PLAIN, 14));
 		panel_2.add(lblNewLabel_1);
 
 		panel_2.add(txt_R);

@@ -3,6 +3,9 @@ package com.serifpersia.pianoled.ui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -17,19 +20,56 @@ public class DrawPiano extends JPanel {
 	public final static int FIRST_KEY_PITCH_OFFSET = 21;
 	public final static int MIDDLE_C_PITCH = 60;
 	public final static double pianoWidthToHeightRatio = 122 / 15 * 2;
-	public final static double pianoBlackToWhiteWidhtRatio = 0.5;
+	public final static double pianoBlackToWhiteWidhtRatio = 0.6;
 	public final static double pianoBlackToWhiteHeightRatio = 0.65;
 
-	private int[] keysPressed = new int[NUM_KEYS];
+	private Color whiteKeyColor = new Color(246, 246, 246);
+	private Color blackKeyColor = new Color(54, 54, 54);
+	private Color whiteKeyHighlightColor = new Color(130, 130, 130);
+
+	private int[] key = new int[NUM_KEYS];
 	private int[] keysXPos = new int[NUM_KEYS];
 
-	public void setPianoKey(int pitch, int on) {
-		keysPressed[pitch - FIRST_KEY_PITCH_OFFSET] = on;
-		repaint();
+	private int hoveredKeyIndex = -1;
+	private boolean isMousePressed = false;
+
+	public DrawPiano() {
+
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				isMousePressed = true;
+				updateHoveredIndex(e.getX(), e.getY());
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				isMousePressed = false;
+				hoveredKeyIndex = -1;
+				repaint();
+			}
+		});
+
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				updateHoveredIndex(e.getX(), e.getY());
+			}
+		});
 	}
 
-	public void resetPianoKeys() {
-		keysPressed = new int[NUM_KEYS];
+	private void updateHoveredIndex(int x, int y) {
+		int newKeyIndex = findKeyLocation(x, y);
+
+		if (newKeyIndex != hoveredKeyIndex) {
+			hoveredKeyIndex = newKeyIndex;
+			repaint();
+		}
+	}
+
+	public void setPianoKey(int pitch, int on) {
+		key[pitch - FIRST_KEY_PITCH_OFFSET] = on;
+		repaint();
 	}
 
 	@Override
@@ -53,13 +93,17 @@ public class DrawPiano extends JPanel {
 			int pitch = i + FIRST_KEY_PITCH_OFFSET;
 
 			if (!isBlackKey(pitch)) {
-				if (keysPressed[i] == 1) {
-					g.setColor(GetUI.selectedColor);
+
+				if (pnl_Colors.keyColor_toggle.isSelected()) {
+					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? GetUI.selectedColor
+							: whiteKeyColor);
 				} else {
-					g.setColor(Color.WHITE);
+					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? whiteKeyHighlightColor
+							: whiteKeyColor);
 				}
+
 				g.fillRect(currentX, 0, whiteKeyWidth, whiteKeyHeight);
-				g.setColor(new Color(100, 100, 100));
+				g.setColor(new Color(15, 15, 15));
 				g.drawRect(currentX, 0, whiteKeyWidth, whiteKeyHeight);
 				keysXPos[i] = currentX;
 				currentX += whiteKeyWidth;
@@ -78,14 +122,22 @@ public class DrawPiano extends JPanel {
 
 			if (isBlackKey(pitch)) {
 				currentX += (int) (blackKeyWidth * getBlackKeyOffset(pitch));
-				if (keysPressed[i] == 1) {
-					g.setColor(GetUI.selectedColor);
+
+				// Set the color based on mouse interaction and key state using the ternary
+
+				if (pnl_Colors.keyColor_toggle.isSelected()) {
+					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? GetUI.selectedColor
+							: blackKeyColor);
 				} else {
-					g.setColor(Color.BLACK);
+					// operator
+					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? Color.BLACK : blackKeyColor);
 				}
+
 				g.fillRect(currentX, 0, blackKeyWidth, blackKeyHeight);
-				g.setColor(new Color(100, 100, 100));
+
+				g.setColor(blackKeyColor);
 				g.draw3DRect(currentX, 0, blackKeyWidth, blackKeyHeight, true);
+
 				keysXPos[i] = currentX;
 
 				currentX -= (int) (blackKeyWidth * getBlackKeyOffset(pitch));
@@ -95,9 +147,6 @@ public class DrawPiano extends JPanel {
 		}
 
 		// Highlight Piano Size
-//		g.setColor(new Color(0, 0, 0, 127)); // set the color of the rectangles to black with 50% transparency
-//		g.fillRect(0, 0, GetUI.rectASizeX, 70); // draw the first rectangle
-//		g.fillRect(GetUI.rectBX, 0, GetUI.rectBSizeX, 70); // draw the second rectangle
 	}
 
 	private int getStartX() {
@@ -130,19 +179,7 @@ public class DrawPiano extends JPanel {
 		return w / NUM_WHITE_KEYS * NUM_WHITE_KEYS;
 	}
 
-	void pianoKeyAction(int x, int y, boolean released) {
-		int key = findClickedKey(x, y);
-		if (key >= 0) {
-			if (released) {
-				keysPressed[key] = 1;
-			} else {
-				keysPressed[key] = 0;
-			}
-			repaint();
-		}
-	}
-
-	private int findClickedKey(int x, int y) {
+	private int findKeyLocation(int x, int y) {
 		for (int i = 0; i < NUM_KEYS; i++) {
 			int pitch = i + FIRST_KEY_PITCH_OFFSET;
 			int keyWidth = isBlackKey(pitch) ? getBlackKeyWidth() : getWhiteKeyWidth();

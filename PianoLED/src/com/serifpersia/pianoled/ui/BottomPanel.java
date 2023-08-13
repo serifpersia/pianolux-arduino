@@ -32,19 +32,6 @@ public class BottomPanel extends JPanel {
 		pianoPane.setBackground(Color.BLACK);
 		pianoPane.setLayout(new BorderLayout());
 		pianoPane.add(piano, BorderLayout.CENTER);
-		piano.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				// Call the pianoKeyAction method with the mouse coordinates and the pressed
-				// flag set to true
-				piano.pianoKeyAction(e.getX(), e.getY(), true);
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				// Call the pianoKeyAction method with the mouse coordinates and the pressed
-				// flag set to false
-				piano.pianoKeyAction(e.getX(), e.getY(), false);
-			}
-		});
 
 		cardPanel.add(pianoPane, "pianoPane");
 

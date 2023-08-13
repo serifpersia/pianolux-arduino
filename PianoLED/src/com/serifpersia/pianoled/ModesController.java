@@ -78,11 +78,12 @@ public class ModesController {
 		switch (GetUI.getModeName(n)) {
 		case "Default":
 			GetUI.setDefaults(8, 255, 0);
+			GetUI.resetColor(2);
 			break;
 		case "Splash":
 			GetUI.setDefaults(8, 255, 153);
 			SplashOn = true;
-			pnl_Colors.cb_ColorPresets.setSelectedIndex(0);
+			GetUI.resetColor(0);
 			break;
 		case "Random":
 			GetUI.setDefaults(8, 255, 0);
@@ -111,8 +112,6 @@ public class ModesController {
 			pianoLED.getPianoController().arduino.sendCommandSetLedVisualizer(0);
 			break;
 		}
-		System.out.println(n);
-		System.out.println(VisualizerOn);
 	}
 
 	public void gradientSideSelect(int n) {
