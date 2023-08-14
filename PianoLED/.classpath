@@ -16,5 +16,14 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Artur/.m2/repository/jmir/jaudio/1.0.4/jaudio-1.0.4.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="jmir"/>
+			<attribute name="maven.artifactId" value="jaudio"/>
+			<attribute name="maven.version" value="1.0.4"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
