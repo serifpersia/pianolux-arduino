@@ -61,7 +61,7 @@ public class GetUI {
 	static List<String> scaleNames = Arrays.asList("Major", "Minor");
 
 	static List<String> ledVisualizerEffectsName = Arrays.asList("Hue", "Heat Wave", "SpectrumFlow", "ColorfulWave",
-			"BouncingBalls", "AudioWave");
+			"BouncingBalls");
 
 	public static String getModeName(int n) {
 		return modes.get(n);
