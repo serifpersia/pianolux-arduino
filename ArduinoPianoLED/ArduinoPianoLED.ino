@@ -57,6 +57,7 @@ int bufIdx = 0;  // initialize bufIdx to zero
 int generalBrightness = buffer[++bufIdx];
 int animationIndex;
 int selectedEffect;
+int colorHue = 0;
 
 int DEFAULT_BRIGHTNESS = 255;
 
@@ -410,6 +411,8 @@ void loop() {
           debugLightOn(13);
 
           selectedEffect = buffer[++bufIdx];
+          colorHue = buffer[++bufIdx];
+
           MODE = COMMAND_SET_LED_VISUALIZER;
           break;
         }

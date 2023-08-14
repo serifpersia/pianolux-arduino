@@ -524,8 +524,8 @@ public class PianoController implements PianoMidiConsumer {
 			arduino.sendCommandAnimation(n);
 	}
 
-	public void setLedVisualizerEffect(int n) {
-		arduino.sendCommandSetLedVisualizer(n);
+	public void setLedVisualizerEffect(int effect, int colorHue) {
+		arduino.sendCommandSetLedVisualizer(effect, colorHue);
 	}
 
 	public void dispose() {

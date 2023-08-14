@@ -107,30 +107,16 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		int y = (int) getTickY(noteElapsedTime);
 		int h = note.getEnd() == -1 ? getHeight() * 4000 : (int) timeMsToPixels(note.getEnd() - note.getStart());
 
-		if (livePanel.isCustomColorSelected()) {
-			if (piano.isBlackKey(note.getPitch())) {
-				// Use the custom color with darkened version for black keys
-				int darkerRed = (int) (GetUI.selectedColor.getRed() * 0.7); // Reduce red component by 30%
-				int darkerGreen = (int) (GetUI.selectedColor.getGreen() * 0.7); // Reduce green component by 30%
-				int darkerBlue = (int) (GetUI.selectedColor.getBlue() * 0.7); // Reduce blue component by 30%
-				NOTE_COLOR = new Color(darkerRed, darkerGreen, darkerBlue);
-			} else {
-				// Use the custom color for white keys
-				NOTE_COLOR = GetUI.selectedColor;
-			}
+		if (piano.isBlackKey(note.getPitch())) {
+			// Use the custom color with darkened version for black keys
+			int darkerRed = (int) (GetUI.selectedColor.getRed() * 0.7); // Reduce red component by 30%
+			int darkerGreen = (int) (GetUI.selectedColor.getGreen() * 0.7); // Reduce green component by 30%
+			int darkerBlue = (int) (GetUI.selectedColor.getBlue() * 0.7); // Reduce blue component by 30%
+			NOTE_COLOR = new Color(darkerRed, darkerGreen, darkerBlue);
 		} else {
-			if (piano.isBlackKey(note.getPitch())) {
-				// Use the darker version of the default color for black keys
-				int darkerRed = (int) (NOTE_COLOR.getRed() * 0.7); // Reduce red component by 30%
-				int darkerGreen = (int) (NOTE_COLOR.getGreen() * 0.7); // Reduce green component by 30%
-				int darkerBlue = (int) (NOTE_COLOR.getBlue() * 0.7); // Reduce blue component by 30%
-				NOTE_COLOR = new Color(darkerRed, darkerGreen, darkerBlue);
-			} else {
-				// Use the default color for white keys
-				NOTE_COLOR = new Color(145, 225, 66);
-			}
+			// Use the custom color for white keys
+			NOTE_COLOR = GetUI.selectedColor;
 		}
-
 		double scaleFactor = piano.isBlackKey(note.getPitch()) ? blackKeyScaleFactor : whiteKeyScaleFactor;
 
 		// Calculate the new width with the appropriate scaleFactor

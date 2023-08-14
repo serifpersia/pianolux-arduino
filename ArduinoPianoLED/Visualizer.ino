@@ -10,26 +10,52 @@
 int k = 255;
 int wheel_speed = 3;
 
+
 // Function prototypes for animation effects
+CRGB One_Color(int pos);
+CRGB Heeat_Wave(int pos);
 CRGB SpectrumFlow(int pos);
-CRGB BouncingBalls(int pos);
-CRGB Wave(int pos);
 CRGB ColorfulWave(int pos);
-CRGB Test(int pos);
+CRGB BouncingBalls(int pos);
+
 // Function pointer array for different animation effects
 CRGB(*animationFunctions[])
-(int pos) = { SpectrumFlow, BouncingBalls, Wave, ColorfulWave, Test };
+(int pos) = { One_Color, Heeat_Wave, SpectrumFlow, ColorfulWave, BouncingBalls };
 
 // Selected animation index (Change this to select different animations)
 int selectedAnimationIndex;
 
 
+CRGB One_Color(int pos) {
+  int audio_level = react * 255 / NUM_LEDS;
+  return CHSV(colorHue, 255, 255);
+}
+
+
+CRGB Heeat_Wave(int pos) {
+  int hue = pos * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
+  hue = constrain(hue + audio_level, 0, 255);
+  return CHSV(hue, 255, 255);
+}
 
 CRGB SpectrumFlow(int pos) {
   int hue = pos + k * NUM_LEDS / 255;
   int audio_level = react * 255 / NUM_LEDS;
   hue = constrain(hue + audio_level, 0, 255);
   return CHSV(hue, 255, 255);
+}
+
+CRGB ColorfulWave(int pos) {
+  int hue = (pos * WAVE_FREQUENCY + k) * 255 / NUM_LEDS;
+  int audio_level = react * 255 / NUM_LEDS;
+  int offset = pos * WAVE_AMPLITUDE / NUM_LEDS;
+
+  // Calculate the brightness ensuring it's at least 50
+  int calculated_brightness = audio_level - offset;
+  int brightness = max(calculated_brightness, 50);
+
+  return CHSV(hue, 255, brightness);
 }
 
 CRGB BouncingBalls(int pos) {
@@ -51,25 +77,6 @@ CRGB BouncingBalls(int pos) {
   return CHSV(hue, 255, ballBrightness);
 }
 
-CRGB Wave(int pos) {
-  int hue = pos * 255 / NUM_LEDS;
-  int audio_level = react * 255 / NUM_LEDS;
-  hue = constrain(hue + audio_level, 0, 255);
-  return CHSV(hue, 255, 255);
-}
-
-CRGB ColorfulWave(int pos) {
-  int hue = (pos * WAVE_FREQUENCY + k) * 255 / NUM_LEDS;
-  int audio_level = react * 255 / NUM_LEDS;
-  int brightness = audio_level;
-  int offset = pos * WAVE_AMPLITUDE / NUM_LEDS;
-  return CHSV(hue, 255, brightness - offset);
-}
-
-CRGB Test(int pos) {
-  int audio_level = react * 255 / NUM_LEDS;
-  return CHSV(0, 255, 255);
-}
 
 void animation() {
   int center = NUM_LEDS / 2;
@@ -90,7 +97,6 @@ void animation() {
 
 void Visualizer(int effectIndex) {
   selectedAnimationIndex = effectIndex;
-
   animation();
 
   k = (k - wheel_speed + 256) % 256;

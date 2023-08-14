@@ -109,7 +109,7 @@ public class ModesController {
 		case "Visualizer":
 			GetUI.setDefaults(8, 255, 200);
 			VisualizerOn = true;
-			pianoLED.getPianoController().arduino.sendCommandSetLedVisualizer(0);
+			pianoLED.getPianoController().arduino.sendCommandSetLedVisualizer(0, 0);
 			break;
 		}
 	}

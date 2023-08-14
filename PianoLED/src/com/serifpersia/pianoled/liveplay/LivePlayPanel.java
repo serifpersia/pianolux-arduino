@@ -45,7 +45,6 @@ public class LivePlayPanel extends JPanel {
 	private JCheckBox gridToggle;
 	private JCheckBox infoToggle = new JCheckBox("Tech Info");
 	private JSlider sld_Speed;
-	private JCheckBox customColor_Toggle;
 
 	private JComboBox<String> CameraList;
 	private JButton btnOpenCamera;
@@ -92,7 +91,7 @@ public class LivePlayPanel extends JPanel {
 		slideControlsPane.setBackground(Color.BLACK);
 
 		JLabel lblNewLabel_1 = new JLabel("Speed");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_1.setFont(new Font("Poppins", Font.PLAIN, 21));
 
 		sld_Speed = new JSlider(1, 5, 4);
@@ -100,10 +99,6 @@ public class LivePlayPanel extends JPanel {
 
 		gridToggle = new JCheckBox("Show Grid");
 		gridToggle.setFont(new Font("Poppins", Font.PLAIN, 16));
-
-		customColor_Toggle = new JCheckBox("Use Custom Color");
-		customColor_Toggle.setFont(new Font("Poppins", Font.PLAIN, 16));
-		customColor_Toggle.setSelected(true);
 
 		CameraList = new JComboBox<>();
 		CameraList.putClientProperty("JComponent.roundRect", true);
@@ -146,59 +141,47 @@ public class LivePlayPanel extends JPanel {
 		colorHuePane.setBackground(Color.BLACK);
 
 		GroupLayout gl_slideControlsPane = new GroupLayout(slideControlsPane);
-		gl_slideControlsPane.setHorizontalGroup(
-			gl_slideControlsPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_slideControlsPane.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_slideControlsPane.createParallelGroup(Alignment.LEADING)
+		gl_slideControlsPane.setHorizontalGroup(gl_slideControlsPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_slideControlsPane.createSequentialGroup().addContainerGap().addGroup(gl_slideControlsPane
+						.createParallelGroup(Alignment.LEADING)
 						.addComponent(sld_Speed, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(gridToggle, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-						.addComponent(customColor_Toggle, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(CameraList, 0, 190, Short.MAX_VALUE)
 						.addComponent(btnOpenCamera, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addGroup(gl_slideControlsPane.createSequentialGroup()
-							.addComponent(btnFlip_X, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-							.addGap(10)
-							.addComponent(btnFlip_Y, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
+								.addComponent(btnFlip_X, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+								.addGap(10)
+								.addComponent(btnFlip_Y, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
 						.addComponent(leftCrop_XSlider, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(rightCrop_XSlider, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(topCrop_YSlider, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
 						.addComponent(bottomCrop_YSlider, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-						.addComponent(colorHuePane, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		gl_slideControlsPane.setVerticalGroup(
-			gl_slideControlsPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_slideControlsPane.createSequentialGroup()
-					.addGap(20)
-					.addComponent(colorHuePane, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-					.addGap(5)
-					.addComponent(lblNewLabel_1)
-					.addGap(10)
-					.addComponent(sld_Speed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(gridToggle)
-					.addGap(10)
-					.addComponent(customColor_Toggle)
-					.addGap(10)
-					.addComponent(CameraList, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(btnOpenCamera)
-					.addGap(10)
-					.addGroup(gl_slideControlsPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnFlip_X)
-						.addComponent(btnFlip_Y))
-					.addGap(10)
-					.addComponent(leftCrop_XSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(rightCrop_XSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(topCrop_YSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(bottomCrop_YSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+						.addComponent(colorHuePane, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+						.addContainerGap()));
+		gl_slideControlsPane.setVerticalGroup(gl_slideControlsPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_slideControlsPane.createSequentialGroup().addGap(20)
+						.addComponent(colorHuePane, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+						.addGap(10).addComponent(lblNewLabel_1).addGap(5)
+						.addComponent(sld_Speed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(10).addComponent(gridToggle).addGap(10)
+						.addComponent(CameraList, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE).addGap(10)
+						.addComponent(btnOpenCamera).addGap(10)
+						.addGroup(gl_slideControlsPane.createParallelGroup(Alignment.BASELINE).addComponent(btnFlip_X)
+								.addComponent(btnFlip_Y))
+						.addGap(10)
+						.addComponent(leftCrop_XSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(10)
+						.addComponent(rightCrop_XSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(10)
+						.addComponent(topCrop_YSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(10).addComponent(bottomCrop_YSlider, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(58, Short.MAX_VALUE)));
 		colorHuePane.setLayout(new BorderLayout(0, 0));
 		huePanel.setBackground(Color.BLACK);
 
@@ -249,11 +232,6 @@ public class LivePlayPanel extends JPanel {
 	public boolean isShowInfoSelected() {
 
 		return infoToggle.isSelected();
-	}
-
-	public boolean isCustomColorSelected() {
-
-		return customColor_Toggle.isSelected();
 	}
 
 	private void sliderActions() {
@@ -373,8 +351,8 @@ public class LivePlayPanel extends JPanel {
 						// Update the button appearance
 						btnOpenCamera.setText("Open Camera");
 						btnOpenCamera.setBackground(new Color(231, 76, 60));
-						break;
 					}
+					break;
 
 				case "btnFlip_X":
 					if (btnFlip_X.getText().equals("Flip X")) {

@@ -57,6 +57,7 @@ public class pnl_AudioReact extends JPanel {
 
 	private JSlider sld_Fade;
 	private JSlider sld_Response;
+	private JButton btnChangeHue;
 
 	public pnl_AudioReact(PianoLED pianoLED) {
 		setBackground(new Color(50, 50, 50));
@@ -117,7 +118,7 @@ public class pnl_AudioReact extends JPanel {
 		cb_AudioReactLEDEffect.addActionListener(e -> {
 			if (ModesController.VisualizerOn) {
 				int selectedIndex = cb_AudioReactLEDEffect.getSelectedIndex();
-				pianoController.setLedVisualizerEffect(selectedIndex);
+				pianoController.setLedVisualizerEffect(selectedIndex, 0);
 			}
 		});
 
@@ -153,46 +154,55 @@ public class pnl_AudioReact extends JPanel {
 		sld_Response.setMajorTickSpacing(128);
 		panel_4.add(sld_Response);
 
+		JPanel panel_5 = new JPanel();
+		panel_5.setLayout(new GridLayout(0, 2, 0, 0));
+		panel_5.setBackground(new Color(50, 50, 50));
+		panel.add(panel_5);
+
+		btnChangeHue = new JButton("Change Hue");
+		btnChangeHue.setFont(new Font("Poppins", Font.PLAIN, 24));
+		btnChangeHue.setFocusable(false);
+		panel_5.add(btnChangeHue);
+
 		btnStart = new JButton("Start");
-		btnStart.setFont(new Font("Poppins", Font.PLAIN, 21));
+		btnStart.setFont(new Font("Poppins", Font.PLAIN, 24));
 		btnStart.setBackground(new Color(231, 76, 60));
-		panel.add(btnStart);
+		panel_5.add(btnStart);
 
 	}
 
 	private void sliderActions() {
-	    ChangeListener sliderChangeListener = new ChangeListener() {
-	        Timer buttonClickTimer = new Timer(100, new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                for (int i = 0; i < 2; i++) {
-	                    btnStart.doClick();
-	                }
-	                buttonClickTimer.stop();
-	            }
-	        });
+		ChangeListener sliderChangeListener = new ChangeListener() {
+			Timer buttonClickTimer = new Timer(100, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < 2; i++) {
+						btnStart.doClick();
+					}
+					buttonClickTimer.stop();
+				}
+			});
 
-	        @Override
-	        public void stateChanged(ChangeEvent e) {
-	            JSlider source = (JSlider) e.getSource();
-	            if (source == sld_Fade) {
-	                int FadeVal = 255 - sld_Fade.getValue();
-	                sld_Fade.setToolTipText(Integer.toString(FadeVal));
-	                pianoController.FadeRate(FadeVal);
-	            } else if (source == sld_Response) {
-	                int ResponseVal = 4224 - sld_Response.getValue();
-	                sld_Response.setToolTipText(Integer.toString(ResponseVal));
-	                AUDIO_BUFFER_SIZE = ResponseVal;
-	                // Restart the timer every time the slider is changed
-	                buttonClickTimer.restart();
-	            }
-	        }
-	    };
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				if (source == sld_Fade) {
+					int FadeVal = 255 - sld_Fade.getValue();
+					sld_Fade.setToolTipText(Integer.toString(FadeVal));
+					pianoController.FadeRate(FadeVal);
+				} else if (source == sld_Response) {
+					int ResponseVal = 4224 - sld_Response.getValue();
+					sld_Response.setToolTipText(Integer.toString(ResponseVal));
+					AUDIO_BUFFER_SIZE = ResponseVal;
+					// Restart the timer every time the slider is changed
+					buttonClickTimer.restart();
+				}
+			}
+		};
 
-	    sld_Response.addChangeListener(sliderChangeListener);
-	    sld_Fade.addChangeListener(sliderChangeListener);
+		sld_Response.addChangeListener(sliderChangeListener);
+		sld_Fade.addChangeListener(sliderChangeListener);
 	}
-
 
 	private void populateAudioInputDevices() {
 
@@ -239,14 +249,29 @@ public class pnl_AudioReact extends JPanel {
 						btnStart.setText("Start");
 					}
 					break;
+
+				case "btnChangeHue":
+				    float[] hsb = Color.RGBtoHSB(GetUI.selectedColor.getRed(), GetUI.selectedColor.getGreen(),
+				            GetUI.selectedColor.getBlue(), null);
+				    
+				    // Convert the hue value (hsb[0]) from float [0, 1] to int [0, 255]
+				    int hueInt = (int) (hsb[0] * 255);
+				    
+				    // Call the function with the integer hue value
+				    pianoController.setLedVisualizerEffect(0, hueInt);
+				    System.out.println(hueInt);
+				    break;
+
 				default:
 					break;
 				}
 			}
 		};
 
+		btnChangeHue.addActionListener(buttonListener);
 		btnStart.addActionListener(buttonListener);
 
+		btnChangeHue.setActionCommand("btnChangeHue");
 		btnStart.setActionCommand("btnStart");
 
 	}
@@ -283,7 +308,7 @@ public class pnl_AudioReact extends JPanel {
 				return;
 			}
 
-			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 16000, 8, 1, 1, 16000, false); // 16
+			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 41000, 8, 1, 1, 41000, false); // 16
 																													// kHz,
 																													// 8
 																													// bits

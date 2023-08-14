@@ -126,16 +126,5 @@ public class pnl_HueOnly extends JPanel {
 	private void updateSelectedColor() {
 		Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
 		GetUI.selectedColor = colorPickerColor;
-		pnl_Colors.txt_R.setText(Integer.toString(colorPickerColor.getRed()));
-		pnl_Colors.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
-		pnl_Colors.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
-	}
-
-	public void setCustomColor(float hue, float saturation, float brightness) {
-		this.hue = hue;
-		this.saturation = saturation;
-		this.brightness = brightness;
-		updateSelectedColor();
-		repaint();
 	}
 }

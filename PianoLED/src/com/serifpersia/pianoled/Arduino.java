@@ -150,17 +150,16 @@ public class Arduino {
 		message.write((byte) numLeds);
 		return message;
 	}
-	
+
 	public ByteArrayOutputStream commandAudioData(int data) {
-	    ByteArrayOutputStream message = new ByteArrayOutputStream();
-	    byte[] dataBytes = new byte[2];
-	    dataBytes[0] = (byte) (data & 0xFF);
-	    dataBytes[1] = (byte) ((data >> 8) & 0xFF);
-	    message.write(dataBytes, 0, 2);
-	    return message;
+		ByteArrayOutputStream message = new ByteArrayOutputStream();
+		byte[] dataBytes = new byte[2];
+		dataBytes[0] = (byte) (data & 0xFF);
+		dataBytes[1] = (byte) ((data >> 8) & 0xFF);
+		message.write(dataBytes, 0, 2);
+		return message;
 	}
 
-	
 	public ByteArrayOutputStream commandSetGuide(int currentArray, int hue, int saturation, int brightness,
 			int scaleKeyIndex, int[] scalePattern) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -181,13 +180,14 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandSetLedVisualizer(int effect) {
+	public ByteArrayOutputStream commandSetLedVisualizer(int effect, int colorHue) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_SET_LED_VISUALIZER);
 
 		message.write((byte) effect);
+		message.write((byte) colorHue);
 		return message;
 	}
 
@@ -240,8 +240,8 @@ public class Arduino {
 		sendToArduino(commandSetGuide(currentArray, hue, saturation, brightness, scaleKeyIndex, scalePattern));
 	}
 
-	public void sendCommandSetLedVisualizer(int effect) {
-		sendToArduino(commandSetLedVisualizer(effect));
+	public void sendCommandSetLedVisualizer(int effect, int colorHue) {
+		sendToArduino(commandSetLedVisualizer(effect, colorHue));
 
 	}
 
