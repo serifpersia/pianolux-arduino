@@ -10,10 +10,12 @@ import javax.swing.event.ChangeListener;
 import com.serifpersia.pianoled.ModesController;
 import com.serifpersia.pianoled.PianoController;
 import com.serifpersia.pianoled.PianoLED;
+import jAudioFeatureExtractor.jAudioTools.FFT;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -36,6 +38,7 @@ import javax.swing.JSlider;
 @SuppressWarnings("serial")
 public class pnl_AudioReact extends JPanel {
 
+	private static final int SAMPLE_RATE = 4000;
 	private static final int ANALOG_MIN_VALUE = 0;
 	private static final int ANALOG_MAX_VALUE = 1023;
 	private int AUDIO_BUFFER_SIZE = 2048; // Increased buffer size for audio data
@@ -288,6 +291,9 @@ public class pnl_AudioReact extends JPanel {
 
 	private void startAudioCapture(Mixer.Info selectedMixerInfo) {
 		try {
+
+			
+
 			if (capturing) {
 				System.out.println("Already capturing audio.");
 				return;
@@ -329,12 +335,50 @@ public class pnl_AudioReact extends JPanel {
 				protected Void doInBackground() throws Exception {
 					byte[] buffer = new byte[AUDIO_BUFFER_SIZE];
 					int bytesRead;
+
 					while (capturing) {
 						bytesRead = line.read(buffer, 0, buffer.length);
+						FFT fft = new FFT(formatAudioData(buffer, bytesRead), null, false, true);
+
+						double[] magnitudes = fft.getMagnitudeSpectrum();
+						double[] magBuckets = putMagToBuckets(magnitudes, 3);
+						double[] bins = fft.getBinLabels(SAMPLE_RATE); // the sample rate used is required for frequency bins
+						
+						if( !isSilent(magnitudes))
+							System.out.println("Mags: "+magBuckets[0]+" "+magBuckets[1]+" "+magBuckets[2]);
+
+
 						int audioInputValue = processAudioData(buffer, bytesRead);
-						audioQueue.put(audioInputValue); // Put audio data into the queue
+						if (audioInputValue > 4)
+							audioQueue.put(audioInputValue); // Put audio data into the queue
 					}
 					return null;
+				}
+
+				private boolean isSilent(double[] magnitudes) {
+					for (int i = 0; i < magnitudes.length; i++) {
+						if( magnitudes[i] > 0.01 )
+							return false;
+					}
+					return true;
+				}
+
+				private double[] putMagToBuckets(double[] magnitudes, int numBuckets) {
+					double[] buckets = new double[numBuckets];
+					double bucketValue = 0.;
+					
+					int bucketSize = magnitudes.length/numBuckets;
+					int bucketNum = 0; 
+					for( int i = 0; i < magnitudes.length; i++ )
+					{
+						bucketValue += magnitudes[i] * magnitudes[i];
+						if( i == magnitudes.length-1 || ( i > 0 && (i % bucketSize == 0)))
+						{
+							buckets[bucketNum++] = Math.sqrt(bucketValue);
+							bucketValue = 0.;
+						}
+					}
+					return buckets;
 				}
 
 				@Override
@@ -365,6 +409,18 @@ public class pnl_AudioReact extends JPanel {
 		}
 	}
 
+	private double[] formatAudioData(byte[] audioData, int bytesRead) {
+	    int numSamples = bytesRead / 2; // Each sample is 16 bits (2 bytes)
+	    double[] samples = new double[numSamples];
+
+	    for (int i = 0; i < numSamples; i++) {
+	        short sample = (short) ((audioData[i * 2 + 1] << 8) | audioData[i * 2]);
+	        samples[i] = sample / (double) Short.MAX_VALUE;
+	    }
+
+	    return samples;
+	}
+	
 	private int processAudioData(byte[] audioData, int bytesRead) {
 		long sum = 0;
 
