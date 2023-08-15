@@ -1,7 +1,6 @@
 package com.serifpersia.pianoled;
 
 import com.serifpersia.pianoled.ui.GetUI;
-import com.serifpersia.pianoled.ui.pnl_Colors;
 import com.serifpersia.pianoled.ui.pnl_Guide;
 
 public class ModesController {

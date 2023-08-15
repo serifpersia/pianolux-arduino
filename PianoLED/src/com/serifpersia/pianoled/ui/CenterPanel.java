@@ -9,9 +9,9 @@ import com.serifpersia.pianoled.liveplay.LivePlayPanel;
 import java.awt.CardLayout;
 
 @SuppressWarnings("serial")
-public class RightPanel extends JPanel {
+public class CenterPanel extends JPanel {
 
-	public RightPanel(PianoLED pianoLED) {
+	public CenterPanel(PianoLED pianoLED) {
 		setLayout(new CardLayout(0, 0));
 
 		DashboardPanel dashboardPanel = new DashboardPanel(pianoLED);

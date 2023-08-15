@@ -3,9 +3,6 @@ package com.serifpersia.pianoled.ui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.JPanel;
 
 import com.serifpersia.pianoled.PianoLED;
@@ -19,6 +16,13 @@ public class BottomPanel extends JPanel {
 	public static JPanel webcamPane;
 
 	public BottomPanel(PianoLED pianoLED) {
+
+		init();
+
+	}
+
+	private void init() {
+
 		setBackground(Color.BLACK);
 		setLayout(new BorderLayout());
 
@@ -37,7 +41,7 @@ public class BottomPanel extends JPanel {
 
 		// Add the webcam panel to the card panel
 		webcamPane = new JPanel();
-		webcamPane.setLayout(new BorderLayout(0, 0));
+
 		cardPanel.add(webcamPane, "webcamPane");
 
 		// Add the card panel to the bottom panel
@@ -45,7 +49,6 @@ public class BottomPanel extends JPanel {
 
 		// Set the default card to be the piano panel
 		cardLayout.show(cardPanel, "pianoPane");
-
 	}
 
 	public DrawPiano getPiano() {

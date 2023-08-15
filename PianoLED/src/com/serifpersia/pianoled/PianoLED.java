@@ -18,8 +18,8 @@ import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.serifpersia.pianoled.ui.BottomPanel;
+import com.serifpersia.pianoled.ui.CenterPanel;
 import com.serifpersia.pianoled.ui.DrawPiano;
-import com.serifpersia.pianoled.ui.RightPanel;
 import com.serifpersia.pianoled.ui.TopPanel;
 
 import org.jnativehook.GlobalScreen;
@@ -32,12 +32,16 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 
 	private PianoController pianoController = new PianoController(this);
 	private BottomPanel bottomPanel = new BottomPanel(this);
-	private RightPanel rightPanel = new RightPanel(this);
-	public TopPanel topPanel = new TopPanel(rightPanel, this);
+	private CenterPanel centerPanel = new CenterPanel(this);
+	public TopPanel topPanel = new TopPanel(centerPanel, this);
 
 	static Updater updator = new Updater();
 
 	private boolean isFullScreen = false;
+	
+	private double bottomPanelHeightPercentage = 0.15; // Default value is 15%
+	private JPanel centerPanelWrapper;
+
 
 	public static void main(String[] args) {
 		try {
@@ -85,12 +89,16 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
-		JPanel rightPanelWrapper = new JPanel(new BorderLayout());
+		
+		add(topPanel, BorderLayout.NORTH);
 
-		rightPanelWrapper.add(rightPanel, BorderLayout.CENTER);
-		rightPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
-		getContentPane().add(rightPanelWrapper, BorderLayout.CENTER);
+		
+		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
+		centerPanelWrapper = new JPanel(new BorderLayout());
+
+		centerPanelWrapper.add(centerPanel, BorderLayout.CENTER);
+		centerPanelWrapper.add(bottomPanel, BorderLayout.SOUTH);
+		getContentPane().add(centerPanelWrapper, BorderLayout.CENTER);
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -101,24 +109,37 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 		});
 
 		// Add a ComponentListener to the parent JPanel to detect size changes
-		rightPanelWrapper.addComponentListener(new ComponentAdapter() {
+		centerPanelWrapper.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				// Calculate the new preferred size based on the parent's size
-				Dimension parentSize = rightPanelWrapper.getSize();
-				double newHeight = parentSize.height * 0.16;
+			    // Calculate the new preferred size based on the parent's size and the updated percentage
+			    Dimension parentSize = centerPanelWrapper.getSize();
+			    double newHeight = parentSize.height * bottomPanelHeightPercentage;
 
-				// Update the child JPanel's preferred size and revalidate the layout
-				bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
-				bottomPanel.revalidate();
+			    // Update the child JPanel's preferred size and revalidate the layout
+			    bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
+			    bottomPanel.revalidate();
 			}
+
 		});
 
 		setVisible(true);
 
-		add(topPanel, BorderLayout.NORTH);
-
 	}
+	
+	public void updateBottomPanelHeightPercentage(double newPercentage) {
+	    bottomPanelHeightPercentage = newPercentage;
+
+	    // Calculate the new preferred size based on the parent's size and the updated percentage
+	    Dimension parentSize = centerPanelWrapper.getSize();
+	    double newHeight = parentSize.height * bottomPanelHeightPercentage;
+
+	    // Update the child JPanel's preferred size and revalidate the layout
+	    bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
+	    bottomPanel.revalidate();
+	}
+
+	
 
 	public PianoController getPianoController() {
 		return this.pianoController;

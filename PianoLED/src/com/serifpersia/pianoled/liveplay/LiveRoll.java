@@ -1,12 +1,17 @@
 package com.serifpersia.pianoled.liveplay;
 
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -33,14 +38,19 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 
 	private HashSet<Integer> activeNotes;
 
-	public LiveRoll(PianoLED pianoLED, LivePlayPanel livePlayPanel) {
+	public static ImageIcon testIcon;
 
+	public static float bgImage_Opacity = 1;
+
+	public LiveRoll(PianoLED pianoLED, LivePlayPanel livePlayPanel) {
+		setLayout(new BorderLayout());
 		setBackground(Color.BLACK);
 
 		this.piano = pianoLED.getDrawPiano();
 		this.livePanel = livePlayPanel;
 		pianoLED.getPianoController().addPianoReceiverConsumer(this);
 		setDoubleBuffered(true); // Enable double buffering
+
 		start();
 
 		activeNotes = new HashSet<>();
@@ -77,6 +87,10 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 		long elapsedTime = getElapsedTime();
 		if (livePanel.isShowGridSelected()) {
 			drawGrid(g);
+		}
+
+		if (livePanel.isBGSelected()) {
+			drawImage(g);
 		}
 		if (notes != null && notes.size() > 0) {
 			drawNotes(g, elapsedTime);
@@ -153,6 +167,26 @@ public class LiveRoll extends JPanel implements PianoMidiConsumer {
 			}
 		}
 
+	}
+
+	private void drawImage(Graphics g) {
+		Image iconImage = testIcon.getImage();
+
+		// Cast Graphics object to Graphics2D to access advanced rendering options
+		Graphics2D g2d = (Graphics2D) g;
+
+		// Create an AlphaComposite instance with the desired opacity
+		AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, bgImage_Opacity);
+
+		// Save the current composite and set the new composite with the desired opacity
+		AlphaComposite oldComposite = (AlphaComposite) g2d.getComposite();
+		g2d.setComposite(alphaComposite);
+
+		// Draw the icon image with the adjusted opacity
+		g2d.drawImage(iconImage, 0, 0, getWidth(), getHeight(), null);
+
+		// Restore the original composite
+		g2d.setComposite(oldComposite);
 	}
 
 	@Override

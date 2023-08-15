@@ -28,7 +28,7 @@ import java.awt.GridLayout;
 @SuppressWarnings("serial")
 public class TopPanel extends JPanel {
 
-	private RightPanel rightPanel;
+	private CenterPanel centerPanel;
 	private ImageIcon dashboardIcon;
 
 	private ImageIcon pianoLEDIcon;
@@ -53,10 +53,11 @@ public class TopPanel extends JPanel {
 
 	private Point initialClick;
 	private JButton livePlayButton;
+	private JButton controlsButton;
 	public static boolean isLivePlay = false;
 
-	public TopPanel(RightPanel rightPanel, PianoLED pianoLED) {
-		this.rightPanel = rightPanel;
+	public TopPanel(CenterPanel rightPanel, PianoLED pianoLED) {
+		this.centerPanel = rightPanel;
 		setBackground(new Color(25, 25, 25));
 		setLayout(new GridLayout(0, 3, 0, 0));
 
@@ -81,7 +82,7 @@ public class TopPanel extends JPanel {
 
 		JButton dashboardButton = createButton(pianoLED, "", "Dashboard");
 
-		JButton controlsButton = createButton(pianoLED, "", "Controls");
+		controlsButton = createButton(pianoLED, "", "Controls");
 
 		livePlayButton = createButton(pianoLED, "", "LivePlay");
 
@@ -154,14 +155,16 @@ public class TopPanel extends JPanel {
 
 			public void mousePressed(MouseEvent e) {
 
-				CardLayout cardLayout = (CardLayout) rightPanel.getLayout();
-				cardLayout.show(rightPanel, cardName);
+				CardLayout cardLayout = (CardLayout) centerPanel.getLayout();
+				cardLayout.show(centerPanel, cardName);
 
 				if (button == learnButton) {
 					learnOn = true;
 				} else if (button == livePlayButton) {
 					// pianoLED.toggleFullScreen();
 					isLivePlay = true;
+				} else if (button == controlsButton) {
+					pianoLED.updateBottomPanelHeightPercentage(0.15);
 				} else {
 					learnOn = false;
 					isLivePlay = false;
