@@ -15,12 +15,14 @@ import jAudioFeatureExtractor.jAudioTools.FFT;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JComboBox;
 import java.awt.Font;
+import java.awt.Graphics;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
@@ -38,9 +40,12 @@ import javax.swing.JSlider;
 @SuppressWarnings("serial")
 public class pnl_AudioReact extends JPanel {
 
-	private static final int SAMPLE_RATE = 4000;
+	private static final int FREQ_HIGHEST = 2000;
+	private static final int FREQ_LOWEST = 100;
+	private static final int SAMPLE_RATE = 41000;
 	private static final int ANALOG_MIN_VALUE = 0;
 	private static final int ANALOG_MAX_VALUE = 1023;
+	private static final double SCALING_FACTOR = (ANALOG_MAX_VALUE - ANALOG_MIN_VALUE) / (double) Short.MAX_VALUE;
 	private int AUDIO_BUFFER_SIZE = 2048; // Increased buffer size for audio data
 
 	private TargetDataLine line;
@@ -57,10 +62,14 @@ public class pnl_AudioReact extends JPanel {
 	static int defaultFadeVal = 200;
 
 	static int defaultResponseVal = 2048;
+	static int defaultFreqBandsVal = 16;
 
 	private JSlider sld_Fade;
 	private JSlider sld_Response;
+	private JSlider sld_FreqBands;
 	private JButton btnChangeHue;
+	private double[] freqs;
+//	int numBuckets = 16;
 
 	public pnl_AudioReact(PianoLED pianoLED) {
 		setBackground(new Color(50, 50, 50));
@@ -74,20 +83,63 @@ public class pnl_AudioReact extends JPanel {
 		sliderActions();
 	}
 
+	private void drawFreq(Graphics g, double[] freqsToDraw) {
+		if (freqsToDraw == null || freqsToDraw.length == 0)
+			return;
+
+		int clipHeight = g.getClip().getBounds().height;
+		int clipWidth = g.getClip().getBounds().width;
+		int barWidth = clipWidth / freqsToDraw.length;
+		if (barWidth == 0)
+			barWidth = 1;
+		
+		int spacing = 3;
+		if( barWidth*freqsToDraw.length > clipWidth)
+			spacing = 1;
+		
+		for (int i = 0; i < freqsToDraw.length; i++) {
+			double barHeight = freqsToDraw[i] / SCALING_FACTOR * clipHeight;
+			int x = (int) (i * (barWidth + spacing));
+			int y =  (int) (clipHeight - barHeight);
+			g.setColor(Color.RED);
+			g.fillRect(x, y, barWidth, (int) barHeight);
+		}
+
+	}
+
 	private void init() {
 		setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		setLayout(new GridLayout(1, 0, 0, 0));
+		setLayout(new GridLayout(2, 0, 0, 0));
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(50, 50, 50));
 		add(panel);
-		panel.setLayout(new GridLayout(5, 0, 0, 0));
+		panel.setLayout(new GridLayout(6, 0, 0, 0));
+
+		JPanel freqPanel = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				drawFreq(g, freqs);
+			}
+		};
+		freqPanel.setBackground(Color.BLACK);
+		add(freqPanel);
+
+		Timer timer = new Timer(8, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				freqPanel.repaint();
+			}
+		});
+		timer.start();
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new EmptyBorder(0, 0, 10, 0));
 		panel_1.setBackground(new Color(50, 50, 50));
 		panel.add(panel_1);
+
 		panel_1.setLayout(new GridLayout(0, 2, 0, 0));
 
 		JLabel lblAudioDevice = new JLabel("Audio Device");
@@ -156,6 +208,22 @@ public class pnl_AudioReact extends JPanel {
 		sld_Response.setSnapToTicks(true);
 		sld_Response.setMajorTickSpacing(128);
 		panel_4.add(sld_Response);
+
+		JPanel panel_fb = new JPanel();
+		panel_fb.setBackground(new Color(50, 50, 50));
+		panel.add(panel_fb);
+		panel_fb.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JLabel lb_FreqBands = new JLabel("Freq Bands");
+		lb_FreqBands.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_FreqBands.setFont(new Font("Poppins", Font.PLAIN, 21));
+		panel_fb.add(lb_FreqBands);
+
+		sld_FreqBands = new JSlider(1, 128, defaultFreqBandsVal);
+		sld_FreqBands.setBackground(new Color(77, 77, 77));
+		sld_FreqBands.setForeground(new Color(128, 128, 128));
+		sld_Response.setMajorTickSpacing(32);
+		panel_fb.add(sld_FreqBands);
 
 		JPanel panel_5 = new JPanel();
 		panel_5.setLayout(new GridLayout(0, 2, 0, 0));
@@ -254,16 +322,16 @@ public class pnl_AudioReact extends JPanel {
 					break;
 
 				case "btnChangeHue":
-				    float[] hsb = Color.RGBtoHSB(GetUI.selectedColor.getRed(), GetUI.selectedColor.getGreen(),
-				            GetUI.selectedColor.getBlue(), null);
-				    
-				    // Convert the hue value (hsb[0]) from float [0, 1] to int [0, 255]
-				    int hueInt = (int) (hsb[0] * 255);
-				    
-				    // Call the function with the integer hue value
-				    pianoController.setLedVisualizerEffect(0, hueInt);
-				    System.out.println(hueInt);
-				    break;
+					float[] hsb = Color.RGBtoHSB(GetUI.selectedColor.getRed(), GetUI.selectedColor.getGreen(),
+							GetUI.selectedColor.getBlue(), null);
+
+					// Convert the hue value (hsb[0]) from float [0, 1] to int [0, 255]
+					int hueInt = (int) (hsb[0] * 255);
+
+					// Call the function with the integer hue value
+					pianoController.setLedVisualizerEffect(0, hueInt);
+					System.out.println(hueInt);
+					break;
 
 				default:
 					break;
@@ -292,8 +360,6 @@ public class pnl_AudioReact extends JPanel {
 	private void startAudioCapture(Mixer.Info selectedMixerInfo) {
 		try {
 
-			
-
 			if (capturing) {
 				System.out.println("Already capturing audio.");
 				return;
@@ -314,7 +380,7 @@ public class pnl_AudioReact extends JPanel {
 				return;
 			}
 
-			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 41000, 8, 1, 1, 41000, false); // 16
+			AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SAMPLE_RATE, 8, 1, 1, 41000, false); // 16
 																													// kHz,
 																													// 8
 																													// bits
@@ -338,15 +404,13 @@ public class pnl_AudioReact extends JPanel {
 
 					while (capturing) {
 						bytesRead = line.read(buffer, 0, buffer.length);
-						FFT fft = new FFT(formatAudioData(buffer, bytesRead), null, false, true);
+						FFT fft = new FFT(formatAudioData(buffer.clone(), bytesRead), null, false, true);
 
 						double[] magnitudes = fft.getMagnitudeSpectrum();
-						double[] magBuckets = putMagToBuckets(magnitudes, 3);
-						double[] bins = fft.getBinLabels(SAMPLE_RATE); // the sample rate used is required for frequency bins
-						
-						if( !isSilent(magnitudes))
-							System.out.println("Mags: "+magBuckets[0]+" "+magBuckets[1]+" "+magBuckets[2]);
-
+						double[] bins = fft.getBinLabels(SAMPLE_RATE); // the sample rate used is
+						double[] filteredFreqs = filterFreqs(magnitudes, bins);
+						double[] freqBuckets = putMagToBuckets(filteredFreqs, sld_FreqBands.getValue());
+						setFreq(freqBuckets);
 
 						int audioInputValue = processAudioData(buffer, bytesRead);
 						if (audioInputValue > 4)
@@ -355,27 +419,39 @@ public class pnl_AudioReact extends JPanel {
 					return null;
 				}
 
-				private boolean isSilent(double[] magnitudes) {
-					for (int i = 0; i < magnitudes.length; i++) {
-						if( magnitudes[i] > 0.01 )
-							return false;
+				private double[] filterFreqs(double[] magnitudes, double[] bins) {
+					int lowFreq = -1;
+					for (int i = 0; i < bins.length; i++) {
+						if(lowFreq == -1 && bins[i] > FREQ_LOWEST)
+						{
+							lowFreq = i;
+						}
+						
+						if(bins[i] > FREQ_HIGHEST)
+						{
+							return Arrays.copyOfRange(magnitudes, lowFreq, i);
+						}
 					}
-					return true;
+					return magnitudes;
 				}
 
 				private double[] putMagToBuckets(double[] magnitudes, int numBuckets) {
+					if( numBuckets > magnitudes.length )
+						numBuckets = magnitudes.length;
 					double[] buckets = new double[numBuckets];
 					double bucketValue = 0.;
-					
-					int bucketSize = magnitudes.length/numBuckets;
-					int bucketNum = 0; 
-					for( int i = 0; i < magnitudes.length; i++ )
-					{
+
+					int avgBucketSize = magnitudes.length / numBuckets;
+					int bucketNum = 0;
+					int bucketSize = 0;
+					for (int i = 0; i < magnitudes.length; i++) {
 						bucketValue += magnitudes[i] * magnitudes[i];
-						if( i == magnitudes.length-1 || ( i > 0 && (i % bucketSize == 0)))
-						{
-							buckets[bucketNum++] = Math.sqrt(bucketValue);
+						bucketSize++;
+						if (i == magnitudes.length - 1
+								|| (i > 0 && (i % avgBucketSize == 0) && bucketNum != (numBuckets - 1))) {
+							buckets[bucketNum++] = Math.sqrt(bucketValue/bucketSize);
 							bucketValue = 0.;
+							bucketSize = 0;
 						}
 					}
 					return buckets;
@@ -409,18 +485,23 @@ public class pnl_AudioReact extends JPanel {
 		}
 	}
 
-	private double[] formatAudioData(byte[] audioData, int bytesRead) {
-	    int numSamples = bytesRead / 2; // Each sample is 16 bits (2 bytes)
-	    double[] samples = new double[numSamples];
+	protected void setFreq(double[] freqBuckets) {
+		this.freqs = freqBuckets;
 
-	    for (int i = 0; i < numSamples; i++) {
-	        short sample = (short) ((audioData[i * 2 + 1] << 8) | audioData[i * 2]);
-	        samples[i] = sample / (double) Short.MAX_VALUE;
-	    }
-
-	    return samples;
 	}
-	
+
+	private double[] formatAudioData(byte[] audioData, int bytesRead) {
+		int numSamples = bytesRead / 2; // Each sample is 16 bits (2 bytes)
+		double[] samples = new double[numSamples];
+
+		for (int i = 0; i < numSamples; i++) {
+			short sample = (short) ((audioData[i * 2 + 1] << 8) | audioData[i * 2]);
+			samples[i] = sample / (double) Short.MAX_VALUE;
+		}
+
+		return samples;
+	}
+
 	private int processAudioData(byte[] audioData, int bytesRead) {
 		long sum = 0;
 
@@ -430,9 +511,9 @@ public class pnl_AudioReact extends JPanel {
 		}
 
 		double rms = Math.sqrt(sum / (bytesRead / 2));
-		double scalingFactor = (ANALOG_MAX_VALUE - ANALOG_MIN_VALUE) / (double) Short.MAX_VALUE;
+		
 
-		return ANALOG_MIN_VALUE + (int) (scalingFactor * rms);
+		return ANALOG_MIN_VALUE + (int) (SCALING_FACTOR * rms);
 	}
 
 	private void stopAudioCapture() {

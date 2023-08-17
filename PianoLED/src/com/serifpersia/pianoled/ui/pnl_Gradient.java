@@ -103,7 +103,6 @@ public class pnl_Gradient extends JPanel {
 
 	public static Color[] colors = new Color[8]; // Declare and initialize the colors array
 
-	private ImageIcon setIcon;
 	private JPanel panel;
 	private JLabel lb_GradientFade;
 	private JSlider slider;
@@ -132,7 +131,7 @@ public class pnl_Gradient extends JPanel {
 
 	private void initButtons() {
 
-		setIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/Set.png")).getImage().getScaledInstance(90,
+		ImageIcon setIcon = new ImageIcon(new ImageIcon(getClass().getResource("/icons/Set.png")).getImage().getScaledInstance(90,
 				45, Image.SCALE_SMOOTH));
 
 		btn_Gradient2_SetSide1 = new JButton("");
