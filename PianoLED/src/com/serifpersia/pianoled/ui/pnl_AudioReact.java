@@ -446,7 +446,7 @@ public class pnl_AudioReact extends JPanel {
 					int bucketSize = 0;
 					for (int i = 0; i < magnitudes.length; i++) {
 						bucketValue += magnitudes[i] * magnitudes[i];
-						bucketSize++;
+						bucketSize++; 
 						if (i == magnitudes.length - 1
 								|| (i > 0 && (i % avgBucketSize == 0) && bucketNum != (numBuckets - 1))) {
 							buckets[bucketNum++] = Math.sqrt(bucketValue/bucketSize);
