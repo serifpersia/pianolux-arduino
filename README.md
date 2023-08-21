@@ -62,8 +62,10 @@ Follow this guide if you can't run both PianoLED app and your VST or other progr
 
 
 ## Instructions for Linux
+- Get Arduino IDE 2, upload PianoLED code to Arduino board
 - Install jre17 package:
-  - For Arch, use the command: `sudo pacman -S jre17-openjdk`
+  - For Arch based distros, use the command: `sudo pacman -S jre17-openjdk`
+  - For Debian based distros, use command: `sudo apt install openjdk-17-jdk`
 - To run the app:
   - Download and extract the Linux zip file.
   -Open Terminal, cd to extracted PianoLED directory and run  `sudo java -jar "pianoled jar name.jar"` command.
