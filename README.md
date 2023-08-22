@@ -1,74 +1,86 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/5aca8f1d-1b2d-4312-9fdf-8bb4c028a0b3)
+![PianoLED Logo](https://github.com/serifpersia/pianoled-arduino/assets/62844718/5aca8f1d-1b2d-4312-9fdf-8bb4c028a0b3.png)
 
+**PianoLED V4** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
 
+## LED Strip Compatibility
 
-This app is a simple Java based GUI that controls  LED strip using an Arduino. The LED strip must be 2m/144 or 2m/72 for 88 keys/76/73, and for smaller key sizes 1m is sufficient.
+PianoLED is compatible with a wide range of 5V addressable LED strips supported by the FastLED library for Arduino. It offers support for both 72 and 144 density/m strips. Compatible strips include:
 
-LED strip support:
-Any 5V addressable strip supported by FastLED library for Arduino 72 and 144 density/m 
+- WS2812B
+- WS2812
+- WS2811
+- SK6812
 
-Example:
+PianoLED currently requires native USB Arduino boards with an Atmega32U4 CPU, such as:
 
-5v Adressable LED strips
+- Arduino Leonardo
+- Pro Micro
+- Arduino Zero
 
-WS2812B/WS2812/WS2811,SK6812 
+Future plans include support for ESP boards as well!
 
-PianoLED reqiures native usb Arduino boards like Atmega32U4 cpu boards like:
-Arduino Leonardo,Pro Micro,Zero
-Future plans is to include ESP boards as well!
+## Download
 
-## Download [PianoLED](https://github.com/serifpersia/pianoled-arduino/releases)
+You can download the latest release of PianoLED from the [GitHub Releases](https://github.com/serifpersia/pianoled-arduino/releases) page.
 
+## Join Our Community
 
-## PianoLED Discord Server Community 
-`https://discord.gg/S6xmuX4Hx5`
+Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences: [Join PianoLED Discord](https://discord.gg/S6xmuX4Hx5)
 
-## Connecting the LED strip and Arduino
-Here is how you should connect the LED strip and Arduino.
+## Connecting the LED Strip and Arduino
 
-![LED Strip+Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
+To set up PianoLED, follow the connection diagram below:
 
-## More Brightness? Use of External Power
-For simplest setup you can use minimum 3A 5V capable USB charger, cut a spare usb cable and connect positive and negative to led strip's red and white wire red being positive and white being negative, usually usb cables red is positive and black negative rest are data wires.
-You also have to change the current limit to power supply current rating in mA, 1Amp is 1000mA so 3A is 3000mA
+![LED Strip + Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/648d5af4-b8b6-4892-b512-6710904e2728)
+## Enhance Brightness with External Power
 
-Here is how you connect external power
+For maximum brightness, consider using an external power source. Here's how you can do it:
 
-![externa power](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24)
+1. Use a minimum 3A 5V-capable USB charger.
+2. Cut a spare USB cable and connect the positive (usually red) and negative (usually white) wires to the LED strip's red and white wires, respectively.
+3. Adjust the current limit to match the power supply's current rating in mA (1A = 1000mA, so 3A = 3000mA).
 
+![External Power Setup](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24.png)
 
-## Mounting the LED strip
-For 88 keys piano align the 3rd led with first black key
+## Mounting the LED Strip
+
+For an 88-key piano, align the third LED with the first black key, as shown below:
 
 ![image](https://user-images.githubusercontent.com/62844718/235168165-9b97120a-66ed-44f5-a7fb-11cc164cf945.png)
 
 ## Instructions for Windows OS
-To use the app, you need to install the latest Java OpenJRE version and use the provided Arduino sketch .ino file for uploading to Arduino. 
 
-1.Run included Download Java_Script.bat file to download and install Java JRE needed to run the PianoLED app.
+To use PianoLED on Windows, follow these steps:
 
-2. To Upload/Flash the .ino file, you need Arduino IDE application. Make sure to install the Arduino drivers when you launch Arduino IDE and FastLED library. If you use Arduino IDE 1 or you didnt install AVR Boards drivers you won't be able to use the Refresh button, manual selection of arduino com port will work tho. To install drivers make sure you have Arduino IDE 2 and do ctrl+shift+B and click on second icon and click install button. For the other IDE look on google how to load drivers from ARDUINO IDE folder  Device Manager
+1. Run the included `Download Java_Script.bat` file to download and install the necessary Java JRE for running the PianoLED app.
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd)
+2. You will need the Arduino IDE application to upload the `.ino` file to your Arduino board. Ensure that you install the Arduino drivers and the FastLED library. If you're using Arduino IDE 1 or haven't installed the AVR Boards drivers, you may need to manually select the Arduino COM port as the "Refresh" button may not work. To install drivers, use Arduino IDE 2 and follow these steps. For other IDEs, refer to online resources on how to load drivers from the ARDUINO IDE folder in the Device Manager.
 
+![Arduino IDE and Drivers](https://github.com/serifpersia/pianoled-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd.png)
 
-4. With Upload Complete prompt, you are ready to use the PianoLED app.
+4. Once you see the "Upload Complete" prompt, you are ready to use the PianoLED app.
 
-Follow this guide if you can't run both PianoLED app and your VST or other programs that use midi. Some piano's USB midi support only connecting to one software, by following this guide, you can split one midi connection into two virtual ones, and that should let you use both: [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/)
-
+For Windows users who encounter conflicts when using both PianoLED and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/).
 
 ## Instructions for Linux
-- Get Arduino IDE 2, upload PianoLED code to Arduino board
-- Install jre17 package:
-  - For Arch based distros, use the command: `sudo pacman -S jre17-openjdk`
-  - For Debian based distros, use command: `sudo apt install openjdk-17-jdk`
+
+To use PianoLED on Linux, follow these steps:
+
+- Install Arduino IDE 2 and upload the PianoLED code to your Arduino board.
+
+- Install the `jre17` package, depending on your Linux distribution:
+
+  - For Arch-based distros: `sudo pacman -S jre17-openjdk`
+  - For Debian-based distros: `sudo apt install openjdk-17-jdk`
+
 - To run the app:
+
   - Download and extract the Linux zip file.
-  -Open Terminal, cd to extracted PianoLED directory and run  `sudo java -jar "pianoled jar name.jar"` command.
-  
-## Donations
-If you want to help out on future development of the PianoLED project or just want to give some appreciation for the project consider donating. You can email @ `ramiserifpersia@gmail.com` & join the discord server where you can get the special role by helping out
+  - Open the Terminal, navigate to the extracted PianoLED directory, and run the following command: `sudo java -jar "pianoled jar name.jar"`
+
+## Support the Project
+
+If you'd like to support future development of the PianoLED project or simply show your appreciation, consider making a donation. You can reach out via email at `ramiserifpersia@gmail.com` and join the Discord server, where you can receive a special role for contributing to the project. Your support helps us keep the project vibrant and evolving. Thank you!
