@@ -4,6 +4,10 @@
 
 **PianoLED V4** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
 
+## Join Our Community
+
+Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences: [Join PianoLED Discord](https://discord.gg/S6xmuX4Hx5)
+
 ## LED Strip Compatibility
 
 PianoLED is compatible with a wide range of 5V addressable LED strips supported by the FastLED library for Arduino. It offers support for both 72 and 144 density/m strips. Compatible strips include:
@@ -24,10 +28,6 @@ Future plans include support for ESP boards as well!
 ## Download
 
 You can download the latest release of PianoLED from the [GitHub Releases](https://github.com/serifpersia/pianoled-arduino/releases) page.
-
-## Join Our Community
-
-Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences: [Join PianoLED Discord](https://discord.gg/S6xmuX4Hx5)
 
 ## Connecting the LED Strip and Arduino
 
