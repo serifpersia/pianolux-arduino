@@ -40,7 +40,7 @@ To set up PianoLED, follow the connection diagram below:
 For maximum brightness, consider using an external power source. Here's how you can do it:
 
 1. Use a minimum 3A 5V-capable USB charger.
-2. Cut a spare USB cable and connect the positive (usually red) and negative (usually white) wires to the LED strip's red and white wires, respectively.
+2. Cut a spare USB cable and connect the positive (usually red) and negative (usually black) wires to the LED strip's red and white wires, respectively.
 3. Adjust the current limit to match the power supply's current rating in mA (1A = 1000mA, so 3A = 3000mA).
 
 ![External Power Setup](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24.png)
