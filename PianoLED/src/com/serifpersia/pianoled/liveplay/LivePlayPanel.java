@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
+
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
@@ -384,30 +386,34 @@ public class LivePlayPanel extends JPanel {
 		};
 
 		webcamPanel.addMouseWheelListener(e -> {
-			int notches = e.getWheelRotation();
-			double scaleFactorIncrement = 0.025; // You can adjust the increment as needed
-			double maxScaleFactor = 6.0; // Adjust this value to set the maximum zoom level
+		    int notches = e.getWheelRotation();
+		    double scaleFactorIncrement = 0.025; // You can adjust the increment as needed
+		    double maxScaleFactor = 6.0; // Adjust this value to set the maximum zoom level
 
-			if (notches < 0) {
-				scaleFactor += scaleFactorIncrement;
-				scaleFactor = Math.min(scaleFactor, maxScaleFactor); // Limit zooming in
-			} else {
-				double tempScaleFactor = scaleFactor - scaleFactorIncrement;
-				scaleFactor = Math.max(tempScaleFactor, 1.0); // Limit zooming out to the original scale
-			}
+		    if (notches < 0) {
+		        double tempScaleFactor = scaleFactor + scaleFactorIncrement;
+		        scaleFactor = Math.min(tempScaleFactor, maxScaleFactor); // Limit zooming in
+		    } else {
+		        double tempScaleFactor = scaleFactor - scaleFactorIncrement;
+		        if (tempScaleFactor >= 1.0) { // Only limit zooming out if it's still greater than or equal to the original scale
+		            scaleFactor = tempScaleFactor;
+		        }
+		        else { // Reset translation when zooming out beyond the original scale
+		            scaleFactor = 1.0;
+		            translationX = 0;
+		            translationY = 0;
+		        }
+		    }
 
-			// Limit zoom out to the initial scale factor
-			scaleFactor = Math.max(scaleFactor, 1.0 / scaleFactor);
-
-			// Reset translation when zooming
-			translationX = 0;
-			translationY = 0;
-
-			webcamPanel.repaint();
+		    webcamPanel.repaint();
 		});
 
-		// Set the dimensions of the webcamPanel
-		webcamPanel.setPreferredSize(new Dimension(1920, 1080));
+		// Get the screen's current resolution
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+		// Set the dimensions of the webcamPanel to match the screen resolution
+		webcamPanel.setPreferredSize(screenSize);
+
 
 		BottomPanel.webcamPane.add(webcamPanel);
 		BottomPanel.cardLayout.show(BottomPanel.cardPanel, "webcamPane");
