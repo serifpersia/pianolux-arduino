@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.serifpersia.pianoled.ui.ColorPickerPanel;
 import com.serifpersia.pianoled.ui.pnl_Colors;
 import com.serifpersia.pianoled.ui.pnl_Controls;
-import com.serifpersia.pianoled.ui.pnl_Gradient;
+import com.serifpersia.pianoled.ui.pnl_Gradient_MultiColor;
 
 public class Profile {
 
@@ -49,22 +49,22 @@ public class Profile {
 	private static Color getSideColor(int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			return pnl_Gradient.colors[0];
+			return pnl_Gradient_MultiColor.colors[0];
 		case 2:
-			return pnl_Gradient.colors[1];
+			return pnl_Gradient_MultiColor.colors[1];
 		case 3:
-			return pnl_Gradient.colors[2];
+			return pnl_Gradient_MultiColor.colors[2];
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			return pnl_Gradient.colors[3];
+			return pnl_Gradient_MultiColor.colors[3];
 		case 5:
-			return pnl_Gradient.colors[4];
+			return pnl_Gradient_MultiColor.colors[4];
 		case 6:
-			return pnl_Gradient.colors[5];
+			return pnl_Gradient_MultiColor.colors[5];
 		case 7:
-			return pnl_Gradient.colors[6];
+			return pnl_Gradient_MultiColor.colors[6];
 		case 8:
-			return pnl_Gradient.colors[7];
+			return pnl_Gradient_MultiColor.colors[7];
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
 		}
@@ -85,29 +85,29 @@ public class Profile {
 	private static void setColorForSide(Color color, int sideNumber) {
 		switch (sideNumber) {
 		case 1:
-			pnl_Gradient.colors[0] = color;
+			pnl_Gradient_MultiColor.colors[0] = color;
 			break;
 		case 2:
-			pnl_Gradient.colors[1] = color;
+			pnl_Gradient_MultiColor.colors[1] = color;
 			break;
 		case 3:
-			pnl_Gradient.colors[2] = color;
+			pnl_Gradient_MultiColor.colors[2] = color;
 			break;
 		// Add cases for the remaining sides (4 to 8)
 		case 4:
-			pnl_Gradient.colors[3] = color;
+			pnl_Gradient_MultiColor.colors[3] = color;
 			break;
 		case 5:
-			pnl_Gradient.colors[4] = color;
+			pnl_Gradient_MultiColor.colors[4] = color;
 			break;
 		case 6:
-			pnl_Gradient.colors[5] = color;
+			pnl_Gradient_MultiColor.colors[5] = color;
 			break;
 		case 7:
-			pnl_Gradient.colors[6] = color;
+			pnl_Gradient_MultiColor.colors[6] = color;
 			break;
 		case 8:
-			pnl_Gradient.colors[7] = color;
+			pnl_Gradient_MultiColor.colors[7] = color;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);

@@ -17,7 +17,7 @@ import com.serifpersia.pianoled.learn.PianoMidiConsumer;
 import com.serifpersia.pianoled.learn.PianoReceiver;
 import com.serifpersia.pianoled.ui.DashboardPanel;
 import com.serifpersia.pianoled.ui.GetUI;
-import com.serifpersia.pianoled.ui.pnl_Gradient;
+import com.serifpersia.pianoled.ui.pnl_Gradient_MultiColor;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -322,75 +322,75 @@ public class PianoController implements PianoMidiConsumer {
 
 					switch (segmentIndex) {
 					case 0:
-						r = interpolateColorComponent(pnl_Gradient.colors[0].getRed(), pnl_Gradient.colors[1].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getRed(), pnl_Gradient_MultiColor.colors[1].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[0].getGreen(),
-								pnl_Gradient.colors[1].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[0].getBlue(),
-								pnl_Gradient.colors[1].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getGreen(),
+								pnl_Gradient_MultiColor.colors[1].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getBlue(),
+								pnl_Gradient_MultiColor.colors[1].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 1:
-						r = interpolateColorComponent(pnl_Gradient.colors[1].getRed(), pnl_Gradient.colors[2].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getRed(), pnl_Gradient_MultiColor.colors[2].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[1].getGreen(),
-								pnl_Gradient.colors[2].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[1].getBlue(),
-								pnl_Gradient.colors[2].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getGreen(),
+								pnl_Gradient_MultiColor.colors[2].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getBlue(),
+								pnl_Gradient_MultiColor.colors[2].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 2:
-						r = interpolateColorComponent(pnl_Gradient.colors[2].getRed(), pnl_Gradient.colors[3].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getRed(), pnl_Gradient_MultiColor.colors[3].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[2].getGreen(),
-								pnl_Gradient.colors[3].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[2].getBlue(),
-								pnl_Gradient.colors[3].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getGreen(),
+								pnl_Gradient_MultiColor.colors[3].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getBlue(),
+								pnl_Gradient_MultiColor.colors[3].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 3:
-						r = interpolateColorComponent(pnl_Gradient.colors[3].getRed(), pnl_Gradient.colors[4].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getRed(), pnl_Gradient_MultiColor.colors[4].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[3].getGreen(),
-								pnl_Gradient.colors[4].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[3].getBlue(),
-								pnl_Gradient.colors[4].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getGreen(),
+								pnl_Gradient_MultiColor.colors[4].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getBlue(),
+								pnl_Gradient_MultiColor.colors[4].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 4:
-						r = interpolateColorComponent(pnl_Gradient.colors[4].getRed(), pnl_Gradient.colors[5].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getRed(), pnl_Gradient_MultiColor.colors[5].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[4].getGreen(),
-								pnl_Gradient.colors[5].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[4].getBlue(),
-								pnl_Gradient.colors[5].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getGreen(),
+								pnl_Gradient_MultiColor.colors[5].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getBlue(),
+								pnl_Gradient_MultiColor.colors[5].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 5:
-						r = interpolateColorComponent(pnl_Gradient.colors[5].getRed(), pnl_Gradient.colors[6].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getRed(), pnl_Gradient_MultiColor.colors[6].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[5].getGreen(),
-								pnl_Gradient.colors[6].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[5].getBlue(),
-								pnl_Gradient.colors[6].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getGreen(),
+								pnl_Gradient_MultiColor.colors[6].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getBlue(),
+								pnl_Gradient_MultiColor.colors[6].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 6:
-						r = interpolateColorComponent(pnl_Gradient.colors[6].getRed(), pnl_Gradient.colors[7].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getRed(), pnl_Gradient_MultiColor.colors[7].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[6].getGreen(),
-								pnl_Gradient.colors[7].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[6].getBlue(),
-								pnl_Gradient.colors[7].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getGreen(),
+								pnl_Gradient_MultiColor.colors[7].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getBlue(),
+								pnl_Gradient_MultiColor.colors[7].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					case 7:
-						r = interpolateColorComponent(pnl_Gradient.colors[7].getRed(), pnl_Gradient.colors[0].getRed(),
+						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getRed(), pnl_Gradient_MultiColor.colors[0].getRed(),
 								progress);
-						g = interpolateColorComponent(pnl_Gradient.colors[7].getGreen(),
-								pnl_Gradient.colors[0].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient.colors[7].getBlue(),
-								pnl_Gradient.colors[0].getBlue(), progress);
+						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getGreen(),
+								pnl_Gradient_MultiColor.colors[0].getGreen(), progress);
+						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getBlue(),
+								pnl_Gradient_MultiColor.colors[0].getBlue(), progress);
 						currentColor = new Color(r, g, b);
 						break;
 					}
@@ -399,6 +399,15 @@ public class PianoController implements PianoMidiConsumer {
 				} else if (ModesController.SplashOn) {
 					message = arduino.commandSplash(velocity, notePushed, getSplashColor());
 
+				} else if (ModesController.MultiColorOn) {
+
+					// Calculate the index of the note group based on pitch
+					int noteGroupIndex = (pitch - 21) % 12;
+
+					// Use the calculated index to get the corresponding color
+					Color color = GetUI.multiColors[noteGroupIndex];
+
+					message = arduino.commandSetColor(color, notePushed);
 				} else {
 					if (arduino != null)
 						message = arduino.commandSetColor(GetUI.selectedColor, notePushed);

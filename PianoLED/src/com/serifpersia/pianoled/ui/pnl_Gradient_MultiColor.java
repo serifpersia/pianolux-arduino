@@ -22,7 +22,7 @@ import com.serifpersia.pianoled.PianoLED;
 import javax.swing.JSlider;
 
 @SuppressWarnings("serial")
-public class pnl_Gradient extends JPanel {
+public class pnl_Gradient_MultiColor extends JPanel {
 
 	private ModesController modesController;
 
@@ -105,8 +105,22 @@ public class pnl_Gradient extends JPanel {
 
 	private ImageIcon setIcon;
 	private JPanel panel;
-	private JLabel lb_GradientFade;
+	private JPanel panel_1;
+	private JLabel lb_Gradient2_SetSide1_1;
 	private JSlider slider;
+	private JPanel panel_2;
+	private JButton btn_SetA;
+	private JButton btn_SetASharp;
+	private JButton btn_SetB;
+	private JButton btn_SetC;
+	private JButton btn_SetCSharp;
+	private JButton btn_SetD;
+	private JButton btn_SetDSharp;
+	private JButton btn_SetE;
+	private JButton btn_SetF;
+	private JButton btn_SetFSharp;
+	private JButton btn_SetG;
+	private JButton btn_SetGSharp;
 
 	private void initializeColors() {
 
@@ -120,7 +134,7 @@ public class pnl_Gradient extends JPanel {
 		colors[7] = Color.GREEN;
 	}
 
-	public pnl_Gradient(PianoLED pianoLED) {
+	public pnl_Gradient_MultiColor(PianoLED pianoLED) {
 
 		modesController = new ModesController(pianoLED);
 
@@ -688,17 +702,75 @@ public class pnl_Gradient extends JPanel {
 		panel = new JPanel();
 		panel.setBackground(new Color(50, 50, 50));
 		add(panel, BorderLayout.SOUTH);
-		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		panel.setLayout(new GridLayout(2, 0, 0, 0));
 
-		lb_GradientFade = new JLabel("Fade Gradient");
-		lb_GradientFade.setHorizontalAlignment(SwingConstants.LEFT);
-		lb_GradientFade.setForeground(Color.WHITE);
-		lb_GradientFade.setFont(new Font("Poppins", Font.PLAIN, 21));
-		lb_GradientFade.setBackground(new Color(204, 204, 204));
-		panel.add(lb_GradientFade);
+		panel_1 = new JPanel();
+		panel_1.setBackground(new Color(50, 50, 50));
+		panel.add(panel_1);
+		panel_1.setLayout(new GridLayout(0, 2, 0, 0));
+
+		lb_Gradient2_SetSide1_1 = new JLabel("Fade Slider");
+		lb_Gradient2_SetSide1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lb_Gradient2_SetSide1_1.setForeground(Color.WHITE);
+		lb_Gradient2_SetSide1_1.setFont(new Font("Poppins", Font.PLAIN, 21));
+		lb_Gradient2_SetSide1_1.setBackground(new Color(204, 204, 204));
+	//	panel_1.add(lb_Gradient2_SetSide1_1);
 
 		slider = new JSlider();
-		panel.add(slider);
+		//panel_1.add(slider);
+
+		panel_2 = new JPanel();
+		panel_2.setBackground(new Color(50, 50, 50));
+		panel.add(panel_2);
+		panel_2.setLayout(new GridLayout(2, 0, 0, 0));
+
+		btn_SetA = new JButton("A");
+		btn_SetA.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetA);
+
+		btn_SetASharp = new JButton("A#");
+		btn_SetASharp.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetASharp);
+
+		btn_SetB = new JButton("B");
+		btn_SetB.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetB);
+
+		btn_SetC = new JButton("C");
+		btn_SetC.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetC);
+
+		btn_SetCSharp = new JButton("C#");
+		btn_SetCSharp.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetCSharp);
+
+		btn_SetD = new JButton("D");
+		btn_SetD.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetD);
+
+		btn_SetDSharp = new JButton("D#");
+		btn_SetDSharp.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetDSharp);
+
+		btn_SetE = new JButton("E");
+		btn_SetE.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetE);
+
+		btn_SetF = new JButton("F");
+		btn_SetF.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetF);
+
+		btn_SetFSharp = new JButton("F#");
+		btn_SetFSharp.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetFSharp);
+
+		btn_SetG = new JButton("G");
+		btn_SetG.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetG);
+
+		btn_SetGSharp = new JButton("G#");
+		btn_SetGSharp.setFont(new Font("Poppins", Font.PLAIN, 12));
+		panel_2.add(btn_SetGSharp);
 	}
 
 	Color interpolateColor(Color color1, Color color2, float ratio) {
@@ -931,7 +1003,42 @@ public class pnl_Gradient extends JPanel {
 
 					colors[7] = GetUI.selectedColor;
 					ControlsPanel.pnl_GradientPreview.repaint();
-
+					break;
+				case "btn_SetA":
+					GetUI.multiColors[0] = GetUI.selectedColor;
+					break;
+				case "btn_SetASharp":
+					GetUI.multiColors[1] = GetUI.selectedColor;
+					break;
+				case "btn_SetB":
+					GetUI.multiColors[2] = GetUI.selectedColor;
+					break;
+				case "btn_SetC":
+					GetUI.multiColors[3] = GetUI.selectedColor;
+					break;
+				case "btn_SetCSharp":
+					GetUI.multiColors[4] = GetUI.selectedColor;
+					break;
+				case "btn_SetD":
+					GetUI.multiColors[5] = GetUI.selectedColor;
+					break;
+				case "btn_SetDSharp":
+					GetUI.multiColors[6] = GetUI.selectedColor;
+					break;
+				case "btn_SetE":
+					GetUI.multiColors[7] = GetUI.selectedColor;
+					break;
+				case "btn_SetF":
+					GetUI.multiColors[8] = GetUI.selectedColor;
+					break;
+				case "btn_SetFSharp":
+					GetUI.multiColors[9] = GetUI.selectedColor;
+					break;
+				case "btn_SetG":
+					GetUI.multiColors[10] = GetUI.selectedColor;
+					break;
+				case "btn_SetGSharp":
+					GetUI.multiColors[11] = GetUI.selectedColor;
 					break;
 				default:
 					break;
@@ -981,6 +1088,19 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide7.addActionListener(buttonListener);
 		btn_Gradient8_SetSide8.addActionListener(buttonListener);
 
+		btn_SetA.addActionListener(buttonListener);
+		btn_SetASharp.addActionListener(buttonListener);
+		btn_SetB.addActionListener(buttonListener);
+		btn_SetC.addActionListener(buttonListener);
+		btn_SetCSharp.addActionListener(buttonListener);
+		btn_SetD.addActionListener(buttonListener);
+		btn_SetDSharp.addActionListener(buttonListener);
+		btn_SetE.addActionListener(buttonListener);
+		btn_SetF.addActionListener(buttonListener);
+		btn_SetFSharp.addActionListener(buttonListener);
+		btn_SetG.addActionListener(buttonListener);
+		btn_SetGSharp.addActionListener(buttonListener);
+
 		btn_Gradient2_SetSide1.setActionCommand("btn_Gradienet2_SetSide1");
 		btn_Gradient2_SetSide2.setActionCommand("btn_Gradienet2_SetSide2");
 
@@ -1022,6 +1142,20 @@ public class pnl_Gradient extends JPanel {
 		btn_Gradient8_SetSide6.setActionCommand("btn_Gradient8_SetSide6");
 		btn_Gradient8_SetSide7.setActionCommand("btn_Gradient8_SetSide7");
 		btn_Gradient8_SetSide8.setActionCommand("btn_Gradient8_SetSide8");
+
+		btn_SetA.setActionCommand("btn_SetA");
+		btn_SetASharp.setActionCommand("btn_SetASharp");
+		btn_SetB.setActionCommand("btn_SetB");
+		btn_SetC.setActionCommand("btn_SetC");
+		btn_SetCSharp.setActionCommand("btn_SetCSharp");
+		btn_SetD.setActionCommand("btn_SetD");
+		btn_SetDSharp.setActionCommand("btn_SetDSharp");
+		btn_SetE.setActionCommand("btn_SetE");
+		btn_SetF.setActionCommand("btn_SetF");
+		btn_SetFSharp.setActionCommand("btn_SetFSharp");
+		btn_SetG.setActionCommand("btn_SetG");
+		btn_SetGSharp.setActionCommand("btn_SetGSharp");
+
 	}
 
 }

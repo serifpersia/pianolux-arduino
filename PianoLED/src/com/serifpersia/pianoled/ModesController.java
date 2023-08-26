@@ -22,6 +22,8 @@ public class ModesController {
 
 	public static boolean VisualizerOn = false;
 
+	public static boolean MultiColorOn = false;
+
 	public static boolean Gradient2Side = true;
 
 	public static boolean Gradient3Side = false;
@@ -55,6 +57,7 @@ public class ModesController {
 		GradientOn = false;
 		SplashOn = false;
 		VisualizerOn = false;
+		MultiColorOn = false;
 
 	}
 
@@ -109,6 +112,12 @@ public class ModesController {
 			GetUI.setDefaults(8, 255, 200);
 			VisualizerOn = true;
 			pianoLED.getPianoController().arduino.sendCommandSetLedVisualizer(0, 0);
+			break;
+		case "MultiColor":
+			GetUI.setDefaults(8, 255, 0);
+			MultiColorOn = true;
+			break;
+		default:
 			break;
 		}
 	}

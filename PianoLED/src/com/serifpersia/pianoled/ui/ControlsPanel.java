@@ -29,12 +29,12 @@ public class ControlsPanel extends JPanel {
 	private pnl_Guide pnl_Guide;
 	private pnl_AudioReact pnl_AudioReact;
 	static JPanel pnl_GradientPreview;
-	private pnl_Gradient GradientPanel;
+	private pnl_Gradient_MultiColor GradientPanel;
 	private JLabel lb_AudioReact;
 
 	public ControlsPanel(PianoLED pianoLED) {
 
-		GradientPanel = new pnl_Gradient(pianoLED);
+		GradientPanel = new pnl_Gradient_MultiColor(pianoLED);
 		pnl_Controls = new pnl_Controls(pianoLED);
 		pnl_Guide = new pnl_Guide(pianoLED);
 		pnl_AudioReact = new pnl_AudioReact(pianoLED);
@@ -79,7 +79,7 @@ public class ControlsPanel extends JPanel {
 				int width = getWidth(); // Use the full width of the panel
 				int height = getHeight(); // Take the full height of the panel
 
-				int colorCount = Math.min(GradientPanel.divisionCount, pnl_Gradient.colors.length); // Determine the
+				int colorCount = Math.min(GradientPanel.divisionCount, pnl_Gradient_MultiColor.colors.length); // Determine the
 																									// number of colors
 																									// to use
 
@@ -89,15 +89,15 @@ public class ControlsPanel extends JPanel {
 					int x2 = (i + 1) * width / GradientPanel.divisionCount; // Calculate the ending x-coordinate of the
 																			// current part
 
-					Color color = pnl_Gradient.colors[i % pnl_Gradient.colors.length]; // Get the color of the current
+					Color color = pnl_Gradient_MultiColor.colors[i % pnl_Gradient_MultiColor.colors.length]; // Get the color of the current
 																						// part
 
 					g.setColor(color);
 					g.fillRect(x1, 0, x2 - x1, height);
 
 					if (i < colorCount - 1) { // Apply gradient between divisions
-						Color colorLeft = pnl_Gradient.colors[i];
-						Color colorRight = pnl_Gradient.colors[i + 1];
+						Color colorLeft = pnl_Gradient_MultiColor.colors[i];
+						Color colorRight = pnl_Gradient_MultiColor.colors[i + 1];
 
 						for (int x = x1; x < x2; x++) { // Iterate over the pixels within the division
 							float ratio = (float) (x - x1) / (float) (x2 - x1); // Calculate the ratio of the current
@@ -127,7 +127,7 @@ public class ControlsPanel extends JPanel {
 		lb_Controls.setForeground(new Color(204, 204, 204));
 		lb_Controls.setFont(new Font("Poppins", Font.PLAIN, 21));
 
-		lb_Left = new JLabel("Gradient Controls");
+		lb_Left = new JLabel("Gradient/MultiColor Controls");
 		lb_Left.setForeground(new Color(128, 128, 128));
 		lb_Left.setFont(new Font("Poppins", Font.PLAIN, 21));
 

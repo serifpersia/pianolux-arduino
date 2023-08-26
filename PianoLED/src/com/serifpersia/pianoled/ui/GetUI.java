@@ -35,7 +35,7 @@ public class GetUI {
 			"CloudColors", "LavaColors", "ForestColors", "PartyColors");
 
 	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
-			"Animation", "Visualizer");
+			"Animation", "Visualizer", "MultiColor");
 
 	static List<String> gradientSides = Arrays.asList("2 Side Gradient", "3 Side Gradient", "4 Side Gradient",
 			"5 Side Gradient", "6 Side Gradient", "7 Side Gradient", "8 Side Gradient");
@@ -55,6 +55,20 @@ public class GetUI {
 			new Color(128, 192, 192), // Turquoise
 			new Color(255, 80, 0), // Gold
 			customColor };
+
+	public static Color[] multiColors = { new Color(140, 0, 255), // A
+			new Color(230, 0, 255), // A#
+			new Color(255, 0, 145), // B
+			new Color(255, 0, 20), // C
+			new Color(255, 15, 0), // C#
+			new Color(255, 75, 0), // D
+			new Color(255, 120, 0), // D#
+			new Color(255, 155, 0), // E
+			new Color(255, 220, 0), // F
+			new Color(160, 255, 0), // F#
+			new Color(35, 255, 0), // G
+			new Color(15, 0, 255), // G#
+	};
 
 	static List<String> scaleKeyNames = Arrays.asList("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
 
