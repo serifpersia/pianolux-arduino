@@ -419,7 +419,7 @@ void loop() {
 
       default:
         {
-          if (buffer >= 2) {
+      if ((int)buffer >= 2) {
             int audioInputValue = buffer[0] | (buffer[1] << 8);
             react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
           }
