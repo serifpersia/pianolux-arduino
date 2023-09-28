@@ -385,9 +385,12 @@ public class pnl_Controls extends JPanel {
 		bg_slider.setValue(50);
 
 		sld_transposition = new JSlider(-6, 6, 0);
+		sld_transposition.setBackground(new Color(77, 77, 77));
+		sld_transposition.setForeground(new Color(128, 128, 128));
 		sld_transposition.setMinorTickSpacing(1);
 		sld_transposition.setPaintTicks(true);
 		sld_transposition.setSnapToTicks(true);
+		sld_transposition.setInverted(true);
 
 	}
 
@@ -396,39 +399,39 @@ public class pnl_Controls extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
-					case "btn_Load":
-						Profile.loadProfile(pianoLED);
-						break;
-					case "btn_Save":
-						Profile.saveProfile(pianoLED);
-						break;
-					case "btn_LeftArrow":
+				case "btn_Load":
+					Profile.loadProfile(pianoLED);
+					break;
+				case "btn_Save":
+					Profile.saveProfile(pianoLED);
+					break;
+				case "btn_LeftArrow":
 
-						if (GetUI.counter <= 0) {
-							return;
-						}
-						GetUI.counter--;
-						GetUI.setKeyboardSize(GetUI.counter);
-						lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
-						pianoLED.getDrawPiano().repaint();
-						break;
-					case "btn_RightArrow":
-						if (GetUI.counter >= 4) {
-							return;
-						}
-						GetUI.counter++;
+					if (GetUI.counter <= 0) {
+						return;
+					}
+					GetUI.counter--;
+					GetUI.setKeyboardSize(GetUI.counter);
+					lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
+					pianoLED.getDrawPiano().repaint();
+					break;
+				case "btn_RightArrow":
+					if (GetUI.counter >= 4) {
+						return;
+					}
+					GetUI.counter++;
 
-						GetUI.setKeyboardSize(GetUI.counter);
-						lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
-						pianoLED.getDrawPiano().repaint();
-						break;
-					case "btnSet_BG":
-						if (pianoController.bgToggle) {
-							pianoController.setBG();
-						}
-						break;
-					default:
-						break;
+					GetUI.setKeyboardSize(GetUI.counter);
+					lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
+					pianoLED.getDrawPiano().repaint();
+					break;
+				case "btnSet_BG":
+					if (pianoController.bgToggle) {
+						pianoController.setBG();
+					}
+					break;
+				default:
+					break;
 				}
 			}
 		};
@@ -466,7 +469,8 @@ public class pnl_Controls extends JPanel {
 					pianoController.SplashLengthRate(SplashLength);
 				} else if (source == sld_transposition) {
 					int Transposition = sld_transposition.getValue();
-					sld_transposition.setToolTipText(Integer.toString(Transposition));
+					int invertSliderValue = invertSlider(Transposition);
+					sld_transposition.setToolTipText(Integer.toString(invertSliderValue));
 					pianoController.transposition = Transposition;
 				} else if (source == bg_slider) {
 					int bgValue = bg_slider.getValue();
@@ -483,6 +487,12 @@ public class pnl_Controls extends JPanel {
 		sld_SplashMaxLenght.addChangeListener(sliderChangeListener);
 		bg_slider.addChangeListener(sliderChangeListener);
 		sld_transposition.addChangeListener(sliderChangeListener);
+	}
+
+	// Define a function to invert the slider value
+	private int invertSlider(int invertedValue) {
+		// Invert the value
+		return -invertedValue;
 	}
 
 	private void toggleButtonsAction() {
