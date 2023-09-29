@@ -3,3 +3,8 @@
 PianoLED/bin/
 
 PianoLED/release/
+/Website/.idea/.gitignore
+/Website/.idea/modules.xml
+/Website/.idea/PianoLED.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
