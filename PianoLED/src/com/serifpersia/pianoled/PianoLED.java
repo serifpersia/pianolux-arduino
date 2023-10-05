@@ -34,14 +34,13 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 	private BottomPanel bottomPanel = new BottomPanel(this);
 	private CenterPanel centerPanel = new CenterPanel(this);
 	public TopPanel topPanel = new TopPanel(centerPanel, this);
-
+	private HandleDiscordPPC handleDiscordPPC = new HandleDiscordPPC();
 	static Updater updator = new Updater();
 
 	private boolean isFullScreen = false;
-	
+
 	private double bottomPanelHeightPercentage = 0.15; // Default value is 15%
 	private JPanel centerPanelWrapper;
-
 
 	public static void main(String[] args) {
 		try {
@@ -89,10 +88,9 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		add(topPanel, BorderLayout.NORTH);
 
-		
 		// Add the top/bottom panels to the frame's NORTH/SOUTH region of the rightPanel
 		centerPanelWrapper = new JPanel(new BorderLayout());
 
@@ -112,34 +110,35 @@ public class PianoLED extends JFrame implements NativeKeyListener {
 		centerPanelWrapper.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-			    // Calculate the new preferred size based on the parent's size and the updated percentage
-			    Dimension parentSize = centerPanelWrapper.getSize();
-			    double newHeight = parentSize.height * bottomPanelHeightPercentage;
+				// Calculate the new preferred size based on the parent's size and the updated
+				// percentage
+				Dimension parentSize = centerPanelWrapper.getSize();
+				double newHeight = parentSize.height * bottomPanelHeightPercentage;
 
-			    // Update the child JPanel's preferred size and revalidate the layout
-			    bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
-			    bottomPanel.revalidate();
+				// Update the child JPanel's preferred size and revalidate the layout
+				bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
+				bottomPanel.revalidate();
 			}
 
 		});
 
 		setVisible(true);
+		handleDiscordPPC.startupDiscordRPC();
 
 	}
-	
+
 	public void updateBottomPanelHeightPercentage(double newPercentage) {
-	    bottomPanelHeightPercentage = newPercentage;
+		bottomPanelHeightPercentage = newPercentage;
 
-	    // Calculate the new preferred size based on the parent's size and the updated percentage
-	    Dimension parentSize = centerPanelWrapper.getSize();
-	    double newHeight = parentSize.height * bottomPanelHeightPercentage;
+		// Calculate the new preferred size based on the parent's size and the updated
+		// percentage
+		Dimension parentSize = centerPanelWrapper.getSize();
+		double newHeight = parentSize.height * bottomPanelHeightPercentage;
 
-	    // Update the child JPanel's preferred size and revalidate the layout
-	    bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
-	    bottomPanel.revalidate();
+		// Update the child JPanel's preferred size and revalidate the layout
+		bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), (int) newHeight));
+		bottomPanel.revalidate();
 	}
-
-	
 
 	public PianoController getPianoController() {
 		return this.pianoController;
