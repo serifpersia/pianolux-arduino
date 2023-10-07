@@ -38,10 +38,10 @@ public class HandleDiscordPPC {
 			activity.setState("with LEDs");
 			activity.timestamps().setStart(Instant.now()); // Set the start time
 			// Create a custom button with the desired label and URL
-			ActivityButton githubButton = new ActivityButton("PianolED Github",
+			ActivityButton githubButton = new ActivityButton("PianoLED Github",
 					"https://github.com/serifpersia/pianoled-arduino");
 
-			ActivityButton youtubeButton = new ActivityButton("PianolED Youtube", "https://youtube.com/@PianoLED1999");
+			ActivityButton youtubeButton = new ActivityButton("PianoLED Youtube", "https://youtube.com/@PianoLED1999");
 
 			activity.addButton(githubButton);
 			activity.addButton(youtubeButton);
