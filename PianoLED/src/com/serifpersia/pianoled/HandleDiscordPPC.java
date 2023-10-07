@@ -8,6 +8,8 @@ import java.util.TimerTask;
 import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
 import de.jcm.discordgamesdk.activity.Activity;
+import de.jcm.discordgamesdk.activity.ActivityButton;
+import de.jcm.discordgamesdk.activity.ActivityButtonsMode;
 
 public class HandleDiscordPPC {
 
@@ -21,7 +23,6 @@ public class HandleDiscordPPC {
 	public void startupDiscordRPC() {
 
 		// Initialize the Core
-		Core.init(new File("discordRPC/lib/x86_64/discord_game_sdk.dll"));
 
 		// Set parameters for the Core
 		try (CreateParams params = new CreateParams()) {
@@ -36,6 +37,17 @@ public class HandleDiscordPPC {
 			activity.setDetails("Playing Piano");
 			activity.setState("with LEDs");
 			activity.timestamps().setStart(Instant.now()); // Set the start time
+			// Create a custom button with the desired label and URL
+			ActivityButton githubButton = new ActivityButton("PianolED Github",
+					"https://github.com/serifpersia/pianoled-arduino");
+
+			ActivityButton youtubeButton = new ActivityButton("PianolED Youtube", "https://youtube.com/@PianoLED1999");
+
+			activity.addButton(githubButton);
+			activity.addButton(youtubeButton);
+
+			// Set the button display mode to custom buttons
+			activity.setActivityButtonsMode(ActivityButtonsMode.BUTTONS);
 
 			discordCore.activityManager().updateActivity(activity);
 

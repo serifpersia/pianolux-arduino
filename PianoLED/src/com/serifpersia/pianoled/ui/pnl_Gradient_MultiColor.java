@@ -107,7 +107,6 @@ public class pnl_Gradient_MultiColor extends JPanel {
 	private JPanel panel;
 	private JPanel panel_1;
 	private JLabel lb_Gradient2_SetSide1_1;
-	private JSlider slider;
 	private JPanel panel_2;
 	private JButton btn_SetA;
 	private JButton btn_SetASharp;
@@ -716,8 +715,7 @@ public class pnl_Gradient_MultiColor extends JPanel {
 		lb_Gradient2_SetSide1_1.setBackground(new Color(204, 204, 204));
 	//	panel_1.add(lb_Gradient2_SetSide1_1);
 
-		slider = new JSlider();
-		//panel_1.add(slider);
+		new JSlider();
 
 		panel_2 = new JPanel();
 		panel_2.setBackground(new Color(50, 50, 50));

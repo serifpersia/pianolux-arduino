@@ -154,7 +154,7 @@
 		<dependency>
 			<groupId>com.github.JnCrMx</groupId>
 			<artifactId>discord-game-sdk4j</artifactId>
-			<version>0.5.5</version>
+			<version>java-impl-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
