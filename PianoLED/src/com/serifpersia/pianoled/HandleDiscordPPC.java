@@ -34,7 +34,7 @@ public class HandleDiscordPPC {
 			activity.assets().setLargeImage("pianoled");
 			activity.timestamps().setStart(Instant.now()); // Set the start time
 			// Create a custom button with the desired label and URL
-			ActivityButton socialsButton = new ActivityButton("Socials", "https://linktr.ee/serifpersia");
+			ActivityButton socialsButton = new ActivityButton("Try PianoLED!", "https://linktr.ee/serifpersia");
 
 			activity.addButton(socialsButton);
 
