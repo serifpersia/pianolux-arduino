@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PianoLED</groupId>
 	<artifactId>PianoLED</artifactId>
-	<version>4.3.2</version>
+	<version>4.3.4</version>
 	<properties>
 		<main.class>com.serifpersia.pianoled.PianoLED</main.class>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

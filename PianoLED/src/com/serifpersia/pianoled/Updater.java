@@ -31,7 +31,7 @@ public class Updater {
 	String os = System.getProperty("os.name").toLowerCase();
 
 	private boolean debugJSONOff = true;
-	public String VersionTag = "v4.3.2";
+	public String VersionTag = "v4.3.4";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
 		return latestRelease.findValue("browser_download_url").asText();
