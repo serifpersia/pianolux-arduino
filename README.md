@@ -1,6 +1,7 @@
 # PianoLED V4
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/cb1b9e15-bea3-4190-9930-3e10ca63062c)
+![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/6be82e50-68bc-44f8-9b91-7ebf76db0ab8)
+
 
 
 
