@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://github.com/serifpersia/pianoled-arduino/assets/62844718/a4e858ac-f76a-4227-8e83-6758fb2beaa3">
   
-  [![Release](https://img.shields.io/github/release/serifpersia/pianoled-esp32.svg?style=flat-square)](https://github.com/serifpersia/pianoled-esp32/releases)
-  [![License](https://img.shields.io/github/license/serifpersia/pianoled-esp32?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianoled-esp32/master/LICENSE)
+  [![Release](https://img.shields.io/github/release/serifpersia/pianoled-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianoled-arduino/releases)
+  [![License](https://img.shields.io/github/license/serifpersia/pianoled-arduino?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianoled-arduino/master/LICENSE)
   [![Discord](https://img.shields.io/discord/1077195120950120458.svg?colorB=blue&label=discord&style=flat-square)](https://discord.gg/S6xmuX4Hx5)
 </div>
 
