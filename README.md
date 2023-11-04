@@ -90,7 +90,3 @@ To use PianoLED on Linux, follow these steps:
 
   - Download and extract the Linux zip file.
   - Open the Terminal, navigate to the extracted PianoLED directory, and run the following command: `sudo java -jar "pianoled jar name.jar"`
-
-## Support the Project
-
-If you'd like to support future development of the PianoLED project or simply show your appreciation, consider making a donation. You can reach out via email at `ramiserifpersia@gmail.com` and join the Discord server, where you can receive a special role for contributing to the project. Your support helps us keep the project vibrant and evolving. Thank you!
