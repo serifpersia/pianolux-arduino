@@ -10,7 +10,9 @@
 
 ## Join Our Community
 
-Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences: [Join PianoLED Discord](https://discord.gg/S6xmuX4Hx5)
+Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences:
+
+<a href="https://discord.gg/S6xmuX4Hx5"><img src="https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2" width="25%"></a>
 
 ## LED Strip Compatibility
 
