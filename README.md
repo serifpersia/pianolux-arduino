@@ -1,12 +1,12 @@
-# PianoLED V4
+<div align="center">
+  <img src="https://github.com/serifpersia/pianoled-arduino/assets/62844718/a4e858ac-f76a-4227-8e83-6758fb2beaa3">
+  
+  [![Release](https://img.shields.io/github/release/serifpersia/pianoled-esp32.svg?style=flat-square)](https://github.com/serifpersia/pianoled-esp32/releases)
+  [![License](https://img.shields.io/github/license/serifpersia/pianoled-esp32?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianoled-esp32/master/LICENSE)
+  [![Discord](https://img.shields.io/discord/1077195120950120458.svg?colorB=blue&label=discord&style=flat-square)](https://discord.gg/S6xmuX4Hx5)
+</div>
 
-![image](https://github.com/serifpersia/pianoled-arduino/assets/62844718/a4e858ac-f76a-4227-8e83-6758fb2beaa3)
-
-
-
-
-
-**PianoLED V4** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
+**PianoLED** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
 
 ## Join Our Community
 
