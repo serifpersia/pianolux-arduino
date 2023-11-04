@@ -38,6 +38,7 @@ The change will be included in the next version of PianoLED release for Windows/
 ## Download
 
 You can download the latest release of PianoLED here:
+
  [![Release](https://img.shields.io/github/release/serifpersia/pianoled-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianoled-arduino/releases)
 
 ## Connecting the LED Strip and Arduino
