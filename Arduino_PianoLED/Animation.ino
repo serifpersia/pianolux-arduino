@@ -1,3 +1,4 @@
+bool HueChange; // Boolean to control hue change
 
 void Animatons(int selectedAnimation) {
   //Animation(temp name_1)
@@ -33,4 +34,25 @@ void FillLEDsFromPaletteColors(uint8_t colorIndex) {
     leds[i] = ColorFromPalette(currentPalette, colorIndex, brightness, currentBlending);
     colorIndex += 3;
   }
+}
+
+void sineWave() {
+  uint16_t sinBeat = beatsin16(15, 0, NUM_LEDS - 1, 0, 0);
+  
+
+  leds[sinBeat] = CHSV(hue, 255, 255);
+  fadeToBlackBy(leds, NUM_LEDS, 25);
+}
+
+void sparkleDots()
+{
+  hue = random8(0, 15);
+
+  // random colored speckles that blink in and fade smoothly
+  fadeToBlackBy( leds, NUM_LEDS, 10);
+  int pos = random16(NUM_LEDS);
+
+  leds[pos] += CHSV( hue, 255, 255);
+
+  FastLED.delay(1000 / 60);
 }

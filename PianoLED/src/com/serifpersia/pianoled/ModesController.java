@@ -106,7 +106,7 @@ public class ModesController {
 		case "Animation":
 			GetUI.setDefaults(8, 255, 255);
 			AnimationOn = true;
-			pianoLED.getPianoController().arduino.sendCommandAnimation(0);
+			pianoLED.getPianoController().arduino.sendCommandAnimation(0, 0);
 			break;
 		case "Visualizer":
 			GetUI.setDefaults(8, 255, 200);

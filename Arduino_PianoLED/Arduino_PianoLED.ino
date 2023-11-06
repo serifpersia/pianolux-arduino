@@ -1,16 +1,16 @@
 /*
-PianoLED is an open-source project that aims to provide MIDI-based LED control to the masses.
- It is developed by a one-person team, yours truly, known as serifpersia, or Scarlett.
+  PianoLED is an open-source project that aims to provide MIDI-based LED control to the masses.
+  It is developed by a one-person team, yours truly, known as serifpersia, or Scarlett.
 
-If you modify this code and redistribute the PianoLED project, please ensure that you
-don't remove this disclaimer or appropriately credit the original author of the project 
-by linking to the project's source on GitHub: github.com/serifpersia/pianoled-arduino/
-Failure to comply with these terms would constitute a violation of the project's 
-MIT license under which PianoLED is released.
+  If you modify this code and redistribute the PianoLED project, please ensure that you
+  don't remove this disclaimer or appropriately credit the original author of the project
+  by linking to the project's source on GitHub: github.com/serifpersia/pianoled-arduino/
+  Failure to comply with these terms would constitute a violation of the project's
+  MIT license under which PianoLED is released.
 
-Copyright © 2023 Serif Rami, also known as serifpersia.
+  Copyright © 2023 Serif Rami, also known as serifpersia.
 
-Contributors: hasimov, also known as Arthist.
+  Contributors: hasimov, also known as Arthist.
 
 */
 //PianoLED
@@ -22,9 +22,9 @@ Contributors: hasimov, also known as Arthist.
 #define FASTLED_RMT_MAX_CHANNELS 1
 
 #define MAX_NUM_LEDS 176         // how many leds do you want to control
-#define DATA_PIN 5               // your LED strip data pin
+#define DATA_PIN 18               // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
-                                 //for external power type the current example 3000 for 3A (3 Amps)
+  //for external power type the current example 3000 for 3A (3 Amps)
 
 boolean debug = false;
 
@@ -333,6 +333,7 @@ void loop() {
           if (!commandByte2Arrived) break;
           debugLightOn(8);
           animationIndex = buffer[++bufIdx];
+          hue = buffer[++bufIdx];
           MODE = COMMAND_ANIMATION;
           break;
         }
@@ -419,7 +420,7 @@ void loop() {
 
       default:
         {
-      if ((int)buffer >= 2) {
+          if ((int)buffer >= 2) {
             int audioInputValue = buffer[0] | (buffer[1] << 8);
             react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
           }
@@ -449,10 +450,21 @@ void loop() {
   }
   //Animation
   if (MODE == COMMAND_ANIMATION) {
-    Animatons(animationIndex);
-    static uint8_t startIndex = 0;
-    startIndex = startIndex + 1; /* motion speed */
-    FillLEDsFromPaletteColors(startIndex);
+
+    if (animationIndex == 7) {
+      // If the selected animation is 7, run the sineWave() animation
+      sineWave();
+    }
+    else if (animationIndex == 8) {
+      // If the selected animation is 7, run the sineWave() animation
+      sparkleDots();
+    }
+    else {
+      Animatons(animationIndex);
+      static uint8_t startIndex = 0;
+      startIndex = startIndex + 1; /* motion speed */
+      FillLEDsFromPaletteColors(startIndex);
+    }
   }
 
   if (MODE == COMMAND_SET_LED_VISUALIZER) {

@@ -473,8 +473,9 @@ public class pnl_Controls extends JPanel {
 					sld_transposition.setToolTipText(Integer.toString(invertSliderValue));
 					pianoController.transposition = Transposition;
 				} else if (source == bg_slider) {
-					int bgValue = bg_slider.getValue();
-					bg_slider.setToolTipText(Integer.toString(bgValue));
+					int bgValue = (int) (bg_slider.getValue() * 2.55); // Map the 0-100 range to 0-255
+					bg_slider.setToolTipText(Integer.toString(bg_slider.getValue())); // Show the value in the 0-100
+																						// range in the tooltip
 					PianoController.BG_BRIGHTNESS = bgValue;
 					if (pianoController.bgToggle)
 						pianoController.setBG();

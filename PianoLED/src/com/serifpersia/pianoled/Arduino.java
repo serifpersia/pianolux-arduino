@@ -82,12 +82,13 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandAnimation(int animationIndex) {
+	public ByteArrayOutputStream commandAnimation(int animationIndex, int hue) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_ANIMATION);
 		message.write((byte) animationIndex);
+		message.write((byte) hue);
 		return message;
 	}
 
@@ -195,8 +196,8 @@ public class Arduino {
 		sendToArduino(commandAudioData(audioData));
 	}
 
-	public void sendCommandAnimation(int animationIndex) {
-		sendToArduino(commandAnimation(animationIndex));
+	public void sendCommandAnimation(int animationIndex, int hue) {
+		sendToArduino(commandAnimation(animationIndex, hue));
 	}
 
 	public void sendCommandSplash(int velocity, int note, Color color) {
