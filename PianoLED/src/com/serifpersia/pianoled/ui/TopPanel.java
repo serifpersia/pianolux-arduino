@@ -70,7 +70,7 @@ public class TopPanel extends JPanel {
 
 		pnl_pianoledControls.add(AboutButton);
 
-		JLabel lb_Title = new JLabel("PianoLED" + updator.VersionTag);
+		JLabel lb_Title = new JLabel("PianoLED " + updator.VersionTag);
 		lb_Title.setFont(new Font("Poppins", Font.PLAIN, 16));
 		lb_Title.setBorder(new EmptyBorder(0, 5, 0, 0));
 		pnl_pianoledControls.add(lb_Title);

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -40,6 +42,7 @@ import javax.swing.JSlider;
 import javax.swing.JButton;
 import com.serifpersia.pianoled.ui.BottomPanel;
 import com.serifpersia.pianoled.ui.pnl_HueOnly;
+import javax.swing.ScrollPaneConstants;
 
 @SuppressWarnings("serial")
 public class LivePlayPanel extends JPanel {
@@ -100,8 +103,19 @@ public class LivePlayPanel extends JPanel {
 	}
 
 	private void addSlidingControlPanel() {
-		add(slideControlsPane, BorderLayout.EAST);
-		slideControlsPane.setBackground(Color.BLACK);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(0, 0, 0));
+		add(panel, BorderLayout.EAST);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane = new JScrollPane(slideControlsPane);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+		verticalScrollBar.setUnitIncrement(20); // Adjust this value as needed
+		verticalScrollBar.setBlockIncrement(40); // Adjust this value as needed
+
+		panel.add(scrollPane);
 
 		JLabel lb_Speed = new JLabel("Speed");
 		lb_Speed.setHorizontalAlignment(SwingConstants.LEFT);
@@ -209,7 +223,7 @@ public class LivePlayPanel extends JPanel {
 						.addComponent(lb_Transparency, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
 						.addGap(10).addComponent(sld_setTransaprency, GroupLayout.PREFERRED_SIZE,
 								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(176, Short.MAX_VALUE)));
+						.addContainerGap(10, Short.MAX_VALUE)));
 		colorHuePane.setLayout(new BorderLayout(0, 0));
 		huePanel.setBackground(Color.BLACK);
 
@@ -224,27 +238,13 @@ public class LivePlayPanel extends JPanel {
 				int width = getWidth();
 				if (width - x <= 200) {
 					// Mouse is near the right border of LearnPanel
-					slideControlsPane.setVisible(true);
+					panel.setVisible(true);
 				} else {
 					// Mouse is not near the right border of LearnPanel
-					slideControlsPane.setVisible(false);
+					panel.setVisible(false);
 				}
 			}
 		});
-
-		slideControlsPane.addMouseMotionListener(new MouseMotionAdapter() {
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				int x = e.getX();
-				int width = slideControlsPane.getWidth();
-				if (x <= 0 || x >= width || e.getY() <= 0 || e.getY() >= slideControlsPane.getHeight()) {
-					// Mouse is out of slideControlsPane
-					slideControlsPane.setVisible(false);
-				}
-			}
-		});
-
 	}
 
 	public boolean drawLines() {
@@ -386,26 +386,26 @@ public class LivePlayPanel extends JPanel {
 		};
 
 		webcamPanel.addMouseWheelListener(e -> {
-		    int notches = e.getWheelRotation();
-		    double scaleFactorIncrement = 0.025; // You can adjust the increment as needed
-		    double maxScaleFactor = 6.0; // Adjust this value to set the maximum zoom level
+			int notches = e.getWheelRotation();
+			double scaleFactorIncrement = 0.025; // You can adjust the increment as needed
+			double maxScaleFactor = 6.0; // Adjust this value to set the maximum zoom level
 
-		    if (notches < 0) {
-		        double tempScaleFactor = scaleFactor + scaleFactorIncrement;
-		        scaleFactor = Math.min(tempScaleFactor, maxScaleFactor); // Limit zooming in
-		    } else {
-		        double tempScaleFactor = scaleFactor - scaleFactorIncrement;
-		        if (tempScaleFactor >= 1.0) { // Only limit zooming out if it's still greater than or equal to the original scale
-		            scaleFactor = tempScaleFactor;
-		        }
-		        else { // Reset translation when zooming out beyond the original scale
-		            scaleFactor = 1.0;
-		            translationX = 0;
-		            translationY = 0;
-		        }
-		    }
+			if (notches < 0) {
+				double tempScaleFactor = scaleFactor + scaleFactorIncrement;
+				scaleFactor = Math.min(tempScaleFactor, maxScaleFactor); // Limit zooming in
+			} else {
+				double tempScaleFactor = scaleFactor - scaleFactorIncrement;
+				if (tempScaleFactor >= 1.0) { // Only limit zooming out if it's still greater than or equal to the
+												// original scale
+					scaleFactor = tempScaleFactor;
+				} else { // Reset translation when zooming out beyond the original scale
+					scaleFactor = 1.0;
+					translationX = 0;
+					translationY = 0;
+				}
+			}
 
-		    webcamPanel.repaint();
+			webcamPanel.repaint();
 		});
 
 		// Get the screen's current resolution
@@ -413,7 +413,6 @@ public class LivePlayPanel extends JPanel {
 
 		// Set the dimensions of the webcamPanel to match the screen resolution
 		webcamPanel.setPreferredSize(screenSize);
-
 
 		BottomPanel.webcamPane.add(webcamPanel);
 		BottomPanel.cardLayout.show(BottomPanel.cardPanel, "webcamPane");
