@@ -30,7 +30,8 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	private boolean debugJSONOff = false;
+	//Set to false to use check update loop
+	private boolean debugJSONOff = true;
 	public String VersionTag = "v4.3.5";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
