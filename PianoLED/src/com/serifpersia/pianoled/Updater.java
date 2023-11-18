@@ -30,8 +30,8 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	private boolean debugJSONOff = true;
-	public String VersionTag = "v4.3.4";
+	private boolean debugJSONOff = false;
+	public String VersionTag = "v4.3.5";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
 		return latestRelease.findValue("browser_download_url").asText();

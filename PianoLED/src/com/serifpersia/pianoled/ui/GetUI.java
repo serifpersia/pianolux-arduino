@@ -32,7 +32,7 @@ public class GetUI {
 			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Custom");
 
 	static List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors",
-			"CloudColors", "LavaColors", "ForestColors", "PartyColors", "SineWave", "SparkleDots");
+			"CloudColors", "LavaColors", "ForestColors", "PartyColors", "SineWave", "SparkleDots", "Snake");
 
 	static List<String> modes = Arrays.asList("Default", "Splash", "Random", "Gradient", "Velocity", "Split",
 			"Animation", "Visualizer", "MultiColor");

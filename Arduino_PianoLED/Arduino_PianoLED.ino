@@ -22,7 +22,7 @@
 #define FASTLED_RMT_MAX_CHANNELS 1
 
 #define MAX_NUM_LEDS 176         // how many leds do you want to control
-#define DATA_PIN 18               // your LED strip data pin
+#define DATA_PIN 18              // your LED strip data pin
 #define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
   //for external power type the current example 3000 for 3A (3 Amps)
 
@@ -454,12 +454,13 @@ void loop() {
     if (animationIndex == 7) {
       // If the selected animation is 7, run the sineWave() animation
       sineWave();
-    }
-    else if (animationIndex == 8) {
+    } else if (animationIndex == 8) {
       // If the selected animation is 7, run the sineWave() animation
       sparkleDots();
-    }
-    else {
+    } else if (animationIndex == 9) {
+      // If the selected animation is 7, run the sineWave() animation
+      Snake();
+    } else {
       Animatons(animationIndex);
       static uint8_t startIndex = 0;
       startIndex = startIndex + 1; /* motion speed */
