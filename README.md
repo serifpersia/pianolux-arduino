@@ -11,7 +11,7 @@
 ## Demo
 <div align="center">
 
-[![PianoLED Demo](images/demo.gif)](https://www.youtube.com/watch?v=giaSAFUxdw8)
+[![PianoLED Demo](https://github.com/serifpersia/pianoled-arduino/assets/62844718/a2b7f978-be6d-4da2-badf-6ee7dd0ce6f6)](https://www.youtube.com/watch?v=giaSAFUxdw8)
 
 </div>
 
