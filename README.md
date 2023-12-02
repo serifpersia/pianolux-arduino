@@ -11,7 +11,7 @@
 ## Demo
 <div align="center">
 
-[![PianoLED Demo](images/demo-resized.gif)](https://www.youtube.com/watch?v=giaSAFUxdw8)
+[![PianoLED Demo](images/demo.gif)](https://www.youtube.com/watch?v=giaSAFUxdw8)
 
 </div>
 
