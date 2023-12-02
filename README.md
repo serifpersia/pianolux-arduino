@@ -11,15 +11,13 @@
 ## Demo
 <div align="center">
 
-[![PianoLED Demo](https://github.com/serifpersia/pianoled-arduino/assets/62844718/a2b7f978-be6d-4da2-badf-6ee7dd0ce6f6)](https://www.youtube.com/watch?v=giaSAFUxdw8)
+https://github.com/serifpersia/pianoled-arduino/assets/62844718/6342ae71-eb57-4ae7-88c2-e7f4cdfcc62f
+
 </div>
 
 ## MIDI Visualization
-<div align="center">
 
-![PianoLED MIDI Visualization](https://github.com/serifpersia/pianoled-arduino/assets/62844718/27346295-1abb-46cf-9296-c6101d74821b)
-
-</div>
+https://github.com/serifpersia/pianoled-arduino/assets/62844718/d9a4a2fe-31fc-486c-be36-b1c9e21925f8
 
 ## Join Our Community
 
