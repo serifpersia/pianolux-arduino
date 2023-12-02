@@ -9,7 +9,11 @@
 **PianoLED** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
 
 ## Demo
+<div align="center">
+
 [![PianoLED Demo](images/demo.gif)](https://www.youtube.com/watch?v=giaSAFUxdw8)
+
+</div>
 
 ## Join Our Community
 
