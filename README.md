@@ -41,6 +41,7 @@ PianoLED currently requires native USB Arduino boards with an Atmega32U4 CPU, su
 
 Some arm32 based native usb boards will also work latest arduino code needs to be adapted to work with them.
 - Arduino Due
+- *Serial lines should be replaced with SerialUSB and native usb port should be used
 - Arduino Zero
 
 ESP32 platform boards also are supported
