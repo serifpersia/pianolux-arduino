@@ -23,7 +23,7 @@ https://github.com/serifpersia/pianoled-arduino/assets/62844718/d9a4a2fe-31fc-48
 
 Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences:
 
-<a href="https://discord.gg/S6xmuX4Hx5"><img src="https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2" width="25%"></a>
+[![Discord Server](https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2)](https://discord.gg/S6xmuX4Hx5)
 
 ## LED Strip Compatibility
 
