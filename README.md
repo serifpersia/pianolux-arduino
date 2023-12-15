@@ -91,7 +91,7 @@ To use PianoLED on Windows, follow these steps:
 
 For Windows users who encounter conflicts when using both PianoLED and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/).
 
-## Instructions for Linux
+## Instructions for Linux & MacOS
 
 To use PianoLED on Linux, follow these steps:
 
@@ -106,3 +106,8 @@ To use PianoLED on Linux, follow these steps:
 
   - Download and extract the Linux zip file.
   - Open the Terminal, navigate to the extracted PianoLED directory, and run the following command: `sudo java -jar "pianoled jar name.jar"`
+
+To use PianoLED on MacOS, follow these links:
+- Use amd64 zip for x64 based(Intel) or arm64 zip for arm based M series Apple machines
+- [Terminal Setup](https://phoenixnap.com/kb/change-zsh-to-bash-mac#:~:text=Zsh%20replaced%20Bash%20as%20macOS's,helpful%20in%20the%20macOS%20terminal)
+- [Java Setup](https://www.youtube.com/watch?v=RfIiBMJqvp8)
