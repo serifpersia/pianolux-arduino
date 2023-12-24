@@ -1,40 +1,40 @@
 <div align="center">
-  <img src="https://github.com/serifpersia/pianoled-arduino/assets/62844718/e9590b41-9b51-454a-9bdc-87c7362fdaef">
+  <img src="https://github.com/serifpersia/pianolux-arduino/assets/62844718/e9590b41-9b51-454a-9bdc-87c7362fdaef">
   
-  [![Release](https://img.shields.io/github/release/serifpersia/pianoled-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianoled-arduino/releases)
-  [![License](https://img.shields.io/github/license/serifpersia/pianoled-arduino?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianoled-arduino/master/LICENSE)
+  [![Release](https://img.shields.io/github/release/serifpersia/pianolux-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianolux-arduino/releases)
+  [![License](https://img.shields.io/github/license/serifpersia/pianolux-arduino?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianolux-arduino/master/LICENSE)
   [![Discord](https://img.shields.io/discord/1077195120950120458.svg?colorB=blue&label=discord&style=flat-square)](https://discord.gg/S6xmuX4Hx5)
 </div>
 
-**PianoLED** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
+**PianoLux** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
 
 ## Demo
 <div align="center">
 
-https://github.com/serifpersia/pianoled-arduino/assets/62844718/6342ae71-eb57-4ae7-88c2-e7f4cdfcc62f
+https://github.com/serifpersia/pianolux-arduino/assets/62844718/6342ae71-eb57-4ae7-88c2-e7f4cdfcc62f
 
 </div>
 
 ## MIDI Visualization
 
-https://github.com/serifpersia/pianoled-arduino/assets/62844718/d9a4a2fe-31fc-486c-be36-b1c9e21925f8
+https://github.com/serifpersia/pianolux-arduino/assets/62844718/d9a4a2fe-31fc-486c-be36-b1c9e21925f8
 
 ## Join Our Community
 
-Be part of the PianoLED Discord Server Community where you can connect with fellow users, ask questions, and share your experiences:
+Be part of the PianoLux Discord Server Community where you can connect with fellow users, ask questions, and share your experiences:
 
 [![Discord Server](https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2)](https://discord.gg/S6xmuX4Hx5)
 
 ## LED Strip Compatibility
 
-PianoLED is compatible with a wide range of 5V addressable LED strips supported by the FastLED library for Arduino. It offers support for both 72 and 144 density/m strips. Compatible strips include:
+PianoLux is compatible with a wide range of 5V addressable LED strips supported by the FastLED library for Arduino. It offers support for both 72 and 144 density/m strips. Compatible strips include:
 
 - WS2812B
 - WS2812
 - WS2811
 - SK6812
 
-PianoLED currently requires native USB Arduino boards with an Atmega32U4 CPU, such as:
+PianoLux currently requires native USB Arduino boards with an Atmega32U4 CPU, such as:
 
 - Arduino Leonardo
 - Pro Micro
@@ -49,13 +49,13 @@ ESP32 platform boards also are supported
 
 ## Download
 
-You can download the latest release of PianoLED here:
+You can download the latest release of PianoLux here:
 
- [![Release](https://img.shields.io/github/release/serifpersia/pianoled-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianoled-arduino/releases)
+ [![Release](https://img.shields.io/github/release/serifpersia/pianolux-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianolux-arduino/releases)
 
 ## Connecting the LED Strip and Arduino
 
-To set up PianoLED, follow the connection diagram below:
+To set up PianoLux, follow the connection diagram below:
 
 ![LED Strip + Arduino Leonardo Connection Diagram](https://user-images.githubusercontent.com/62844718/221054671-316bdee3-8a36-4753-bfb5-a574059c51ca.png)
 
@@ -69,7 +69,7 @@ Don't forget to link this ground connection to arduino's ground pin. This to to 
 together.
 4. Adjust the current limit to match the power supply's current rating in mA (1A = 1000mA, so 3A = 3000mA).
 
-![External Power Setup](https://github.com/serifpersia/pianoled-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24.png)
+![External Power Setup](https://github.com/serifpersia/pianolux-arduino/assets/62844718/767c5a59-e80c-4aa8-97db-f6af03f68f24.png)
 
 ## Mounting the LED Strip
 
@@ -79,23 +79,23 @@ For an 88-key piano, align the third LED with the first black key, as shown belo
 
 ## Instructions for Windows OS
 
-To use PianoLED on Windows, follow these steps:
+To use PianoLux on Windows, follow these steps:
 
-1. Run the included `Download Java_Script.bat` file to download and install the necessary Java JRE for running the PianoLED app.
+1. Run the included `Download Java_Script.bat` file to download and install the necessary Java JRE for running the PianoLux app.
 
 2. You will need the Arduino IDE application to upload the `.ino` file to your Arduino board. Ensure that you install the Arduino drivers and the FastLED library. If you're using Arduino IDE 1 or haven't installed the AVR Boards drivers, you may need to manually select the Arduino COM port as the "Refresh" button may not work. To install drivers, use Arduino IDE 2 and follow these steps. For other IDEs, refer to online resources on how to load drivers from the ARDUINO IDE folder in the Device Manager.
 
-![Arduino IDE and Drivers](https://github.com/serifpersia/pianoled-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd.png)
+![Arduino IDE and Drivers](https://github.com/serifpersia/pianolux-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd.png)
 
-4. Once you see the "Upload Complete" prompt, you are ready to use the PianoLED app.
+4. Once you see the "Upload Complete" prompt, you are ready to use the PianoLux app.
 
-For Windows users who encounter conflicts when using both PianoLED and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/).
+For Windows users who encounter conflicts when using both PianoLux and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/).
 
 ## Instructions for Linux & MacOS
 
-To use PianoLED on Linux, follow these steps:
+To use PianoLux on Linux, follow these steps:
 
-- Install Arduino IDE 2 and upload the PianoLED code to your Arduino board.
+- Install Arduino IDE 2 and upload the PianoLux code to your Arduino board.
 
 - Install the `jre17` package, depending on your Linux distribution:
 
@@ -105,9 +105,9 @@ To use PianoLED on Linux, follow these steps:
 - To run the app:
 
   - Download and extract the Linux zip file.
-  - Open the Terminal, navigate to the extracted PianoLED directory, and run the following command: `sudo java -jar "pianoled jar name.jar"`
+  - Open the Terminal, navigate to the extracted PianoLux directory, and run the following command: `sudo java -jar "pianolux jar name.jar"`
 
-To use PianoLED on MacOS, follow these links:
+To use PianoLux on MacOS, follow these links:
 - Use amd64 zip for x64 based(Intel) or arm64 zip for arm based M series Apple machines
 - [Terminal Setup](https://phoenixnap.com/kb/change-zsh-to-bash-mac#:~:text=Zsh%20replaced%20Bash%20as%20macOS's,helpful%20in%20the%20macOS%20terminal)
 - [Java Setup](https://www.youtube.com/watch?v=RfIiBMJqvp8)
