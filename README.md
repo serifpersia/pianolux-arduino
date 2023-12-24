@@ -3,7 +3,7 @@
   
   [![Release](https://img.shields.io/github/release/serifpersia/pianolux-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianolux-arduino/releases)
   [![License](https://img.shields.io/github/license/serifpersia/pianolux-arduino?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianolux-arduino/master/LICENSE)
-  [![Discord](https://img.shields.io/discord/1077195120950120458.svg?colorB=blue&label=discord&style=flat-square)](https://discord.gg/CwdRxXBKRh)
+  [![Discord](https://img.shields.io/discord/1077195120950120458.svg?colorB=blue&label=discord&style=flat-square)](https://discord.gg/MAypyD7k86)
 </div>
 
 **PianoLux** is a user-friendly Java-based GUI application that empowers you to control an LED strip using an Arduino. This versatile tool is designed for use with 88, 76, 73, or other key-sized pianos, where you can choose between a 2m/144 or 2m/72 LED strip. For smaller keyboards, a 1m LED strip is sufficient.
@@ -23,7 +23,7 @@ https://github.com/serifpersia/pianolux-arduino/assets/62844718/d9a4a2fe-31fc-48
 
 Be part of the PianoLux Discord Server Community where you can connect with fellow users, ask questions, and share your experiences:
 
-[![Discord Server](https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2)](https://discord.gg/CwdRxXBKRh)
+[![Discord Server](https://discordapp.com/api/guilds/1077195120950120458/widget.png?style=banner2)](https://discord.gg/MAypyD7k86)
 
 ## LED Strip Compatibility
 
