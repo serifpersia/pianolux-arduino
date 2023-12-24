@@ -22,7 +22,7 @@
 #define FASTLED_RMT_MAX_CHANNELS 1
 
 #define MAX_NUM_LEDS 176         // how many leds do you want to control
-#define DATA_PIN 5              // your LED strip data pin
+#define DATA_PIN 5              // your LED strip data pin use pwm ones symbol ~ next to pin hole on Arduino board
 #define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
   //for external power type the current example 3000 for 3A (3 Amps)
 
