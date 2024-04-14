@@ -90,6 +90,11 @@ To use PianoLux on Windows, follow these steps:
 
 For Windows users who encounter conflicts when using both PianoLux and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/).
 
+### 32 Bit
+Use 32 bit setup installer and 32 bit versions of JRE and Arduino IDE
+- [JRE](https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.2.1%2B1/OpenJDK18U-jre_x86-32_windows_hotspot_18.0.2.1_1.msi)
+- [Arduino IDE](https://downloads.arduino.cc/arduino-1.8.19-windows.exe)
+
 ## Instructions for Linux & MacOS
 
 To use PianoLux on Linux, follow these steps:
