@@ -1,6 +1,6 @@
 <div align="center">
 
-![image](https://github.com/serifpersia/pianolux-arduino/assets/62844718/954d5d95-9617-44d4-9d2e-7fde9e22bb9b)
+![image](https://github.com/serifpersia/pianolux-arduino/assets/62844718/3835dc74-ff34-4b0d-a06b-857390352fc4)
 
   [![Release](https://img.shields.io/github/release/serifpersia/pianolux-arduino.svg?style=flat-square)](https://github.com/serifpersia/pianolux-arduino/releases)
   [![License](https://img.shields.io/github/license/serifpersia/pianolux-arduino?color=blue&style=flat-square)](https://raw.githubusercontent.com/serifpersia/pianolux-arduino/master/LICENSE)
