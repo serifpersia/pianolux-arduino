@@ -22,28 +22,57 @@ public class Arduino {
 
 	// command start with 3 bytes: COMMAND_BYTE1 | COMMAND_BYTE2 | EFFECT_COMMAND
 	// then goes effect bytes
-	final static byte COMMAND_BYTE1 = (byte) 111;
-	final static byte COMMAND_BYTE2 = (byte) 222;
+	final static byte COMMAND_BYTE1 = (byte) 0;
+	final static byte COMMAND_BYTE2 = (byte) 1;
 
-	final static byte COMMAND_SET_COLOR = (byte) 255;
-	final static byte COMMAND_FADE_RATE = (byte) 254;
-	final static byte COMMAND_ANIMATION = (byte) 253;
-	final static byte COMMAND_BLACKOUT = (byte) 252;
-	final static byte COMMAND_SPLASH = (byte) 251;
-	final static byte COMMAND_SET_BRIGHTNESS = (byte) 250;
-	final static byte COMMAND_KEY_OFF = (byte) 249;
-	final static byte COMMAND_SPLASH_MAX_LENGTH = (byte) 248;
-	final static byte COMMAND_SET_BG = (byte) 247;
-	final static byte COMMAND_VELOCITY = (byte) 246;
-	final static byte COMMAND_STRIP_DIRECTION = (byte) 245;
-	final static byte COMMAND_SET_GUIDE = (byte) 244;
-	final static byte COMMAND_SET_LED_VISUALIZER = (byte) 243;
+	final static byte COMMAND_BLACKOUT = (byte) 2;
+	final static byte COMMAND_SET_BRIGHTNESS = (byte) 3;
+	final static byte COMMAND_SET_GLOBAL_COLOR = (byte) 4;
 
-	public ByteArrayOutputStream commandSetColor(Color c, int note) {
+	final static byte COMMAND_FADE_RATE = (byte) 5;
+	final static byte COMMAND_STRIP_DIRECTION = (byte) 6;
+
+	final static byte COMMAND_NOTE_ON_DEFAULT = (byte) 7;
+	final static byte COMMAND_NOTE_OFF = (byte) 8;
+
+	final static byte COMMAND_SPLASH = (byte) 9;
+	final static byte COMMAND_SPLASH_MAX_LENGTH = (byte) 10;
+
+	final static byte COMMAND_VELOCITY = (byte) 11;
+
+	final static byte COMMAND_ANIMATION = (byte) 12;
+
+	final static byte COMMAND_SET_BG = (byte) 13;
+	final static byte COMMAND_SET_GUIDE = (byte) 14;
+
+	final static byte COMMAND_SET_LED_VISUALIZER = (byte) 15;
+	final static byte COMMAND_NOTE_ON = (byte) 16;
+
+	public ByteArrayOutputStream commandUpdateColor(Color c) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_SET_COLOR);
+		message.write((byte) COMMAND_SET_GLOBAL_COLOR);
+		message.write((byte) c.getRed());
+		message.write((byte) c.getGreen());
+		message.write((byte) c.getBlue());
+		return message;
+	}
+
+	public ByteArrayOutputStream commandDefaultNoteOn(int note) {
+		ByteArrayOutputStream message = new ByteArrayOutputStream();
+		message.write((byte) COMMAND_BYTE1);
+		message.write((byte) COMMAND_BYTE2);
+		message.write((byte) COMMAND_NOTE_ON_DEFAULT);
+		message.write((byte) note);
+		return message;
+	}
+
+	public ByteArrayOutputStream commandNoteOn(Color c, int note) {
+		ByteArrayOutputStream message = new ByteArrayOutputStream();
+		message.write((byte) COMMAND_BYTE1);
+		message.write((byte) COMMAND_BYTE2);
+		message.write((byte) COMMAND_NOTE_ON);
 		message.write((byte) c.getRed());
 		message.write((byte) c.getGreen());
 		message.write((byte) c.getBlue());
@@ -60,16 +89,13 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandSplash(int velocity, int note, Color color) {
+	public ByteArrayOutputStream commandSplash(int velocity, int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
 		message.write((byte) COMMAND_SPLASH);
 		message.write((byte) velocity);
 		message.write((byte) note);
-		message.write((byte) color.getRed());
-		message.write((byte) color.getGreen());
-		message.write((byte) color.getBlue());
 		return message;
 	}
 
@@ -100,11 +126,11 @@ public class Arduino {
 		return message;
 	}
 
-	public ByteArrayOutputStream commandKeyOff(int note) {
+	public ByteArrayOutputStream commandNoteOff(int note) {
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		message.write((byte) COMMAND_BYTE1);
 		message.write((byte) COMMAND_BYTE2);
-		message.write((byte) COMMAND_KEY_OFF);
+		message.write((byte) COMMAND_NOTE_OFF);
 		message.write((byte) note);
 		return message;
 	}
@@ -192,6 +218,10 @@ public class Arduino {
 		return message;
 	}
 
+	public void sendCommandUpdateColor(Color c) {
+		sendToArduino(commandUpdateColor(c));
+	}
+
 	public void sendCommandAudioData(int audioData) {
 		sendToArduino(commandAudioData(audioData));
 	}
@@ -200,8 +230,8 @@ public class Arduino {
 		sendToArduino(commandAnimation(animationIndex, hue));
 	}
 
-	public void sendCommandSplash(int velocity, int note, Color color) {
-		sendToArduino(commandSplash(velocity, note, color));
+	public void sendCommandSplash(int velocity, int note) {
+		sendToArduino(commandSplash(velocity, note));
 	}
 
 	public void sendCommandBlackOut() {
@@ -212,8 +242,8 @@ public class Arduino {
 		sendToArduino(commandSetBrightness(value));
 	}
 
-	public void sendCommandKeyOff(int value) {
-		sendToArduino(commandKeyOff(value));
+	public void sendCommandNoteOff(int value) {
+		sendToArduino(commandNoteOff(value));
 	}
 
 	public void sendCommandFadeRate(int value) {

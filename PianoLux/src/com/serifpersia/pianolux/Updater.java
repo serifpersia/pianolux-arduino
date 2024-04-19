@@ -32,7 +32,7 @@ public class Updater {
 
 	//Set to false to use check update loop
 	private boolean debugJSONOff = true;
-	public String VersionTag = "v4.3.6";
+	public String VersionTag = "v4.3.7";
 
 	public String getDownloadUrl(JsonNode latestRelease, String fileName) throws IOException {
 		return latestRelease.findValue("browser_download_url").asText();

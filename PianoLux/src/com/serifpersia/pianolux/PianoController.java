@@ -32,7 +32,7 @@ public class PianoController implements PianoMidiConsumer {
 
 	private PianoLux pianoLux;
 
-	public Arduino arduino;
+	public static Arduino arduino;
 	public String portName;
 	public String[] portNames = SerialPortList.getPortNames();
 
@@ -303,14 +303,14 @@ public class PianoController implements PianoMidiConsumer {
 				if (ModesController.RandomOn) {
 					Random rand = new Random();
 					int randomHue = rand.nextInt(360); // Generate a random hue value between 0 and 359
-					message = arduino.commandSetColor(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
+					message = arduino.commandNoteOn(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
 				} else if (ModesController.VelocityOn) {
 					message = arduino.commandVelocity(velocity, notePushed, Color.RED);
 				} else if (ModesController.SplitOn) {
 					if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
-						message = arduino.commandSetColor(splitLeftColor, notePushed);
+						message = arduino.commandNoteOn(splitLeftColor, notePushed);
 					} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
-						message = arduino.commandSetColor(splitRightColor, notePushed);
+						message = arduino.commandNoteOn(splitRightColor, notePushed);
 					}
 				} else if (ModesController.GradientOn) {
 					int numSteps = GetUI.getStripLedNum();
@@ -401,9 +401,9 @@ public class PianoController implements PianoMidiConsumer {
 						break;
 					}
 
-					message = arduino.commandSetColor(currentColor, notePushed);
+					message = arduino.commandNoteOn(currentColor, notePushed);
 				} else if (ModesController.SplashOn) {
-					message = arduino.commandSplash(velocity, notePushed, getSplashColor());
+					message = arduino.commandSplash(velocity, notePushed);
 
 				} else if (ModesController.MultiColorOn) {
 
@@ -413,10 +413,10 @@ public class PianoController implements PianoMidiConsumer {
 					// Use the calculated index to get the corresponding color
 					Color color = GetUI.multiColors[noteGroupIndex];
 
-					message = arduino.commandSetColor(color, notePushed);
+					message = arduino.commandNoteOn(color, notePushed);
 				} else {
 					if (arduino != null)
-						message = arduino.commandSetColor(GetUI.selectedColor, notePushed);
+						message = arduino.commandDefaultNoteOn(notePushed);
 				}
 
 				if (message != null) {
@@ -454,7 +454,7 @@ public class PianoController implements PianoMidiConsumer {
 
 		{
 			if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
-				arduino.sendCommandKeyOff(notePushed);
+				arduino.sendCommandNoteOff(notePushed);
 			}
 		} catch (Exception e) {
 		}
@@ -470,10 +470,6 @@ public class PianoController implements PianoMidiConsumer {
 		if (arduino != null) {
 			arduino.sendCommandBrightness(value);
 		}
-	}
-
-	public Color getSplashColor() {
-		return new Color(GetUI.selectedColor.getRGB());
 	}
 
 	public void SplashLengthRate(int value) {
@@ -576,5 +572,9 @@ public class PianoController implements PianoMidiConsumer {
 
 	public void sendAudioDataToArduino(int data) {
 		arduino.sendCommandAudioData(data);
+	}
+
+	public static void sendUpdatedColorToArduino(Color c) {
+		arduino.sendCommandUpdateColor(c);
 	}
 }

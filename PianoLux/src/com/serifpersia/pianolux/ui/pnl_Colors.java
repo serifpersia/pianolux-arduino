@@ -7,6 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.serifpersia.pianolux.PianoController;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -76,13 +79,10 @@ public class pnl_Colors extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String selectedColorName = (String) cb_ColorPresets.getSelectedItem();
 				int index = GetUI.colorNames.indexOf(selectedColorName);
-				if (index >= 1) {
-					GetUI.selectedColor = GetUI.presetColors[index - 1];
-					updateColorSelected();
-				}
-				if (index == 0) {
-					GetUI.selectedColor = Color.BLACK;
-				}
+
+				GetUI.selectedColor = GetUI.presetColors[index];
+				updateColorSelected();
+
 			}
 		});
 
@@ -167,7 +167,7 @@ public class pnl_Colors extends JPanel {
 		keyColor_toggle.setFont(new Font("Poppins", Font.PLAIN, 14));
 		keyColor_toggle.setFocusable(false);
 		keyColor_toggle.setBorderPainted(false);
-		
+
 		panel_2.add(keyColor_toggle);
 
 		rdb_IdleOn = new JRadioButton("Idle");
@@ -220,6 +220,8 @@ public class pnl_Colors extends JPanel {
 		colorPicker.setCustomColor(hsb[0], hsb[1], hsb[2]);
 		colorPicker.repaint();
 		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
+
+		PianoController.sendUpdatedColorToArduino(GetUI.selectedColor);
 	}
 
 	private int parseInt(JTextField textField) {

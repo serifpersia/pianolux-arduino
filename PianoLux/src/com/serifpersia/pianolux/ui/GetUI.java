@@ -28,7 +28,7 @@ public class GetUI {
 	private static int firstNoteSelected = 21;
 	private static int lastNoteSelected = 108;
 
-	static List<String> colorNames = Arrays.asList("Full Spectrum", "White", "Red", "Green", "Blue", "Yellow", "Orange",
+	static List<String> colorNames = Arrays.asList("Black", "White", "Red", "Green", "Blue", "Yellow", "Orange",
 			"Purple", "Pink", "Teal", "Lime", "Cyan", "Magenta", "Peach", "Lavender", "Turquoise", "Gold", "Custom");
 
 	static List<String> animationNames = Arrays.asList("RainbowColors", "RainbowStripeColor", "OceanColors",
@@ -44,7 +44,7 @@ public class GetUI {
 
 	static Color customColor = Color.BLACK;
 
-	static Color[] presetColors = { Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+	static Color[] presetColors = {Color.BLACK, Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
 			new Color(128, 0, 255), // Purple
 			new Color(255, 35, 35), // Pink
