@@ -34,7 +34,8 @@ PianoLux is compatible with a wide range of 5V addressable LED strips supported 
 - WS2811
 - SK6812
 
-*SK6812W / SK6812 RGBW are not supported by FastLED so these won't work so make sure you check if its not SK6812W/SK6812 RGBW version of SK6812 strip Future updates of FastLED libraray might support RGBW strips but until then you can't use this type of strip with this project!
+*SK6812W / SK6812 RGBW are not supported by FastLED so these won't work so make sure you check if its not SK6812W/SK6812 RGBW version of SK6812 strip.
+Future updates of FastLED libraray might support RGBW strips but until then you can't use this type of strip with this project!
 
 PianoLux currently requires native USB Arduino boards with an Atmega32U4 CPU, such as:
 
