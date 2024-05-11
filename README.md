@@ -37,7 +37,7 @@ PianoLux is compatible with officially supported strips by FastLED library defau
 | WS2812              |
 | WS2852              |
 | WS2812B             |
-| SK6812              |
+| SK6812              |RGB non RGBW variant|
 | WS2811              |
 | WS2813              |
 | WS2811_400          |
