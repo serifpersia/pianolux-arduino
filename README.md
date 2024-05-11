@@ -27,15 +27,38 @@ Be part of the PianoLux Discord Server Community where you can connect with fell
 
 ## LED Strip Compatibility
 
-PianoLux is compatible with a wide range of 5V addressable LED strips supported by the FastLED library for Arduino. It offers support for both 72 and 144 density/m strips. Compatible strips include:
+PianoLux is compatible with officially supported strips by FastLED library default are NeoPixels/WS2812B. Density must be 144 which is supported on all modes of the app and 72 density for few basic modes. You can find list of FastLED supported leds below:
 
-- WS2812B
-- WS2812
-- WS2811
-- SK6812
+*Main arduino code ino has to be modified to align with strip you will use
 
-*SK6812W / SK6812 RGBW are not supported by FastLED so these won't work so make sure you check if its not SK6812W/SK6812 RGBW version of SK6812 strip.
-Future updates of FastLED libraray might support RGBW strips but until then you can't use this type of strip with this project!
+|LED Type| Configuration|
+|---------------------|-|
+| Clockless Types     |
+| WS2812              |
+| WS2852              |
+| WS2812B             |
+| SK6812              |
+| WS2811              |
+| WS2813              |
+| WS2811_400          |
+| GW6205              |
+| GW6205_400          |
+| LPD1886             |
+| LPD1886_8BIT        |
+| Clocked (SPI) Types |
+| LPD6803             |
+| LPD8806             |
+| WS2801              |
+| WS2803              |
+| SM16716             |
+| P9813               | 
+| DOTSTAR             |
+| APA102              |
+| SK9822              |
+| 12V| Strips like WS2815 configured as WS2812 GRB or RGB|
+| RGBW Not Supported  |SK6812W or any other RGBW|
+
+*Make sure you check latest FastLED github repo for updates on supported led chipsets
 
 PianoLux currently requires native USB Arduino boards with an Atmega32U4 CPU, such as:
 
