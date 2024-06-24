@@ -18,38 +18,49 @@
 #include <FastLED.h>
 #include "FadingRunEffect.h"
 #include "FadeController.h"
-#define NO_HARDWARE_PIN_SUPPORT
-#define FASTLED_RMT_MAX_CHANNELS 1
 
-#define MAX_NUM_LEDS 176         // how many leds do you want to control
-#define DATA_PIN 5              // your LED strip data pin use pwm ones symbol ~ next to pin hole on Arduino board
-#define MAX_POWER_MILLIAMPS 450  //define current limit if you are using 5V pin from Arduino dont touch this, \
-  //for external power type the current example 3000 for 3A (3 Amps)
+#define MAX_NUM_LEDS 176          // how many leds do you want to control
+#define DATA_PIN 5               // your LED strip data pin use pwm ones symbol ~ next to pin hole on Arduino board
+#define MAX_POWER_MILLIAMPS 400   //define current limit if you are using 5V pin from Arduino dont touch this
 
-boolean debug = false;
-
-int NUM_LEDS = 176;  // how many leds do you want to control
+int NUM_LEDS = 176;               // how many leds do you want to control
 
 int STRIP_DIRECTION = 0;  //0 - left-to-right
 const int MAX_VELOCITY = 128;
 
-const int COMMAND_BYTE1 = 111;
-const int COMMAND_BYTE2 = 222;
 
-int MODE;
-const int COMMAND_SET_COLOR = 255;
-const int COMMAND_FADE_RATE = 254;
-const int COMMAND_ANIMATION = 253;
-const int COMMAND_BLACKOUT = 252;
-const int COMMAND_SPLASH = 251;
-const int COMMAND_SET_BRIGHTNESS = 250;
-const int COMMAND_KEY_OFF = 249;
-const int COMMAND_SPLASH_MAX_LENGTH = 248;
-const int COMMAND_SET_BG = 247;
-const int COMMAND_VELOCITY = 246;
-const int COMMAND_STRIP_DIRECTION = 245;
-const int COMMAND_SET_GUIDE = 244;
-const int COMMAND_SET_LED_VISUALIZER = 243;
+
+CRGB globalColor = CRGB::Red;
+
+//COMMAND_SET_COLOR
+const byte COMMAND_BYTE1 = 0;
+const byte COMMAND_BYTE2 = 1;
+
+const byte COMMAND_BLACKOUT = 2;
+const byte COMMAND_SET_BRIGHTNESS = 3;
+const byte COMMAND_SET_GLOBAL_COLOR = 4;
+
+const byte COMMAND_FADE_RATE = 5;
+const byte COMMAND_STRIP_DIRECTION = 6;
+
+const byte COMMAND_NOTE_ON_DEFAULT = 7;
+const byte COMMAND_NOTE_OFF = 8;
+
+const byte COMMAND_SPLASH = 9;
+const byte COMMAND_SPLASH_MAX_LENGTH = 10;
+
+const byte COMMAND_VELOCITY = 11;
+
+const byte COMMAND_ANIMATION = 12;
+
+const byte COMMAND_SET_BG = 13;
+const byte COMMAND_SET_GUIDE = 14;
+
+const byte COMMAND_SET_LED_VISUALIZER = 15;
+const byte COMMAND_NOTE_ON = 16;
+
+byte  MODE;
+
 long react = 0;
 int bufferSize;
 int buffer[10];  // declare buffer as an array of 10 integers
@@ -75,7 +86,7 @@ unsigned long previousFadeTime = 0;
 
 unsigned long interval = 20;      // general refresh in milliseconds
 unsigned long fadeInterval = 20;  // general fade interval in milliseconds
-int generalFadeRate = 5;          // general fade rate, bigger value - quicker fade (configurable via App)
+int generalFadeRate = 255;          // general fade rate, bigger value - quicker fade (configurable via App)
 
 
 const int OCTAVE_LEDS = 23;           // Number of LEDs in one octave
@@ -146,9 +157,7 @@ void setup() {
   // FastLED.addLeds<WS2803, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<SK6812, DATA_PIN, RGB>(leds, NUM_LEDS);          // GRB ordering is typical
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);  // set power limit
-  FastLED.setBrightness(DEFAULT_BRIGHTNESS);
   StartupAnimation();
-  // setGuide(CRGB::Red,6,majorScale);
 }
 
 #define MAX_EFFECTS 128
@@ -187,9 +196,6 @@ void setBG(CRGB colorToSet) {
   FastLED.show();
 }
 
-
-
-
 void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[], int scalePatternLength) {
   for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
     int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
@@ -212,176 +218,165 @@ void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[],
   FastLED.show();
 }
 
-void debugLightOn(int n, CRGB color) {
-  if (debug) {
-    if (n > 0 && n <= NUM_LEDS) {
-      leds[n] = color;
-    } else {
-      leds[0] = CRGB::Red;
-    }
-    FastLED.show();
-  }
-}
-
-void debugLightOn(int n) {
-  debugLightOn(n, CRGB::LightBlue);
-}
-
-
 FadeController* fadeCtrl = new FadeController();
 //Main loop
 void loop() {
 
-  currentTime = millis();
-
-  int bufferSize = Serial.available();
+  byte bufferSize = Serial.available();
   byte buffer[bufferSize];
   Serial.readBytes(buffer, bufferSize);
 
   boolean commandByte1Arrived = false;
   boolean commandByte2Arrived = false;
   for (int bufIdx = 0; bufIdx < bufferSize; bufIdx++) {
-    int command = (unsigned int)buffer[bufIdx];
+    byte command = buffer[bufIdx];
     switch (command) {
       case COMMAND_BYTE1:
         {
-          debugLightOn(1);
           commandByte1Arrived = true;
           break;
         }
       case COMMAND_BYTE2:
         {
-          debugLightOn(2);
           if (commandByte1Arrived) {
             commandByte2Arrived = true;
           }
           commandByte1Arrived = false;
           break;
         }
-      case COMMAND_SPLASH:
+      case COMMAND_BLACKOUT:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(3);
-          int velocity = buffer[++bufIdx];
-          int note = buffer[++bufIdx];
-          int r = buffer[++bufIdx];
-          int g = buffer[++bufIdx];
-          int b = buffer[++bufIdx];
-          CHSV hsv = rgb2hsv_approximate(CRGB(r, g, b));
-          keysOn[note - 1] = true;
-          addEffect(new FadingRunEffect(splashMaxLength, note - 1, hsv, SPLASH_HEAD_FADE_RATE, velocity));
-          MODE = COMMAND_SPLASH;
-          break;
-        }
-      case COMMAND_FADE_RATE:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(4);
-          generalFadeRate = buffer[++bufIdx];
-          break;
-        }
-      case COMMAND_SPLASH_MAX_LENGTH:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(5);
-          splashMaxLength = buffer[++bufIdx];
+          fill_solid(leds, NUM_LEDS, bgColor);
+          MODE = COMMAND_BLACKOUT;
           break;
         }
       case COMMAND_SET_BRIGHTNESS:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(5);
           generalBrightness = buffer[++bufIdx];
           FastLED.setBrightness(generalBrightness);
           break;
         }
-      case COMMAND_SET_COLOR:
+      case COMMAND_SET_GLOBAL_COLOR:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(6);
-          byte redVal = buffer[++bufIdx];
-          byte greenVal = buffer[++bufIdx];
-          byte blueVal = buffer[++bufIdx];
-          int note = (int)buffer[++bufIdx];
-          keysOn[note - 1] = true;
-          controlLeds(note - 1, redVal, greenVal, blueVal);
-          MODE = COMMAND_SET_COLOR;
-          break;
-        }
-      case COMMAND_BLACKOUT:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(7);
-          fill_solid(leds, NUM_LEDS, bgColor);
-          MODE = COMMAND_BLACKOUT;
-          break;
-        }
-      case COMMAND_ANIMATION:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(8);
-          animationIndex = buffer[++bufIdx];
-          hue = buffer[++bufIdx];
-          MODE = COMMAND_ANIMATION;
-          break;
-        }
-      case COMMAND_KEY_OFF:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(9);
-          int note = (int)buffer[++bufIdx];
-          keysOn[note - 1] = false;
-          break;
-        }
-      case COMMAND_SET_BG:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          debugLightOn(10);
-          int h = (int)buffer[++bufIdx];
-          int s = (int)buffer[++bufIdx];
+          int r = (int)buffer[++bufIdx];
+          int g = (int)buffer[++bufIdx];
           int b = (int)buffer[++bufIdx];
-          setBG(CHSV(h, s, b));
+
+          globalColor.setRGB(r, g, b);
+          MODE = COMMAND_SET_GLOBAL_COLOR;
           break;
         }
-
-      case COMMAND_VELOCITY:
+      case COMMAND_FADE_RATE:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(11);
-          int velocity = buffer[++bufIdx];
-          int note = buffer[++bufIdx];
-          CRGB rgb;
-          keysOn[note - 1] = true;
-          setColorFromVelocity(velocity, rgb);
-          controlLeds(note - 1, rgb.r, rgb.g, rgb.b);
-          MODE = COMMAND_VELOCITY;
+          generalFadeRate = buffer[++bufIdx];
           break;
         }
       case COMMAND_STRIP_DIRECTION:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(11);
           STRIP_DIRECTION = buffer[++bufIdx];
           NUM_LEDS = buffer[++bufIdx];
           break;
         }
+      case COMMAND_NOTE_ON_DEFAULT:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          int note = (int)buffer[++bufIdx];
+          keysOn[note - 1] = true;
+          controlLeds(note - 1, globalColor);
+          MODE = COMMAND_NOTE_ON_DEFAULT;
+          break;
+        }
+      case COMMAND_NOTE_ON:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          byte r = buffer[++bufIdx];
+          byte g = buffer[++bufIdx];
+          byte b = buffer[++bufIdx];
+          int note = (int)buffer[++bufIdx];
+          keysOn[note - 1] = true;
+          globalColor.setRGB(r, g, b);
+          controlLeds(note - 1, globalColor);
+          MODE = COMMAND_NOTE_ON;
+          break;
+        }
 
+      case COMMAND_NOTE_OFF:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          int note = (int)buffer[++bufIdx];
+          keysOn[note - 1] = false;
+          break;
+        }
+
+      case COMMAND_SPLASH:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          int velocity = buffer[++bufIdx];
+          int note = buffer[++bufIdx];
+          CHSV hsv = rgb2hsv_approximate(globalColor);
+          keysOn[note - 1] = true;
+          addEffect(new FadingRunEffect(splashMaxLength, note - 1, hsv, SPLASH_HEAD_FADE_RATE, velocity));
+          MODE = COMMAND_SPLASH;
+          break;
+        }
+
+      case COMMAND_SPLASH_MAX_LENGTH:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          splashMaxLength = buffer[++bufIdx];
+          break;
+        }
+      case COMMAND_VELOCITY:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          int velocity = buffer[++bufIdx];
+          int note = buffer[++bufIdx];
+          CRGB rgb;
+          keysOn[note - 1] = true;
+          setColorFromVelocity(velocity, rgb);
+          controlLeds(note - 1, rgb);
+          MODE = COMMAND_VELOCITY;
+          break;
+        }
+      case COMMAND_ANIMATION:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          animationIndex = buffer[++bufIdx];
+          hue = buffer[++bufIdx];
+          MODE = COMMAND_ANIMATION;
+          break;
+        }
+      case COMMAND_SET_BG:
+        {
+          commandByte1Arrived = false;
+          if (!commandByte2Arrived) break;
+          int h = (int)buffer[++bufIdx];
+          int s = (int)buffer[++bufIdx];
+          int b = (int)buffer[++bufIdx];
+          setBG(CHSV(h, s, b));
+          break;
+        }
       case COMMAND_SET_GUIDE:
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(12);
 
           // Get the number of elements in the scalePattern array
           scalePatternLength = (int)buffer[++bufIdx];
@@ -404,7 +399,6 @@ void loop() {
         {
           commandByte1Arrived = false;
           if (!commandByte2Arrived) break;
-          debugLightOn(13);
 
           selectedEffect = buffer[++bufIdx];
           colorHue = buffer[++bufIdx];
@@ -412,7 +406,6 @@ void loop() {
           MODE = COMMAND_SET_LED_VISUALIZER;
           break;
         }
-
       default:
         {
           if ((int)buffer >= 2) {
@@ -421,8 +414,11 @@ void loop() {
           }
           break;
         }
+
     }
   }
+
+  currentTime = millis();
 
   //slowing it down with interval
   if (currentTime - previousTime >= interval) {
@@ -474,11 +470,10 @@ int ledNum(int i) {
 }
 
 
-void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
+void controlLeds(int ledNo, CRGB color) {
   if (ledNo < 0 || ledNo >= NUM_LEDS) {
     return;
   }
-
   // Check if guideColor is black
   if (guideColor != CRGB::Black) {
     // Check if the current LED index is in the scalePattern across all octaves
@@ -548,8 +543,7 @@ void controlLeds(int ledNo, int redVal, int greenVal, int blueVal) {
       return;
     }
   }
-
-  leds[ledNum(ledNo)].setRGB(redVal, greenVal, blueVal);
+  leds[ledNum(ledNo)] = color;
   FastLED.show();
 }
 
