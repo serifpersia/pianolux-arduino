@@ -45,6 +45,7 @@ public class PianoController implements PianoMidiConsumer {
 	public boolean bgToggle = false; // default value
 	public boolean guideToggle = false; // default value
 	public boolean use72LEDSMap = false;
+	public boolean useOctaveShift = false;
 
 	public int transposition = 0; // default value
 

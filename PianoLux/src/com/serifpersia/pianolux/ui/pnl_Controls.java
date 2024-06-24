@@ -56,6 +56,7 @@ public class pnl_Controls extends JPanel {
 	public static JToggleButton reverseToggle;
 	public static JToggleButton guideToggle;
 	public static JToggleButton oneToOneRatioToggle;
+	public static JToggleButton shiftbyOctavesToggle;
 
 	public pnl_Controls(PianoLux pianoLux) {
 
@@ -214,7 +215,16 @@ public class pnl_Controls extends JPanel {
 		rightPanel.add(sld_Fade);
 		rightPanel.add(sld_SplashMaxLenght);
 		rightPanel.add(bg_slider);
-		rightPanel.add(sld_transposition);
+
+		JPanel TranspositioNPanel = new JPanel();
+		TranspositioNPanel.setLayout(new BorderLayout());
+		TranspositioNPanel.setBackground(new Color(50, 50, 50));
+
+		// Assuming sld_transposition and shiftbyOctavesToggle are already initialized
+		TranspositioNPanel.add(sld_transposition, BorderLayout.CENTER);
+		TranspositioNPanel.add(shiftbyOctavesToggle, BorderLayout.EAST);
+
+		rightPanel.add(TranspositioNPanel);
 
 		JPanel ButtonsPanel = new JPanel();
 		ButtonsPanel.setLayout(new GridLayout(0, 4, 0, 0));
@@ -291,6 +301,11 @@ public class pnl_Controls extends JPanel {
 		oneToOneRatioToggle.setForeground(new Color(204, 204, 204));
 		oneToOneRatioToggle.setFont(new Font("Poppins", Font.PLAIN, 16));
 		oneToOneRatioToggle.setFocusable(false);
+
+		shiftbyOctavesToggle = new JToggleButton("Oct");
+		shiftbyOctavesToggle.setForeground(new Color(204, 204, 204));
+		shiftbyOctavesToggle.setFont(new Font("Poppins", Font.PLAIN, 16));
+		shiftbyOctavesToggle.setFocusable(false);
 
 		btn_SetBG = new JButton("BG");
 		btn_SetBG.setForeground(new Color(204, 204, 204));
@@ -469,9 +484,13 @@ public class pnl_Controls extends JPanel {
 					pianoController.SplashLengthRate(SplashLength);
 				} else if (source == sld_transposition) {
 					int Transposition = sld_transposition.getValue();
+					if (pianoController.useOctaveShift) {
+						Transposition *= 12;
+					}
 					int invertSliderValue = invertSlider(Transposition);
 					sld_transposition.setToolTipText(Integer.toString(invertSliderValue));
 					pianoController.transposition = Transposition;
+					System.out.println(Transposition);
 				} else if (source == bg_slider) {
 					int bgValue = (int) (bg_slider.getValue() * 2.55); // Map the 0-100 range to 0-255
 					bg_slider.setToolTipText(Integer.toString(bg_slider.getValue())); // Show the value in the 0-100
@@ -554,6 +573,13 @@ public class pnl_Controls extends JPanel {
 					} else {
 						pianoController.use72LEDSMap = false;
 					}
+				} else if (source == shiftbyOctavesToggle) {
+					if (shiftbyOctavesToggle.isSelected()) {
+
+						pianoController.useOctaveShift = true;
+					} else {
+						pianoController.useOctaveShift = false;
+					}
 				}
 
 			}
@@ -564,6 +590,7 @@ public class pnl_Controls extends JPanel {
 		reverseToggle.addActionListener(tgl_listener);
 		guideToggle.addActionListener(tgl_listener);
 		oneToOneRatioToggle.addActionListener(tgl_listener);
+		shiftbyOctavesToggle.addActionListener(tgl_listener);
 
 	}
 }
