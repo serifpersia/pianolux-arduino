@@ -202,6 +202,7 @@ public class ColorPickerPanel extends JPanel {
 		this.hue = hue;
 		this.saturation = saturation;
 		this.brightness = brightness;
+
 		updateSelectedColor();
 		repaint();
 	}

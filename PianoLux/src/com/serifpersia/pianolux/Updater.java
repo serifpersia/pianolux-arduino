@@ -30,7 +30,6 @@ public class Updater {
 	String appPath = System.getProperty("user.dir");
 	String os = System.getProperty("os.name").toLowerCase();
 
-	//Set to false to use check update loop
 	private boolean debugJSONOff = true;
 	public String VersionTag = "v4.3.7";
 

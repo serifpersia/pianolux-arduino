@@ -48,7 +48,7 @@ public class pnl_Controls extends JPanel {
 	private JButton btn_SetBG;
 	private JButton btn_rightArrow;
 	private JButton btn_leftArrow;
-	private JLabel lbl_PianoSize;
+	public static JLabel lbl_PianoSize;
 	private ImageIcon toggle_on_Icon;
 	private ImageIcon toggle_off_Icon;
 	public static JToggleButton bgToggle;

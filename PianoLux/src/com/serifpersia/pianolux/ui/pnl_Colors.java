@@ -26,7 +26,7 @@ import javax.swing.JToggleButton;
 @SuppressWarnings("serial")
 public class pnl_Colors extends JPanel {
 
-	private ColorPickerPanel colorPicker = new ColorPickerPanel();
+	public static ColorPickerPanel colorPicker = new ColorPickerPanel();
 
 	private JSlider sld_idle;
 
@@ -200,7 +200,7 @@ public class pnl_Colors extends JPanel {
 		panel_2.add(txt_B);
 	}
 
-	private void updateColorPreset() {
+	public static void updateColorPreset() {
 		cb_ColorPresets.setSelectedIndex(GetUI.colorNames.size() - 1);
 	}
 
@@ -219,8 +219,8 @@ public class pnl_Colors extends JPanel {
 				GetUI.selectedColor.getBlue(), null);
 		colorPicker.setCustomColor(hsb[0], hsb[1], hsb[2]);
 		colorPicker.repaint();
-		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
 
+		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
 		PianoController.sendUpdatedColorToArduino(GetUI.selectedColor);
 	}
 

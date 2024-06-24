@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GetUI {
 
-	static int counter = 0;
+	public static int counter = 0;
 
 	private static int leftMinPitch = 21;
 	private static int rightMaxPitch = 108;
@@ -105,7 +105,7 @@ public class GetUI {
 	static int rectBSizeX = 0;
 	static int rectBX = 795;
 
-	static void setKeyboardSize(int counter) {
+	public static void setKeyboardSize(int counter) {
 		System.out.println("counter: " + counter);
 		if (counter <= 0) {
 			rectASizeX = 0;

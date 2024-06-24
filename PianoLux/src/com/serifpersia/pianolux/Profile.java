@@ -13,9 +13,12 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.serifpersia.pianolux.ui.ColorPickerPanel;
+import com.serifpersia.pianolux.ui.GetUI;
 import com.serifpersia.pianolux.ui.pnl_Colors;
 import com.serifpersia.pianolux.ui.pnl_Controls;
 import com.serifpersia.pianolux.ui.pnl_Gradient_MultiColor;
+
+import javafx.scene.control.ColorPicker;
 
 public class Profile {
 
@@ -54,7 +57,6 @@ public class Profile {
 			return pnl_Gradient_MultiColor.colors[1];
 		case 3:
 			return pnl_Gradient_MultiColor.colors[2];
-		// Add cases for the remaining sides (4 to 8)
 		case 4:
 			return pnl_Gradient_MultiColor.colors[3];
 		case 5:
@@ -119,12 +121,20 @@ public class Profile {
 		return selectedColorIndex;
 	}
 
+	private static int saveKeyRange() {
+		int selectedKeyRange = (int) GetUI.counter;
+		return selectedKeyRange;
+	}
+
 	private static String saveSliders() {
 		int brightnessSliderVal = pnl_Controls.sld_Brightness.getValue();
 		int fadeSliderVal = pnl_Controls.sld_Fade.getValue();
 		int splashMaxLenghtVal = pnl_Controls.sld_SplashMaxLenght.getValue();
+		int bgSliderVal = pnl_Controls.bg_slider.getValue();
+		int transpositionSliderVal = pnl_Controls.sld_transposition.getValue();
 
-		return brightnessSliderVal + "," + fadeSliderVal + "," + splashMaxLenghtVal;
+		return brightnessSliderVal + "," + fadeSliderVal + "," + splashMaxLenghtVal + "," + bgSliderVal + ","
+				+ transpositionSliderVal;
 	}
 
 	private static int savedLEDMode() {
@@ -152,14 +162,19 @@ public class Profile {
 						pnl_Colors.cb_ColorPresets.setSelectedIndex(index);
 					} else if (line.startsWith("Slider = ")) {
 						String[] sliderValues = line.substring(line.indexOf("=") + 1).trim().split(",");
-						if (sliderValues.length == 3) {
+						if (sliderValues.length == 5) {
 							int brightness = Integer.parseInt(sliderValues[0]);
 							int fade = Integer.parseInt(sliderValues[1]);
 							int splashlenght = Integer.parseInt(sliderValues[2]);
+							int bgVal = Integer.parseInt(sliderValues[3]);
+							int transpositionVal = Integer.parseInt(sliderValues[4]);
+
 							// Set the slider values to the read values
 							pnl_Controls.sld_Brightness.setValue(brightness);
 							pnl_Controls.sld_Fade.setValue(fade);
 							pnl_Controls.sld_SplashMaxLenght.setValue(splashlenght);
+							pnl_Controls.bg_slider.setValue(bgVal);
+							pnl_Controls.sld_transposition.setValue(transpositionVal);
 
 						}
 					} else if (line.startsWith("LED Mode = ")) {
@@ -199,11 +214,24 @@ public class Profile {
 						int r = Integer.parseInt(rgb[0]);
 						int g = Integer.parseInt(rgb[1]);
 						int b = Integer.parseInt(rgb[2]);
-						pnl_Colors.txt_R.setText(Integer.toString(r));
-						pnl_Colors.txt_G.setText(Integer.toString(g));
-						pnl_Colors.txt_B.setText(Integer.toString(b));
-						ColorPickerPanel colorPicker = new ColorPickerPanel();
-						colorPicker.repaint();
+
+						Color color = new Color(r, g, b);
+
+						GetUI.selectedColor = color;
+
+						float[] hsb = Color.RGBtoHSB(GetUI.selectedColor.getRed(), GetUI.selectedColor.getGreen(),
+								GetUI.selectedColor.getBlue(), null);
+						pnl_Colors.colorPicker.setCustomColor(hsb[0], hsb[1], hsb[2]);
+						pnl_Colors.colorPicker.repaint();
+
+					} else if (line.startsWith("Key Range = ")) {
+						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
+						GetUI.counter = index;
+						GetUI.setKeyboardSize(index);
+						pnl_Controls.lbl_PianoSize.setText("Piano " + GetUI.getNumPianoKeys() + " Keys");
+						pianoLux.getDrawPiano().repaint();
+						System.out.println(index);
+						System.out.println(GetUI.counter);
 					}
 				}
 
@@ -235,32 +263,6 @@ public class Profile {
 				writer.newLine();
 				writer.write("//PianoLux Profile Config File");
 				writer.newLine();
-				writer.newLine();
-				writer.write(
-						"//LED Mode: Default - 0, Splash - 1, Random - 2, Gradient - 3, Velocity - 4, Split - 5, Animation - 6");
-				writer.newLine();
-				writer.newLine();
-				writer.write(
-						"//Animation: RainbowColors - 0, RainbowStripeColor - 1, OceanColors - 2, CloudColors - 3, LavaColors - 4, ForestColors - 5, PartyColors - 6");
-				writer.newLine();
-				writer.newLine();
-				writer.write(
-						"//ColorPreset: Full Spectrum(Black) - 0, White - 1, Red - 2, Green - 3, Blue - 4, Yellow - 5, Orange - 6, Purple - 7, Pink - 8, Teal - 9, Lime - 10, Cyan - 11, Magenta - 12, Peach - 13, Lavender - 14, Turquoise - 15, Gold - 16, Custom - 17");
-				writer.newLine();
-				writer.newLine();
-				writer.write("//Slider: brightness(0-255), fade(0-255),splashlenght(4-16)");
-				writer.newLine();
-				writer.newLine();
-				writer.write(
-						"//Gradient: leftSide(red amount - (0-255), green amount (0-255), blue amount (0-255); middleSide(red amount - (0-255), green amount (0-255), blue amount (0-255); rightSide(red amount - (0-255), green amount (0-255), blue amount (0-255)");
-				writer.newLine();
-				writer.newLine();
-				writer.write("//Background Light,Fixed LED,Reverse LED = On or Off");
-				writer.newLine();
-				writer.newLine();
-				writer.write("//Custom Color: red amount(0-255), green amount(0-255),blue amount(0-255)");
-				writer.newLine();
-				writer.newLine();
 				writer.write("LED Mode = " + savedLEDMode());
 				writer.newLine();
 				writer.write("Animation = " + saveAnimation());
@@ -279,6 +281,7 @@ public class Profile {
 				writer.newLine();
 				writer.write("Custom Color = " + saveFields());
 				writer.newLine();
+				writer.write("Key Range = " + saveKeyRange());
 			} catch (IOException error) {
 				error.printStackTrace();
 			}
