@@ -12,13 +12,10 @@ import javax.swing.JToggleButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.serifpersia.pianolux.ui.ColorPickerPanel;
 import com.serifpersia.pianolux.ui.GetUI;
 import com.serifpersia.pianolux.ui.pnl_Colors;
 import com.serifpersia.pianolux.ui.pnl_Controls;
 import com.serifpersia.pianolux.ui.pnl_Gradient_MultiColor;
-
-import javafx.scene.control.ColorPicker;
 
 public class Profile {
 
