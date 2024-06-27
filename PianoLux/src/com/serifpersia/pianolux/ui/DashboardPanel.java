@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.FlowLayout;
@@ -41,6 +42,7 @@ public class DashboardPanel extends JPanel {
 	private JButton btnUpdate;
 	private JButton btnOpen;
 	private JButton btnRefresh;
+	private JButton btnOpenDir;
 
 	private PianoController pianoController;
 
@@ -124,6 +126,11 @@ public class DashboardPanel extends JPanel {
 		btnRefresh.setFocusable(false);
 		ButtonsPanel.add(btnRefresh);
 
+		btnOpenDir = new JButton("CodeDir");
+		btnOpenDir.setFont(new Font("Poppins", Font.PLAIN, 16));
+		btnOpenDir.setFocusable(false);
+		ButtonsPanel.add(btnOpenDir);
+
 		lb_Version = new JLabel("Current Version");
 		lb_Version.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lb_Version.setHorizontalAlignment(SwingConstants.CENTER);
@@ -186,6 +193,17 @@ public class DashboardPanel extends JPanel {
 					pianoController.refreshSerialList();
 					pianoController.refreshMidiList();
 					break;
+				case "btnOpenDir":
+					String os = updater.getOs();
+					if (os.contains("win")) {
+						try {
+							String path = System.getenv("LOCALAPPDATA") + "\\Programs\\PianoLux\\Arduino_PianoLux";
+							new ProcessBuilder("explorer.exe", path).start();
+						} catch (IOException error) {
+							error.printStackTrace();
+						}
+					}
+
 				default:
 					break;
 				}
@@ -195,9 +213,11 @@ public class DashboardPanel extends JPanel {
 		btnUpdate.addActionListener(buttonListener);
 		btnOpen.addActionListener(buttonListener);
 		btnRefresh.addActionListener(buttonListener);
+		btnOpenDir.addActionListener(buttonListener);
 
 		btnUpdate.setActionCommand("btnUpdate");
 		btnOpen.setActionCommand("btnOpen");
 		btnRefresh.setActionCommand("btnRefresh");
+		btnOpenDir.setActionCommand("btnOpenDir");
 	}
 }
