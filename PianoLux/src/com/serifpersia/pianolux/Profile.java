@@ -46,6 +46,14 @@ public class Profile {
 		return sb.toString();
 	}
 
+	public static String saveMultiColors() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i <= 12; i++) {
+			sb.append("multiColor").append(i).append("=").append(getColorString(getMultiColorColor(i))).append(";");
+		}
+		return sb.toString();
+	}
+
 	private static Color getSideColor(int sideNumber) {
 		switch (sideNumber) {
 		case 1:
@@ -69,6 +77,37 @@ public class Profile {
 		}
 	}
 
+	private static Color getMultiColorColor(int noteNumber) {
+		switch (noteNumber) {
+		case 1:
+			return GetUI.multiColors[0];
+		case 2:
+			return GetUI.multiColors[1];
+		case 3:
+			return GetUI.multiColors[2];
+		case 4:
+			return GetUI.multiColors[3];
+		case 5:
+			return GetUI.multiColors[4];
+		case 6:
+			return GetUI.multiColors[5];
+		case 7:
+			return GetUI.multiColors[6];
+		case 8:
+			return GetUI.multiColors[7];
+		case 9:
+			return GetUI.multiColors[8];
+		case 10:
+			return GetUI.multiColors[9];
+		case 11:
+			return GetUI.multiColors[10];
+		case 12:
+			return GetUI.multiColors[11];
+		default:
+			throw new IllegalArgumentException("Invalid note number: " + noteNumber);
+		}
+	}
+
 	private static String getColorString(Color color) {
 		return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
 	}
@@ -79,6 +118,14 @@ public class Profile {
 		int green = Integer.parseInt(colorValues[1]);
 		int blue = Integer.parseInt(colorValues[2]);
 		setColorForSide(new Color(red, green, blue), sideNumber);
+	}
+
+	private static void setMultiColorFromValue(String value, int noteNumber) {
+		String[] multiColorValues = value.substring(value.indexOf("=") + 1).split(",");
+		int red = Integer.parseInt(multiColorValues[0]);
+		int green = Integer.parseInt(multiColorValues[1]);
+		int blue = Integer.parseInt(multiColorValues[2]);
+		setMultiColorForNote(new Color(red, green, blue), noteNumber);
 	}
 
 	private static void setColorForSide(Color color, int sideNumber) {
@@ -92,7 +139,6 @@ public class Profile {
 		case 3:
 			pnl_Gradient_MultiColor.colors[2] = color;
 			break;
-		// Add cases for the remaining sides (4 to 8)
 		case 4:
 			pnl_Gradient_MultiColor.colors[3] = color;
 			break;
@@ -110,6 +156,49 @@ public class Profile {
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid side number: " + sideNumber);
+		}
+	}
+
+	private static void setMultiColorForNote(Color color, int noteNumber) {
+		switch (noteNumber) {
+		case 1:
+			GetUI.multiColors[0] = color;
+			break;
+		case 2:
+			GetUI.multiColors[1] = color;
+			break;
+		case 3:
+			GetUI.multiColors[2] = color;
+			break;
+		case 4:
+			GetUI.multiColors[3] = color;
+			break;
+		case 5:
+			GetUI.multiColors[4] = color;
+			break;
+		case 6:
+			GetUI.multiColors[5] = color;
+			break;
+		case 7:
+			GetUI.multiColors[6] = color;
+			break;
+		case 8:
+			GetUI.multiColors[7] = color;
+			break;
+		case 9:
+			GetUI.multiColors[8] = color;
+			break;
+		case 10:
+			GetUI.multiColors[9] = color;
+			break;
+		case 11:
+			GetUI.multiColors[10] = color;
+			break;
+		case 12:
+			GetUI.multiColors[11] = color;
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid note number: " + noteNumber);
 		}
 	}
 
@@ -186,6 +275,13 @@ public class Profile {
 						if (gradientValues.length == 8) {
 							for (int i = 0; i < gradientValues.length; i++) {
 								setColorFromValue(gradientValues[i], i + 1);
+							}
+						}
+					} else if (line.startsWith("MultiColor = ")) {
+						String[] multiColorValues = line.substring(line.indexOf("=") + 1).trim().split(";");
+						if (multiColorValues.length == 12) {
+							for (int i = 0; i < multiColorValues.length; i++) {
+								setMultiColorFromValue(multiColorValues[i], i + 1);
 							}
 						}
 					} else if (line.startsWith("Background Light = ")) {
@@ -269,6 +365,8 @@ public class Profile {
 				writer.write("Slider = " + saveSliders());
 				writer.newLine();
 				writer.write("Gradient = " + saveGradients());
+				writer.newLine();
+				writer.write("MultiColor = " + saveMultiColors());
 				writer.newLine();
 				writer.write("Background Light = " + saveToggleButtonState(pnl_Controls.bgToggle));
 				writer.newLine();

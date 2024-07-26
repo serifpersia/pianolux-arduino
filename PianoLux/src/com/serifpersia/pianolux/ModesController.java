@@ -5,7 +5,8 @@ import com.serifpersia.pianolux.ui.pnl_Guide;
 
 public class ModesController {
 
-	PianoLux pianoLux;
+	private PianoLux pianoLux;
+	
 	static boolean BGColor = false;
 
 	public static boolean VelocityOn = false;

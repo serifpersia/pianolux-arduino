@@ -1,5 +1,4 @@
 /.metadata/
 
-PianoLED/bin/
-
-PianoLED/release/
+PianoLux/bin
+PianoLux/release

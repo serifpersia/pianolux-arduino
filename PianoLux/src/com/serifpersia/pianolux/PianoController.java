@@ -280,154 +280,16 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	public void noteOn(int channel, int pitch, int velocity) {
-		int notePushed;
-		if (useFixedMapping && use72LEDSMap == false) {
-			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
-		}
-
-		else if (use72LEDSMap && useFixedMapping == false) {
-
-			notePushed = mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum());
-		} else {
-			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
-
-		}
-
+		int notePushed = getNotePushed(pitch);
 		pianoLux.setPianoKey(pitch, 1);
+
 		try {
-			ByteArrayOutputStream message = null;
-
-			if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
-				if (ModesController.RandomOn) {
-					Random rand = new Random();
-					int randomHue = rand.nextInt(360); // Generate a random hue value between 0 and 359
-					message = arduino.commandNoteOn(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
-				} else if (ModesController.VelocityOn) {
-					message = arduino.commandVelocity(velocity, notePushed, Color.RED);
-				} else if (ModesController.SplitOn) {
-					if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
-						message = arduino.commandNoteOn(splitLeftColor, notePushed);
-					} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
-						message = arduino.commandNoteOn(splitRightColor, notePushed);
-					}
-				} else if (ModesController.GradientOn) {
-					int numSteps = GetUI.getStripLedNum();
-					int step = notePushed;
-
-					int sideCount = ModesController.getGradientSideCount();
-					int segmentSize = numSteps / sideCount;
-					int segmentIndex = step / segmentSize;
-
-					double progress = (double) (step % segmentSize) / segmentSize;
-
-					Color currentColor = null;
-
-					int r, g, b;
-
-					switch (segmentIndex) {
-					case 0:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getRed(),
-								pnl_Gradient_MultiColor.colors[1].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getGreen(),
-								pnl_Gradient_MultiColor.colors[1].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[0].getBlue(),
-								pnl_Gradient_MultiColor.colors[1].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 1:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getRed(),
-								pnl_Gradient_MultiColor.colors[2].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getGreen(),
-								pnl_Gradient_MultiColor.colors[2].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[1].getBlue(),
-								pnl_Gradient_MultiColor.colors[2].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 2:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getRed(),
-								pnl_Gradient_MultiColor.colors[3].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getGreen(),
-								pnl_Gradient_MultiColor.colors[3].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[2].getBlue(),
-								pnl_Gradient_MultiColor.colors[3].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 3:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getRed(),
-								pnl_Gradient_MultiColor.colors[4].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getGreen(),
-								pnl_Gradient_MultiColor.colors[4].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[3].getBlue(),
-								pnl_Gradient_MultiColor.colors[4].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 4:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getRed(),
-								pnl_Gradient_MultiColor.colors[5].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getGreen(),
-								pnl_Gradient_MultiColor.colors[5].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[4].getBlue(),
-								pnl_Gradient_MultiColor.colors[5].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 5:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getRed(),
-								pnl_Gradient_MultiColor.colors[6].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getGreen(),
-								pnl_Gradient_MultiColor.colors[6].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[5].getBlue(),
-								pnl_Gradient_MultiColor.colors[6].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 6:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getRed(),
-								pnl_Gradient_MultiColor.colors[7].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getGreen(),
-								pnl_Gradient_MultiColor.colors[7].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[6].getBlue(),
-								pnl_Gradient_MultiColor.colors[7].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					case 7:
-						r = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getRed(),
-								pnl_Gradient_MultiColor.colors[0].getRed(), progress);
-						g = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getGreen(),
-								pnl_Gradient_MultiColor.colors[0].getGreen(), progress);
-						b = interpolateColorComponent(pnl_Gradient_MultiColor.colors[7].getBlue(),
-								pnl_Gradient_MultiColor.colors[0].getBlue(), progress);
-						currentColor = new Color(r, g, b);
-						break;
-					}
-
-					message = arduino.commandNoteOn(currentColor, notePushed);
-				} else if (ModesController.SplashOn) {
-					message = arduino.commandSplash(velocity, notePushed);
-
-				} else if (ModesController.MultiColorOn) {
-
-					// Calculate the index of the note group based on pitch
-					int noteGroupIndex = (pitch - 21) % 12;
-
-					// Use the calculated index to get the corresponding color
-					Color color = GetUI.multiColors[noteGroupIndex];
-
-					message = arduino.commandNoteOn(color, notePushed);
-				} else {
-					if (arduino != null)
-						message = arduino.commandDefaultNoteOn(notePushed);
-				}
-
-				if (message != null) {
-					arduino.sendToArduino(message);
-				}
+			ByteArrayOutputStream message = generateMessageForNoteOn(pitch, notePushed, velocity);
+			if (message != null) {
+				arduino.sendToArduino(message);
 			}
 
-			for (PianoMidiConsumer consumer : consumers) {
-				consumer.onPianoKeyOn(pitch, velocity);
-			}
+			notifyConsumers(pitch, velocity);
 
 		} catch (Exception e) {
 			System.out.println("Error sending command: " + e);
@@ -435,29 +297,113 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	public void noteOff(int channel, int pitch, int velocity) {
-		int notePushed;
-		if (useFixedMapping && use72LEDSMap == false) {
-			notePushed = mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
-		}
-
-		else if (use72LEDSMap && useFixedMapping == false) {
-
-			notePushed = mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum());
-		} else {
-			notePushed = mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
-
-		}
+		int notePushed = getNotePushed(pitch);
 		pianoLux.setPianoKey(pitch, 0);
-		try
 
-		{
+		try {
 			if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
 				arduino.sendCommandNoteOff(notePushed);
 			}
 		} catch (Exception e) {
+			System.out.println("Error sending command: " + e);
+		}
+	}
+
+	private int getNotePushed(int pitch) {
+		if (useFixedMapping && !use72LEDSMap) {
+			return mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		} else if (use72LEDSMap && !useFixedMapping) {
+			return mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum());
+		} else {
+			return mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
+					GetUI.getStripLedNum(), 1);
+		}
+	}
+
+	private ByteArrayOutputStream generateMessageForNoteOn(int pitch, int notePushed, int velocity) {
+		if (ModesController.AnimationOn || ModesController.VisualizerOn) {
+			return null;
+		}
+
+		if (ModesController.RandomOn) {
+			return generateRandomColorMessage(notePushed);
+		} else if (ModesController.VelocityOn) {
+			return arduino.commandVelocity(velocity, notePushed, Color.RED);
+		} else if (ModesController.SplitOn) {
+			return generateSplitColorMessage(pitch, notePushed);
+		} else if (ModesController.GradientOn) {
+			return generateGradientColorMessage(notePushed);
+		} else if (ModesController.SplashOn) {
+			return arduino.commandSplash(velocity, notePushed);
+		} else if (ModesController.MultiColorOn) {
+			return generateMultiColorMessage(pitch, notePushed);
+		} else {
+			return arduino != null ? arduino.commandDefaultNoteOn(notePushed) : null;
+		}
+	}
+
+	private ByteArrayOutputStream generateRandomColorMessage(int notePushed) {
+		Random rand = new Random();
+		int randomHue = rand.nextInt(360);
+		return arduino.commandNoteOn(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
+	}
+
+	private ByteArrayOutputStream generateSplitColorMessage(int pitch, int notePushed) {
+		if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
+			return arduino.commandNoteOn(splitLeftColor, notePushed);
+		} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
+			return arduino.commandNoteOn(splitRightColor, notePushed);
+		}
+		return null;
+	}
+
+	private ByteArrayOutputStream generateGradientColorMessage(int notePushed) {
+		int numSteps = GetUI.getStripLedNum();
+		int step = notePushed;
+
+		int sideCount = ModesController.getGradientSideCount();
+		int segmentSize = numSteps / sideCount;
+		int segmentIndex = step / segmentSize;
+
+		double progress = (double) (step % segmentSize) / segmentSize;
+
+		Color currentColor = interpolateGradientColor(segmentIndex, progress);
+
+		return arduino.commandNoteOn(currentColor, notePushed);
+	}
+
+	private ByteArrayOutputStream generateMultiColorMessage(int pitch, int notePushed) {
+		// Calculate the index of the note group based on pitch
+		int noteGroupIndex = (pitch - 21) % 12;
+
+		// Use the calculated index to get the corresponding color
+		Color color = GetUI.multiColors[noteGroupIndex];
+
+		return arduino.commandNoteOn(color, notePushed);
+	}
+
+	private Color interpolateGradientColor(int segmentIndex, double progress) {
+		Color[] colors = pnl_Gradient_MultiColor.colors;
+		int colorCount = colors.length;
+
+		int segmentStart = segmentIndex;
+		int segmentEnd = (segmentIndex + 1) % colorCount;
+
+		return interpolateColor(colors[segmentStart], colors[segmentEnd], progress);
+	}
+
+	private Color interpolateColor(Color start, Color end, double progress) {
+		int r = interpolateColorComponent(start.getRed(), end.getRed(), progress);
+		int g = interpolateColorComponent(start.getGreen(), end.getGreen(), progress);
+		int b = interpolateColorComponent(start.getBlue(), end.getBlue(), progress);
+		return new Color(r, g, b);
+	}
+
+	private void notifyConsumers(int pitch, int velocity) {
+		for (PianoMidiConsumer consumer : consumers) {
+			consumer.onPianoKeyOn(pitch, velocity);
 		}
 	}
 

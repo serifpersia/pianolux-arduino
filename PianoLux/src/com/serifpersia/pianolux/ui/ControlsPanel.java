@@ -81,9 +81,10 @@ public class ControlsPanel extends JPanel {
 				int width = getWidth(); // Use the full width of the panel
 				int height = getHeight(); // Take the full height of the panel
 
-				int colorCount = Math.min(GradientPanel.divisionCount, pnl_Gradient_MultiColor.colors.length); // Determine the
-																									// number of colors
-																									// to use
+				int colorCount = Math.min(GradientPanel.divisionCount, pnl_Gradient_MultiColor.colors.length); // Determine
+																												// the
+				// number of colors
+				// to use
 
 				for (int i = 0; i < colorCount; i++) { // Iterate over the colors
 					int x1 = i * width / GradientPanel.divisionCount; // Calculate the starting x-coordinate of the
@@ -91,8 +92,12 @@ public class ControlsPanel extends JPanel {
 					int x2 = (i + 1) * width / GradientPanel.divisionCount; // Calculate the ending x-coordinate of the
 																			// current part
 
-					Color color = pnl_Gradient_MultiColor.colors[i % pnl_Gradient_MultiColor.colors.length]; // Get the color of the current
-																						// part
+					Color color = pnl_Gradient_MultiColor.colors[i % pnl_Gradient_MultiColor.colors.length]; // Get the
+																												// color
+																												// of
+																												// the
+																												// current
+					// part
 
 					g.setColor(color);
 					g.fillRect(x1, 0, x2 - x1, height);
@@ -104,8 +109,8 @@ public class ControlsPanel extends JPanel {
 						for (int x = x1; x < x2; x++) { // Iterate over the pixels within the division
 							float ratio = (float) (x - x1) / (float) (x2 - x1); // Calculate the ratio of the current
 																				// pixel within the division
-							Color interpolatedColor = GradientPanel.interpolateColor(colorLeft, colorRight, ratio); // Interpolate
-																													// the
+							Color interpolatedColor = interpolateColor(colorLeft, colorRight, ratio); // Interpolate
+																										// the
 							// color
 
 							g.setColor(interpolatedColor);
@@ -118,6 +123,17 @@ public class ControlsPanel extends JPanel {
 		};
 		add(pnl_GradientPreview, BorderLayout.SOUTH);
 
+	}
+
+	private Color interpolateColor(Color color1, Color color2, float ratio) {
+		float[] hsbColor1 = Color.RGBtoHSB(color1.getRed(), color1.getGreen(), color1.getBlue(), null);
+		float[] hsbColor2 = Color.RGBtoHSB(color2.getRed(), color2.getGreen(), color2.getBlue(), null);
+
+		float hue = hsbColor1[0] * (1 - ratio) + hsbColor2[0] * ratio;
+		float saturation = hsbColor1[1] * (1 - ratio) + hsbColor2[1] * ratio;
+		float brightness = hsbColor1[2] * (1 - ratio) + hsbColor2[2] * ratio;
+
+		return Color.getHSBColor(hue, saturation, brightness);
 	}
 
 	private void initTopLabels() {
