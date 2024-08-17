@@ -117,7 +117,7 @@ To use PianoLux on Windows, follow these steps:
 
 4. Once you see the "Upload Complete" prompt, you are ready to use the PianoLux app.
 
-For Windows users who encounter conflicts when using both PianoLux and other MIDI programs concurrently, consider following this guide to split one MIDI connection into two virtual ones using [loopMIDI](https://tristancalderbank.com/2020/08/19/how-to-use-the-same-midi-device-on-windows-across-multiple-programs-at-the-same-time/). You can use my [Midi Router](https://github.com/serifpersia/midi-router) app to simplify this if you don't want to use MIDI OX.
+For Windows users who encounter conflicts when using both PianoLux and other MIDI programs concurrently, consider using my [Midi Router](https://github.com/serifpersia/midi-router) application to split single midi device into two virtual ones using LoopMIDI to create virtual midi devices and route actual MIDI device to these virtual ones that will get used in different apps one for PianoLux and one for DAW or some other MIDI software.
 
 ### 32 Bit
 Use 32 bit zip(x86) and 32 bit versions of JRE and Arduino IDE
