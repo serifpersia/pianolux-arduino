@@ -221,7 +221,6 @@ public class pnl_Colors extends JPanel {
 		colorPicker.repaint();
 
 		GetUI.presetColors[GetUI.presetColors.length - 1] = GetUI.customColor;
-		PianoController.sendUpdatedColorToArduino(GetUI.selectedColor);
 	}
 
 	private int parseInt(JTextField textField) {

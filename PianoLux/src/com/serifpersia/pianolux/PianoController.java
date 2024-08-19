@@ -13,6 +13,7 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sql.rowset.serial.SerialException;
 
 import com.serifpersia.pianolux.learn.PianoMidiConsumer;
 import com.serifpersia.pianolux.learn.PianoReceiver;
@@ -257,17 +258,17 @@ public class PianoController implements PianoMidiConsumer {
 	}
 
 	// Map function maps pitch first last note and number of leds
-	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber) {
 		midiNote = midiNote - transposition;
-		int outMax = outMin + stripLEDNumber - 1; // highest LED number
-		int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
-		return mappedLED + outMin;
+		int outMax = stripLEDNumber;
+		int mappedLED = (midiNote - lowestNote) * outMax / (highestNote - lowestNote);
+		return mappedLED;
 	}
 
-	public int mapMidiNoteToLEDFixed(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+	public int mapMidiNoteToLEDFixed(int midiNote, int lowestNote, int highestNote, int stripLEDNumber) {
 		midiNote = midiNote - transposition;
-		int outMax = outMin + stripLEDNumber - 1; // highest LED number
-		int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+		int outMax = stripLEDNumber;
+		int mappedLED = (midiNote - lowestNote) * outMax / (highestNote - lowestNote);
 
 		if (midiNote >= 57) {
 			mappedLED -= 1;
@@ -276,24 +277,47 @@ public class PianoController implements PianoMidiConsumer {
 		if (midiNote >= 93) {
 			mappedLED -= 1;
 		}
-		return mappedLED + outMin;
+		return mappedLED;
 	}
 
 	public void noteOn(int channel, int pitch, int velocity) {
 		int notePushed = getNotePushed(pitch);
 		pianoLux.setPianoKey(pitch, 1);
 
-		try {
-			ByteArrayOutputStream message = generateMessageForNoteOn(pitch, notePushed, velocity);
-			if (message != null) {
-				arduino.sendToArduino(message);
+		if (!ModesController.AnimationOn && !ModesController.VisualizerOn) {
+			try {
+
+				switch (ModesController.getCurrentMode()) {
+				case 0:
+					arduino.sendCommandNoteOnWithoutColor(notePushed);
+					break;
+				case 1:
+					arduino.sendCommandSplash(velocity, notePushed);
+					break;
+				case 2:
+					arduino.sendToArduino(generateRandomColorMessage(notePushed));
+					break;
+				case 3:
+					arduino.sendToArduino(generateGradientColorMessage(notePushed));
+					break;
+				case 4:
+					arduino.sendCommandVelocity(velocity, notePushed);
+					break;
+				case 5:
+					arduino.sendToArduino(generateSplitColorMessage(pitch, notePushed));
+					break;
+
+				case 8:
+					arduino.sendToArduino(generateMultiColorMessage(pitch, notePushed));
+					break;
+				}
+				notifyConsumers(pitch, velocity);
+
+			} catch (Exception e) {
+
 			}
-
-			notifyConsumers(pitch, velocity);
-
-		} catch (Exception e) {
-			System.out.println("Error sending command: " + e);
 		}
+
 	}
 
 	public void noteOff(int channel, int pitch, int velocity) {
@@ -312,49 +336,27 @@ public class PianoController implements PianoMidiConsumer {
 	private int getNotePushed(int pitch) {
 		if (useFixedMapping && !use72LEDSMap) {
 			return mapMidiNoteToLEDFixed(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
+					GetUI.getStripLedNum());
 		} else if (use72LEDSMap && !useFixedMapping) {
 			return mapMidiNoteToLED72(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
 					GetUI.getStripLedNum());
 		} else {
 			return mapMidiNoteToLED(pitch, GetUI.getFirstNoteSelected(), GetUI.getLastNoteSelected(),
-					GetUI.getStripLedNum(), 1);
-		}
-	}
-
-	private ByteArrayOutputStream generateMessageForNoteOn(int pitch, int notePushed, int velocity) {
-		if (ModesController.AnimationOn || ModesController.VisualizerOn) {
-			return null;
-		}
-
-		if (ModesController.RandomOn) {
-			return generateRandomColorMessage(notePushed);
-		} else if (ModesController.VelocityOn) {
-			return arduino.commandVelocity(velocity, notePushed, Color.RED);
-		} else if (ModesController.SplitOn) {
-			return generateSplitColorMessage(pitch, notePushed);
-		} else if (ModesController.GradientOn) {
-			return generateGradientColorMessage(notePushed);
-		} else if (ModesController.SplashOn) {
-			return arduino.commandSplash(velocity, notePushed);
-		} else if (ModesController.MultiColorOn) {
-			return generateMultiColorMessage(pitch, notePushed);
-		} else {
-			return arduino != null ? arduino.commandDefaultNoteOn(notePushed) : null;
+					GetUI.getStripLedNum());
 		}
 	}
 
 	private ByteArrayOutputStream generateRandomColorMessage(int notePushed) {
 		Random rand = new Random();
 		int randomHue = rand.nextInt(360);
-		return arduino.commandNoteOn(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
+		return arduino.commandNoteOnWithColor(Color.getHSBColor(randomHue / 360.0f, 1.0f, 1.0f), notePushed);
 	}
 
 	private ByteArrayOutputStream generateSplitColorMessage(int pitch, int notePushed) {
 		if (pitch >= GetUI.getLeftMinPitch() && pitch <= GetUI.getLeftMaxPitch() - 1) {
-			return arduino.commandNoteOn(splitLeftColor, notePushed);
+			return arduino.commandNoteOnWithColor(splitLeftColor, notePushed);
 		} else if (pitch > GetUI.getLeftMaxPitch() - 1 && pitch <= GetUI.getRightMaxPitch()) {
-			return arduino.commandNoteOn(splitRightColor, notePushed);
+			return arduino.commandNoteOnWithColor(splitRightColor, notePushed);
 		}
 		return null;
 	}
@@ -371,7 +373,7 @@ public class PianoController implements PianoMidiConsumer {
 
 		Color currentColor = interpolateGradientColor(segmentIndex, progress);
 
-		return arduino.commandNoteOn(currentColor, notePushed);
+		return arduino.commandNoteOnWithColor(currentColor, notePushed);
 	}
 
 	private ByteArrayOutputStream generateMultiColorMessage(int pitch, int notePushed) {
@@ -381,7 +383,7 @@ public class PianoController implements PianoMidiConsumer {
 		// Use the calculated index to get the corresponding color
 		Color color = GetUI.multiColors[noteGroupIndex];
 
-		return arduino.commandNoteOn(color, notePushed);
+		return arduino.commandNoteOnWithColor(color, notePushed);
 	}
 
 	private Color interpolateGradientColor(int segmentIndex, double progress) {
@@ -407,19 +409,15 @@ public class PianoController implements PianoMidiConsumer {
 		}
 	}
 
-	public void FadeRate(int value) {
-		if (arduino != null) {
-			arduino.sendCommandFadeRate(value);
-		}
+	public static void FadeRate(int value) {
+		arduino.sendCommandFadeRate(value);
 	}
 
-	public void BrightnessRate(int value) {
-		if (arduino != null) {
-			arduino.sendCommandBrightness(value);
-		}
+	public static void BrightnessRate(int value) {
+		arduino.sendCommandBrightness(value);
 	}
 
-	public void SplashLengthRate(int value) {
+	public static void SplashLengthRate(int value) {
 		if (arduino != null) {
 			arduino.sendCommandSplashMaxLength(value);
 		}
@@ -498,8 +496,9 @@ public class PianoController implements PianoMidiConsumer {
 		try {
 			if (arduino != null) {
 				arduino.sendCommandBlackOut();
-				arduino.sendCommandSetBG(0, 0, 0);
-				arduino.sendCommandSetGuide(7, 0, 0, 0, 0, ModesController.defaultMajorScalePattern);
+				// arduino.sendCommandSetBG(0, 0, 0);
+				// arduino.sendCommandSetGuide(7, 0, 0, 0, 0,
+				// ModesController.defaultMajorScalePattern);
 				arduino.stop();
 			}
 		} catch (Exception e) {
@@ -521,7 +520,7 @@ public class PianoController implements PianoMidiConsumer {
 		arduino.sendCommandAudioData(data);
 	}
 
-	public static void sendUpdatedColorToArduino(Color c) {
-		arduino.sendCommandUpdateColor(c);
+	public static void sendGlobalColorToArduino(Color c) {
+		arduino.sendCommandSetGlobalColor(c);
 	}
 }

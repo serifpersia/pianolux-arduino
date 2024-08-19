@@ -25,47 +25,47 @@
 
 int NUM_LEDS = 176;               // how many leds do you want to control
 
-int STRIP_DIRECTION = 0;  //0 - left-to-right
+int STRIP_DIRECTION = 0;  // 0 - left-to-right
 const int MAX_VELOCITY = 128;
-
-
 
 CRGB globalColor = CRGB::Red;
 
-//COMMAND_SET_COLOR
-const byte COMMAND_BYTE1 = 0;
-const byte COMMAND_BYTE2 = 1;
-
-const byte COMMAND_BLACKOUT = 2;
-const byte COMMAND_SET_BRIGHTNESS = 3;
-const byte COMMAND_SET_GLOBAL_COLOR = 4;
-
-const byte COMMAND_FADE_RATE = 5;
-const byte COMMAND_STRIP_DIRECTION = 6;
-
-const byte COMMAND_NOTE_ON_DEFAULT = 7;
-const byte COMMAND_NOTE_OFF = 8;
-
-const byte COMMAND_SPLASH = 9;
-const byte COMMAND_SPLASH_MAX_LENGTH = 10;
-
-const byte COMMAND_VELOCITY = 11;
-
-const byte COMMAND_ANIMATION = 12;
-
-const byte COMMAND_SET_BG = 13;
-const byte COMMAND_SET_GUIDE = 14;
-
-const byte COMMAND_SET_LED_VISUALIZER = 15;
-const byte COMMAND_NOTE_ON = 16;
-
 byte  MODE;
 
+#define BUFFER_SIZE 18  // Adjust based on the largest expected message size
+
+#define COMMAND_NOTE_ON_WITHOUT_COLOR 1
+#define COMMAND_NOTE_ON_WITH_COLOR 2
+#define COMMAND_NOTE_OFF 3
+#define COMMAND_SET_GLOBAL_COLOR 4
+#define COMMAND_SET_BRIGHTNESS 5
+#define COMMAND_SET_FADE_RATE 6
+#define COMMAND_BLACKOUT 7
+#define COMMAND_SPLASH 8
+#define COMMAND_SPLASH_MAX_LENGTH 9
+#define COMMAND_VELOCITY 10
+#define COMMAND_SET_ANIMATION 11
+#define COMMAND_SET_LED_VISUALIZER 12
+#define COMMAND_SET_STRIP_DIRECTION 13
+#define COMMAND_SET_BG 14
+#define COMMAND_SET_GUIDE 15
+#define COMMAND_LED_VISUALIZER_AUDIO 16
+
+byte buffer[BUFFER_SIZE];
+byte bufferIndex = 0;
+enum State { WAIT_FOR_COMMAND, WAIT_FOR_NOTE_ON_WITHOUT_COLOR,
+             WAIT_FOR_NOTE_ON_WITH_COLOR, WAIT_FOR_NOTE_OFF,
+             WAIT_FOR_BRIGHTNESS, WAIT_FOR_GLOBAL_COLOR,
+             WAIT_FOR_FADE_RATE, WAIT_FOR_BLACKOUT,
+             WAIT_FOR_SPLASH, WAIT_FOR_SPLASH_MAX_LENGTH,
+             WAIT_FOR_VELOCITY, WAIT_FOR_ANIMATION,
+             WAIT_FOR_LED_VISUALIZER, WAIT_FOR_SET_STRIP_DIRECTION,
+             WAIT_FOR_SET_BG, WAIT_FOR_SET_GUIDE,
+             WAIT_FOR_LED_VISUALIZER_AUDIO
+           };
+State currentState = WAIT_FOR_COMMAND;
+
 long react = 0;
-int bufferSize;
-int buffer[10];  // declare buffer as an array of 10 integers
-int bufIdx = 0;  // initialize bufIdx to zero
-int generalBrightness = buffer[++bufIdx];
 int animationIndex;
 int selectedEffect;
 int colorHue = 0;
@@ -76,6 +76,8 @@ int SPLASH_HEAD_FADE_RATE = 5;
 int splashMaxLength = 8;
 
 boolean bgOn = false;
+boolean guideOn  = false;
+
 CRGB bgColor = CRGB::Black;
 CRGB guideColor = CRGB::Black;
 
@@ -84,20 +86,20 @@ unsigned long currentTime = 0;
 unsigned long previousTime = 0;
 unsigned long previousFadeTime = 0;
 
-unsigned long interval = 20;      // general refresh in milliseconds
-unsigned long fadeInterval = 20;  // general fade interval in milliseconds
-int generalFadeRate = 255;          // general fade rate, bigger value - quicker fade (configurable via App)
+unsigned long interval = 20;
+unsigned long fadeInterval = 20;
+int generalFadeRate = 255;
 
 
-const int OCTAVE_LEDS = 23;           // Number of LEDs in one octave
-const int OCTAVE_COUNT = 8;           // Number of octaves
-const int LED_SKIP = 1;               // Number of LEDs to skip before starting the next octave pattern
+const int OCTAVE_LEDS = 23; // Number of LEDs in one octave
+const int OCTAVE_COUNT = 8; // Number of octaves
+const int LED_SKIP = 1;     // Number of LEDs to skip before starting the next octave pattern
 
 int scalePatternLength;
 int scalePattern[12];
 
 int scaleKeyIndex;
-const int majorScale[] = { 0, 4, 8, 10, 14, 18, 21 };
+//const int majorScale[] = { 0, 4, 8, 10, 14, 18, 21 };
 
 
 //Animation select variables
@@ -111,14 +113,13 @@ TBlendType currentBlending;
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
-
 boolean keysOn[MAX_NUM_LEDS];
 
 CRGB leds[MAX_NUM_LEDS];
 int NOTES = 12;
 
 int getHueForPos(int pos) {
-  return pos * 255 / NUM_LEDS;
+  return static_cast<long>(-pos) * 255 / NUM_LEDS;
 }
 
 int getNote(int key) {
@@ -144,19 +145,19 @@ void StartupAnimation() {
 void setup() {
   Serial.begin(115200);
   Serial.setTimeout(10);
-  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering
-  // FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);  // GRB ordering is typical
-  // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
-  // FastLED.addLeds<WS2852, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
-  // FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);               // GRB ordering
+  // FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);                // GRB ordering is typical
+  // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);             // GRB ordering is typical
+  // FastLED.addLeds<WS2852, DATA_PIN, RGB>(leds, NUM_LEDS);             // GRB ordering is typical
+  // FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);            // GRB ordering is typical
   // FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<WS2813, DATA_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<APA104, DATA_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<WS2811_400, DATA_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<WS2801, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
   // FastLED.addLeds<WS2803, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
-  // FastLED.addLeds<SK6812, DATA_PIN, RGB>(leds, NUM_LEDS);          // GRB ordering is typical
-  FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);  // set power limit
+  // FastLED.addLeds<SK6812, DATA_PIN, RGB>(leds, NUM_LEDS);              // GRB ordering is typical
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);         // set power limit
   StartupAnimation();
 }
 
@@ -172,7 +173,6 @@ void addEffect(FadingRunEffect* effect) {
     numEffects++;
   }
 }
-
 
 // Remove an effect
 void removeEffect(FadingRunEffect* effect) {
@@ -219,201 +219,262 @@ void setGuide(CRGB guideColorToSet, int startingIndex, const int scalePattern[],
 }
 
 FadeController* fadeCtrl = new FadeController();
-//Main loop
+
+
 void loop() {
+  while (Serial.available()) {
+    byte incomingByte = Serial.read();
 
-  byte bufferSize = Serial.available();
-  byte buffer[bufferSize];
-  Serial.readBytes(buffer, bufferSize);
+    // Add byte to buffer
+    buffer[bufferIndex++] = incomingByte;
 
-  boolean commandByte1Arrived = false;
-  boolean commandByte2Arrived = false;
-  for (int bufIdx = 0; bufIdx < bufferSize; bufIdx++) {
-    byte command = buffer[bufIdx];
-    switch (command) {
-      case COMMAND_BYTE1:
-        {
-          commandByte1Arrived = true;
-          break;
-        }
-      case COMMAND_BYTE2:
-        {
-          if (commandByte1Arrived) {
-            commandByte2Arrived = true;
+    // Process based on current state
+    switch (currentState) {
+      case WAIT_FOR_COMMAND:
+        if (bufferIndex >= 1) {
+          byte command = buffer[0];
+          switch (command) {
+            case COMMAND_NOTE_ON_WITHOUT_COLOR:
+              currentState = WAIT_FOR_NOTE_ON_WITHOUT_COLOR;
+              break;
+
+            case COMMAND_NOTE_ON_WITH_COLOR:
+              currentState = WAIT_FOR_NOTE_ON_WITH_COLOR;
+              break;
+
+            case COMMAND_NOTE_OFF:
+              currentState = WAIT_FOR_NOTE_OFF;
+              break;
+
+            case COMMAND_SET_GLOBAL_COLOR:
+              currentState = WAIT_FOR_GLOBAL_COLOR;
+              break;
+
+            case COMMAND_SET_BRIGHTNESS:
+              currentState = WAIT_FOR_BRIGHTNESS;
+              break;
+
+            case COMMAND_SET_FADE_RATE:
+              currentState = WAIT_FOR_FADE_RATE;
+              break;
+
+            case COMMAND_BLACKOUT:
+              currentState = WAIT_FOR_BLACKOUT;
+              break;
+
+            case COMMAND_SPLASH:
+              currentState = WAIT_FOR_SPLASH;
+              break;
+
+            case COMMAND_SPLASH_MAX_LENGTH:
+              currentState = WAIT_FOR_SPLASH_MAX_LENGTH;
+              break;
+
+            case COMMAND_VELOCITY:
+              currentState = WAIT_FOR_VELOCITY;
+              break;
+
+            case COMMAND_SET_ANIMATION:
+              currentState = WAIT_FOR_ANIMATION;
+              break;
+
+            case COMMAND_SET_LED_VISUALIZER:
+              currentState = WAIT_FOR_LED_VISUALIZER;
+              break;
+
+            case COMMAND_SET_STRIP_DIRECTION:
+              currentState = WAIT_FOR_SET_STRIP_DIRECTION;
+              break;
+
+            case COMMAND_SET_BG:
+              currentState = WAIT_FOR_SET_BG;
+              break;
+
+            case COMMAND_SET_GUIDE:
+              currentState = WAIT_FOR_SET_GUIDE;
+              break;
+
+            case COMMAND_LED_VISUALIZER_AUDIO:
+              currentState = WAIT_FOR_LED_VISUALIZER_AUDIO;
+              break;
+
+            default:
+              // Handle unknown commands or errors
+              currentState = WAIT_FOR_COMMAND;
+              bufferIndex = 0;
+              break;
           }
-          commandByte1Arrived = false;
-          break;
         }
-      case COMMAND_BLACKOUT:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
+        break;
+
+      case WAIT_FOR_NOTE_ON_WITHOUT_COLOR:
+        if (bufferIndex >= 2) {
+          handleNoteOn(buffer[1]);
+          MODE = COMMAND_NOTE_ON_WITHOUT_COLOR;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_NOTE_ON_WITH_COLOR:
+        if (bufferIndex >= 5) {
+          globalColor.setRGB(buffer[1], buffer[2], buffer[3]);
+          handleNoteOn(buffer[4]);
+          MODE = COMMAND_NOTE_ON_WITH_COLOR;
+
+          // Reset state and buffer index
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_NOTE_OFF:
+        if (bufferIndex >= 2) {
+          handleNoteOff(buffer[1]);
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_BRIGHTNESS:
+        if (bufferIndex >= 2) {
+          FastLED.setBrightness(buffer[1]);
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_GLOBAL_COLOR:
+        if (bufferIndex >= 4) {
+          globalColor.setRGB(buffer[1], buffer[2], buffer[3]);
+          MODE = COMMAND_SET_GLOBAL_COLOR;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_FADE_RATE:
+        if (bufferIndex >= 2) {
+          generalFadeRate = buffer[1];
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_BLACKOUT:
+        if (bufferIndex >= 1) {
           fill_solid(leds, NUM_LEDS, bgColor);
           MODE = COMMAND_BLACKOUT;
-          break;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
-      case COMMAND_SET_BRIGHTNESS:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          generalBrightness = buffer[++bufIdx];
-          FastLED.setBrightness(generalBrightness);
-          break;
-        }
-      case COMMAND_SET_GLOBAL_COLOR:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int r = (int)buffer[++bufIdx];
-          int g = (int)buffer[++bufIdx];
-          int b = (int)buffer[++bufIdx];
+        break;
 
-          globalColor.setRGB(r, g, b);
-          MODE = COMMAND_SET_GLOBAL_COLOR;
-          break;
-        }
-      case COMMAND_FADE_RATE:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          generalFadeRate = buffer[++bufIdx];
-          break;
-        }
-      case COMMAND_STRIP_DIRECTION:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          STRIP_DIRECTION = buffer[++bufIdx];
-          NUM_LEDS = buffer[++bufIdx];
-          break;
-        }
-      case COMMAND_NOTE_ON_DEFAULT:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int note = (int)buffer[++bufIdx];
-          keysOn[note - 1] = true;
-          controlLeds(note - 1, globalColor);
-          MODE = COMMAND_NOTE_ON_DEFAULT;
-          break;
-        }
-      case COMMAND_NOTE_ON:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          byte r = buffer[++bufIdx];
-          byte g = buffer[++bufIdx];
-          byte b = buffer[++bufIdx];
-          int note = (int)buffer[++bufIdx];
-          keysOn[note - 1] = true;
-          globalColor.setRGB(r, g, b);
-          controlLeds(note - 1, globalColor);
-          MODE = COMMAND_NOTE_ON;
-          break;
-        }
-
-      case COMMAND_NOTE_OFF:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int note = (int)buffer[++bufIdx];
-          keysOn[note - 1] = false;
-          break;
-        }
-
-      case COMMAND_SPLASH:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int velocity = buffer[++bufIdx];
-          int note = buffer[++bufIdx];
+      case WAIT_FOR_SPLASH:
+        if (bufferIndex >= 3) {
+          int velocity = buffer[1];
+          int note = buffer[2];
           CHSV hsv = rgb2hsv_approximate(globalColor);
-          keysOn[note - 1] = true;
-          addEffect(new FadingRunEffect(splashMaxLength, note - 1, hsv, SPLASH_HEAD_FADE_RATE, velocity));
+          keysOn[note] = true;
+          addEffect(new FadingRunEffect(splashMaxLength, note, hsv, SPLASH_HEAD_FADE_RATE, velocity));
           MODE = COMMAND_SPLASH;
-          break;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
+        break;
 
-      case COMMAND_SPLASH_MAX_LENGTH:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          splashMaxLength = buffer[++bufIdx];
-          break;
+      case WAIT_FOR_SPLASH_MAX_LENGTH:
+        if (bufferIndex >= 2) {
+          splashMaxLength = buffer[1];
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
-      case COMMAND_VELOCITY:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int velocity = buffer[++bufIdx];
-          int note = buffer[++bufIdx];
+        break;
+
+      case WAIT_FOR_VELOCITY:
+        if (bufferIndex >= 3) {
+          int velocity = buffer[1];
+          int note = buffer[2];
           CRGB rgb;
-          keysOn[note - 1] = true;
           setColorFromVelocity(velocity, rgb);
-          controlLeds(note - 1, rgb);
+          keysOn[note] = true;
+          controlLeds(note, rgb);
           MODE = COMMAND_VELOCITY;
-          break;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
-      case COMMAND_ANIMATION:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          animationIndex = buffer[++bufIdx];
-          hue = buffer[++bufIdx];
-          MODE = COMMAND_ANIMATION;
-          break;
+        break;
+
+      case WAIT_FOR_ANIMATION:
+        if (bufferIndex >= 3) {
+          animationIndex = buffer[1];
+          hue = buffer[2];
+          MODE = COMMAND_SET_ANIMATION;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
-      case COMMAND_SET_BG:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-          int h = (int)buffer[++bufIdx];
-          int s = (int)buffer[++bufIdx];
-          int b = (int)buffer[++bufIdx];
-          setBG(CHSV(h, s, b));
-          break;
-        }
-      case COMMAND_SET_GUIDE:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
+        break;
 
-          // Get the number of elements in the scalePattern array
-          scalePatternLength = (int)buffer[++bufIdx];
-
-          int h = (int)buffer[++bufIdx];
-          int s = (int)buffer[++bufIdx];
-          int b = (int)buffer[++bufIdx];
-          scaleKeyIndex = (int)buffer[++bufIdx];
-
-          // Receive the numbers and populate the scalePattern array
-          for (int i = 0; i < scalePatternLength; i++) {
-            scalePattern[i] = (int)buffer[++bufIdx];
-          }
-
-          setGuide(CHSV(h, s, b), scaleKeyIndex, scalePattern, scalePatternLength);
-          break;
-        }
-
-      case COMMAND_SET_LED_VISUALIZER:
-        {
-          commandByte1Arrived = false;
-          if (!commandByte2Arrived) break;
-
-          selectedEffect = buffer[++bufIdx];
-          colorHue = buffer[++bufIdx];
-
+      case WAIT_FOR_LED_VISUALIZER:
+        if (bufferIndex >= 3) {
+          selectedEffect = buffer[1];
+          colorHue = buffer[2];
           MODE = COMMAND_SET_LED_VISUALIZER;
-          break;
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
-      default:
-        {
-          if ((int)buffer >= 2) {
-            int audioInputValue = buffer[0] | (buffer[1] << 8);
-            react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
+        break;
+
+      case WAIT_FOR_SET_STRIP_DIRECTION:
+        if (bufferIndex >= 3) {
+          STRIP_DIRECTION = buffer[1];
+          NUM_LEDS = buffer[2];
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      case WAIT_FOR_SET_BG:
+        if (bufferIndex >= 4) {
+          int h = (int)buffer[1];
+          int s = (int)buffer[2];
+          int b = (int)buffer[3];
+          setBG(CHSV(h, s, b));
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
+
+      // TO DO: Guide not working, fix or remove
+      case WAIT_FOR_SET_GUIDE:
+        if (bufferIndex >= 6 + scalePatternLength) {
+          // Read data
+          scalePatternLength = (int)buffer[1];
+          int h = (int)buffer[2];
+          int s = (int)buffer[3];
+          int b = (int)buffer[4];
+          int scaleKeyIndex = (int)buffer[5];
+
+          // Ensure the scalePattern array has enough space
+          // Assuming scalePattern is already allocated with max size of 12
+          for (int i = 0; i < scalePatternLength; i++) {
+            scalePattern[i] = (int)buffer[6 + i];
           }
-          break;
+
+          // setGuide(CHSV(h, s, b), scaleKeyIndex, scalePattern, scalePatternLength);
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
         }
+        break;
+
+      case WAIT_FOR_LED_VISUALIZER_AUDIO:
+        if (bufferIndex >= 3) { // Ensure we have enough bytes
+          int audioInputValue = (buffer[2] << 8) | buffer[1];
+          react = map(audioInputValue, 0, 1023, 0, NUM_LEDS);
+          currentState = WAIT_FOR_COMMAND;
+          bufferIndex = 0;
+        }
+        break;
 
     }
   }
@@ -439,8 +500,9 @@ void loop() {
     }
     previousFadeTime = currentTime;
   }
+
   //Animation
-  if (MODE == COMMAND_ANIMATION) {
+  if (MODE == COMMAND_SET_ANIMATION) {
 
     if (animationIndex == 7) {
       // If the selected animation is 7, run the sineWave() animation
@@ -469,44 +531,29 @@ int ledNum(int i) {
   return STRIP_DIRECTION == 0 ? i : (NUM_LEDS - 1) - i;
 }
 
+void handleNoteOff(byte note)
+{
+  keysOn[note] = false;
+}
+
+void handleNoteOn(byte note)
+{
+  keysOn[note] = true;
+  controlLeds(note, globalColor);
+}
 
 void controlLeds(int ledNo, CRGB color) {
   if (ledNo < 0 || ledNo >= NUM_LEDS) {
     return;
   }
-  // Check if guideColor is black
-  if (guideColor != CRGB::Black) {
-    // Check if the current LED index is in the scalePattern across all octaves
-    boolean ledInScalePattern = false;
-    for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
-      int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
 
+  // Guide unused until fix or removal
 
-
-      for (int i = 0; i < scalePatternLength; i++) {
-        int ledIndex = octaveOffset + scalePattern[i] + scaleKeyIndex;
-
-        // Display only the first LED for the eighth octave
-        if (octave == 7 && i > 0) {
-          break;
-        }
-
-        if (ledIndex == ledNo) {
-          ledInScalePattern = true;
-          break;
-        }
-      }
-
-      if (ledInScalePattern) {
-        break;
-      }
-    }
-
-    if (!ledInScalePattern) {
-      // Find the nearest LEDs inside the pattern
-      int prevLedIndex = -1;
-      int nextLedIndex = -1;
-
+  if (guideOn) {
+    // Check if guideColor is black
+    if (guideColor != CRGB::Black) {
+      // Check if the current LED index is in the scalePattern across all octaves
+      boolean ledInScalePattern = false;
       for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
         int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
 
@@ -520,60 +567,80 @@ void controlLeds(int ledNo, CRGB color) {
             break;
           }
 
-          if (ledIndex < ledNo && (prevLedIndex == -1 || ledIndex > prevLedIndex)) {
-            prevLedIndex = ledIndex;
+          if (ledIndex == ledNo) {
+            ledInScalePattern = true;
+            break;
           }
+        }
 
-          if (ledIndex > ledNo && (nextLedIndex == -1 || ledIndex < nextLedIndex)) {
-            nextLedIndex = ledIndex;
-          }
+        if (ledInScalePattern) {
+          break;
         }
       }
 
-      // Light up the nearest LEDs with blue color
-      if (prevLedIndex != -1) {
-        leds[ledNum(prevLedIndex)].setRGB(0, 0, 255);  // Blue color
-      }
+      if (!ledInScalePattern) {
+        // Find the nearest LEDs inside the pattern
+        int prevLedIndex = -1;
+        int nextLedIndex = -1;
 
-      if (nextLedIndex != -1) {
-        leds[ledNum(nextLedIndex)].setRGB(0, 0, 255);  // Blue color
-      }
+        for (int octave = 0; octave < OCTAVE_COUNT; octave++) {
+          int octaveOffset = octave * (OCTAVE_LEDS + LED_SKIP);
 
-      FastLED.show();
-      return;
+
+
+          for (int i = 0; i < scalePatternLength; i++) {
+            int ledIndex = octaveOffset + scalePattern[i] + scaleKeyIndex;
+
+            // Display only the first LED for the eighth octave
+            if (octave == 7 && i > 0) {
+              break;
+            }
+
+            if (ledIndex < ledNo && (prevLedIndex == -1 || ledIndex > prevLedIndex)) {
+              prevLedIndex = ledIndex;
+            }
+
+            if (ledIndex > ledNo && (nextLedIndex == -1 || ledIndex < nextLedIndex)) {
+              nextLedIndex = ledIndex;
+            }
+          }
+        }
+
+        // Light up the nearest LEDs with blue color
+        if (prevLedIndex != -1) {
+          leds[ledNum(prevLedIndex)].setRGB(0, 0, 255);  // Blue color
+        }
+
+        if (nextLedIndex != -1) {
+          leds[ledNum(nextLedIndex)].setRGB(0, 0, 255);  // Blue color
+        }
+
+        FastLED.show();
+        return;
+      }
     }
   }
+
   leds[ledNum(ledNo)] = color;
+
   FastLED.show();
 }
-
 
 float distance(CRGB color1, CRGB color2) {
   return sqrt(pow(color1.r - color2.r, 2) + pow(color1.g - color2.g, 2) + pow(color1.b - color2.b, 2));
 }
 
-void setColorFromVelocity(int velocity, CRGB& rgb) {
+void setColorFromVelocity(int velocity, CRGB & rgb) {
   static int previousVelocity = 0;
-
-  // Calculate the smoothed velocity as a weighted average
   int smoothedVelocity = (velocity + previousVelocity * 3) / 4;
-  previousVelocity = smoothedVelocity;
 
-  // Map smoothed velocity to hue value (green is 0° and red is 120° in HSV color space)
+  previousVelocity = smoothedVelocity;
   int hue = map(smoothedVelocity, 16, 80, 75, 255);
 
-  // Clamp the hue value within the valid range
   hue = constrain(hue, 75, 255);
-
-  // Map smoothed velocity to brightness value (higher velocity means higher brightness)
   int brightness = map(smoothedVelocity, 16, 80, 65, 255);
-
-  // Clamp the brightness value within the valid range
   brightness = constrain(brightness, 65, 255);
-
-  // Set saturation to a fixed value (e.g., 255 for fully saturated color)
   int saturation = 255;
 
-  // Convert HSV values to RGB color
   rgb = CHSV(hue, saturation, brightness);
 }

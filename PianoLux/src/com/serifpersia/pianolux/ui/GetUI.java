@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+import com.serifpersia.pianolux.PianoController;
+
 public class GetUI {
 
 	public static int counter = 0;
@@ -44,7 +46,8 @@ public class GetUI {
 
 	static Color customColor = Color.BLACK;
 
-	static Color[] presetColors = {Color.BLACK, Color.WHITE, Color.RED, Color.GREEN, Color.BLUE, new Color(255, 100, 0), // Yellow
+	static Color[] presetColors = { Color.BLACK, Color.WHITE, Color.RED, Color.GREEN, Color.BLUE,
+			new Color(255, 100, 0), // Yellow
 			new Color(255, 35, 0), // Orange
 			new Color(128, 0, 255), // Purple
 			new Color(255, 35, 35), // Pink
@@ -156,6 +159,10 @@ public class GetUI {
 		pnl_Controls.sld_SplashMaxLenght.setValue(splashLenght);
 		pnl_Controls.sld_Brightness.setValue(pnl_Controls.defaultBrighntessVal);
 		pnl_Controls.sld_Fade.setValue(pnl_Controls.defaultFadeVal);
+
+		PianoController.SplashLengthRate(pnl_Controls.defaultMaxSplashLengthVal);
+		PianoController.BrightnessRate(pnl_Controls.defaultBrighntessVal);
+		PianoController.FadeRate(pnl_Controls.defaultFadeVal);
 	}
 
 	public static void resetColor(int n) {

@@ -6,7 +6,7 @@ import com.serifpersia.pianolux.ui.pnl_Guide;
 public class ModesController {
 
 	private PianoLux pianoLux;
-	
+
 	static boolean BGColor = false;
 
 	public static boolean VelocityOn = false;
@@ -46,6 +46,8 @@ public class ModesController {
 
 	public static int currentArray = 7;
 
+	private static int currentMode;
+
 	public ModesController(PianoLux pianoLux) {
 		this.pianoLux = pianoLux;
 	}
@@ -72,51 +74,64 @@ public class ModesController {
 		Gradient8Side = false;
 	}
 
+	public static int getCurrentMode() {
+		return currentMode;
+	}
+
 	public void modeSelect(int n) {
 		if (pianoLux.getPianoController().arduino != null)
-			pianoLux.getPianoController().arduino.sendCommandBlackOut();
+			//pianoLux.getPianoController().arduino.sendCommandBlackOut();
 
 		disableAllModes();
 
 		switch (GetUI.getModeName(n)) {
 		case "Default":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 255);
 			GetUI.resetColor(2);
+			currentMode = 0;
 			break;
 		case "Splash":
 			GetUI.setDefaults(8, 255, 153);
 			SplashOn = true;
 			GetUI.resetColor(0);
+			currentMode = 1;
 			break;
 		case "Random":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 255);
 			RandomOn = true;
+			currentMode = 2;
 			break;
 		case "Gradient":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 255);
 			GradientOn = true;
+			currentMode = 3;
 			break;
 		case "Velocity":
 			GetUI.setDefaults(8, 255, 100);
 			VelocityOn = true;
+			currentMode = 4;
 			break;
 		case "Split":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 255);
 			SplitOn = true;
+			currentMode = 5;
 			break;
 		case "Animation":
-			GetUI.setDefaults(8, 255, 255);
+			GetUI.setDefaults(8, 255, 0);
 			AnimationOn = true;
 			pianoLux.getPianoController().arduino.sendCommandAnimation(0, 0);
+			currentMode = 6;
 			break;
 		case "Visualizer":
 			GetUI.setDefaults(8, 255, 200);
 			VisualizerOn = true;
 			pianoLux.getPianoController().arduino.sendCommandSetLedVisualizer(0, 0);
+			currentMode = 7;
 			break;
 		case "MultiColor":
-			GetUI.setDefaults(8, 255, 0);
+			GetUI.setDefaults(8, 255, 255);
 			MultiColorOn = true;
+			currentMode = 8;
 			break;
 		default:
 			break;

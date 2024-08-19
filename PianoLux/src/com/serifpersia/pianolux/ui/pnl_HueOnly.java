@@ -2,6 +2,8 @@ package com.serifpersia.pianolux.ui;
 
 import javax.swing.JPanel;
 
+import com.serifpersia.pianolux.PianoController;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -126,5 +128,6 @@ public class pnl_HueOnly extends JPanel {
 	private void updateSelectedColor() {
 		Color colorPickerColor = Color.getHSBColor(hue, saturation, brightness);
 		GetUI.selectedColor = colorPickerColor;
+		PianoController.sendGlobalColorToArduino(colorPickerColor);
 	}
 }
