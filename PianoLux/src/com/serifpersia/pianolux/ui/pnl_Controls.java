@@ -473,15 +473,15 @@ public class pnl_Controls extends JPanel {
 				if (source == sld_Brightness) {
 					int BrightnessVal = sld_Brightness.getValue();
 					sld_Brightness.setToolTipText(Integer.toString(BrightnessVal));
-					PianoController.BrightnessRate(BrightnessVal);
+					pianoController.BrightnessRate(BrightnessVal);
 				} else if (source == sld_Fade) {
 					int FadeVal = 255 - sld_Fade.getValue();
 					sld_Fade.setToolTipText(Integer.toString(FadeVal));
-					PianoController.FadeRate(FadeVal);
+					pianoController.FadeRate(FadeVal);
 				} else if (source == sld_SplashMaxLenght) {
 					int SplashLength = sld_SplashMaxLenght.getValue();
 					sld_SplashMaxLenght.setToolTipText(Integer.toString(SplashLength));
-					PianoController.SplashLengthRate(SplashLength);
+					pianoController.SplashLengthRate(SplashLength);
 				} else if (source == sld_transposition) {
 					int Transposition = sld_transposition.getValue();
 					if (pianoController.useOctaveShift) {
@@ -555,12 +555,14 @@ public class pnl_Controls extends JPanel {
 					if (guideToggle.isSelected()) {
 						guideToggle.setIcon(toggle_on_Icon);
 						pianoController.guideToggle = true;
-						//pianoController.setLedGuide(pianoController.guideToggle);
+						pianoController.setLedGuide(pianoController.guideToggle);
+						pianoController.setLedGuide(pianoController.guideToggle);
 
 					} else {
 						guideToggle.setIcon(toggle_off_Icon);
 						pianoController.guideToggle = false;
-						//pianoController.setLedGuide(pianoController.guideToggle);
+						pianoController.setLedGuide(pianoController.guideToggle);
+						pianoController.setLedGuide(pianoController.guideToggle);
 					}
 				}
 

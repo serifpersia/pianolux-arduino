@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
-import java.time.LocalDate;
 
 @SuppressWarnings("serial")
 public class AboutPianoLux extends JPanel {
@@ -110,8 +109,7 @@ public class AboutPianoLux extends JPanel {
 		lb_version.setFont(new Font("Poppins", Font.BOLD, 24));
 		pnl__copyrightLabel.add(lb_version);
 
-		int currentYear = LocalDate.now().getYear();
-		JLabel lb_copyright = new JLabel("Copyright © " + currentYear + " serifpersia");
+		JLabel lb_copyright = new JLabel("Copyright © 2023 serifpersia");
 		lb_copyright.setForeground(Color.WHITE);
 		lb_copyright.setHorizontalAlignment(SwingConstants.CENTER);
 		lb_copyright.setFont(new Font("Poppins", Font.BOLD, 18));

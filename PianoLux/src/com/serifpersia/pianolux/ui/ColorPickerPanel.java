@@ -195,7 +195,7 @@ public class ColorPickerPanel extends JPanel {
 		pnl_Colors.txt_G.setText(Integer.toString(colorPickerColor.getGreen()));
 		pnl_Colors.txt_B.setText(Integer.toString(colorPickerColor.getBlue()));
 
-		PianoController.sendGlobalColorToArduino(GetUI.selectedColor);
+		PianoController.sendUpdatedColorToArduino(GetUI.selectedColor);
 	}
 
 	public void setCustomColor(float hue, float saturation, float brightness) {
