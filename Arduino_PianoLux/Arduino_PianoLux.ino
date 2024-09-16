@@ -21,7 +21,7 @@
 
 #define MAX_NUM_LEDS 176          // how many leds do you want to control
 #define DATA_PIN 5               // your LED strip data pin use pwm ones symbol ~ next to pin hole on Arduino board
-#define MAX_POWER_MILLIAMPS 400   //define current limit if you are using 5V pin from Arduino dont touch this
+#define MAX_POWER_MILLIAMPS 450   //define current limit if you are using 5V pin from Arduino dont touch this
 
 int NUM_LEDS = 176;               // how many leds do you want to control
 
