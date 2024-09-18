@@ -144,3 +144,65 @@ To use PianoLux on MacOS, follow these links:
 - Use amd64 zip for x64 based(Intel) or arm64 zip for arm based M series Apple machines
 - [Terminal Setup](https://phoenixnap.com/kb/change-zsh-to-bash-mac#:~:text=Zsh%20replaced%20Bash%20as%20macOS's,helpful%20in%20the%20macOS%20terminal)
 - [Java Setup](https://www.youtube.com/watch?v=RfIiBMJqvp8)
+
+
+## Features
+### LED Modes
+- **Default Mode 🎹:**
+  - Plain HSB colored playing LEDs.
+
+- **Splash Mode 💦:**
+  - Splash effect from played MIDI notes.
+
+- **Split Mode ↔️:**
+  - Split playing LEDs into two with adjustable colors.
+
+- **Random Mode 🎲:**
+  - Random hue changes with each triggered MIDI note.
+
+- **Velocity Mode ⚡:**
+  - LEDs react based on MIDI note velocity.
+
+- **Animation Mode 🎥:**
+  - Static looping LED animations with 10 options.
+  - MIDI input is ignored in this mode.
+ 
+- **MultiColor Mode**
+  - Each note of the octave can have different color
+
+### Global Controls
+
+- **Color Control Sliders 🌈:**
+  - Adjust hue, saturation, and brightness.
+
+- **Fade Length ⏱️:**
+  - Control the duration of the fade effect.
+
+- **Background Light 💡:**
+  - Toggle and adjust background LED lights.
+
+- **Piano Size Configuration 🎹:**
+  - Button to configure piano size.
+
+- **MIDI to LED Map Ratios 🎵:**
+  - 1:2 and 1:1 mapping options.
+
+- **Visual Representation 🎨:**
+  - Full 88-key piano keyboard for visual aid
+### Global Toggles
+- **FX LED 🔀:**
+  - Shift LEDs at certain solder joined points on the strip
+
+- **BG LED 🌌:**
+  - Toggle background light LEDs.
+  - Adjust color and brightness separately.
+
+- **Update BG Color 🔄:**
+  - Apply HSB color adjustments to background light.
+
+- **RV LED 🔁:**
+  - Reverse LED strip direction for added flexibility.
+ 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
