@@ -19,6 +19,14 @@
 #include "FadingRunEffect.h"
 #include "FadeController.h"
 
+#define IS_DUE 0  // Set to 1 if using Arduino Due, otherwise 0
+
+#if IS_DUE
+#define SERIAL_PORT SerialUSB
+#else
+#define SERIAL_PORT Serial
+#endif
+
 #define MAX_NUM_LEDS 176          // how many leds do you want to control
 #define DATA_PIN 5               // your LED strip data pin use pwm ones symbol ~ next to pin hole on Arduino board
 #define MAX_POWER_MILLIAMPS 450   //define current limit if you are using 5V pin from Arduino dont touch this
@@ -142,8 +150,15 @@ void StartupAnimation() {
 }
 
 void setup() {
-  Serial.begin(115200);
-  Serial.setTimeout(10);
+
+  SERIAL_PORT.begin(115200);
+
+#if IS_DUE
+  while (!SERIAL_PORT);
+#endif
+
+  SERIAL_PORT.setTimeout(10);
+
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering
   // FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);  // GRB ordering is typical
   // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);  // GRB ordering is typical
@@ -222,9 +237,9 @@ FadeController* fadeCtrl = new FadeController();
 //Main loop
 void loop() {
 
-  byte bufferSize = Serial.available();
+  byte bufferSize = SERIAL_PORT.available();
   byte buffer[bufferSize];
-  Serial.readBytes(buffer, bufferSize);
+  SERIAL_PORT.readBytes(buffer, bufferSize);
 
   boolean commandByte1Arrived = false;
   boolean commandByte2Arrived = false;
