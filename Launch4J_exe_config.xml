@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>\PianoLux\target\PianoLux-4.3.8-jar-with-dependencies.jar</jar>
+  <jar>\PianoLux\target\PianoLux-4.3.9-jar-with-dependencies.jar</jar>
   <outfile>\PianoLux.exe</outfile>
   <errTitle></errTitle>
   <cmdLine>-Xms25m -Xmx25m</cmdLine>

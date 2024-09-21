@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PianoLux"
-#define MyAppVersion "4.3.8"
+#define MyAppVersion "4.3.9"
 #define MyAppPublisher "Serif's Software"
 #define MyAppURL "https://www.github.com/serifpersia"
 #define MyAppExeName "PianoLux.exe"

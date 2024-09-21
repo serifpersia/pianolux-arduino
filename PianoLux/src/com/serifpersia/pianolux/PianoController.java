@@ -17,6 +17,7 @@ import javax.sound.midi.MidiUnavailableException;
 import com.serifpersia.pianolux.learn.PianoMidiConsumer;
 import com.serifpersia.pianolux.learn.PianoReceiver;
 import com.serifpersia.pianolux.ui.DashboardPanel;
+import com.serifpersia.pianolux.ui.DrawPiano;
 import com.serifpersia.pianolux.ui.GetUI;
 import com.serifpersia.pianolux.ui.pnl_Gradient_MultiColor;
 
@@ -250,17 +251,22 @@ public class PianoController implements PianoMidiConsumer {
 		int notesPerLED = (int) Math.ceil((double) totalNotes / stripLEDNumber);
 		int ledIndex = (midiNote - lowestNote) / notesPerLED + 1;
 
-		// Ensure the LED index is within the valid range
 		ledIndex = Math.max(0, Math.min(stripLEDNumber, ledIndex));
 
 		return ledIndex;
 	}
 
-	// Map function maps pitch first last note and number of leds
 	public int mapMidiNoteToLED(int midiNote, int lowestNote, int highestNote, int stripLEDNumber, int outMin) {
+		int keyIndex = midiNote - 21;
+		int offset = DrawPiano.getOffsetForKey(keyIndex);
+
 		midiNote = midiNote - transposition;
-		int outMax = outMin + stripLEDNumber - 1; // highest LED number
+
+		int outMax = outMin + stripLEDNumber - 1;
 		int mappedLED = (midiNote - lowestNote) * (outMax - outMin) / (highestNote - lowestNote);
+
+		mappedLED += offset;
+
 		return mappedLED + outMin;
 	}
 

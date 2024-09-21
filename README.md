@@ -202,7 +202,10 @@ To use PianoLux on MacOS, follow these links:
 
 - **RV LED 🔁:**
   - Reverse LED strip direction for added flexibility.
- 
+
+- **Custom LED Offsets 🎵:**
+  - Clicking on specific key adjust led offset -12 to + 12 range.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).

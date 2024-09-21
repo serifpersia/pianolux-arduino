@@ -11,8 +11,8 @@ public class HandleDiscordPPC {
 
 	private Core discordCore;
 	private Activity activity;
-	
-	//Set to true to use discord rich presence loop
+
+	// Set to true to use discord rich presence loop
 	private boolean useDiscord = false;
 
 	public void startupDiscordRPC() {

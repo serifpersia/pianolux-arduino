@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -109,10 +110,14 @@ public class AboutPianoLux extends JPanel {
 		lb_version.setFont(new Font("Poppins", Font.BOLD, 24));
 		pnl__copyrightLabel.add(lb_version);
 
-		JLabel lb_copyright = new JLabel("Copyright © 2023 serifpersia");
+		int currentYear = LocalDate.now().getYear();
+		String copyrightYear = "2023" + (currentYear > 2023 ? " - " + currentYear : "");
+
+		JLabel lb_copyright = new JLabel("Copyright © " + copyrightYear + " serifpersia");
+
 		lb_copyright.setForeground(Color.WHITE);
 		lb_copyright.setHorizontalAlignment(SwingConstants.CENTER);
-		lb_copyright.setFont(new Font("Poppins", Font.BOLD, 18));
+		lb_copyright.setFont(new Font("Poppins", Font.BOLD, 16));
 		pnl__copyrightLabel.add(lb_copyright);
 	}
 }

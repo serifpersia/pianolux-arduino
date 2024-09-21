@@ -6,15 +6,18 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class DrawPiano extends JPanel {
-	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.5, 6, -0.5, 8, -0.5, 10, -0.5); // starts
-																													// with
-																													// C
+	public final static Map<Integer, Double> blackKeyOffset = Map.of(1, -0.7, 3, -0.5, 6, -0.5, 8, -0.5, 10, -0.5);
+
 	public final static int NUM_KEYS = 88;
 	public final static int NUM_WHITE_KEYS = 52;
 	public final static int FIRST_KEY_PITCH_OFFSET = 21;
@@ -33,19 +36,29 @@ public class DrawPiano extends JPanel {
 	private int hoveredKeyIndex = -1;
 	private boolean isMousePressed = false;
 
+	public static Map<Integer, Integer> changesMap = new HashMap<>();
+
 	public DrawPiano() {
+		for (int i = 0; i < NUM_KEYS; i++) {
+			changesMap.put(i, 0);
+		}
 
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				isMousePressed = true;
 				updateHoveredIndex(e.getX(), e.getY());
+
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				if (hoveredKeyIndex != -1) {
+					openDialogForKey(hoveredKeyIndex);
+				}
 				isMousePressed = false;
 				hoveredKeyIndex = -1;
+
 				repaint();
 			}
 		});
@@ -56,6 +69,53 @@ public class DrawPiano extends JPanel {
 				updateHoveredIndex(e.getX(), e.getY());
 			}
 		});
+	}
+
+	private void openDialogForKey(int keyIndex) {
+		Integer[] options = new Integer[25];
+		for (int i = -12; i <= 12; i++) {
+			options[i + 12] = i;
+		}
+
+		JPanel panel = new JPanel();
+
+		JComboBox<Integer> comboBox = new JComboBox<>(options);
+
+		int currentOffset = DrawPiano.getOffsetForKey(keyIndex);
+		comboBox.setSelectedItem(currentOffset);
+		panel.add(comboBox);
+
+		comboBox.addActionListener(e -> {
+			applyOffsetToKey(keyIndex, (int) comboBox.getSelectedItem());
+
+		});
+
+		JButton resetButton = new JButton("Reset All");
+		resetButton.addActionListener(e -> {
+			comboBox.setSelectedIndex(12);
+			resetAllOffsets();
+		});
+		panel.add(resetButton);
+
+		JOptionPane.showConfirmDialog(this, panel, "Select Offset", JOptionPane.DEFAULT_OPTION);
+
+	}
+
+	private void applyOffsetToKey(int keyIndex, int selectedOffset) {
+		changesMap.put(keyIndex, selectedOffset);
+		repaint();
+	}
+
+	private void resetAllOffsets() {
+		for (int i = 0; i < NUM_KEYS; i++) {
+			changesMap.put(i, 0);
+		}
+		repaint();
+	}
+
+	public static int getOffsetForKey(int keyIndex) {
+		int offset = changesMap.getOrDefault(keyIndex, 0);
+		return offset;
 	}
 
 	private void updateHoveredIndex(int x, int y) {
@@ -88,7 +148,6 @@ public class DrawPiano extends JPanel {
 
 		int currentX = getStartX();
 
-		// Draw white keys
 		for (int i = 0; i < NUM_KEYS; i++) {
 			int pitch = i + FIRST_KEY_PITCH_OFFSET;
 
@@ -113,23 +172,19 @@ public class DrawPiano extends JPanel {
 			}
 		}
 
-		// Reset currentX for drawing black keys
 		currentX = getStartX();
 
-		// Draw black keys
 		for (int i = 0; i < NUM_KEYS; i++) {
 			int pitch = i + FIRST_KEY_PITCH_OFFSET;
 
 			if (isBlackKey(pitch)) {
 				currentX += (int) (blackKeyWidth * getBlackKeyOffset(pitch));
 
-				// Set the color based on mouse interaction and key state using the ternary
-
 				if (pnl_Colors.keyColor_toggle.isSelected()) {
 					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? GetUI.selectedColor
 							: blackKeyColor);
 				} else {
-					// operator
+
 					g.setColor((i == hoveredKeyIndex && isMousePressed) || key[i] == 1 ? Color.BLACK : blackKeyColor);
 				}
 
@@ -146,7 +201,6 @@ public class DrawPiano extends JPanel {
 			}
 		}
 
-		// Highlight Piano Size
 	}
 
 	private int getStartX() {
@@ -175,7 +229,6 @@ public class DrawPiano extends JPanel {
 		if (w / h > pianoWidthToHeightRatio) {
 			w = (int) (h * pianoWidthToHeightRatio);
 		}
-		// taking into account rounding
 		return w / NUM_WHITE_KEYS * NUM_WHITE_KEYS;
 	}
 
@@ -186,11 +239,10 @@ public class DrawPiano extends JPanel {
 			int keyHeight = isBlackKey(pitch) ? getBlackKeyHeight() : getWhiteKeyHeight();
 
 			if (x >= keysXPos[i] && x <= keysXPos[i] + keyWidth && y >= 0 && y <= keyHeight) {
-				GetUI.leftMaxPitch = pitch;
 				return i;
 			}
 		}
-		return -1; // No key found
+		return -1;
 	}
 
 	public float getKeyXPos(int pitch) {
@@ -216,4 +268,5 @@ public class DrawPiano extends JPanel {
 	public int getNumKeys() {
 		return NUM_KEYS;
 	}
+
 }

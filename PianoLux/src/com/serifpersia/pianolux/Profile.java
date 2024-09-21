@@ -8,10 +8,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
+
 import javax.swing.JToggleButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.serifpersia.pianolux.ui.DrawPiano;
 import com.serifpersia.pianolux.ui.GetUI;
 import com.serifpersia.pianolux.ui.pnl_Colors;
 import com.serifpersia.pianolux.ui.pnl_Controls;
@@ -255,7 +258,6 @@ public class Profile {
 							int bgVal = Integer.parseInt(sliderValues[3]);
 							int transpositionVal = Integer.parseInt(sliderValues[4]);
 
-							// Set the slider values to the read values
 							pnl_Controls.sld_Brightness.setValue(brightness);
 							pnl_Controls.sld_Fade.setValue(fade);
 							pnl_Controls.sld_SplashMaxLenght.setValue(splashlenght);
@@ -269,8 +271,7 @@ public class Profile {
 					} else if (line.startsWith("Animation = ")) {
 						int index = Integer.parseInt(line.substring(line.indexOf("=") + 1).trim());
 						pnl_Controls.cb_LED_Animations.setSelectedIndex(index);
-					} // Assuming this code is inside a method or a block
-					else if (line.startsWith("Gradient = ")) {
+					} else if (line.startsWith("Gradient = ")) {
 						String[] gradientValues = line.substring(line.indexOf("=") + 1).trim().split(";");
 						if (gradientValues.length == 8) {
 							for (int i = 0; i < gradientValues.length; i++) {
@@ -326,6 +327,19 @@ public class Profile {
 						System.out.println(index);
 						System.out.println(GetUI.counter);
 					}
+
+					else if (line.startsWith("ChangesMap = ")) {
+						String mapData = line.substring(line.indexOf("=") + 1).trim();
+						String[] entries = mapData.split(";");
+						for (String entry : entries) {
+							if (!entry.isEmpty()) {
+								String[] keyValue = entry.split(":");
+								int keyIndex = Integer.parseInt(keyValue[0]);
+								int offset = Integer.parseInt(keyValue[1]);
+								DrawPiano.changesMap.put(keyIndex, offset);
+							}
+						}
+					}
 				}
 
 			} catch (IOException error) {
@@ -377,6 +391,11 @@ public class Profile {
 				writer.write("Custom Color = " + saveFields());
 				writer.newLine();
 				writer.write("Key Range = " + saveKeyRange());
+				writer.newLine();
+				writer.write("ChangesMap = ");
+				for (Map.Entry<Integer, Integer> entry : DrawPiano.changesMap.entrySet()) {
+					writer.write(entry.getKey() + ":" + entry.getValue() + ";");
+				}
 			} catch (IOException error) {
 				error.printStackTrace();
 			}
