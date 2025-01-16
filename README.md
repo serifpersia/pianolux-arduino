@@ -109,7 +109,7 @@ To use PianoLux on Windows, follow these steps:
 
 1. Run the included `Download Java_Script.bat` file to download and install the necessary Java JRE for running the PianoLux app.
 
-2. You will need the Arduino IDE application to upload the `.ino` file to your Arduino board. Ensure that you install the Arduino drivers and the FastLED library. If you're using Arduino IDE 1 or haven't installed the AVR Boards drivers, you may need to manually select the Arduino COM port as the "Refresh" button may not work. To install drivers, use Arduino IDE 2 and follow these steps. For other IDEs, refer to online resources on how to load drivers from the ARDUINO IDE folder in the Device Manager.
+2. You will need the Arduino IDE application to upload the `.ino` file to your Arduino board. Ensure that you install the Arduino drivers and the FastLED library (3.6.0, only works in this version). If you're using Arduino IDE 1 or haven't installed the AVR Boards drivers, you may need to manually select the Arduino COM port as the "Refresh" button may not work. To install drivers, use Arduino IDE 2 and follow these steps. For other IDEs, refer to online resources on how to load drivers from the ARDUINO IDE folder in the Device Manager.
 
 ![Arduino IDE and Drivers](https://github.com/serifpersia/pianolux-arduino/assets/62844718/67236214-f701-4f23-bba4-663ad9c5babd.png)
 
