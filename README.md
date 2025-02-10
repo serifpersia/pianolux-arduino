@@ -115,6 +115,8 @@ To use PianoLux on Windows, follow these steps:
 
 4. Once you see the "Upload Complete" prompt, you are ready to use the PianoLux app.
 
+* For Arduino boards like Due arduino code compile error is expected with new versions of FastLED. Its recommended to use FastLED version 3.6.0.
+
 For Windows users who encounter conflicts when using both PianoLux and other MIDI programs concurrently, consider using my [Midi Router](https://github.com/serifpersia/midi-router) application to split single midi device into two virtual ones using LoopMIDI to create virtual midi devices and route actual MIDI device to these virtual ones that will get used in different apps one for PianoLux and one for DAW or some other MIDI software.
 
 ### 32 Bit
